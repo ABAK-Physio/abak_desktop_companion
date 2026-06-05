@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "exportedAt": 1778500000000,
+
+  "sourceDevice": {
+    "deviceId": "iphone_claire",
+    "deviceLabel": "iPhone Claire",
+    "platform": "ios"
+  },
+
+  "practitioner": {
+    "practitionerId": "claire_001",
+    "displayName": "Claire Dupont"
+  },
+
+  "patient": {
+    "localPatientId": "patient_mobile_001",
+    "lastName": "TEST",
+    "firstName": "Patient",
+    "birthDate": "1980-05-10"
+  },
+
+  "results": [
+    {
+      "result_id": "result_test_001",
+      "createdAt": 1778500000000,
+      "exoId": "E3",
+      "scoreTotal": 7.9,
+      "measureUnit": "s",
+      "exportSimpleText": "Export ABAK importé\nE3 : 7.9 s",
+      "structuredJson": "{\"scores\":{\"mean_time_s\":7.9}}",
+      "testCode": "ABAK-E3",
+      "testVersion": 1,
+      "testFamily": "functional_test",
+      "localSchemaVersion": 1
+    }
+  ],
+
+  "metrics": [
+    {
+      "metric_id": "metric_test_001",
+      "result_id": "result_test_001",
+      "metric_key": "mean_time_s",
+      "value": 7.9,
+      "unit": "s",
+      "label": "Temps moyen"
+    }
+  ]
+}
