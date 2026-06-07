@@ -21,6 +21,7 @@ dependencies:
   window_manager: ^0.4.3
   shelf: ^1.4.2
   shelf_router: ^1.1.4
+  qr_flutter: ^4.1.0
 
   cupertino_icons: ^1.0.8
 

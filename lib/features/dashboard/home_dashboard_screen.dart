@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:qr_flutter/qr_flutter.dart';
+import '../local_exchange/services/local_exchange_server.dart';
 
 import '../patients/patient_list_screen.dart';
 import '../reports/report_archive_screen.dart';
@@ -45,6 +50,12 @@ class _HomeDashboardScreenState
       appBar: AppBar(
         title: Text(titles[selectedIndex]),
         actions: [
+          if (selectedIndex == 0)
+            IconButton(
+              tooltip: 'Associer un téléphone',
+              onPressed: _showDesktopPairingQr,
+              icon: const Icon(Icons.qr_code_2_outlined),
+            ),
           IconButton(
             tooltip: 'Actualiser',
             onPressed: () {
@@ -54,7 +65,7 @@ class _HomeDashboardScreenState
             },
             icon: const Icon(Icons.refresh_outlined),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(width: 12),
         ],
 
       ),
@@ -108,6 +119,102 @@ class _HomeDashboardScreenState
         ],
       ),
     );
+  }
+
+  Future<void> _showDesktopPairingQr() async {
+    final host = await _findLocalIPv4Address();
+    const port = LocalExchangeServer.defaultPort;
+
+    if (!mounted) return;
+
+    if (host == null) {
+      await showDialog<void>(
+        context: context,
+        builder: (dialogContext) {
+          return AlertDialog(
+            title: const Text('Adresse IP introuvable'),
+            content: const Text(
+              'Impossible de déterminer l’adresse IP locale du Desktop.\n\n'
+                  'Vérifiez que l’ordinateur est connecté au réseau local.',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(dialogContext).pop(),
+                child: const Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+      return;
+    }
+
+    final payload = jsonEncode({
+      'type': 'abak_desktop_companion',
+      'version': 1,
+      'host': host,
+      'port': port,
+    });
+
+    await showDialog<void>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: const Text('Associer un téléphone'),
+          content: SizedBox(
+            width: 360,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                QrImageView(
+                  data: payload,
+                  version: QrVersions.auto,
+                  size: 260,
+                  backgroundColor: Colors.white,
+                ),
+                const SizedBox(height: 16),
+                SelectableText(
+                  'Adresse : $host\nPort : $port',
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 12),
+                const Text(
+                  'Scannez ce QR code depuis ABAK Mobile pour configurer '
+                      'automatiquement la connexion au Desktop.',
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(),
+              child: const Text('Fermer'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<String?> _findLocalIPv4Address() async {
+    final interfaces = await NetworkInterface.list(
+      includeLoopback: false,
+      type: InternetAddressType.IPv4,
+    );
+
+    for (final interface in interfaces) {
+      for (final address in interface.addresses) {
+        final ip = address.address;
+
+        if (ip.startsWith('127.')) continue;
+        if (ip.startsWith('169.254.')) continue;
+
+        return ip;
+      }
+    }
+
+    return null;
   }
 
   Widget _buildContent() {
