@@ -1,0 +1,71 @@
+# API Lecture Vitale — éléments à obtenir
+
+## Objectif ABAK
+
+Utiliser l’API officielle Lecture Vitale uniquement pour lire :
+
+- nom
+- prénom
+- date de naissance
+- sexe
+
+ABAK ne vise pas :
+- la facturation SESAM-Vitale
+- la télétransmission
+- la gestion FSE
+- l’intégration complète SESAM-Vitale
+
+## Besoin technique
+
+Plateforme cible :
+
+- macOS
+- Flutter Desktop
+- bridge natif Objective-C / C
+- lecteur PC/SC ACS ACR39U-U1
+
+## Questions à vérifier dans le package API
+
+- L’API est-elle disponible pour macOS ?
+- L’API expose-t-elle une interface C utilisable depuis Objective-C ?
+- Quelles bibliothèques doivent être liées au projet ?
+- Quelles autorisations ou conventions sont nécessaires ?
+- Quels champs identité sont disponibles ?
+- Quel format est retourné pour :
+  - nom
+  - prénom
+  - date de naissance
+  - sexe
+
+## Point d’intégration prévu dans ABAK
+
+Fichier :
+
+```text
+macos/Runner/SmartCardPcscBridge.m
+
+Méthode cible :
+
++ (NSDictionary *)_readVitaleIdentityOfficialApi
+
+Format attendu côté Flutter :
+
+return @{
+    @"success": @YES,
+    @"implemented": @YES,
+    @"source": @"official_api",
+    @"identity": @{
+        @"lastName": @"...",
+        @"firstName": @"...",
+        @"birthDate": @"YYYY-MM-DD",
+        @"sexCode": @"M/F/U",
+        @"source": @"official_api"
+    }
+};
+Workflow ABAK déjà validé
+Lire identité Carte Vitale
+→ identité retournée
+→ formulaire patient prérempli
+→ validation par le kiné
+→ création patient
+→ rattachement dossier mobile

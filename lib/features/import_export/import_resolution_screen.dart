@@ -4,6 +4,8 @@ import '../patients/data/patient_repository.dart';
 import '../patients/models/patient.dart';
 import 'abak_package.dart';
 import 'data/mobile_case_repository.dart';
+import '../smart_card/models/vitale_identity.dart';
+import '../smart_card/screens/vitale_identity_screen.dart';
 
 class ImportResolutionScreen extends StatefulWidget {
   final AbakPackage package;
@@ -30,11 +32,23 @@ class _ImportResolutionScreenState extends State<ImportResolutionScreen> {
     _patientsFuture = _patientRepository.getPatients();
   }
 
-  Future<void> _createPatient() async {
-    final lastNameController = TextEditingController();
-    final firstNameController = TextEditingController();
-    final birthDateController = TextEditingController();
-    String sexCode = 'U';
+  Future<void> _createPatient({
+    String? initialLastName,
+    String? initialFirstName,
+    String? initialBirthDate,
+    String? initialSexCode,
+  }) async {
+    final lastNameController = TextEditingController(
+      text: initialLastName ?? '',
+    );
+    final firstNameController = TextEditingController(
+      text: initialFirstName ?? '',
+    );
+    final birthDateController = TextEditingController(
+      text: initialBirthDate ?? '',
+    );
+
+    String sexCode = initialSexCode ?? 'U';
 
     final patient = await showDialog<Patient>(
       context: context,
@@ -143,6 +157,23 @@ class _ImportResolutionScreenState extends State<ImportResolutionScreen> {
     Navigator.of(context).pop(patient);
   }
 
+  Future<void> _createPatientFromVitale() async {
+    final identity = await Navigator.of(context).push<VitaleIdentity>(
+      MaterialPageRoute(
+        builder: (_) => const VitaleIdentityScreen(),
+      ),
+    );
+
+    if (!mounted || identity == null) return;
+
+    await _createPatient(
+      initialLastName: identity.lastName,
+      initialFirstName: identity.firstName,
+      initialBirthDate: identity.birthDate?.toIso8601String().split('T').first,
+      initialSexCode: identity.sexCode,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final mobileCase = widget.package.mobileCase;
@@ -183,10 +214,21 @@ class _ImportResolutionScreenState extends State<ImportResolutionScreen> {
 
             Align(
               alignment: Alignment.centerRight,
-              child: FilledButton.icon(
-                onPressed: _createPatient,
-                icon: const Icon(Icons.person_add_outlined),
-                label: const Text('Nouveau patient'),
+              child: Wrap(
+                spacing: 12,
+                runSpacing: 12,
+                children: [
+                  OutlinedButton.icon(
+                    onPressed: _createPatientFromVitale,
+                    icon: const Icon(Icons.badge_outlined),
+                    label: const Text('Depuis Carte Vitale'),
+                  ),
+                  FilledButton.icon(
+                    onPressed: () => _createPatient(),
+                    icon: const Icon(Icons.person_add_outlined),
+                    label: const Text('Nouveau patient'),
+                  ),
+                ],
               ),
             ),
 
