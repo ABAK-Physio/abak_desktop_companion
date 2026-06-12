@@ -14,13 +14,13 @@ class AboutScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              'ABA-K Desktop Companion',
+              'ABAK Desktop Companion',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 16),
             Text('Version 1.0.0'),
             SizedBox(height: 32),
-            Text('© 2024 ABA-K'),
+            Text('© 2024 ABAK'),
           ],
         ),
       ),
