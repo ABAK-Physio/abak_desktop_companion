@@ -21,7 +21,7 @@ class AirDropImportWatcher {
   Future<void> start() async {
     if (_timer != null) return;
 
-    final downloadsDir = _downloadsDirectory();
+    final downloadsDir = await _downloadsDirectory();
 
     debugPrint('📥 AirDrop watcher démarré');
     debugPrint('📂 Dossier surveillé : ${downloadsDir.path}');
@@ -43,8 +43,14 @@ class AirDropImportWatcher {
     debugPrint('📥 AirDrop watcher arrêté');
   }
 
-  Directory _downloadsDirectory() {
-    return Directory('/Users/jeanclaudebrucher/Downloads');
+  Future<Directory> _downloadsDirectory() async {
+    final downloads = await getDownloadsDirectory();
+
+    if (downloads == null) {
+      throw Exception('Downloads introuvable');
+    }
+
+    return downloads;
   }
 
   Future<void> _markExistingFiles(Directory downloadsDir) async {
