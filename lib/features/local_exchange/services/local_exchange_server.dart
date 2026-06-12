@@ -2,21 +2,24 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:path/path.dart' as p;
 import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart' as shelf_io;
 import 'package:shelf_router/shelf_router.dart';
-import 'package:path/path.dart' as p;
-import 'package:path_provider/path_provider.dart';
-import '../../import_export/abak_import_launcher.dart';
+
 import '../../../core/database/database_service.dart';
+import '../../../core/settings/exchange_directory_service.dart';
+import '../../import_export/abak_import_launcher.dart';
 
 class LocalExchangeServer {
   LocalExchangeServer._();
 
-  static final LocalExchangeServer instance =
-  LocalExchangeServer._();
+  static final LocalExchangeServer instance = LocalExchangeServer._();
 
   static const int defaultPort = 8790;
+
+  final ExchangeDirectoryService _exchangeDirectoryService =
+  ExchangeDirectoryService();
 
   HttpServer? _server;
 
@@ -71,13 +74,13 @@ class LocalExchangeServer {
           'sex_code',
         ],
         where: '''
-      archived_at IS NULL
-      AND (
-        last_name LIKE ?
-        OR first_name LIKE ?
-        OR birth_date LIKE ?
-      )
-    ''',
+          archived_at IS NULL
+          AND (
+            last_name LIKE ?
+            OR first_name LIKE ?
+            OR birth_date LIKE ?
+          )
+        ''',
         whereArgs: [
           likeQuery,
           likeQuery,
@@ -133,21 +136,19 @@ class LocalExchangeServer {
         );
       }
 
-      final appSupportDir = await getApplicationSupportDirectory();
+      final exchangeDir =
+      await _exchangeDirectoryService.getExchangeDirectory();
 
-      final incomingDir = Directory(
-        p.join(appSupportDir.path, 'incoming_abak'),
-      );
-
-      if (!await incomingDir.exists()) {
-        await incomingDir.create(recursive: true);
+      if (!await exchangeDir.exists()) {
+        await exchangeDir.create(recursive: true);
       }
 
       final safeFileName = p.basename(fileName);
+      final uniqueFileName = _uniqueFileName(exchangeDir, safeFileName);
 
       final destinationPath = p.join(
-        incomingDir.path,
-        safeFileName,
+        exchangeDir.path,
+        uniqueFileName,
       );
 
       final bytes = await request.read().fold<List<int>>(
@@ -157,18 +158,21 @@ class LocalExchangeServer {
 
       final file = File(destinationPath);
       await file.writeAsBytes(bytes, flush: true);
-      final importResult =
-      await AbakImportLauncher.importArchiveFromPath(destinationPath);
+
+      //final importResult  =
+      //await AbakImportLauncher.importArchiveFromPath(
+      //  destinationPath,
+      //  sourceLabel: 'local_exchange',
+      //);
 
       return Response.ok(
         jsonEncode({
-          'status': importResult['status'],
-          'message': importResult['message'],
-          'fileName': safeFileName,
+          'status': 'ok',
+          'message': 'Fichier .abak reçu dans le dossier d’échange.',
+          'fileName': uniqueFileName,
           'filePath': destinationPath,
           'size': bytes.length,
           'contentType': contentType,
-          'import': importResult,
           'timestamp': DateTime.now().toIso8601String(),
         }),
         headers: {
@@ -195,6 +199,21 @@ class LocalExchangeServer {
 
     await server.close(force: true);
     _server = null;
+  }
+
+  String _uniqueFileName(Directory directory, String fileName) {
+    final baseName = p.basenameWithoutExtension(fileName);
+    final extension = p.extension(fileName);
+
+    var candidate = fileName;
+    var index = 1;
+
+    while (File(p.join(directory.path, candidate)).existsSync()) {
+      candidate = '${baseName}_$index$extension';
+      index++;
+    }
+
+    return candidate;
   }
 }
 

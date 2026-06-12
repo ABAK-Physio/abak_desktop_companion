@@ -5,12 +5,16 @@ import 'package:flutter/foundation.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
+import '../../../core/settings/exchange_directory_service.dart';
 import '../../import_export/abak_import_launcher.dart';
 
 class AirDropImportWatcher {
   AirDropImportWatcher._();
 
   static final AirDropImportWatcher instance = AirDropImportWatcher._();
+
+  final ExchangeDirectoryService _exchangeDirectoryService =
+  ExchangeDirectoryService();
 
   Timer? _timer;
   final Set<String> _seenPaths = <String>{};
@@ -21,16 +25,17 @@ class AirDropImportWatcher {
   Future<void> start() async {
     if (_timer != null) return;
 
-    final downloadsDir = await _downloadsDirectory();
+    final exchangeDir =
+    await _exchangeDirectoryService.getExchangeDirectory();
 
-    debugPrint('📥 AirDrop watcher démarré');
-    debugPrint('📂 Dossier surveillé : ${downloadsDir.path}');
+    debugPrint('📥 Watcher dossier d’échange démarré');
+    debugPrint('📂 Dossier surveillé : ${exchangeDir.path}');
 
-    await _markExistingFiles(downloadsDir);
+    await _markExistingFiles(exchangeDir);
 
     _timer = Timer.periodic(
       const Duration(seconds: 3),
-          (_) => _scan(downloadsDir),
+          (_) => _scan(exchangeDir),
     );
   }
 
@@ -40,29 +45,19 @@ class AirDropImportWatcher {
     _seenPaths.clear();
     _processingPaths.clear();
 
-    debugPrint('📥 AirDrop watcher arrêté');
+    debugPrint('📥 Watcher dossier d’échange arrêté');
   }
 
-  Future<Directory> _downloadsDirectory() async {
-    final downloads = await getDownloadsDirectory();
-
-    if (downloads == null) {
-      throw Exception('Downloads introuvable');
-    }
-
-    return downloads;
-  }
-
-  Future<void> _markExistingFiles(Directory downloadsDir) async {
+  Future<void> _markExistingFiles(Directory exchangeDir) async {
     try {
-      if (!await downloadsDir.exists()) {
+      if (!await exchangeDir.exists()) {
         debugPrint(
-          '⚠️ Dossier Downloads introuvable : ${downloadsDir.path}',
+          '⚠️ Dossier d’échange introuvable : ${exchangeDir.path}',
         );
         return;
       }
 
-      final existingFiles = downloadsDir
+      final existingFiles = exchangeDir
           .listSync()
           .whereType<File>()
           .where(_isAbakFile)
@@ -76,20 +71,22 @@ class AirDropImportWatcher {
         '📚 ${_seenPaths.length} fichier(s) .abak déjà présent(s)',
       );
     } catch (e) {
-      debugPrint('⚠️ AirDrop watcher erreur initialisation : $e');
+      debugPrint(
+        '⚠️ Watcher dossier d’échange erreur initialisation : $e',
+      );
     }
   }
 
-  Future<void> _scan(Directory downloadsDir) async {
+  Future<void> _scan(Directory exchangeDir) async {
     try {
-      if (!await downloadsDir.exists()) {
+      if (!await exchangeDir.exists()) {
         debugPrint(
-          '⚠️ Dossier Downloads introuvable : ${downloadsDir.path}',
+          '⚠️ Dossier d’échange introuvable : ${exchangeDir.path}',
         );
         return;
       }
 
-      final files = downloadsDir
+      final files = exchangeDir
           .listSync()
           .whereType<File>()
           .where(_isAbakFile)
@@ -104,10 +101,10 @@ class AirDropImportWatcher {
         _seenPaths.add(path);
         _processingPaths.add(path);
 
-        await _handleNewAirDropFile(file);
+        await _handleNewExchangeFile(file);
       }
     } catch (e) {
-      debugPrint('⚠️ AirDrop watcher erreur scan : $e');
+      debugPrint('⚠️ Watcher dossier d’échange erreur scan : $e');
     }
   }
 
@@ -115,7 +112,7 @@ class AirDropImportWatcher {
     return p.extension(file.path).toLowerCase() == '.abak';
   }
 
-  Future<void> _handleNewAirDropFile(File file) async {
+  Future<void> _handleNewExchangeFile(File file) async {
     final originalPath = file.path;
 
     try {
@@ -123,7 +120,7 @@ class AirDropImportWatcher {
 
       final stat = await file.stat();
 
-      debugPrint('🆕 Nouveau fichier AirDrop détecté');
+      debugPrint('🆕 Nouveau fichier .abak détecté');
       debugPrint('📄 Nom : ${p.basename(originalPath)}');
       debugPrint('📍 Chemin : $originalPath');
       debugPrint('📦 Taille : ${stat.size} octets');
@@ -131,17 +128,17 @@ class AirDropImportWatcher {
 
       final destinationPath = await _copyToIncomingAbak(file);
 
-      debugPrint('📦 Copie AirDrop vers incoming_abak');
+      debugPrint('📦 Copie vers incoming_abak');
       debugPrint('📍 Destination : $destinationPath');
 
       final result = await AbakImportLauncher.importArchiveFromPath(
         destinationPath,
-        sourceLabel: 'airdrop',
+        sourceLabel: 'exchange_directory',
       );
 
-      debugPrint('📥 IMPORT AIRDROP = $result');
+      debugPrint('📥 IMPORT DOSSIER ÉCHANGE = $result');
     } catch (e, stack) {
-      debugPrint('❌ Erreur traitement AirDrop $originalPath : $e');
+      debugPrint('❌ Erreur traitement fichier $originalPath : $e');
       debugPrint('$stack');
     } finally {
       _processingPaths.remove(originalPath);
@@ -153,7 +150,9 @@ class AirDropImportWatcher {
 
     for (var i = 0; i < 5; i++) {
       if (!await file.exists()) {
-        await Future<void>.delayed(const Duration(milliseconds: 500));
+        await Future<void>.delayed(
+          const Duration(milliseconds: 500),
+        );
         continue;
       }
 
@@ -165,7 +164,9 @@ class AirDropImportWatcher {
 
       previousSize = currentSize;
 
-      await Future<void>.delayed(const Duration(milliseconds: 500));
+      await Future<void>.delayed(
+        const Duration(milliseconds: 500),
+      );
     }
   }
 
