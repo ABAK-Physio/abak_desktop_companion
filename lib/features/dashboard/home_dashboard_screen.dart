@@ -8,6 +8,7 @@ import '../local_exchange/services/local_exchange_server.dart';
 import '../patients/patient_list_screen.dart';
 import '../reports/report_archive_screen.dart';
 import '../settings/settings_screen.dart';
+import '../informations/about.dart';
 import '../practitioners/practitioner_list_screen.dart';
 import '../devices/device_list_screen.dart';
 import '../import_export/abak_import_launcher.dart';
@@ -39,6 +40,7 @@ class _HomeDashboardScreenState
     'Appareils',
     'Archives',
     'Réglages',
+    'Informations',
   ];
 
   AbakImportLauncherResult? lastImportResult;
@@ -109,6 +111,11 @@ class _HomeDashboardScreenState
                 icon: Icon(Icons.settings_outlined),
                 selectedIcon: Icon(Icons.settings),
                 label: Text('Réglages'),
+              ),
+              NavigationRailDestination(
+                icon: Icon(Icons.info_outline),
+                selectedIcon: Icon(Icons.info),
+                label: Text('Informations'),
               ),
             ],
           ),
@@ -308,6 +315,8 @@ class _HomeDashboardScreenState
         return const ReportArchiveScreen();
       case 5:
         return const SettingsScreen();
+      case 6:
+        return const AboutScreen();
       default:
         return const SizedBox.shrink();
     }

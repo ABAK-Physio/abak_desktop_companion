@@ -117,6 +117,7 @@ class AbakImportLauncher {
           }
 
           if (!resolution.canImportAutomatically &&
+              // ignore: unnecessary_null_comparison
               targetPatient != null) {
             await resolutionService.linkMobileCaseToPatient(
               mobileCase: resolution.mobileCase,

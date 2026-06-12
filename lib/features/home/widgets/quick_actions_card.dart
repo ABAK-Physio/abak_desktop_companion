@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../../import_export/abak_import_launcher.dart';
 import '../../import_export/import_history_screen.dart';
-import '../../settings/settings_screen.dart';
 import '../../patients/services/patient_purge_service.dart';
 import '../../maintenance/services/local_database_backup_service.dart';
 import '../../maintenance/backup_history_screen.dart';
@@ -69,19 +68,6 @@ class QuickActionsCard extends StatelessWidget {
                   },
                   icon: const Icon(Icons.history_outlined),
                   label: const Text('Historique'),
-                ),
-
-                OutlinedButton.icon(
-                  onPressed: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) =>
-                        const SettingsScreen(),
-                      ),
-                    );
-                  },
-                  icon: const Icon(Icons.settings_outlined),
-                  label: const Text('Réglages'),
                 ),
 
                 OutlinedButton.icon(

@@ -81,10 +81,7 @@ class _PatientFormDialogState extends State<PatientFormDialog> {
     Navigator.of(context).pop(patient);
   }
 
-  String get _localeName {
-    final locale = Localizations.localeOf(context);
-    return locale.toLanguageTag();
-  }
+
 
   DateFormat get _displayDateFormat {
     return DateFormat('dd/MM/yyyy');
