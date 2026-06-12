@@ -35,8 +35,8 @@ class ExchangeDirectoryService {
   ///
   /// - si le kiné a choisi un dossier dans les réglages,
   ///   ce dossier est utilisé ;
-  /// - sinon un dossier Documents/ABAK_Echanges est créé
-  ///   automatiquement puis utilisé.
+  /// - sinon un dossier ABAK_Echanges est créé automatiquement
+  ///   dans le dossier support de l'application.
   ///
   /// Le dossier retourné est garanti existant.
   Future<Directory> getExchangeDirectory() async {
@@ -50,10 +50,10 @@ class ExchangeDirectoryService {
       }
     }
 
-    final documentsDirectory = await getApplicationDocumentsDirectory();
+    final appSupportDirectory = await getApplicationSupportDirectory();
 
     final fallbackDirectory = Directory(
-      '${documentsDirectory.path}'
+      '${appSupportDirectory.path}'
           '${Platform.pathSeparator}'
           'ABAK_Echanges',
     );
