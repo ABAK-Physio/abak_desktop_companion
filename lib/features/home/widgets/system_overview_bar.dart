@@ -13,7 +13,9 @@ class SystemOverviewBar extends StatefulWidget {
 }
 
 class _SystemOverviewBarState extends State<SystemOverviewBar> {
-  late Future<SystemHealthSnapshot> _futureHealth;
+  SystemHealthSnapshot? _health;
+  Object? _error;
+  bool _isLoading = true;
   Timer? _timer;
 
   String _formatFileSize(int bytes) {
@@ -37,12 +39,55 @@ class _SystemOverviewBarState extends State<SystemOverviewBar> {
     );
   }
 
-  void _refresh() {
-    if (!mounted) return;
+  Future<void> _refresh() async {
+    try {
+      final newHealth =
+      await const SystemHealthService().loadSnapshot();
 
-    setState(() {
-      _futureHealth = const SystemHealthService().loadSnapshot();
-    });
+      if (!mounted) return;
+
+      if (_healthSignature(_health) == _healthSignature(newHealth) &&
+          _error == null &&
+          !_isLoading) {
+        return;
+      }
+
+      setState(() {
+        _health = newHealth;
+        _error = null;
+        _isLoading = false;
+      });
+    } catch (error) {
+      if (!mounted) return;
+
+      if (_error?.toString() == error.toString() && !_isLoading) {
+        return;
+      }
+
+      setState(() {
+        _error = error;
+        _isLoading = false;
+      });
+    }
+  }
+
+  String _healthSignature(SystemHealthSnapshot? health) {
+    if (health == null) return '';
+
+    final alertCount =
+        health.failedImportsCount +
+            (health.hasNoBackup || health.hasOldBackup ? 1 : 0) +
+            (health.hasRunningImports ? 1 : 0);
+
+    return [
+      health.databaseSizeBytes,
+      alertCount,
+      health.importsCount,
+      health.activePatientsCount,
+      health.archivedPatientsCount,
+      health.backupsCount,
+      health.backupsTotalSizeBytes,
+    ].join('|');
   }
 
   @override
@@ -53,107 +98,102 @@ class _SystemOverviewBarState extends State<SystemOverviewBar> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<SystemHealthSnapshot>(
-      future: _futureHealth,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Card(
-            child: Padding(
-              padding: EdgeInsets.all(16),
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: 24,
-                    height: 24,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  ),
-                  SizedBox(width: 16),
-                  Text('Chargement du résumé système...'),
-                ],
+    if (_isLoading) {
+      return const Card(
+        child: Padding(
+          padding: EdgeInsets.all(16),
+          child: Row(
+            children: [
+              SizedBox(
+                width: 24,
+                height: 24,
+                child: CircularProgressIndicator(strokeWidth: 2),
               ),
-            ),
-          );
-        }
-
-        if (snapshot.hasError) {
-          return Card(
-            color: Colors.red.shade50,
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Text(
-                'Erreur supervision : ${snapshot.error}',
-                style: const TextStyle(color: Colors.red),
-              ),
-            ),
-          );
-        }
-
-        final health = snapshot.data;
-
-        if (health == null) {
-          return const Card(
-            child: Padding(
-              padding: EdgeInsets.all(16),
-              child: Text('Supervision indisponible.'),
-            ),
-          );
-        }
-
-        final alertCount =
-            health.failedImportsCount +
-                (health.hasNoBackup || health.hasOldBackup ? 1 : 0) +
-                (health.hasRunningImports ? 1 : 0);
-
-        return Card(
-          elevation: 0,
-          color: Theme.of(context).colorScheme.surfaceContainerHighest,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 20,
-              vertical: 14,
-            ),
-            child: Wrap(
-              spacing: 16,
-              runSpacing: 12,
-              children: [
-                _OverviewItem(
-                  icon: Icons.storage_outlined,
-                  label: 'Base locale',
-                  value: _formatFileSize(health.databaseSizeBytes),
-                  color: Colors.green,
-                ),
-                _OverviewItem(
-                  icon: Icons.warning_amber_outlined,
-                  label: 'Alertes',
-                  value: alertCount.toString(),
-                  color: alertCount > 0 ? Colors.orange : Colors.green,
-                ),
-                _OverviewItem(
-                  icon: Icons.history_outlined,
-                  label: 'Imports',
-                  value: health.importsCount.toString(),
-                ),
-                _OverviewItem(
-                  icon: Icons.people_outline,
-                  label: 'Patients actifs',
-                  value: health.activePatientsCount.toString(),
-                ),
-                _OverviewItem(
-                  icon: Icons.archive_outlined,
-                  label: 'Archivés',
-                  value: health.archivedPatientsCount.toString(),
-                ),
-                _OverviewItem(
-                  icon: Icons.backup_outlined,
-                  label: 'Sauvegardes',
-                  value:
-                  '${health.backupsCount} · ${_formatFileSize(health.backupsTotalSizeBytes)}',
-                ),
-              ],
-            ),
+              SizedBox(width: 16),
+              Text('Chargement du résumé système...'),
+            ],
           ),
-        );
-      },
+        ),
+      );
+    }
+
+    if (_error != null) {
+      return Card(
+        color: Colors.red.shade50,
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Text(
+            'Erreur supervision : $_error',
+            style: const TextStyle(color: Colors.red),
+          ),
+        ),
+      );
+    }
+
+    final health = _health;
+
+    if (health == null) {
+      return const Card(
+        child: Padding(
+          padding: EdgeInsets.all(16),
+          child: Text('Supervision indisponible.'),
+        ),
+      );
+    }
+
+    final alertCount =
+        health.failedImportsCount +
+            (health.hasNoBackup || health.hasOldBackup ? 1 : 0) +
+            (health.hasRunningImports ? 1 : 0);
+
+    return Card(
+      elevation: 0,
+      color: Theme.of(context).colorScheme.surfaceContainerHighest,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 20,
+          vertical: 14,
+        ),
+        child: Wrap(
+          spacing: 16,
+          runSpacing: 12,
+          children: [
+            _OverviewItem(
+              icon: Icons.storage_outlined,
+              label: 'Base locale',
+              value: _formatFileSize(health.databaseSizeBytes),
+              color: Colors.green,
+            ),
+            _OverviewItem(
+              icon: Icons.warning_amber_outlined,
+              label: 'Alertes',
+              value: alertCount.toString(),
+              color: alertCount > 0 ? Colors.orange : Colors.green,
+            ),
+            _OverviewItem(
+              icon: Icons.history_outlined,
+              label: 'Imports',
+              value: health.importsCount.toString(),
+            ),
+            _OverviewItem(
+              icon: Icons.people_outline,
+              label: 'Patients actifs',
+              value: health.activePatientsCount.toString(),
+            ),
+            _OverviewItem(
+              icon: Icons.archive_outlined,
+              label: 'Archivés',
+              value: health.archivedPatientsCount.toString(),
+            ),
+            _OverviewItem(
+              icon: Icons.backup_outlined,
+              label: 'Sauvegardes',
+              value:
+              '${health.backupsCount} · ${_formatFileSize(health.backupsTotalSizeBytes)}',
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

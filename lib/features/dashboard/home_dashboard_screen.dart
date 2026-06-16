@@ -44,7 +44,14 @@ class _HomeDashboardScreenState
   ];
 
   AbakImportLauncherResult? lastImportResult;
-  int refreshToken = 0;
+
+  void _refreshDashboard() {
+    setState(() {
+      // Reconstruction volontaire du tableau de bord.
+      // Les cards qui ont leur propre logique interne
+      // décident ensuite si elles doivent vraiment se rafraîchir.
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,12 +66,8 @@ class _HomeDashboardScreenState
               icon: const Icon(Icons.qr_code_2_outlined),
             ),
           IconButton(
-            tooltip: 'Actualiser',
-            onPressed: () {
-              setState(() {
-                refreshToken++;
-              });
-            },
+            tooltip: 'Actualiser le tableau de bord',
+            onPressed: _refreshDashboard,
             icon: const Icon(Icons.refresh_outlined),
           ),
           const SizedBox(width: 12),
@@ -240,9 +243,7 @@ class _HomeDashboardScreenState
                     style: TextStyle(fontSize: 24),
                   ),
                   const SizedBox(height: 24),
-                  SystemOverviewBar(
-                    key: ValueKey('overview-$refreshToken'),
-                  ),
+                  SystemOverviewBar(),
 
                   const SizedBox(height: 24),
                   Wrap(
@@ -253,48 +254,35 @@ class _HomeDashboardScreenState
                         SizedBox(
                           width: 520,
                           child: HomeImportSummaryCard(
-                            key: ValueKey('summary-$refreshToken'),
                             result: lastImportResult!,
                           ),
                         ),
-                      SizedBox(
+                      const SizedBox(
                         width: 520,
-                        child: RecentImportsCard(
-                          key: ValueKey('recent-$refreshToken'),
-                        ),
+                        child: RecentImportsCard(),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 520,
-                        child: SystemStatusCard(
-                          key: ValueKey('status-$refreshToken'),
-                        ),
+                        child: SystemStatusCard(),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 520,
-                        child: SystemAlertsCard(
-                          key: ValueKey('alerts-$refreshToken'),
-                        ),
+                        child: SystemAlertsCard(),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 520,
-                        child: PendingResolutionCard(
-                          key: ValueKey('pending-resolution-$refreshToken'),
-                        ),
+                        child: PendingResolutionCard(),
                       ),
                       SizedBox(
                         width: 520,
                         child: QuickActionsCard(
-                          key: ValueKey('quick-$refreshToken'),
                           onImportCompleted: (result) {
                             setState(() {
                               lastImportResult = result;
-                              refreshToken++;
                             });
                           },
                           onMaintenanceCompleted: () {
-                            setState(() {
-                              refreshToken++;
-                            });
+                            setState(() {});
                           },
                         ),
                       ),
