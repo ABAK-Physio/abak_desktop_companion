@@ -19,7 +19,6 @@ flutter pub get
 flutter build macos --release \
   --obfuscate \
   --split-debug-info="$DEBUG_INFO_DIR" \
-  --strip \
   --tree-shake-icons \
   --build-name="$BUILD_NAME" \
   --build-number="$BUILD_NUMBER" \
