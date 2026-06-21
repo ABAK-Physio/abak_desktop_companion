@@ -56,7 +56,7 @@ class DatabaseService {
 
     return openDatabase(
       path,
-      version: 12,
+      version: 18,
       onCreate: (db, version) async {
         await _createTables(db);
         await _createImportHistoryTables(db);
@@ -64,6 +64,9 @@ class DatabaseService {
         await _createBackupTables(db);
         await _createRestoreHistoryTables(db);
         await _createResultConflictTables(db);
+        await _createPatientClinicalTables(db);
+        await _createEpisodeNoteTables(db);
+        await _createEpisodeConclusionTables(db);
       },
 
       onUpgrade: (db, oldVersion, newVersion) async {
@@ -145,6 +148,24 @@ class DatabaseService {
         }
         if (oldVersion < 12) {
           await _createResultConflictTables(db);
+        }
+        if (oldVersion < 13) {
+          await _createPatientClinicalTables(db);
+        }
+        if (oldVersion < 14) {
+          await _upgradeToV14(db);
+        }
+        if (oldVersion < 15) {
+          await _upgradeToV15(db);
+        }
+        if (oldVersion < 16) {
+          await _upgradeToV16(db);
+        }
+        if (oldVersion < 17) {
+          await _createEpisodeNoteTables(db);
+        }
+        if (oldVersion < 18) {
+          await _createEpisodeConclusionTables(db);
         }
       },
     );
@@ -431,6 +452,254 @@ UNIQUE(result_id, metric_key)
 
       FOREIGN KEY(result_id)
         REFERENCES desktop_results(result_id)
+    )
+  ''');
+  }
+
+  static Future<void> _createEpisodeConclusionTables(
+      Database db,
+      ) async {
+    await db.execute('''
+    CREATE TABLE IF NOT EXISTS episode_conclusions (
+      conclusion_id TEXT PRIMARY KEY,
+
+      case_id TEXT NOT NULL,
+
+      content TEXT NOT NULL,
+
+      created_at INTEGER NOT NULL,
+      updated_at INTEGER NULL,
+      archived_at INTEGER NULL,
+
+      FOREIGN KEY(case_id)
+        REFERENCES mobile_cases(case_id)
+    )
+  ''');
+  }
+
+  static Future<void> _createPatientClinicalTables(Database db) async {
+    await db.execute('''
+  CREATE TABLE IF NOT EXISTS patient_identity (
+    patient_id TEXT PRIMARY KEY,
+
+    national_health_id TEXT NULL,
+    health_system_country TEXT NULL,
+    identity_source TEXT NULL,
+
+    phone TEXT NULL,
+    email TEXT NULL,
+    address TEXT NULL,
+
+    last_verified_at INTEGER NULL,
+    updated_at INTEGER NOT NULL,
+
+    FOREIGN KEY(patient_id)
+      REFERENCES patients(patient_id)
+  )
+''');
+
+    await db.execute('''
+    CREATE TABLE IF NOT EXISTS patient_attributes (
+      attribute_id TEXT PRIMARY KEY,
+
+      patient_id TEXT NOT NULL,
+
+      attribute_key TEXT NOT NULL,
+      attribute_value TEXT NULL,
+
+      updated_at INTEGER NOT NULL,
+
+      FOREIGN KEY(patient_id)
+        REFERENCES patients(patient_id),
+
+      UNIQUE(patient_id, attribute_key)
+    )
+  ''');
+
+    await db.execute('''
+  CREATE TABLE IF NOT EXISTS contact_form_templates (
+    template_id TEXT PRIMARY KEY,
+
+    practitioner_id TEXT NULL,
+
+    name TEXT NOT NULL,
+    description TEXT NULL,
+    category TEXT NULL,
+
+    is_default INTEGER NOT NULL DEFAULT 0,
+
+    created_at INTEGER NOT NULL,
+    updated_at INTEGER NULL,
+    archived_at INTEGER NULL,
+
+    FOREIGN KEY(practitioner_id)
+      REFERENCES practitioners(practitioner_id)
+  )
+''');
+
+    await db.execute('''
+    CREATE TABLE IF NOT EXISTS contact_form_fields (
+      field_id TEXT PRIMARY KEY,
+
+      template_id TEXT NOT NULL,
+
+      label TEXT NOT NULL,
+      field_type TEXT NOT NULL,
+
+      target_scope TEXT NOT NULL,
+
+      sort_order INTEGER NOT NULL DEFAULT 0,
+      required INTEGER NOT NULL DEFAULT 0,
+
+      options_json TEXT NULL,
+
+      created_at INTEGER NOT NULL,
+      updated_at INTEGER NULL,
+      archived_at INTEGER NULL,
+
+      FOREIGN KEY(template_id)
+        REFERENCES contact_form_templates(template_id)
+    )
+  ''');
+
+    await db.execute('''
+    CREATE TABLE IF NOT EXISTS episode_forms (
+      form_id TEXT PRIMARY KEY,
+
+      case_id TEXT NOT NULL,
+      template_id TEXT NOT NULL,
+
+      created_at INTEGER NOT NULL,
+      updated_at INTEGER NULL,
+      archived_at INTEGER NULL,
+
+      FOREIGN KEY(case_id)
+        REFERENCES mobile_cases(case_id),
+
+      FOREIGN KEY(template_id)
+        REFERENCES contact_form_templates(template_id)
+    )
+  ''');
+
+    await db.execute('''
+  CREATE UNIQUE INDEX IF NOT EXISTS idx_episode_forms_case_template_active
+  ON episode_forms(case_id, template_id)
+  WHERE archived_at IS NULL
+''');
+
+    await db.execute('''
+    CREATE TABLE IF NOT EXISTS episode_form_answers (
+      answer_id TEXT PRIMARY KEY,
+
+      form_id TEXT NOT NULL,
+      field_id TEXT NOT NULL,
+
+      value TEXT NULL,
+      updated_at INTEGER NOT NULL,
+
+      FOREIGN KEY(form_id)
+        REFERENCES episode_forms(form_id),
+
+      FOREIGN KEY(field_id)
+        REFERENCES contact_form_fields(field_id),
+
+      UNIQUE(form_id, field_id)
+    )
+  ''');
+
+    await db.execute('''
+    CREATE TABLE IF NOT EXISTS episode_documents (
+      document_id TEXT PRIMARY KEY,
+
+      case_id TEXT NOT NULL,
+
+      title TEXT NOT NULL,
+      file_path TEXT NOT NULL,
+      mime_type TEXT NULL,
+
+      source TEXT NULL,
+
+      created_at INTEGER NOT NULL,
+      updated_at INTEGER NULL,
+      archived_at INTEGER NULL,
+
+      FOREIGN KEY(case_id)
+        REFERENCES mobile_cases(case_id)
+    )
+  ''');
+  }
+
+  static Future<void> _upgradeToV14(Database db) async {
+    await db.execute('''
+    ALTER TABLE contact_form_templates
+    ADD COLUMN practitioner_id TEXT NULL
+  ''');
+
+    await db.execute('''
+    ALTER TABLE contact_form_templates
+    ADD COLUMN category TEXT NULL
+  ''');
+
+    await db.execute('''
+    ALTER TABLE contact_form_templates
+    ADD COLUMN is_default INTEGER NOT NULL DEFAULT 0
+  ''');
+  }
+
+  static Future<void> _upgradeToV15(Database db) async {
+    await db.execute('''
+    ALTER TABLE patient_identity
+    ADD COLUMN phone TEXT NULL
+  ''');
+
+    await db.execute('''
+    ALTER TABLE patient_identity
+    ADD COLUMN email TEXT NULL
+  ''');
+
+    await db.execute('''
+    ALTER TABLE patient_identity
+    ADD COLUMN address TEXT NULL
+  ''');
+  }
+
+  static Future<void> _upgradeToV16(Database db) async {
+    await db.execute('''
+    UPDATE episode_forms
+    SET archived_at = strftime('%s','now') * 1000,
+        updated_at = strftime('%s','now') * 1000
+    WHERE form_id NOT IN (
+      SELECT MIN(form_id)
+      FROM episode_forms
+      WHERE archived_at IS NULL
+      GROUP BY case_id, template_id
+    )
+    AND archived_at IS NULL
+  ''');
+
+    await db.execute('''
+    CREATE UNIQUE INDEX IF NOT EXISTS idx_episode_forms_case_template_active
+    ON episode_forms(case_id, template_id)
+    WHERE archived_at IS NULL
+  ''');
+  }
+
+  static Future<void> _createEpisodeNoteTables(Database db) async {
+    await db.execute('''
+    CREATE TABLE IF NOT EXISTS episode_notes (
+      note_id TEXT PRIMARY KEY,
+
+      case_id TEXT NOT NULL,
+
+      title TEXT NOT NULL,
+      content TEXT NOT NULL,
+
+      created_at INTEGER NOT NULL,
+      updated_at INTEGER NULL,
+      archived_at INTEGER NULL,
+
+      FOREIGN KEY(case_id)
+        REFERENCES mobile_cases(case_id)
     )
   ''');
   }

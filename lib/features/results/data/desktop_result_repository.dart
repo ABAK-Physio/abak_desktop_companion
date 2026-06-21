@@ -259,4 +259,21 @@ class DesktopResultRepository {
       conflictAlgorithm: ConflictAlgorithm.abort,
     );
   }
+
+  Future<List<DesktopResult>> getResultsForMobileCase(
+      String mobileCaseId,
+      ) async {
+    final db = await DatabaseService.database;
+
+    final rows = await db.query(
+      'desktop_results',
+      where: 'mobile_case_id = ? AND archived_at IS NULL',
+      whereArgs: [mobileCaseId],
+      orderBy: 'createdAt DESC',
+    );
+
+    return rows
+        .map((row) => DesktopResult.fromMap(row))
+        .toList();
+  }
 }

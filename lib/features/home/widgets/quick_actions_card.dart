@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 import '../../import_export/abak_import_launcher.dart';
 import '../../import_export/import_history_screen.dart';
-import '../../patients/services/patient_purge_service.dart';
-import '../../maintenance/services/local_database_backup_service.dart';
 import '../../maintenance/backup_history_screen.dart';
+import '../../maintenance/services/local_database_backup_service.dart';
 import '../../maintenance/services/local_database_reset_service.dart';
+import '../../patients/screens/contact_form_template_diagnostic_screen.dart';
 
 class QuickActionsCard extends StatelessWidget {
   final ValueChanged<AbakImportLauncherResult>? onImportCompleted;
@@ -35,9 +35,7 @@ class QuickActionsCard extends StatelessWidget {
                 ),
               ],
             ),
-
             const Divider(height: 28),
-
             Wrap(
               spacing: 12,
               runSpacing: 12,
@@ -56,38 +54,25 @@ class QuickActionsCard extends StatelessWidget {
                   icon: const Icon(Icons.file_upload_outlined),
                   label: const Text('Importer'),
                 ),
-
                 OutlinedButton.icon(
                   onPressed: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (_) =>
-                        const ImportHistoryScreen(),
+                        builder: (_) => const ImportHistoryScreen(),
                       ),
                     );
                   },
                   icon: const Icon(Icons.history_outlined),
                   label: const Text('Historique'),
                 ),
-
                 OutlinedButton.icon(
-                  onPressed: () async {
-                    final result = await PatientPurgeService()
-                        .purgeArchivedPatients();
-
-                    if (!context.mounted) return;
-
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          'Purge terminée : '
-                              '${result.deletedPatients} patient(s) supprimé(s) '
-                              'sur ${result.scannedPatients} patient(s) archivé(s).',
-                        ),
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) =>
+                        const ContactFormTemplateDiagnosticScreen(),
                       ),
                     );
-
-                    onMaintenanceCompleted?.call();
                   },
                   icon: const Icon(Icons.cleaning_services_outlined),
                   label: const Text('Maintenance'),
@@ -95,8 +80,7 @@ class QuickActionsCard extends StatelessWidget {
                 OutlinedButton.icon(
                   onPressed: () async {
                     final result =
-                    await LocalDatabaseBackupService()
-                        .createBackup();
+                    await LocalDatabaseBackupService().createBackup();
 
                     if (!context.mounted) return;
 
@@ -117,8 +101,6 @@ class QuickActionsCard extends StatelessWidget {
                   icon: const Icon(Icons.save_outlined),
                   label: const Text('Sauvegarde SQLite'),
                 ),
-
-
                 OutlinedButton.icon(
                   style: OutlinedButton.styleFrom(
                     foregroundColor: Colors.red,
@@ -138,11 +120,13 @@ class QuickActionsCard extends StatelessWidget {
                           ),
                           actions: [
                             TextButton(
-                              onPressed: () => Navigator.of(dialogContext).pop(false),
+                              onPressed: () =>
+                                  Navigator.of(dialogContext).pop(false),
                               child: const Text('Annuler'),
                             ),
                             FilledButton(
-                              onPressed: () => Navigator.of(dialogContext).pop(true),
+                              onPressed: () =>
+                                  Navigator.of(dialogContext).pop(true),
                               child: const Text('Continuer'),
                             ),
                           ],
@@ -153,7 +137,9 @@ class QuickActionsCard extends StatelessWidget {
                     if (firstConfirm != true) return;
 
                     final controller = TextEditingController();
+
                     if (!context.mounted) return;
+
                     final secondConfirm = await showDialog<bool>(
                       context: context,
                       builder: (dialogContext) {
@@ -162,7 +148,9 @@ class QuickActionsCard extends StatelessWidget {
                           content: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              const Text('Tapez RESET pour confirmer définitivement.'),
+                              const Text(
+                                'Tapez RESET pour confirmer définitivement.',
+                              ),
                               const SizedBox(height: 16),
                               TextField(
                                 controller: controller,
@@ -176,13 +164,15 @@ class QuickActionsCard extends StatelessWidget {
                           ),
                           actions: [
                             TextButton(
-                              onPressed: () => Navigator.of(dialogContext).pop(false),
+                              onPressed: () =>
+                                  Navigator.of(dialogContext).pop(false),
                               child: const Text('Annuler'),
                             ),
                             FilledButton(
                               onPressed: () {
                                 final valid =
-                                    controller.text.trim().toUpperCase() == 'RESET';
+                                    controller.text.trim().toUpperCase() ==
+                                        'RESET';
                                 Navigator.of(dialogContext).pop(valid);
                               },
                               child: const Text('Réinitialiser'),
@@ -206,7 +196,8 @@ class QuickActionsCard extends StatelessWidget {
                       return;
                     }
 
-                    final result = await LocalDatabaseResetService().resetDatabase();
+                    final result =
+                    await LocalDatabaseResetService().resetDatabase();
 
                     if (!context.mounted) return;
 
@@ -227,8 +218,6 @@ class QuickActionsCard extends StatelessWidget {
                   icon: const Icon(Icons.restart_alt_outlined),
                   label: const Text('Réinitialiser DB'),
                 ),
-
-
                 OutlinedButton.icon(
                   onPressed: () {
                     Navigator.of(context).push(

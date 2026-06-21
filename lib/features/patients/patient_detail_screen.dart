@@ -15,6 +15,12 @@ import '../import_export/abak_file_export_service.dart';
 import '../import_export/data/mobile_case_repository.dart';
 import '../import_export/models/mobile_case.dart';
 import '../import_export/abak_import_launcher.dart';
+import 'data/patient_attribute_repository.dart';
+import 'data/patient_identity_repository.dart';
+import 'models/patient_attribute.dart';
+import 'models/patient_identity.dart';
+import 'screens/patient_clinical_data_edit_screen.dart';
+import 'screens/episode_dashboard_screen.dart';
 
 class PatientDetailScreen extends StatefulWidget {
   final Patient patient;
@@ -37,6 +43,12 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
 
   final MobileCaseRepository _mobileCaseRepository =
   MobileCaseRepository();
+
+  final PatientIdentityRepository _patientIdentityRepository =
+  PatientIdentityRepository();
+
+  final PatientAttributeRepository _patientAttributeRepository =
+  PatientAttributeRepository();
 
 
   Future<void> _exportPatientAbakPackage() async {
@@ -177,8 +189,18 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
                 repository: _mobileCaseRepository,
                 patientId: widget.patient.patientId,
                 refreshToken: _refreshToken,
+                patientDisplayName: widget.patient.displayName,
               ),
             ],
+          ),
+
+          const SizedBox(height: 16),
+          _PatientClinicalDataSection(
+            identityRepository: _patientIdentityRepository,
+            attributeRepository: _patientAttributeRepository,
+            patientId: widget.patient.patientId,
+            refreshToken: _refreshToken,
+            onRefresh: refreshResults,
           ),
 
           const SizedBox(height: 16),
@@ -571,11 +593,14 @@ class _MobileCasesSection extends StatelessWidget {
   final MobileCaseRepository repository;
   final String patientId;
   final int refreshToken;
+  final String patientDisplayName;
 
   const _MobileCasesSection({
     required this.repository,
     required this.patientId,
     required this.refreshToken,
+    required this.patientDisplayName,
+
   });
 
   @override
@@ -602,8 +627,8 @@ class _MobileCasesSection extends StatelessWidget {
             else
               ...cases.map(
                     (mobileCase) => ListTile(
-                  contentPadding: EdgeInsets.zero,
-                  leading: const Icon(Icons.folder_outlined),
+                      contentPadding: EdgeInsets.zero,
+                      leading: const Icon(Icons.folder_outlined),
                       title: Text(
                         mobileCase.pathologyCode ?? mobileCase.caseLabel,
                       ),
@@ -613,11 +638,193 @@ class _MobileCasesSection extends StatelessWidget {
                           'Case ID : ${mobileCase.caseId}',
                         ].join('\n'),
                       ),
-                ),
+                      trailing: const Icon(Icons.chevron_right),
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => EpisodeDashboardScreen(
+                              caseId: mobileCase.caseId,
+                              caseLabel: mobileCase.caseLabel,
+                              patientId: patientId,
+                              patientDisplayName: patientDisplayName,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
               ),
           ],
         );
       },
     );
   }
+}
+
+class _PatientClinicalDataSection extends StatelessWidget {
+  final PatientIdentityRepository identityRepository;
+  final PatientAttributeRepository attributeRepository;
+  final String patientId;
+  final int refreshToken;
+  final VoidCallback onRefresh;
+
+  const _PatientClinicalDataSection({
+    required this.identityRepository,
+    required this.attributeRepository,
+    required this.patientId,
+    required this.refreshToken,
+    required this.onRefresh,
+  });
+
+  String _attributeValue(
+      List<PatientAttribute> attributes,
+      String key,
+      ) {
+    final matching = attributes.where((a) => a.attributeKey == key);
+
+    if (matching.isEmpty) {
+      return 'Non renseigné';
+    }
+
+    return matching.first.attributeValue?.trim().isNotEmpty == true
+        ? matching.first.attributeValue!
+        : 'Non renseigné';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<_PatientClinicalData>(
+      key: ValueKey('patient-clinical-$refreshToken'),
+      future: _loadData(),
+      builder: (context, snapshot) {
+        final data = snapshot.data;
+
+        return _SectionCard(
+          title: 'Données cliniques patient',
+          icon: Icons.assignment_ind_outlined,
+          children: [
+            Align(
+              alignment: Alignment.centerLeft,
+              child: OutlinedButton.icon(
+                onPressed: () async {
+                  final changed = await Navigator.of(context).push<bool>(
+                    MaterialPageRoute(
+                      builder: (_) => PatientClinicalDataEditScreen(
+                        patientId: patientId,
+                      ),
+                    ),
+                  );
+
+                  if (changed == true) {
+                    onRefresh();
+                  }
+                },
+                icon: const Icon(Icons.edit_outlined),
+                label: const Text('Modifier les données cliniques'),
+              ),
+            ),
+            const SizedBox(height: 16),
+            if (snapshot.connectionState == ConnectionState.waiting)
+              const Padding(
+                padding: EdgeInsets.all(16),
+                child: CircularProgressIndicator(),
+              )
+            else if (snapshot.hasError)
+              Text('Erreur : ${snapshot.error}')
+            else ...[
+                Text(
+                  'Identité administrative',
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+                const SizedBox(height: 8),
+                _InfoRow(
+                  label: 'Identifiant national',
+                  value: data?.identity?.nationalHealthId ?? 'Non renseigné',
+                ),
+                _InfoRow(
+                  label: 'Pays système santé',
+                  value: data?.identity?.healthSystemCountry ?? 'Non renseigné',
+                ),
+                _InfoRow(
+                  label: 'Source identité',
+                  value: data?.identity?.identitySource ?? 'Non renseigné',
+                ),
+                _InfoRow(
+                  label: 'Téléphone',
+                  value: data?.identity?.phone ?? 'Non renseigné',
+                ),
+                _InfoRow(
+                  label: 'Email',
+                  value: data?.identity?.email ?? 'Non renseigné',
+                ),
+                _InfoRow(
+                  label: 'Adresse',
+                  value: data?.identity?.address ?? 'Non renseigné',
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'Profil patient',
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+                const SizedBox(height: 8),
+                _InfoRow(
+                  label: 'Côté dominant',
+                  value: _attributeValue(
+                    data?.attributes ?? [],
+                    'dominant_side',
+                  ),
+                ),
+                _InfoRow(
+                  label: 'Profession',
+                  value: _attributeValue(
+                    data?.attributes ?? [],
+                    'profession',
+                  ),
+                ),
+                _InfoRow(
+                  label: 'Activité sportive',
+                  value: _attributeValue(
+                    data?.attributes ?? [],
+                    'sport',
+                  ),
+                ),
+                _InfoRow(
+                  label: 'Taille',
+                  value: _attributeValue(
+                    data?.attributes ?? [],
+                    'height_cm',
+                  ),
+                ),
+                _InfoRow(
+                  label: 'Poids',
+                  value: _attributeValue(
+                    data?.attributes ?? [],
+                    'weight_kg',
+                  ),
+                ),
+              ],
+          ],
+        );
+      },
+    );
+  }
+
+  Future<_PatientClinicalData> _loadData() async {
+    final identity = await identityRepository.getByPatientId(patientId);
+    final attributes = await attributeRepository.getByPatientId(patientId);
+
+    return _PatientClinicalData(
+      identity: identity,
+      attributes: attributes,
+    );
+  }
+}
+
+class _PatientClinicalData {
+  final PatientIdentity? identity;
+  final List<PatientAttribute> attributes;
+
+  const _PatientClinicalData({
+    required this.identity,
+    required this.attributes,
+  });
 }
