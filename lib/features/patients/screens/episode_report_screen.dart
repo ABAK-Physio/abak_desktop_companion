@@ -148,6 +148,7 @@ class _EpisodeReportScreenState extends State<EpisodeReportScreen> {
             const SizedBox(height: 8),
             EpisodeReportPreviewCard(
               document: document,
+              report: report,
             ),
           ],
         );

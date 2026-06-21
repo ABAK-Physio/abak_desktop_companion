@@ -6,8 +6,11 @@ class EpisodeReportTextBuilder {
   const EpisodeReportTextBuilder();
 
   EpisodeReportTextDocument build(EpisodeReportViewModel report) {
+    final exportFileName = _buildExportFileName(report);
+
     return EpisodeReportTextDocument(
-      title: 'Rapport clinique',
+      title: 'Rapport clinique – ${report.patientDisplayName}',
+      exportFileName: exportFileName,
       sections: [
         EpisodeReportSection(
           title: 'Patient',
@@ -87,5 +90,20 @@ class EpisodeReportTextBuilder {
         ),
       ],
     );
+  }
+  String _buildExportFileName(
+      EpisodeReportViewModel report,
+      ) {
+    final name = report.patientDisplayName
+        .trim()
+        .replaceAll(RegExp(r'\s+'), '_');
+
+    final date = DateTime.now();
+
+    final yyyy = date.year.toString();
+    final mm = date.month.toString().padLeft(2, '0');
+    final dd = date.day.toString().padLeft(2, '0');
+
+    return 'Rapport_${name}_$yyyy-$mm-$dd';
   }
 }

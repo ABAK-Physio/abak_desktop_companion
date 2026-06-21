@@ -7,14 +7,46 @@ import 'package:flutter/services.dart';
 
 import '../models/episode_report_text_document.dart';
 import '../services/episode_report_text_export_service.dart';
+import '../services/episode_report_docx_builder.dart';
+import '../services/episode_report_docx_export_service.dart';
+import '../models/episode_report_view_model.dart';
 
 class EpisodeReportPreviewCard extends StatelessWidget {
   final EpisodeReportTextDocument document;
+  final EpisodeReportViewModel report;
 
   const EpisodeReportPreviewCard({
     super.key,
     required this.document,
+    required this.report,
   });
+
+  Future<void> _exportDocxFile(BuildContext context) async {
+    final selectedDirectory = await FilePicker.platform.getDirectoryPath();
+
+    if (selectedDirectory == null) {
+      return;
+    }
+
+    final builder = const EpisodeReportDocxBuilder();
+    final exportService = const EpisodeReportDocxExportService();
+
+    final bytes = await builder.buildDocx(report);
+
+    final file = await exportService.exportToDocxFile(
+      bytes: bytes,
+      directory: Directory(selectedDirectory),
+      fileName: document.exportFileName,
+    );
+
+    if (!context.mounted) return;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Rapport DOCX exporté : ${file.path}'),
+      ),
+    );
+  }
 
   Future<void> _exportTextFile(BuildContext context) async {
     final selectedDirectory = await FilePicker.platform.getDirectoryPath();
@@ -80,6 +112,11 @@ class EpisodeReportPreviewCard extends StatelessWidget {
                   onPressed: () => _exportTextFile(context),
                   icon: const Icon(Icons.save_alt_outlined),
                   label: const Text('Exporter en texte'),
+                ),
+                OutlinedButton.icon(
+                  onPressed: () => _exportDocxFile(context),
+                  icon: const Icon(Icons.description_outlined),
+                  label: const Text('Exporter DOCX'),
                 ),
               ],
             ),

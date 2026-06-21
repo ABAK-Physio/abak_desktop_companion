@@ -3,9 +3,11 @@ import 'episode_report_section.dart';
 class EpisodeReportTextDocument {
   final String title;
   final List<EpisodeReportSection> sections;
+  final String exportFileName;
 
   const EpisodeReportTextDocument({
     required this.title,
+    required this.exportFileName,
     required this.sections,
   });
 
