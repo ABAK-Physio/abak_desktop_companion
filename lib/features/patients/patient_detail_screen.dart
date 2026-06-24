@@ -26,6 +26,7 @@ import '../clinical_episodes/models/desktop_clinical_episode.dart';
 import '../care_episodes/data/care_episode_repository.dart';
 import '../care_episodes/models/care_episode.dart';
 import '../care_episodes/screens/care_episode_detail_screen.dart';
+import '../care_episodes/models/care_episode_summary.dart';
 
 class PatientDetailScreen extends StatefulWidget {
   final Patient patient;
@@ -902,8 +903,11 @@ class _PatientClinicalDataSection extends StatelessWidget {
                     ),
                   );
 
-                  if (changed == true) {
-                    onRefresh();
+                  if (changed == true && context.mounted) {
+                    final state =
+                    context.findAncestorStateOfType<_PatientDetailScreenState>();
+
+                    state?.refreshResults();
                   }
                 },
                 icon: const Icon(Icons.edit_outlined),
@@ -1095,11 +1099,11 @@ class _CareEpisodesSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<CareEpisode>>(
+    return FutureBuilder<List<CareEpisodeSummary>>(
       key: ValueKey('care-episodes-$refreshToken'),
-      future: repository.getEpisodesForPatient(patientId),
+      future: repository.getEpisodeSummariesForPatient(patientId),
       builder: (context, snapshot) {
-        final episodes = snapshot.data ?? [];
+        final summaries = snapshot.data ?? [];
 
         return _SectionCard(
           title: 'Prises en charge',
@@ -1116,47 +1120,50 @@ class _CareEpisodesSection extends StatelessWidget {
                 padding: EdgeInsets.all(16),
                 child: CircularProgressIndicator(),
               )
-            else if (episodes.isEmpty)
+            else if (summaries.isEmpty)
               const _EmptySectionMessage(
                 text: 'Aucune prise en charge créée pour ce patient.',
               )
             else
-              ...episodes.map(
-                    (episode) => ListTile(
+              ...summaries.map((summary) {
+                final episode = summary.episode;
+
+                return ListTile(
                   contentPadding: EdgeInsets.zero,
-
-                  leading: const Icon(
-                    Icons.folder_open_outlined,
-                  ),
-
-                  title: Text(
-                    episode.displayTitle,
-                  ),
-
+                  leading: const Icon(Icons.folder_open_outlined),
+                  title: Text(episode.displayTitle),
                   subtitle: Text(
                     [
                       'Pathologie : ${episode.pathologyLabel}',
-                      episode.displayInitialReport,
+                      '${summary.notesCount} note${summary.notesCount > 1 ? 's' : ''} de suivi',
+                      summary.hasConclusion
+                          ? 'Conclusion rédigée'
+                          : 'Conclusion absente',
                     ].join('\n'),
                   ),
-
                   trailing: IconButton(
                     tooltip: 'Modifier',
                     icon: const Icon(Icons.edit_outlined),
                     onPressed: () => onEditCareEpisode(episode),
                   ),
-
-                  onTap: () {
-                    Navigator.of(context).push(
+                  onTap: () async {
+                    final changed = await Navigator.of(context).push<bool>(
                       MaterialPageRoute(
                         builder: (_) => CareEpisodeDetailScreen(
                           episode: episode,
                         ),
                       ),
                     );
+
+                    if (changed == true && context.mounted) {
+                      final state = context
+                          .findAncestorStateOfType<_PatientDetailScreenState>();
+
+                      state?.refreshResults();
+                    }
                   },
-                ),
-              ),
+                );
+              }),
           ],
         );
       },

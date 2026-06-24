@@ -3,6 +3,7 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import '../../../core/database/database_service.dart';
 import '../models/care_episode.dart';
 import '../models/care_episode_note.dart';
+import '../models/care_episode_summary.dart';
 
 class CareEpisodeRepository {
   Future<void> insertCareEpisode(
@@ -123,5 +124,48 @@ class CareEpisodeRepository {
     }
 
     return CareEpisode.fromMap(rows.first);
+  }
+
+  Future<int> getNoteCount(
+      String careEpisodeId,
+      ) async {
+    final db = await DatabaseService.database;
+
+    final result = await db.rawQuery(
+      '''
+    SELECT COUNT(*) AS count
+    FROM care_episode_notes
+    WHERE care_episode_id = ?
+      AND archived_at IS NULL
+    ''',
+      [careEpisodeId],
+    );
+
+    return (result.first['count'] as int?) ?? 0;
+  }
+
+  Future<List<CareEpisodeSummary>> getEpisodeSummariesForPatient(
+      String patientId,
+      ) async {
+    final db = await DatabaseService.database;
+
+    final rows = await db.rawQuery(
+      '''
+    SELECT
+      ce.*,
+      COUNT(cen.note_id) AS notes_count
+    FROM care_episodes ce
+    LEFT JOIN care_episode_notes cen
+      ON cen.care_episode_id = ce.care_episode_id
+      AND cen.archived_at IS NULL
+    WHERE ce.patient_id = ?
+      AND ce.archived_at IS NULL
+    GROUP BY ce.care_episode_id
+    ORDER BY ce.created_at DESC
+    ''',
+      [patientId],
+    );
+
+    return rows.map(CareEpisodeSummary.fromMap).toList();
   }
 }
