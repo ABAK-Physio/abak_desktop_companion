@@ -5,6 +5,7 @@ import 'models/patient.dart';
 import 'patient_detail_screen.dart';
 import 'widgets/patient_form_dialog.dart';
 import '../../core/utils/date_format_utils.dart';
+import 'screens/patient_create_screen.dart';
 
 class PatientListScreen extends StatefulWidget {
   const PatientListScreen({super.key});
@@ -60,15 +61,15 @@ class _PatientListScreenState extends State<PatientListScreen> {
   }
 
   Future<void> _createPatient() async {
-    final patient = await showDialog<Patient>(
-      context: context,
-      builder: (_) => const PatientFormDialog(),
+    final created = await Navigator.of(context).push<bool>(
+      MaterialPageRoute(
+        builder: (_) => const PatientCreateScreen(),
+      ),
     );
 
-    if (patient == null) return;
-
-    await _repository.insertPatient(patient);
-    await _reloadPatients();
+    if (created == true) {
+      await _reloadPatients();
+    }
   }
 
   Future<void> _editPatient(Patient patient) async {

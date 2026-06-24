@@ -1,5 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+
+import '../../core/database/database_service.dart';
 
 import '../patients/models/patient.dart';
 import '../results/data/desktop_result_repository.dart';
@@ -11,6 +14,65 @@ import '../results/utils/result_hash_utils.dart';
 class AbakImportService {
   final DesktopResultRepository _repository = DesktopResultRepository();
 
+  Future<void> _upsertClinicalEpisode({
+    required AbakPackage package,
+    required Patient patient,
+  }) async {
+    final episode = package.clinicalEpisode;
+
+    if (episode == null || episode.episodeId.isEmpty) {
+      return;
+    }
+
+    final mobileCaseId =
+        package.mobileCase?.caseId ??
+            episode.patientRef ??
+            episode.patientLabel ??
+            episode.episodeId;
+
+    // final mobileCaseLabel =
+    //    package.mobileCase?.caseLabel ??
+    //        episode.patientLabel ??
+    //        episode.patientRef ??
+    //        'Dossier mobile';
+
+    if (episode.episodeId.isEmpty) {
+      return;
+    }
+
+    final db = await DatabaseService.database;
+    final now = DateTime.now().millisecondsSinceEpoch;
+
+    await db.insert(
+      'desktop_clinical_episodes',
+      {
+        'episode_id': episode.episodeId,
+        'mobile_case_id': mobileCaseId,
+        'patient_id': patient.patientId,
+
+        'patient_ref': episode.patientRef,
+        'patient_label': episode.patientLabel,
+        'label': episode.label,
+
+        'pathology_code': episode.pathologyCode,
+        'pathology_label': episode.pathologyLabel,
+        'pathology_coding_system': episode.pathologyCodingSystem,
+        'pathology_coding_system_uri': episode.pathologyCodingSystemUri,
+        'pathology_external_code': episode.pathologyExternalCode,
+        'pathology_free_text': episode.pathologyFreeText,
+
+        'created_at': episode.createdAt,
+        'last_used_at': episode.lastUsedAt,
+        'closed_at': episode.closedAt,
+        'status': episode.status,
+
+        'imported_at': now,
+        'updated_at': now,
+      },
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
   Future<AbakImportSummary> importPackageJson({
     required String jsonString,
     required Patient patient,
@@ -18,6 +80,11 @@ class AbakImportService {
     final decoded = jsonDecode(jsonString) as Map<String, dynamic>;
 
     final package = AbakPackage.fromJson(decoded);
+
+    await _upsertClinicalEpisode(
+      package: package,
+      patient: patient,
+    );
 
     int importedResults = 0;
     int skippedResults = 0;
@@ -30,33 +97,34 @@ class AbakImportService {
       final resultId = resultMap['result_id']?.toString();
 
       if (resultId == null || resultId.isEmpty) {
+        debugPrint(
+          '⏭️ Résultat ignoré : result_id absent ou vide. '
+          'exoId=${resultMap['exoId']}, '
+          'createdAt=${resultMap['createdAt']}',
+        );
+
         skippedResults++;
         continue;
       }
 
       final incomingHash =
           resultMap['content_hash']?.toString() ??
-              ResultHashUtils.computeHash(
-                resultId: resultId,
-                exoId: resultMap['exoId']?.toString() ?? '',
-                createdAt:
-                (resultMap['createdAt'] as num?)?.toInt() ?? 0,
-                scoreTotal:
-                (resultMap['scoreTotal'] as num?)?.toDouble(),
-                exportSimpleText:
-                resultMap['exportSimpleText']?.toString() ?? '',
-              );
+          ResultHashUtils.computeHash(
+            resultId: resultId,
+            exoId: resultMap['exoId']?.toString() ?? '',
+            createdAt: (resultMap['createdAt'] as num?)?.toInt() ?? 0,
+            scoreTotal: (resultMap['scoreTotal'] as num?)?.toDouble(),
+            exportSimpleText: resultMap['exportSimpleText']?.toString() ?? '',
+          );
 
-      final alreadyExists =
-      await _repository.resultExists(resultId);
+      final alreadyExists = await _repository.resultExists(resultId);
 
       debugPrint('📥 Import result_id=$resultId');
       debugPrint('📥 alreadyExists=$alreadyExists');
       debugPrint('📥 incomingHash=$incomingHash');
 
       if (alreadyExists) {
-        final existingHash =
-        await _repository.getContentHashForResult(
+        final existingHash = await _repository.getContentHashForResult(
           resultId,
         );
 
@@ -69,12 +137,18 @@ class AbakImportService {
         debugPrint('🧪 exoId=${resultMap['exoId']}');
 
         if (existingHash == incomingHash) {
+          debugPrint(
+            '⏭️ Résultat ignoré comme doublon : '
+            'resultId=$resultId, '
+            'exoId=${resultMap['exoId']}, '
+            'createdAt=${resultMap['createdAt']}',
+          );
+
           skippedResults++;
           continue;
         }
 
-        final existingRawResult =
-        await _repository.getRawResultById(resultId);
+        final existingRawResult = await _repository.getRawResultById(resultId);
 
         await _repository.saveResultConflict(
           resultId: resultId,
@@ -90,12 +164,9 @@ class AbakImportService {
 
         conflictResults++;
 
-        debugPrint(
-          '⚠️ Conflit détecté et sauvegardé pour result_id=$resultId',
-        );
+        debugPrint('⚠️ Conflit détecté et sauvegardé pour result_id=$resultId');
 
         continue;
-
       }
 
       final result = DesktopResult(
@@ -104,17 +175,19 @@ class AbakImportService {
         practitionerId: package.practitioner?.practitionerId,
         sourceDeviceId: package.sourceDevice?.deviceId,
         practitionerLabelSnapshot: package.practitioner?.displayName,
-        episodeId: resultMap['episode_id']?.toString(),
+        episodeId:
+        resultMap['episode_id']?.toString() ??
+            package.clinicalEpisode?.episodeId,
         createdAt:
-        (resultMap['createdAt'] as num?)?.toInt() ??
+            (resultMap['createdAt'] as num?)?.toInt() ??
             DateTime.now().millisecondsSinceEpoch,
         importedAt: DateTime.now().millisecondsSinceEpoch,
         exoId: resultMap['exoId']?.toString() ?? 'UNKNOWN',
         scoreTotal: (resultMap['scoreTotal'] as num?)?.toDouble(),
         comment: resultMap['comment']?.toString(),
         exportSimpleText: resultMap['exportSimpleText']?.toString() ?? '',
-        simpleExportSnapshotJson:
-        resultMap['simpleExportSnapshotJson']?.toString(),
+        simpleExportSnapshotJson: resultMap['simpleExportSnapshotJson']
+            ?.toString(),
         profileJson: resultMap['profileJson']?.toString(),
         structuredJson: resultMap['structuredJson']?.toString(),
         ageYears: (resultMap['ageYears'] as num?)?.toInt(),
@@ -131,56 +204,46 @@ class AbakImportService {
         testFamily: resultMap['testFamily']?.toString(),
         performerCountryCode: resultMap['performerCountryCode']?.toString(),
         performerRegionCode: resultMap['performerRegionCode']?.toString(),
-        performerMainActivityCode:
-        resultMap['performerMainActivityCode']?.toString(),
-        performerMainSpecialtyCode:
-        resultMap['performerMainSpecialtyCode']?.toString(),
-        performerYearsExperienceCode:
-        resultMap['performerYearsExperienceCode']?.toString(),
+        performerMainActivityCode: resultMap['performerMainActivityCode']
+            ?.toString(),
+        performerMainSpecialtyCode: resultMap['performerMainSpecialtyCode']
+            ?.toString(),
+        performerYearsExperienceCode: resultMap['performerYearsExperienceCode']
+            ?.toString(),
         performerProfileUpdatedAt:
-        (resultMap[
-        'performerProfileUpdatedAt']
-        as num?)
-            ?.toInt(),
-        mobileCaseId:
-        package.mobileCase?.caseId ??
-            package.clinicalEpisode?.episodeId,
+            (resultMap['performerProfileUpdatedAt'] as num?)?.toInt(),
+        mobileCaseId: package.mobileCase?.caseId,
 
         mobileCaseLabel:
-        package.mobileCase?.caseLabel ??
+            package.clinicalEpisode?.label ??
             package.clinicalEpisode?.pathologyLabel ??
-            package.clinicalEpisode?.label,
+            package.mobileCase?.caseLabel,
 
         syncState: 'imported',
 
         lastModifiedAt:
-        (resultMap['last_modified_at'] as num?)?.toInt() ??
+            (resultMap['last_modified_at'] as num?)?.toInt() ??
             DateTime.now().millisecondsSinceEpoch,
 
         contentHash: incomingHash,
 
-        localSchemaVersion:
-        (resultMap[
-        'localSchemaVersion']
-        as num?)
-            ?.toInt(),
+        localSchemaVersion: (resultMap['localSchemaVersion'] as num?)?.toInt(),
       );
 
-      final rawMetrics =
-          (resultMap['metrics'] as List?) ?? const [];
+      final rawMetrics = (resultMap['metrics'] as List?) ?? const [];
 
       final metrics = rawMetrics
           .whereType<Map<String, dynamic>>()
           .map(
             (metricMap) => DesktopResultMetric(
-          metricId: metricMap['metric_id']?.toString() ?? '',
-          resultId: resultId,
-          metricKey: metricMap['metric_key']?.toString() ?? '',
-          value: (metricMap['value'] as num?)?.toDouble() ?? 0,
-          unit: metricMap['unit']?.toString(),
-          label: metricMap['label']?.toString(),
-        ),
-      )
+              metricId: metricMap['metric_id']?.toString() ?? '',
+              resultId: resultId,
+              metricKey: metricMap['metric_key']?.toString() ?? '',
+              value: (metricMap['value'] as num?)?.toDouble() ?? 0,
+              unit: metricMap['unit']?.toString(),
+              label: metricMap['label']?.toString(),
+            ),
+          )
           .toList();
 
       await _repository.insertResultWithMetrics(

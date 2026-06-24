@@ -276,4 +276,21 @@ class DesktopResultRepository {
         .map((row) => DesktopResult.fromMap(row))
         .toList();
   }
+
+  Future<List<DesktopResult>> getResultsForEpisode(
+      String episodeId,
+      ) async {
+    final db = await DatabaseService.database;
+
+    final rows = await db.query(
+      'desktop_results',
+      where: 'episode_id = ? AND archived_at IS NULL',
+      whereArgs: [episodeId],
+      orderBy: 'createdAt ASC',
+    );
+
+    return rows
+        .map((row) => DesktopResult.fromMap(row))
+        .toList();
+  }
 }

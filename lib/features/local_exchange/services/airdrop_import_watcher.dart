@@ -17,6 +17,7 @@ class AirDropImportWatcher {
   ExchangeDirectoryService();
 
   Timer? _timer;
+  void Function(String message)? onImportMessage;
   final Set<String> _seenPaths = <String>{};
   final Set<String> _processingPaths = <String>{};
 
@@ -137,6 +138,30 @@ class AirDropImportWatcher {
       );
 
       debugPrint('📥 IMPORT DOSSIER ÉCHANGE = $result');
+      final message = result['message'] as String? ?? 'Import terminé.';
+
+      onImportMessage?.call(message);
+
+      final status = result['status'] as String?;
+
+      final importedResults = result['importedResults'] as int? ?? 0;
+      final skippedResults = result['skippedResults'] as int? ?? 0;
+      final conflictResults = result['conflictResults'] as int? ?? 0;
+      final importedMetrics = result['importedMetrics'] as int? ?? 0;
+      final patientLabel = result['patientLabel'] as String?;
+
+      debugPrint('📣 Résultat import dossier d’échange');
+      debugPrint('   Statut : $status');
+      debugPrint('   Message : $message');
+
+      if (patientLabel != null && patientLabel.trim().isNotEmpty) {
+        debugPrint('   Patient : $patientLabel');
+      }
+
+      debugPrint('   Résultats importés : $importedResults');
+      debugPrint('   Résultats ignorés : $skippedResults');
+      debugPrint('   Conflits : $conflictResults');
+      debugPrint('   Métriques importées : $importedMetrics');
     } catch (e, stack) {
       debugPrint('❌ Erreur traitement fichier $originalPath : $e');
       debugPrint('$stack');

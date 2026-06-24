@@ -182,12 +182,6 @@ class _EpisodeReportScreenState extends State<EpisodeReportScreen> {
           notes: data.notes,
         ),
         const SizedBox(height: 16),
-
-        _ReportConclusionCard(
-          caseId: widget.caseId,
-          conclusion: data.conclusion,
-          onSaved: _refresh,
-        ),
         _ReportConclusionCard(
           caseId: widget.caseId,
           conclusion: data.conclusion,

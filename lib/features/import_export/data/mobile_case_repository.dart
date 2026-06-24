@@ -68,6 +68,15 @@ class MobileCaseRepository {
       link.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
+    await db.update(
+      'desktop_clinical_episodes',
+      {
+        'patient_id': patientId,
+        'updated_at': DateTime.now().millisecondsSinceEpoch,
+      },
+      where: 'mobile_case_id = ?',
+      whereArgs: [caseId],
+    );
   }
 
   Future<String?> getLinkedPatientIdForCase(String caseId) async {

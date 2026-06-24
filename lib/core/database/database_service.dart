@@ -48,6 +48,37 @@ class DatabaseService {
     );
   }
 
+  static Future<void> _resetDatabase(Database db) async {
+    await db.execute('DROP TABLE IF EXISTS episode_conclusions');
+    await db.execute('DROP TABLE IF EXISTS episode_notes');
+    await db.execute('DROP TABLE IF EXISTS episode_documents');
+    await db.execute('DROP TABLE IF EXISTS episode_form_answers');
+    await db.execute('DROP TABLE IF EXISTS episode_forms');
+    await db.execute('DROP TABLE IF EXISTS contact_form_fields');
+    await db.execute('DROP TABLE IF EXISTS contact_form_templates');
+    await db.execute('DROP TABLE IF EXISTS patient_attributes');
+    await db.execute('DROP TABLE IF EXISTS patient_identity');
+    await db.execute('DROP TABLE IF EXISTS care_episodes');
+
+    await db.execute('DROP TABLE IF EXISTS desktop_clinical_episodes');
+    await db.execute('DROP TABLE IF EXISTS desktop_result_conflicts');
+    await db.execute('DROP TABLE IF EXISTS desktop_result_metrics');
+    await db.execute('DROP TABLE IF EXISTS desktop_results');
+
+    await db.execute('DROP TABLE IF EXISTS case_patient_links');
+    await db.execute('DROP TABLE IF EXISTS mobile_cases');
+
+    await db.execute('DROP TABLE IF EXISTS desktop_import_session_files');
+    await db.execute('DROP TABLE IF EXISTS desktop_import_sessions');
+
+    await db.execute('DROP TABLE IF EXISTS desktop_restore_history');
+    await db.execute('DROP TABLE IF EXISTS desktop_backups');
+
+    await db.execute('DROP TABLE IF EXISTS paired_devices');
+    await db.execute('DROP TABLE IF EXISTS practitioners');
+    await db.execute('DROP TABLE IF EXISTS patients');
+  }
+
   static Future<Database> _initDatabase() async {
     sqfliteFfiInit();
     databaseFactory = databaseFactoryFfi;
@@ -56,118 +87,39 @@ class DatabaseService {
 
     return openDatabase(
       path,
-      version: 18,
+      version: 21,
       onCreate: (db, version) async {
         await _createTables(db);
         await _createImportHistoryTables(db);
         await _createMobileCaseTables(db);
+        await _createDesktopClinicalEpisodeTables(db);
         await _createBackupTables(db);
         await _createRestoreHistoryTables(db);
         await _createResultConflictTables(db);
         await _createPatientClinicalTables(db);
+        await _createCareEpisodeTables(db);
+        await _createEpisodeNoteTables(db);
+        await _createEpisodeConclusionTables(db);
+
+      },
+
+      onUpgrade: (db, oldVersion, newVersion) async {
+        await _resetDatabase(db);
+
+        await _createTables(db);
+        await _createImportHistoryTables(db);
+        await _createMobileCaseTables(db);
+        await _createDesktopClinicalEpisodeTables(db);
+        await _createBackupTables(db);
+        await _createRestoreHistoryTables(db);
+        await _createResultConflictTables(db);
+        await _createPatientClinicalTables(db);
+        await _createCareEpisodeTables(db);
         await _createEpisodeNoteTables(db);
         await _createEpisodeConclusionTables(db);
       },
 
-      onUpgrade: (db, oldVersion, newVersion) async {
-        if (oldVersion < 2) {
-          await _createImportHistoryTables(db);
-        }
 
-        if (oldVersion < 3) {
-          await db.execute('''
-      ALTER TABLE desktop_import_sessions
-      ADD COLUMN status TEXT NOT NULL DEFAULT 'completed'
-    ''');
-        }
-
-        if (oldVersion < 4) {
-          await db.execute('''
-      ALTER TABLE desktop_results
-      ADD COLUMN sync_state TEXT NOT NULL DEFAULT 'imported'
-    ''');
-
-          await db.execute('''
-      ALTER TABLE desktop_results
-      ADD COLUMN last_modified_at INTEGER
-    ''');
-
-          await db.execute('''
-      ALTER TABLE desktop_results
-      ADD COLUMN content_hash TEXT NULL
-    ''');
-
-          await db.execute('''
-      UPDATE desktop_results
-      SET last_modified_at = imported_at
-      WHERE last_modified_at IS NULL
-    ''');
-        }
-        if (oldVersion < 5) {
-          await db.execute('''
-    ALTER TABLE desktop_import_sessions
-    ADD COLUMN conflict_results_count INTEGER NOT NULL DEFAULT 0
-  ''');
-
-          await db.execute('''
-    ALTER TABLE desktop_import_session_files
-    ADD COLUMN conflict_results_count INTEGER NOT NULL DEFAULT 0
-  ''');
-        }
-        if (oldVersion < 6) {
-          await _createMobileCaseTables(db);
-        }
-        if (oldVersion < 7) {
-          await db.execute('''
-    ALTER TABLE desktop_results
-    ADD COLUMN mobile_case_id TEXT NULL
-  ''');
-
-          await db.execute('''
-    ALTER TABLE desktop_results
-    ADD COLUMN mobile_case_label TEXT NULL
-  ''');
-        }
-        if (oldVersion < 8) {
-          await _createBackupTables(db);
-        }
-        if (oldVersion < 9) {
-          await _createRestoreHistoryTables(db);
-        }
-        if (oldVersion < 10) {
-          await db.execute('''
-    ALTER TABLE desktop_import_session_files
-    ADD COLUMN file_path TEXT NULL
-  ''');
-        }
-        if (oldVersion < 11) {
-          await db.execute('''
-    CREATE UNIQUE INDEX IF NOT EXISTS idx_desktop_result_metrics_result_key
-    ON desktop_result_metrics(result_id, metric_key)
-  ''');
-        }
-        if (oldVersion < 12) {
-          await _createResultConflictTables(db);
-        }
-        if (oldVersion < 13) {
-          await _createPatientClinicalTables(db);
-        }
-        if (oldVersion < 14) {
-          await _upgradeToV14(db);
-        }
-        if (oldVersion < 15) {
-          await _upgradeToV15(db);
-        }
-        if (oldVersion < 16) {
-          await _upgradeToV16(db);
-        }
-        if (oldVersion < 17) {
-          await _createEpisodeNoteTables(db);
-        }
-        if (oldVersion < 18) {
-          await _createEpisodeConclusionTables(db);
-        }
-      },
     );
   }
 
@@ -356,6 +308,34 @@ UNIQUE(result_id, metric_key)
   )
 ''');
   }
+
+  static Future<void> _createCareEpisodeTables(Database db) async {
+    await db.execute('''
+    CREATE TABLE IF NOT EXISTS care_episodes (
+      care_episode_id TEXT PRIMARY KEY,
+
+      patient_id TEXT NOT NULL,
+
+      title TEXT NOT NULL,
+      pathology_label TEXT NOT NULL,
+
+      initial_report TEXT NULL,
+
+      created_at INTEGER NOT NULL,
+      updated_at INTEGER NULL,
+      archived_at INTEGER NULL,
+
+      FOREIGN KEY(patient_id)
+        REFERENCES patients(patient_id)
+    )
+  ''');
+
+    await db.execute('''
+    CREATE INDEX IF NOT EXISTS idx_care_episodes_patient_id
+    ON care_episodes(patient_id)
+  ''');
+  }
+
   static Future<void> _createMobileCaseTables(Database db) async {
     await db.execute('''
     CREATE TABLE IF NOT EXISTS mobile_cases (
@@ -701,6 +681,56 @@ UNIQUE(result_id, metric_key)
       FOREIGN KEY(case_id)
         REFERENCES mobile_cases(case_id)
     )
+  ''');
+  }
+  static Future<void> _createDesktopClinicalEpisodeTables(Database db) async {
+    await db.execute('''
+    CREATE TABLE IF NOT EXISTS desktop_clinical_episodes (
+      episode_id TEXT PRIMARY KEY,
+
+      mobile_case_id TEXT NOT NULL,
+      patient_id TEXT NULL,
+
+      patient_ref TEXT NULL,
+      patient_label TEXT NULL,
+      label TEXT NULL,
+
+      pathology_code TEXT NULL,
+      pathology_label TEXT NULL,
+      pathology_coding_system TEXT NULL,
+      pathology_coding_system_uri TEXT NULL,
+      pathology_external_code TEXT NULL,
+      pathology_free_text TEXT NULL,
+
+      created_at TEXT NULL,
+      last_used_at TEXT NULL,
+      closed_at TEXT NULL,
+      status TEXT NOT NULL DEFAULT 'active',
+
+      imported_at INTEGER NOT NULL,
+      updated_at INTEGER NOT NULL,
+
+      FOREIGN KEY(mobile_case_id)
+        REFERENCES mobile_cases(case_id),
+
+      FOREIGN KEY(patient_id)
+        REFERENCES patients(patient_id)
+    )
+  ''');
+
+    await db.execute('''
+    CREATE INDEX IF NOT EXISTS idx_desktop_clinical_episodes_mobile_case_id
+    ON desktop_clinical_episodes(mobile_case_id)
+  ''');
+
+    await db.execute('''
+    CREATE INDEX IF NOT EXISTS idx_desktop_clinical_episodes_patient_id
+    ON desktop_clinical_episodes(patient_id)
+  ''');
+
+    await db.execute('''
+    CREATE INDEX IF NOT EXISTS idx_desktop_results_episode_id
+    ON desktop_results(episode_id)
   ''');
   }
 }

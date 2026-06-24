@@ -21,6 +21,10 @@ import 'models/patient_attribute.dart';
 import 'models/patient_identity.dart';
 import 'screens/patient_clinical_data_edit_screen.dart';
 import 'screens/episode_dashboard_screen.dart';
+import '../clinical_episodes/data/desktop_clinical_episode_repository.dart';
+import '../clinical_episodes/models/desktop_clinical_episode.dart';
+import '../care_episodes/data/care_episode_repository.dart';
+import '../care_episodes/models/care_episode.dart';
 
 class PatientDetailScreen extends StatefulWidget {
   final Patient patient;
@@ -50,6 +54,11 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
   final PatientAttributeRepository _patientAttributeRepository =
   PatientAttributeRepository();
 
+  final DesktopClinicalEpisodeRepository _clinicalEpisodeRepository =
+  DesktopClinicalEpisodeRepository();
+
+  final CareEpisodeRepository _careEpisodeRepository =
+  CareEpisodeRepository();
 
   Future<void> _exportPatientAbakPackage() async {
     try {
@@ -105,6 +114,86 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
         ),
       );
     }
+  }
+
+  Future<void> _createCareEpisode() async {
+    final pathologyController = TextEditingController();
+    final initialReportController = TextEditingController();
+
+    final created = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Nouvelle prise en charge'),
+          content: SizedBox(
+            width: 520,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: pathologyController,
+                  decoration: const InputDecoration(
+                    labelText: 'Pathologie',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                TextField(
+                  controller: initialReportController,
+                  decoration: const InputDecoration(
+                    labelText: 'Compte rendu initial',
+                    border: OutlineInputBorder(),
+                    alignLabelWithHint: true,
+                  ),
+                  minLines: 5,
+                  maxLines: 10,
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('Annuler'),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: const Text('Créer'),
+            ),
+          ],
+        );
+      },
+    );
+
+    final pathology = pathologyController.text.trim();
+    final initialReport = initialReportController.text.trim();
+
+    pathologyController.dispose();
+    initialReportController.dispose();
+
+    if (created != true || pathology.isEmpty) return;
+
+    final now = DateTime.now().millisecondsSinceEpoch;
+    final date = DateTime.now();
+    final monthYear =
+        '${date.month.toString().padLeft(2, '0')}/${date.year}';
+
+    final episode = CareEpisode(
+      careEpisodeId: const Uuid().v4(),
+      patientId: widget.patient.patientId,
+      title: 'Prise en charge $monthYear - $pathology',
+      pathologyLabel: pathology,
+      initialReport: initialReport.isEmpty ? null : initialReport,
+      createdAt: now,
+    );
+
+    await _careEpisodeRepository.insertCareEpisode(episode);
+
+    if (!mounted) return;
+
+    setState(() {
+      _refreshToken++;
+    });
   }
 
   Future<void> _addSimulatedResult() async {
@@ -191,7 +280,21 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
                 refreshToken: _refreshToken,
                 patientDisplayName: widget.patient.displayName,
               ),
+              const SizedBox(height: 16),
+              _ClinicalEpisodesSection(
+                repository: _clinicalEpisodeRepository,
+                patientId: widget.patient.patientId,
+                refreshToken: _refreshToken,
+              ),
             ],
+          ),
+
+          const SizedBox(height: 16),
+          _CareEpisodesSection(
+            repository: _careEpisodeRepository,
+            patientId: widget.patient.patientId,
+            refreshToken: _refreshToken,
+            onCreateCareEpisode: _createCareEpisode,
           ),
 
           const SizedBox(height: 16),
@@ -827,4 +930,126 @@ class _PatientClinicalData {
     required this.identity,
     required this.attributes,
   });
+}
+
+class _ClinicalEpisodesSection extends StatelessWidget {
+  final DesktopClinicalEpisodeRepository repository;
+  final String patientId;
+  final int refreshToken;
+
+  const _ClinicalEpisodesSection({
+    required this.repository,
+    required this.patientId,
+    required this.refreshToken,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<List<DesktopClinicalEpisode>>(
+      key: ValueKey('clinical-episodes-$refreshToken'),
+      future: repository.getEpisodesForPatient(patientId),
+      builder: (context, snapshot) {
+        final episodes = snapshot.data ?? [];
+
+        return _SectionCard(
+          title: 'Épisodes cliniques',
+          icon: Icons.medical_information_outlined,
+          children: [
+            if (snapshot.connectionState == ConnectionState.waiting)
+              const Padding(
+                padding: EdgeInsets.all(16),
+                child: CircularProgressIndicator(),
+              )
+            else if (episodes.isEmpty)
+              const _EmptySectionMessage(
+                text: 'Aucun épisode clinique importé pour ce patient.',
+              )
+            else
+              ...episodes.map(
+                    (episode) => ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: Icon(
+                    episode.isClosed
+                        ? Icons.lock_outline
+                        : Icons.play_circle_outline,
+                  ),
+                  title: Text(episode.displayTitle),
+                  subtitle: Text(
+                    [
+                      'Statut : ${episode.status}',
+                      if (episode.createdAt != null)
+                        'Créé : ${episode.createdAt}',
+                      if (episode.closedAt != null)
+                        'Clôturé : ${episode.closedAt}',
+                      'Episode ID : ${episode.episodeId}',
+                    ].join('\n'),
+                  ),
+                ),
+              ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _CareEpisodesSection extends StatelessWidget {
+  final CareEpisodeRepository repository;
+  final String patientId;
+  final int refreshToken;
+  final VoidCallback onCreateCareEpisode;
+
+  const _CareEpisodesSection({
+    required this.repository,
+    required this.patientId,
+    required this.refreshToken,
+    required this.onCreateCareEpisode,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<List<CareEpisode>>(
+      key: ValueKey('care-episodes-$refreshToken'),
+      future: repository.getEpisodesForPatient(patientId),
+      builder: (context, snapshot) {
+        final episodes = snapshot.data ?? [];
+
+        return _SectionCard(
+          title: 'Prises en charge',
+          icon: Icons.folder_special_outlined,
+          children: [
+            OutlinedButton.icon(
+              onPressed: onCreateCareEpisode,
+              icon: const Icon(Icons.add),
+              label: const Text('Nouvelle prise en charge'),
+            ),
+            const SizedBox(height: 16),
+            if (snapshot.connectionState == ConnectionState.waiting)
+              const Padding(
+                padding: EdgeInsets.all(16),
+                child: CircularProgressIndicator(),
+              )
+            else if (episodes.isEmpty)
+              const _EmptySectionMessage(
+                text: 'Aucune prise en charge créée pour ce patient.',
+              )
+            else
+              ...episodes.map(
+                    (episode) => ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: const Icon(Icons.folder_open_outlined),
+                  title: Text(episode.displayTitle),
+                  subtitle: Text(
+                    [
+                      'Pathologie : ${episode.pathologyLabel}',
+                      episode.displayInitialReport,
+                    ].join('\n'),
+                  ),
+                ),
+              ),
+          ],
+        );
+      },
+    );
+  }
 }

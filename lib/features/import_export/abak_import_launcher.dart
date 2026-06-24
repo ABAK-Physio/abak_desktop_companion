@@ -383,9 +383,16 @@ class AbakImportLauncher {
         importedMetricsCount: summary.importedMetrics,
       );
 
+      final message =
+      summary.importedResults == 0 &&
+          summary.skippedResults > 0
+          ? 'Fichier reçu, mais aucun nouveau résultat importé. '
+          '${summary.skippedResults} résultat(s) déjà présent(s) ont été ignoré(s).'
+          : 'Import automatique effectué.';
+
       return {
         'status': 'ok',
-        'message': 'Import automatique effectué.',
+        'message': message,
         'fileName': fileName,
         'filePath': filePath,
         'patientId': targetPatient.patientId,

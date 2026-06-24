@@ -208,8 +208,18 @@ class AbakClinicalEpisodeSnapshot {
   final String? patientRef;
   final String? patientLabel;
   final String? label;
+
   final String? pathologyCode;
   final String? pathologyLabel;
+  final String? pathologyCodingSystem;
+  final String? pathologyCodingSystemUri;
+  final String? pathologyExternalCode;
+  final String? pathologyFreeText;
+
+  final String? createdAt;
+  final String? lastUsedAt;
+  final String? closedAt;
+  final String status;
 
   const AbakClinicalEpisodeSnapshot({
     required this.episodeId,
@@ -218,6 +228,14 @@ class AbakClinicalEpisodeSnapshot {
     this.label,
     this.pathologyCode,
     this.pathologyLabel,
+    this.pathologyCodingSystem,
+    this.pathologyCodingSystemUri,
+    this.pathologyExternalCode,
+    this.pathologyFreeText,
+    this.createdAt,
+    this.lastUsedAt,
+    this.closedAt,
+    this.status = 'active',
   });
 
   factory AbakClinicalEpisodeSnapshot.fromJson(
@@ -230,6 +248,14 @@ class AbakClinicalEpisodeSnapshot {
       label: json['label']?.toString(),
       pathologyCode: json['pathology_code']?.toString(),
       pathologyLabel: json['pathology_label']?.toString(),
+      pathologyCodingSystem: json['pathology_coding_system']?.toString(),
+      pathologyCodingSystemUri: json['pathology_coding_system_uri']?.toString(),
+      pathologyExternalCode: json['pathology_external_code']?.toString(),
+      pathologyFreeText: json['pathology_free_text']?.toString(),
+      createdAt: json['created_at']?.toString(),
+      lastUsedAt: json['last_used_at']?.toString(),
+      closedAt: json['closed_at']?.toString(),
+      status: json['status']?.toString() ?? 'active',
     );
   }
 
@@ -241,6 +267,14 @@ class AbakClinicalEpisodeSnapshot {
       'label': label,
       'pathology_code': pathologyCode,
       'pathology_label': pathologyLabel,
+      'pathology_coding_system': pathologyCodingSystem,
+      'pathology_coding_system_uri': pathologyCodingSystemUri,
+      'pathology_external_code': pathologyExternalCode,
+      'pathology_free_text': pathologyFreeText,
+      'created_at': createdAt,
+      'last_used_at': lastUsedAt,
+      'closed_at': closedAt,
+      'status': status,
     };
   }
 }

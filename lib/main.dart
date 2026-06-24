@@ -10,6 +10,7 @@ import 'features/maintenance/data/database_backup_repository.dart';
 import 'features/maintenance/services/local_backup_cleanup_service.dart';
 import 'features/patients/services/default_contact_form_template_service.dart';
 import 'features/patients/services/patient_purge_service.dart';
+import 'core/ui/app_messenger.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,6 +30,16 @@ Future<void> main() async {
       .ensureDefaultTemplateExists();
 
   await LocalExchangeServer.instance.start();
+
+  AirDropImportWatcher.instance.onImportMessage =
+      (message) {
+    rootScaffoldMessengerKey.currentState?.showSnackBar(
+      SnackBar(
+        content: Text(message),
+        duration: const Duration(seconds: 5),
+      ),
+    );
+  };
 
   await AirDropImportWatcher.instance.start();
 

@@ -8,23 +8,18 @@ class AbakImportResolutionService {
   AbakImportResolutionService({
     PatientRepository? patientRepository,
     MobileCaseRepository? mobileCaseRepository,
-  })  : _patientRepository = patientRepository ?? PatientRepository(),
-        _mobileCaseRepository =
-            mobileCaseRepository ?? MobileCaseRepository();
+  }) : _patientRepository = patientRepository ?? PatientRepository(),
+       _mobileCaseRepository = mobileCaseRepository ?? MobileCaseRepository();
 
   final PatientRepository _patientRepository;
   final MobileCaseRepository _mobileCaseRepository;
 
-  Future<AbakImportResolution> resolve(
-      AbakPackage package,
-      ) async {
+  Future<AbakImportResolution> resolve(AbakPackage package) async {
     final packagePatientId = package.patient?.localPatientId;
     final mobileCase = await _ensureMobileCase(package);
 
     if (packagePatientId != null && packagePatientId.isNotEmpty) {
-      final patient = await _patientRepository.getPatientById(
-        packagePatientId,
-      );
+      final patient = await _patientRepository.getPatientById(packagePatientId);
 
       if (patient != null) {
         return AbakImportResolution(
@@ -36,10 +31,8 @@ class AbakImportResolutionService {
     }
 
     if (mobileCase != null) {
-      final linkedPatientId =
-      await _mobileCaseRepository.getLinkedPatientIdForCase(
-        mobileCase.caseId,
-      );
+      final linkedPatientId = await _mobileCaseRepository
+          .getLinkedPatientIdForCase(mobileCase.caseId);
 
       if (linkedPatientId != null) {
         final patient = await _patientRepository.getPatientById(
@@ -78,31 +71,28 @@ class AbakImportResolutionService {
     );
   }
 
-  Future<MobileCase?> _ensureMobileCase(
-      AbakPackage package,
-      ) async {
+  Future<MobileCase?> _ensureMobileCase(AbakPackage package) async {
     final mobileSnapshot = package.mobileCase;
     final episodeSnapshot = package.clinicalEpisode;
 
-    final caseId = mobileSnapshot?.caseId ?? episodeSnapshot?.episodeId;
+    final caseId = episodeSnapshot?.episodeId ?? mobileSnapshot?.caseId;
 
     if (caseId == null || caseId.isEmpty) {
       return null;
     }
 
-    final caseLabel = mobileSnapshot?.caseLabel ??
+    final caseLabel =
         episodeSnapshot?.label ??
         episodeSnapshot?.pathologyLabel ??
-        'Dossier mobile';
+        mobileSnapshot?.caseLabel ??
+        'Épisode clinique';
 
     final pathologyCode =
-        mobileSnapshot?.pathologyCode ?? episodeSnapshot?.pathologyCode;
+        episodeSnapshot?.pathologyCode ?? mobileSnapshot?.pathologyCode;
 
     final now = DateTime.now().millisecondsSinceEpoch;
 
-    final existing = await _mobileCaseRepository.getCaseById(
-      caseId,
-    );
+    final existing = await _mobileCaseRepository.getCaseById(caseId);
 
     final mobileCase = MobileCase(
       caseId: caseId,
@@ -115,9 +105,7 @@ class AbakImportResolutionService {
       archivedAt: existing?.archivedAt,
     );
 
-    await _mobileCaseRepository.upsertMobileCase(
-      mobileCase,
-    );
+    await _mobileCaseRepository.upsertMobileCase(mobileCase);
 
     return mobileCase;
   }
