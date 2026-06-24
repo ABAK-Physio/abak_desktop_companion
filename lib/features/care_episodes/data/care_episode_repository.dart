@@ -2,6 +2,7 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import '../../../core/database/database_service.dart';
 import '../models/care_episode.dart';
+import '../models/care_episode_note.dart';
 
 class CareEpisodeRepository {
   Future<void> insertCareEpisode(
@@ -13,6 +14,50 @@ class CareEpisodeRepository {
       'care_episodes',
       episode.toMap(),
       conflictAlgorithm: ConflictAlgorithm.abort,
+    );
+  }
+
+  Future<List<CareEpisodeNote>> getNotesForEpisode(
+      String careEpisodeId,
+      ) async {
+    final db = await DatabaseService.database;
+
+    final rows = await db.query(
+      'care_episode_notes',
+      where: 'care_episode_id = ? AND archived_at IS NULL',
+      whereArgs: [careEpisodeId],
+      orderBy: 'note_date DESC, created_at DESC',
+    );
+
+    return rows.map(CareEpisodeNote.fromMap).toList();
+  }
+
+  Future<void> insertNote(
+      CareEpisodeNote note,
+      ) async {
+    final db = await DatabaseService.database;
+
+    await db.insert(
+      'care_episode_notes',
+      note.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.abort,
+    );
+  }
+
+  Future<void> updateFinalConclusion({
+    required String careEpisodeId,
+    required String? finalConclusion,
+  }) async {
+    final db = await DatabaseService.database;
+
+    await db.update(
+      'care_episodes',
+      {
+        'final_conclusion': finalConclusion,
+        'updated_at': DateTime.now().millisecondsSinceEpoch,
+      },
+      where: 'care_episode_id = ?',
+      whereArgs: [careEpisodeId],
     );
   }
 

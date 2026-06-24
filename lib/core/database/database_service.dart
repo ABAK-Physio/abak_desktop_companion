@@ -58,6 +58,7 @@ class DatabaseService {
     await db.execute('DROP TABLE IF EXISTS contact_form_templates');
     await db.execute('DROP TABLE IF EXISTS patient_attributes');
     await db.execute('DROP TABLE IF EXISTS patient_identity');
+    await db.execute('DROP TABLE IF EXISTS care_episode_notes');
     await db.execute('DROP TABLE IF EXISTS care_episodes');
 
     await db.execute('DROP TABLE IF EXISTS desktop_clinical_episodes');
@@ -87,7 +88,7 @@ class DatabaseService {
 
     return openDatabase(
       path,
-      version: 21,
+      version: 22,
       onCreate: (db, version) async {
         await _createTables(db);
         await _createImportHistoryTables(db);
@@ -98,6 +99,7 @@ class DatabaseService {
         await _createResultConflictTables(db);
         await _createPatientClinicalTables(db);
         await _createCareEpisodeTables(db);
+        await _createCareEpisodeNoteTables(db);
         await _createEpisodeNoteTables(db);
         await _createEpisodeConclusionTables(db);
 
@@ -115,6 +117,7 @@ class DatabaseService {
         await _createResultConflictTables(db);
         await _createPatientClinicalTables(db);
         await _createCareEpisodeTables(db);
+        await _createCareEpisodeNoteTables(db);
         await _createEpisodeNoteTables(db);
         await _createEpisodeConclusionTables(db);
       },
@@ -320,6 +323,7 @@ UNIQUE(result_id, metric_key)
       pathology_label TEXT NOT NULL,
 
       initial_report TEXT NULL,
+      final_conclusion TEXT NULL,
 
       created_at INTEGER NOT NULL,
       updated_at INTEGER NULL,
@@ -333,6 +337,31 @@ UNIQUE(result_id, metric_key)
     await db.execute('''
     CREATE INDEX IF NOT EXISTS idx_care_episodes_patient_id
     ON care_episodes(patient_id)
+  ''');
+  }
+
+  static Future<void> _createCareEpisodeNoteTables(Database db) async {
+    await db.execute('''
+    CREATE TABLE IF NOT EXISTS care_episode_notes (
+      note_id TEXT PRIMARY KEY,
+
+      care_episode_id TEXT NOT NULL,
+
+      note_date INTEGER NOT NULL,
+      content TEXT NOT NULL,
+
+      created_at INTEGER NOT NULL,
+      updated_at INTEGER NULL,
+      archived_at INTEGER NULL,
+
+      FOREIGN KEY(care_episode_id)
+        REFERENCES care_episodes(care_episode_id)
+    )
+  ''');
+
+    await db.execute('''
+    CREATE INDEX IF NOT EXISTS idx_care_episode_notes_episode_id
+    ON care_episode_notes(care_episode_id)
   ''');
   }
 

@@ -5,6 +5,7 @@ class CareEpisode {
   final String title;
   final String pathologyLabel;
   final String? initialReport;
+  final String? finalConclusion;
 
   final int createdAt;
   final int? updatedAt;
@@ -19,6 +20,7 @@ class CareEpisode {
     required this.createdAt,
     this.updatedAt,
     this.archivedAt,
+    this.finalConclusion,
   });
 
   factory CareEpisode.fromMap(Map<String, dynamic> map) {
@@ -31,6 +33,7 @@ class CareEpisode {
       createdAt: (map['created_at'] as num?)?.toInt() ?? 0,
       updatedAt: (map['updated_at'] as num?)?.toInt(),
       archivedAt: (map['archived_at'] as num?)?.toInt(),
+      finalConclusion: map['final_conclusion']?.toString(),
     );
   }
 
@@ -44,6 +47,7 @@ class CareEpisode {
       'created_at': createdAt,
       'updated_at': updatedAt,
       'archived_at': archivedAt,
+      'final_conclusion': finalConclusion,
     };
   }
 
