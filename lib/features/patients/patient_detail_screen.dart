@@ -25,6 +25,7 @@ import '../clinical_episodes/data/desktop_clinical_episode_repository.dart';
 import '../clinical_episodes/models/desktop_clinical_episode.dart';
 import '../care_episodes/data/care_episode_repository.dart';
 import '../care_episodes/models/care_episode.dart';
+import '../care_episodes/screens/care_episode_detail_screen.dart';
 
 class PatientDetailScreen extends StatefulWidget {
   final Patient patient;
@@ -59,6 +60,89 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
 
   final CareEpisodeRepository _careEpisodeRepository =
   CareEpisodeRepository();
+
+  Future<void> _editCareEpisode(CareEpisode episode) async {
+    final pathologyController = TextEditingController(
+      text: episode.pathologyLabel,
+    );
+    final initialReportController = TextEditingController(
+      text: episode.initialReport ?? '',
+    );
+
+    final updated = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Modifier la prise en charge'),
+          content: SizedBox(
+            width: 520,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: pathologyController,
+                  decoration: const InputDecoration(
+                    labelText: 'Pathologie',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                TextField(
+                  controller: initialReportController,
+                  decoration: const InputDecoration(
+                    labelText: 'Compte rendu initial',
+                    border: OutlineInputBorder(),
+                    alignLabelWithHint: true,
+                  ),
+                  minLines: 5,
+                  maxLines: 10,
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('Annuler'),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: const Text('Enregistrer'),
+            ),
+          ],
+        );
+      },
+    );
+
+    final pathology = pathologyController.text.trim();
+    final initialReport = initialReportController.text.trim();
+
+    pathologyController.dispose();
+    initialReportController.dispose();
+
+    if (updated != true || pathology.isEmpty) return;
+
+    final now = DateTime.now().millisecondsSinceEpoch;
+
+    final updatedEpisode = CareEpisode(
+      careEpisodeId: episode.careEpisodeId,
+      patientId: episode.patientId,
+      title: episode.title,
+      pathologyLabel: pathology,
+      initialReport: initialReport.isEmpty ? null : initialReport,
+      createdAt: episode.createdAt,
+      updatedAt: now,
+      archivedAt: episode.archivedAt,
+    );
+
+    await _careEpisodeRepository.updateCareEpisode(updatedEpisode);
+
+    if (!mounted) return;
+
+    setState(() {
+      _refreshToken++;
+    });
+  }
 
   Future<void> _exportPatientAbakPackage() async {
     try {
@@ -295,6 +379,7 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
             patientId: widget.patient.patientId,
             refreshToken: _refreshToken,
             onCreateCareEpisode: _createCareEpisode,
+            onEditCareEpisode: _editCareEpisode,
           ),
 
           const SizedBox(height: 16),
@@ -998,12 +1083,14 @@ class _CareEpisodesSection extends StatelessWidget {
   final String patientId;
   final int refreshToken;
   final VoidCallback onCreateCareEpisode;
+  final ValueChanged<CareEpisode> onEditCareEpisode;
 
   const _CareEpisodesSection({
     required this.repository,
     required this.patientId,
     required this.refreshToken,
     required this.onCreateCareEpisode,
+    required this.onEditCareEpisode,
   });
 
   @override
@@ -1037,14 +1124,37 @@ class _CareEpisodesSection extends StatelessWidget {
               ...episodes.map(
                     (episode) => ListTile(
                   contentPadding: EdgeInsets.zero,
-                  leading: const Icon(Icons.folder_open_outlined),
-                  title: Text(episode.displayTitle),
+
+                  leading: const Icon(
+                    Icons.folder_open_outlined,
+                  ),
+
+                  title: Text(
+                    episode.displayTitle,
+                  ),
+
                   subtitle: Text(
                     [
                       'Pathologie : ${episode.pathologyLabel}',
                       episode.displayInitialReport,
                     ].join('\n'),
                   ),
+
+                  trailing: IconButton(
+                    tooltip: 'Modifier',
+                    icon: const Icon(Icons.edit_outlined),
+                    onPressed: () => onEditCareEpisode(episode),
+                  ),
+
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => CareEpisodeDetailScreen(
+                          episode: episode,
+                        ),
+                      ),
+                    );
+                  },
                 ),
               ),
           ],
