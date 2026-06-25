@@ -484,12 +484,12 @@ class _AbakResultsCard extends StatelessWidget {
                       return ListTile(
                         contentPadding: EdgeInsets.zero,
                         leading: const Icon(Icons.bar_chart_outlined),
-                        title: Text(result.exoId),
+                        title: Text(_exerciseDisplayName(result.exoId)),
                         subtitle: Text(
                           [
                             formatter.format(date),
                             if (result.scoreTotal != null)
-                              'Score : ${result.scoreTotal}',
+                              'Score : ${result.scoreTotal?.toStringAsFixed(2) ?? '-'}',
                             if (result.measureUnit != null)
                               result.measureUnit!,
                             if (mobileOrigin != null &&
@@ -521,5 +521,13 @@ class _AbakResultsCard extends StatelessWidget {
         ),
       ),
     );
+  }
+  String _exerciseDisplayName(String exoId) {
+    const labels = {
+      'E1': '3M Backward Walk Assessment',
+      'E5': 'Timed Up and Go',
+    };
+
+    return labels[exoId] ?? exoId;
   }
 }
