@@ -43,6 +43,71 @@ class _CareEpisodeDetailScreenState extends State<CareEpisodeDetailScreen> {
     });
   }
 
+  Future<void> _editInitialReport() async {
+    final controller = TextEditingController(
+      text: _episode.initialReport ?? '',
+    );
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Compte rendu initial'),
+          content: SizedBox(
+            width: 520,
+            child: TextField(
+              controller: controller,
+              decoration: const InputDecoration(
+                labelText: 'Compte rendu initial',
+                border: OutlineInputBorder(),
+                alignLabelWithHint: true,
+              ),
+              minLines: 5,
+              maxLines: 10,
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('Annuler'),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: const Text('Enregistrer'),
+            ),
+          ],
+        );
+      },
+    );
+
+    final initialReport = controller.text.trim();
+    controller.dispose();
+
+    if (confirmed != true) return;
+
+    final updatedEpisode = CareEpisode(
+      careEpisodeId: _episode.careEpisodeId,
+      patientId: _episode.patientId,
+      title: _episode.title,
+      pathologyLabel: _episode.pathologyLabel,
+      initialReport: initialReport.isEmpty ? null : initialReport,
+      finalConclusion: _episode.finalConclusion,
+      createdAt: _episode.createdAt,
+      updatedAt: DateTime.now().millisecondsSinceEpoch,
+      archivedAt: _episode.archivedAt,
+    );
+
+    await _repository.updateCareEpisode(updatedEpisode);
+
+    _hasChanged = true;
+
+    if (!mounted) return;
+
+    setState(() {
+      _episode = updatedEpisode;
+    });
+  }
+
   Future<void> _editFinalConclusion() async {
     final controller = TextEditingController(
       text: _episode.finalConclusion ?? '',
@@ -208,9 +273,20 @@ class _CareEpisodeDetailScreenState extends State<CareEpisodeDetailScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'Compte rendu initial',
-                      style: Theme.of(context).textTheme.titleLarge,
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            'Compte rendu initial',
+                            style: Theme.of(context).textTheme.titleLarge,
+                          ),
+                        ),
+                        OutlinedButton.icon(
+                          onPressed: _editInitialReport,
+                          icon: const Icon(Icons.edit_outlined),
+                          label: const Text('Modifier'),
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 12),
                     Text(_episode.displayInitialReport),
