@@ -17,6 +17,7 @@ import '../models/episode_conclusion.dart';
 import '../../episodes/report/services/episode_report_service.dart';
 import '../../episodes/report/services/episode_report_text_builder.dart';
 import '../../episodes/report/widgets/episode_report_preview_card.dart';
+import 'package:abak_shared/abak_shared.dart';
 
 class EpisodeReportScreen extends StatefulWidget {
   final String caseId;
@@ -487,10 +488,10 @@ class _ReportResultsCard extends StatelessWidget {
                           result.mobilePatientLabel;
 
                   return _ReportRow(
-                    label: result.exoId,
+                    label: ClinicalActivityCatalog.displayLabel(result.exoId),
                     value: [
                       if (result.scoreTotal != null)
-                        'Score : ${result.scoreTotal}',
+                        'Score : ${result.scoreTotal!.toStringAsFixed(2)}',
                       if (result.measureUnit != null)
                         result.measureUnit!,
                       if (mobileOrigin != null &&

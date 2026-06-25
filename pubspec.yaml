@@ -26,6 +26,8 @@ dependencies:
   archive: ^4.0.7
   xml: ^6.5.0
   cupertino_icons: ^1.0.8
+  abak_shared:
+    path: ../abak_shared
 
 dev_dependencies:
   flutter_test:

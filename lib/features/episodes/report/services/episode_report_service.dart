@@ -5,7 +5,6 @@ import '../../../patients/data/patient_identity_repository.dart';
 import '../../../patients/data/patient_repository.dart';
 import '../models/episode_report_view_model.dart';
 import '../../../results/data/desktop_result_repository.dart';
-import '../../../results/data/desktop_exercise_catalog.dart';
 import '../../../patients/data/episode_document_repository.dart';
 import '../../../patients/data/episode_note_repository.dart';
 import '../../../import_export/data/mobile_case_repository.dart';
@@ -14,6 +13,7 @@ import '../models/report_form_section.dart';
 import '../models/report_result_section.dart';
 import '../models/report_document_item.dart';
 import '../models/report_note_item.dart';
+import 'package:abak_shared/abak_shared.dart';
 
 class EpisodeReportService {
   final PatientRepository patientRepository;
@@ -22,7 +22,6 @@ class EpisodeReportService {
   final EpisodeConclusionRepository conclusionRepository;
   final EpisodeFormRepository formRepository;
   final DesktopResultRepository resultRepository;
-  final DesktopExerciseCatalog exerciseCatalog;
   final EpisodeDocumentRepository documentRepository;
   final EpisodeNoteRepository noteRepository;
   final MobileCaseRepository mobileCaseRepository;
@@ -35,7 +34,6 @@ class EpisodeReportService {
     EpisodeConclusionRepository? conclusionRepository,
     EpisodeFormRepository? formRepository,
     DesktopResultRepository? resultRepository,
-    DesktopExerciseCatalog? exerciseCatalog,
     EpisodeDocumentRepository? documentRepository,
     EpisodeNoteRepository? noteRepository,
     MobileCaseRepository? mobileCaseRepository,
@@ -50,8 +48,6 @@ class EpisodeReportService {
             formRepository ?? EpisodeFormRepository(),
         resultRepository =
             resultRepository ?? DesktopResultRepository(),
-        exerciseCatalog =
-            exerciseCatalog ?? DesktopExerciseCatalog(),
         documentRepository =
             documentRepository ?? EpisodeDocumentRepository(),
         noteRepository =
@@ -118,7 +114,7 @@ class EpisodeReportService {
     final resultSections = <ReportResultSection>[];
 
     for (final result in results) {
-      final title = exerciseCatalog.labelForExoId(result.exoId);
+      final title = ClinicalActivityCatalog.displayLabel(result.exoId);
 
       final score = result.scoreTotal?.toString();
 

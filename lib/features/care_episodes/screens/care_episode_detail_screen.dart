@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import '../../results/data/desktop_result_repository.dart';
 import '../../results/models/desktop_result.dart';
 import '../../results/result_detail_screen.dart';
+import 'package:abak_shared/abak_shared.dart';
 
 class CareEpisodeDetailScreen extends StatefulWidget {
   final CareEpisode episode;
@@ -481,37 +482,46 @@ class _AbakResultsCard extends StatelessWidget {
                           result.mobilePathologyLabel ??
                               result.mobilePatientLabel;
 
-                      return ListTile(
-                        contentPadding: EdgeInsets.zero,
-                        leading: const Icon(Icons.bar_chart_outlined),
-                        title: Text(_exerciseDisplayName(result.exoId)),
-                        subtitle: Text(
-                          [
-                            formatter.format(date),
-                            if (result.scoreTotal != null)
-                              'Score : ${result.scoreTotal?.toStringAsFixed(2) ?? '-'}',
-                            if (result.measureUnit != null)
-                              result.measureUnit!,
-                            if (mobileOrigin != null &&
-                                mobileOrigin.trim().isNotEmpty)
-                              'Origine ABAK : ${mobileOrigin.trim()}',
-                          ].join(' · '),
-                        ),
-                        trailing: const Icon(Icons.chevron_right),
-                        onTap: () async {
-                          final changed =
-                          await Navigator.of(context).push<bool>(
-                            MaterialPageRoute(
-                              builder: (_) => ResultDetailScreen(
-                                result: result,
+                      return Card(
+                        margin: const EdgeInsets.only(bottom: 8),
+                        child: ListTile(
+                          leading: const Icon(Icons.bar_chart_outlined),
+                          title: Text(
+                            ClinicalActivityCatalog.displayLabel(result.exoId),
+                          ),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                [
+                                  formatter.format(date),
+                                  if (result.scoreTotal != null)
+                                    'Score : ${result.scoreTotal?.toStringAsFixed(2) ?? '-'}',
+                                  if (result.measureUnit != null) result.measureUnit!,
+                                ].join(' · '),
                               ),
-                            ),
-                          );
+                              if (mobileOrigin != null && mobileOrigin.trim().isNotEmpty)
+                                Text(
+                                  'Origine ABAK : ${mobileOrigin.trim()}',
+                                  style: Theme.of(context).textTheme.bodySmall,
+                                ),
+                            ],
+                          ),
+                          trailing: const Icon(Icons.chevron_right),
+                          onTap: () async {
+                            final changed = await Navigator.of(context).push<bool>(
+                              MaterialPageRoute(
+                                builder: (_) => ResultDetailScreen(
+                                  result: result,
+                                ),
+                              ),
+                            );
 
-                          if (changed == true) {
-                            onChanged();
-                          }
-                        },
+                            if (changed == true) {
+                              onChanged();
+                            }
+                          },
+                        ),
                       );
                     },
                   ),
@@ -521,13 +531,5 @@ class _AbakResultsCard extends StatelessWidget {
         ),
       ),
     );
-  }
-  String _exerciseDisplayName(String exoId) {
-    const labels = {
-      'E1': '3M Backward Walk Assessment',
-      'E5': 'Timed Up and Go',
-    };
-
-    return labels[exoId] ?? exoId;
   }
 }

@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'data/desktop_result_repository.dart';
 import 'models/desktop_result.dart';
 import 'models/desktop_result_metric.dart';
+import 'package:abak_shared/abak_shared.dart';
 
 class ResultDetailScreen extends StatefulWidget {
   final DesktopResult result;
@@ -166,7 +167,7 @@ class _ResultDetailScreenState
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(_result.exoId),
+        title: Text(ClinicalActivityCatalog.displayLabel(_result.exoId)),
         actions: [
           IconButton(
             tooltip: 'Archiver',
