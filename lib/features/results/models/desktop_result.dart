@@ -1,10 +1,18 @@
 class DesktopResult {
   final String resultId;
-  final String patientId;
+  final String careEpisodeId;
+
+  final String? patientId;
   final String? practitionerId;
   final String? sourceDeviceId;
   final String? practitionerLabelSnapshot;
-  final String? episodeId;
+
+  final String? mobileEpisodeId;
+  final String? mobilePathologyCode;
+  final String? mobilePathologyLabel;
+  final String? mobilePatientRef;
+  final String? mobilePatientLabel;
+
   final int createdAt;
   final int importedAt;
   final String exoId;
@@ -37,18 +45,20 @@ class DesktopResult {
   final String syncState;
   final int? lastModifiedAt;
   final String? contentHash;
-
   final int? archivedAt;
-  final String? mobileCaseId;
-  final String? mobileCaseLabel;
 
   const DesktopResult({
     required this.resultId,
-    required this.patientId,
+    required this.careEpisodeId,
+    this.patientId,
     this.practitionerId,
     this.sourceDeviceId,
     this.practitionerLabelSnapshot,
-    this.episodeId,
+    this.mobileEpisodeId,
+    this.mobilePathologyCode,
+    this.mobilePathologyLabel,
+    this.mobilePatientRef,
+    this.mobilePatientLabel,
     required this.createdAt,
     required this.importedAt,
     required this.exoId,
@@ -81,19 +91,22 @@ class DesktopResult {
     this.lastModifiedAt,
     this.contentHash,
     this.archivedAt,
-    this.mobileCaseId,
-    this.mobileCaseLabel,
   });
 
   factory DesktopResult.fromMap(Map<String, dynamic> map) {
     return DesktopResult(
       resultId: map['result_id'] as String,
-      patientId: map['patient_id'] as String,
+      careEpisodeId: map['care_episode_id'] as String,
+      patientId: map['patient_id'] as String?,
       practitionerId: map['practitioner_id'] as String?,
       sourceDeviceId: map['source_device_id'] as String?,
       practitionerLabelSnapshot:
       map['practitioner_label_snapshot'] as String?,
-      episodeId: map['episode_id'] as String?,
+      mobileEpisodeId: map['mobile_episode_id'] as String?,
+      mobilePathologyCode: map['mobile_pathology_code'] as String?,
+      mobilePathologyLabel: map['mobile_pathology_label'] as String?,
+      mobilePatientRef: map['mobile_patient_ref'] as String?,
+      mobilePatientLabel: map['mobile_patient_label'] as String?,
       createdAt: map['createdAt'] as int,
       importedAt: map['imported_at'] as int,
       exoId: map['exoId'] as String,
@@ -131,18 +144,21 @@ class DesktopResult {
       lastModifiedAt: map['last_modified_at'] as int?,
       contentHash: map['content_hash'] as String?,
       archivedAt: map['archived_at'] as int?,
-      mobileCaseId: map['mobile_case_id'] as String?,
-      mobileCaseLabel: map['mobile_case_label'] as String?,
     );
   }
 
   DesktopResult copyWith({
     String? resultId,
+    String? careEpisodeId,
     String? patientId,
     String? practitionerId,
     String? sourceDeviceId,
     String? practitionerLabelSnapshot,
-    String? episodeId,
+    String? mobileEpisodeId,
+    String? mobilePathologyCode,
+    String? mobilePathologyLabel,
+    String? mobilePatientRef,
+    String? mobilePatientLabel,
     int? createdAt,
     int? importedAt,
     String? exoId,
@@ -175,17 +191,22 @@ class DesktopResult {
     int? lastModifiedAt,
     String? contentHash,
     int? archivedAt,
-    String? mobileCaseId,
-    String? mobileCaseLabel,
   }) {
     return DesktopResult(
       resultId: resultId ?? this.resultId,
+      careEpisodeId: careEpisodeId ?? this.careEpisodeId,
       patientId: patientId ?? this.patientId,
       practitionerId: practitionerId ?? this.practitionerId,
       sourceDeviceId: sourceDeviceId ?? this.sourceDeviceId,
       practitionerLabelSnapshot:
       practitionerLabelSnapshot ?? this.practitionerLabelSnapshot,
-      episodeId: episodeId ?? this.episodeId,
+      mobileEpisodeId: mobileEpisodeId ?? this.mobileEpisodeId,
+      mobilePathologyCode:
+      mobilePathologyCode ?? this.mobilePathologyCode,
+      mobilePathologyLabel:
+      mobilePathologyLabel ?? this.mobilePathologyLabel,
+      mobilePatientRef: mobilePatientRef ?? this.mobilePatientRef,
+      mobilePatientLabel: mobilePatientLabel ?? this.mobilePatientLabel,
       createdAt: createdAt ?? this.createdAt,
       importedAt: importedAt ?? this.importedAt,
       exoId: exoId ?? this.exoId,
@@ -220,25 +241,27 @@ class DesktopResult {
       performerYearsExperienceCode ?? this.performerYearsExperienceCode,
       performerProfileUpdatedAt:
       performerProfileUpdatedAt ?? this.performerProfileUpdatedAt,
-      localSchemaVersion:
-      localSchemaVersion ?? this.localSchemaVersion,
+      localSchemaVersion: localSchemaVersion ?? this.localSchemaVersion,
       syncState: syncState ?? this.syncState,
       lastModifiedAt: lastModifiedAt ?? this.lastModifiedAt,
       contentHash: contentHash ?? this.contentHash,
       archivedAt: archivedAt ?? this.archivedAt,
-      mobileCaseId: mobileCaseId ?? this.mobileCaseId,
-      mobileCaseLabel: mobileCaseLabel ?? this.mobileCaseLabel,
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
       'result_id': resultId,
+      'care_episode_id': careEpisodeId,
       'patient_id': patientId,
       'practitioner_id': practitionerId,
       'source_device_id': sourceDeviceId,
       'practitioner_label_snapshot': practitionerLabelSnapshot,
-      'episode_id': episodeId,
+      'mobile_episode_id': mobileEpisodeId,
+      'mobile_pathology_code': mobilePathologyCode,
+      'mobile_pathology_label': mobilePathologyLabel,
+      'mobile_patient_ref': mobilePatientRef,
+      'mobile_patient_label': mobilePatientLabel,
       'createdAt': createdAt,
       'imported_at': importedAt,
       'exoId': exoId,
@@ -271,8 +294,6 @@ class DesktopResult {
       'last_modified_at': lastModifiedAt ?? importedAt,
       'content_hash': contentHash,
       'archived_at': archivedAt,
-      'mobile_case_id': mobileCaseId,
-      'mobile_case_label': mobileCaseLabel,
     };
   }
 }

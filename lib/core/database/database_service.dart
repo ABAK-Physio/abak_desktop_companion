@@ -72,6 +72,7 @@ class DatabaseService {
 
   static Future<void> _createAllTables(Database db) async {
     await _createCoreTables(db);
+    await _createPatientClinicalTables(db);
     await _createCareEpisodeTables(db);
     await _createCareEpisodeNoteTables(db);
     await _createResultTables(db);
@@ -440,5 +441,45 @@ class DatabaseService {
       CREATE INDEX idx_desktop_result_conflicts_result_id
       ON desktop_result_conflicts(result_id)
     ''');
+  }
+
+  static Future<void> _createPatientClinicalTables(Database db) async {
+    await db.execute('''
+    CREATE TABLE patient_identity (
+      patient_id TEXT PRIMARY KEY,
+
+      national_health_id TEXT NULL,
+      health_system_country TEXT NULL,
+      identity_source TEXT NULL,
+
+      phone TEXT NULL,
+      email TEXT NULL,
+      address TEXT NULL,
+
+      last_verified_at INTEGER NULL,
+      updated_at INTEGER NOT NULL,
+
+      FOREIGN KEY(patient_id)
+        REFERENCES patients(patient_id)
+    )
+  ''');
+
+    await db.execute('''
+    CREATE TABLE patient_attributes (
+      attribute_id TEXT PRIMARY KEY,
+
+      patient_id TEXT NOT NULL,
+
+      attribute_key TEXT NOT NULL,
+      attribute_value TEXT NULL,
+
+      updated_at INTEGER NOT NULL,
+
+      FOREIGN KEY(patient_id)
+        REFERENCES patients(patient_id),
+
+      UNIQUE(patient_id, attribute_key)
+    )
+  ''');
   }
 }

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'episode_forms_screen.dart';
-import 'episode_results_screen.dart';
 import 'episode_documents_screen.dart';
 import 'episode_notes_screen.dart';
 import 'episode_report_screen.dart';
@@ -37,23 +36,6 @@ class EpisodeDashboardScreen extends StatelessWidget {
               Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (_) => EpisodeFormsScreen(
-                    caseId: caseId,
-                    caseLabel: caseLabel,
-                  ),
-                ),
-              );
-            },
-          ),
-
-          const SizedBox(height: 16),
-          _DashboardCard(
-            icon: Icons.bar_chart_outlined,
-            title: 'Résultats ABAK',
-            subtitle: 'Tests associés à cet épisode',
-            onTap: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) => EpisodeResultsScreen(
                     caseId: caseId,
                     caseLabel: caseLabel,
                   ),

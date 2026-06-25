@@ -8,7 +8,6 @@ import 'features/local_exchange/services/airdrop_import_watcher.dart';
 import 'features/local_exchange/services/local_exchange_server.dart';
 import 'features/maintenance/data/database_backup_repository.dart';
 import 'features/maintenance/services/local_backup_cleanup_service.dart';
-import 'features/patients/services/default_contact_form_template_service.dart';
 import 'features/patients/services/patient_purge_service.dart';
 import 'core/ui/app_messenger.dart';
 
@@ -25,9 +24,6 @@ Future<void> main() async {
   );
 
   await DatabaseService.database;
-
-  await DefaultContactFormTemplateService()
-      .ensureDefaultTemplateExists();
 
   await LocalExchangeServer.instance.start();
 

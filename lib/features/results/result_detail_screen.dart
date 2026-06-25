@@ -211,16 +211,19 @@ class _ResultDetailScreenState
                     .practitionerLabelSnapshot ??
                     '-',
               ),
-              if (_result.mobileCaseLabel != null)
+              if ((_result.mobilePathologyLabel ?? _result.mobilePatientLabel)
+                  ?.trim()
+                  .isNotEmpty ==
+                  true)
                 _InfoRow(
-                  label: 'Dossier mobile',
-                  value: _result.mobileCaseLabel!,
+                  label: 'Origine ABAK',
+                  value: (_result.mobilePathologyLabel ?? _result.mobilePatientLabel)!.trim(),
                 ),
 
-              if (_result.mobileCaseId != null)
+              if (_result.mobileEpisodeId?.trim().isNotEmpty == true)
                 _InfoRow(
-                  label: 'Case ID',
-                  value: _result.mobileCaseId!,
+                  label: 'Épisode ABAK mobile',
+                  value: _result.mobileEpisodeId!.trim(),
                 ),
             ],
           ),

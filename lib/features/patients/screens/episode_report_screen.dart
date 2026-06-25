@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../results/data/desktop_result_repository.dart';
 import '../data/episode_document_repository.dart';
 import '../data/episode_form_repository.dart';
 import '../data/episode_note_repository.dart';
@@ -42,9 +41,6 @@ class _EpisodeReportScreenState extends State<EpisodeReportScreen> {
   final EpisodeFormRepository _formRepository =
   EpisodeFormRepository();
 
-  final DesktopResultRepository _resultRepository =
-  DesktopResultRepository();
-
   final EpisodeDocumentRepository _documentRepository =
   EpisodeDocumentRepository();
 
@@ -79,8 +75,9 @@ class _EpisodeReportScreenState extends State<EpisodeReportScreen> {
 
       formAnswers.add(answers);
     }
-    final results =
-    await _resultRepository.getResultsForMobileCase(widget.caseId);
+
+    final results = <DesktopResult>[];
+
     final documents =
     await _documentRepository.getByCaseId(widget.caseId);
     final notes =
@@ -482,18 +479,28 @@ class _ReportResultsCard extends StatelessWidget {
               ],
             ),
             const Divider(height: 28),
-            for (final result in results)
-              _ReportRow(
-                label: result.exoId,
-                value: [
-                  if (result.scoreTotal != null)
-                    'Score : ${result.scoreTotal}',
-                  if (result.measureUnit != null)
-                    result.measureUnit!,
-                  if (result.mobileCaseLabel != null)
-                    result.mobileCaseLabel!,
-                ].join(' · '),
+            for (final result in results) ...[
+              Builder(
+                builder: (context) {
+                  final mobileOrigin =
+                      result.mobilePathologyLabel ??
+                          result.mobilePatientLabel;
+
+                  return _ReportRow(
+                    label: result.exoId,
+                    value: [
+                      if (result.scoreTotal != null)
+                        'Score : ${result.scoreTotal}',
+                      if (result.measureUnit != null)
+                        result.measureUnit!,
+                      if (mobileOrigin != null &&
+                          mobileOrigin.trim().isNotEmpty)
+                        'Origine ABAK : ${mobileOrigin.trim()}',
+                    ].join(' · '),
+                  );
+                },
               ),
+            ],
           ],
         ),
       ),

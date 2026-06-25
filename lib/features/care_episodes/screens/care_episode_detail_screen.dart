@@ -5,6 +5,9 @@ import '../data/care_episode_repository.dart';
 import '../models/care_episode.dart';
 import '../models/care_episode_note.dart';
 import 'package:intl/intl.dart';
+import '../../results/data/desktop_result_repository.dart';
+import '../../results/models/desktop_result.dart';
+import '../../results/result_detail_screen.dart';
 
 class CareEpisodeDetailScreen extends StatefulWidget {
   final CareEpisode episode;
@@ -21,6 +24,8 @@ class CareEpisodeDetailScreen extends StatefulWidget {
 
 class _CareEpisodeDetailScreenState extends State<CareEpisodeDetailScreen> {
   final CareEpisodeRepository _repository = CareEpisodeRepository();
+  final DesktopResultRepository _resultRepository =
+  DesktopResultRepository();
 
   int _refreshToken = 0;
   bool _hasChanged = false;
@@ -214,23 +219,14 @@ class _CareEpisodeDetailScreenState extends State<CareEpisodeDetailScreen> {
               ),
             ),
             const SizedBox(height: 16),
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Résultats ABAK',
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                    const SizedBox(height: 12),
-                    const Text(
-                      'Aucun résultat rattaché pour le moment.',
-                    ),
-                  ],
-                ),
-              ),
+            _AbakResultsCard(
+              repository: _resultRepository,
+              careEpisodeId: _episode.careEpisodeId,
+              refreshToken: _refreshToken,
+              onChanged: () {
+                _hasChanged = true;
+                _refresh();
+              },
             ),
             const SizedBox(height: 16),
             Card(
@@ -349,6 +345,103 @@ class _CareEpisodeDetailScreenState extends State<CareEpisodeDetailScreen> {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _AbakResultsCard extends StatelessWidget {
+  final DesktopResultRepository repository;
+  final String careEpisodeId;
+  final int refreshToken;
+  final VoidCallback onChanged;
+
+  const _AbakResultsCard({
+    required this.repository,
+    required this.careEpisodeId,
+    required this.refreshToken,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: FutureBuilder<List<DesktopResult>>(
+          key: ValueKey('abak-results-$refreshToken'),
+          future: repository.getResultsForCareEpisode(careEpisodeId),
+          builder: (context, snapshot) {
+            final results = snapshot.data ?? [];
+
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Résultats ABAK',
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+                const SizedBox(height: 12),
+                if (snapshot.connectionState == ConnectionState.waiting)
+                  const Padding(
+                    padding: EdgeInsets.all(16),
+                    child: CircularProgressIndicator(),
+                  )
+                else if (results.isEmpty)
+                  const Text('Aucun résultat rattaché pour le moment.')
+                else
+                  ...results.map(
+                        (result) {
+                      final date = DateTime.fromMillisecondsSinceEpoch(
+                        result.createdAt,
+                      );
+
+                      final formatter = DateFormat.yMd(
+                        Localizations.localeOf(context).toLanguageTag(),
+                      );
+
+                      final mobileOrigin =
+                          result.mobilePathologyLabel ??
+                              result.mobilePatientLabel;
+
+                      return ListTile(
+                        contentPadding: EdgeInsets.zero,
+                        leading: const Icon(Icons.bar_chart_outlined),
+                        title: Text(result.exoId),
+                        subtitle: Text(
+                          [
+                            formatter.format(date),
+                            if (result.scoreTotal != null)
+                              'Score : ${result.scoreTotal}',
+                            if (result.measureUnit != null)
+                              result.measureUnit!,
+                            if (mobileOrigin != null &&
+                                mobileOrigin.trim().isNotEmpty)
+                              'Origine ABAK : ${mobileOrigin.trim()}',
+                          ].join(' · '),
+                        ),
+                        trailing: const Icon(Icons.chevron_right),
+                        onTap: () async {
+                          final changed =
+                          await Navigator.of(context).push<bool>(
+                            MaterialPageRoute(
+                              builder: (_) => ResultDetailScreen(
+                                result: result,
+                              ),
+                            ),
+                          );
+
+                          if (changed == true) {
+                            onChanged();
+                          }
+                        },
+                      );
+                    },
+                  ),
+              ],
+            );
+          },
         ),
       ),
     );

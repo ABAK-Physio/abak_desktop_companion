@@ -113,8 +113,7 @@ class EpisodeReportService {
       );
     }
 
-    final results =
-    await resultRepository.getResultsForMobileCase(episodeId);
+    final results = [];
 
     final resultSections = <ReportResultSection>[];
 

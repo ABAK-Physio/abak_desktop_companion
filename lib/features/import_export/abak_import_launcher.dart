@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 
-import '../patients/models/patient.dart';
 import 'abak_import_service.dart';
 import 'abak_package.dart';
 import 'data/import_session_repository.dart';
@@ -72,7 +71,7 @@ class AbakImportLauncher {
             continue;
           }
 
-          final targetPatient = await Navigator.of(context).push<Patient>(
+          final assignment = await Navigator.of(context).push<ImportAssignment>(
             MaterialPageRoute(
               builder: (_) => ImportResolutionScreen(
                 package: package,
@@ -80,22 +79,25 @@ class AbakImportLauncher {
             ),
           );
 
-          if (targetPatient == null) {
+          if (assignment == null) {
             failedFiles++;
             failedFileNames.add(pickedFile.name);
             continue;
           }
 
           resolutionMessages.add(
-            '${pickedFile.name} : rattaché à ${targetPatient.displayName}',
+            '${pickedFile.name} : rattaché à '
+                '${assignment.patient.displayName} / '
+                '${assignment.careEpisode.title}',
           );
 
-          importedPatientIds.add(targetPatient.patientId);
-          importedPatientLabels.add(targetPatient.displayName);
+          importedPatientIds.add(assignment.patient.patientId);
+          importedPatientLabels.add(assignment.patient.displayName);
 
           final summary = await importService.importPackageJson(
             jsonString: jsonString,
-            patient: targetPatient,
+            patient: assignment.patient,
+            careEpisodeId: assignment.careEpisode.careEpisodeId,
           );
 
           await importSessionRepository.addFileLog(
@@ -333,7 +335,7 @@ class AbakImportLauncher {
 
       if (!context.mounted) return null;
 
-      final targetPatient = await Navigator.of(context).push<Patient>(
+      final assignment = await Navigator.of(context).push<ImportAssignment>(
         MaterialPageRoute(
           builder: (_) => ImportResolutionScreen(
             package: package,
@@ -341,7 +343,7 @@ class AbakImportLauncher {
         ),
       );
 
-      if (targetPatient == null) {
+      if (assignment == null) {
         await importSessionRepository.completeSession(
           importSessionId: importSessionId,
           processedFilesCount: 0,
@@ -357,7 +359,8 @@ class AbakImportLauncher {
 
       final summary = await importService.importPackageJson(
         jsonString: jsonString,
-        patient: targetPatient,
+        patient: assignment.patient,
+        careEpisodeId: assignment.careEpisode.careEpisodeId,
       );
 
       await importSessionRepository.addFileLog(
@@ -390,8 +393,8 @@ class AbakImportLauncher {
         skippedResults: summary.skippedResults,
         conflictResults: summary.conflictResults,
         importedMetrics: summary.importedMetrics,
-        patientIds: [targetPatient.patientId],
-        patientLabels: [targetPatient.displayName],
+        patientIds: [assignment.patient.patientId],
+        patientLabels: [assignment.patient.displayName],
         completedAt: DateTime.now(),
       );
 
@@ -401,7 +404,8 @@ class AbakImportLauncher {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              'Import terminé : ${summary.importedResults} résultat(s) importé(s).',
+              'Import terminé : ${summary.importedResults} résultat(s) importé(s) '
+                  'dans ${assignment.careEpisode.title}.',
             ),
           ),
         );

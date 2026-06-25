@@ -260,37 +260,18 @@ class DesktopResultRepository {
     );
   }
 
-  Future<List<DesktopResult>> getResultsForMobileCase(
-      String mobileCaseId,
+  Future<List<DesktopResult>> getResultsForCareEpisode(
+      String careEpisodeId,
       ) async {
     final db = await DatabaseService.database;
 
     final rows = await db.query(
       'desktop_results',
-      where: 'mobile_case_id = ? AND archived_at IS NULL',
-      whereArgs: [mobileCaseId],
+      where: 'care_episode_id = ? AND archived_at IS NULL',
+      whereArgs: [careEpisodeId],
       orderBy: 'createdAt DESC',
     );
 
-    return rows
-        .map((row) => DesktopResult.fromMap(row))
-        .toList();
-  }
-
-  Future<List<DesktopResult>> getResultsForEpisode(
-      String episodeId,
-      ) async {
-    final db = await DatabaseService.database;
-
-    final rows = await db.query(
-      'desktop_results',
-      where: 'episode_id = ? AND archived_at IS NULL',
-      whereArgs: [episodeId],
-      orderBy: 'createdAt ASC',
-    );
-
-    return rows
-        .map((row) => DesktopResult.fromMap(row))
-        .toList();
+    return rows.map(DesktopResult.fromMap).toList();
   }
 }

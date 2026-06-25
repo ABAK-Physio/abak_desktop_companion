@@ -94,7 +94,7 @@ class AbakExportService {
   Map<String, dynamic> _buildResultPayload(DesktopResult result) {
     return {
       'result_id': result.resultId,
-      'episode_id': result.episodeId,
+      'episode_id': result.mobileEpisodeId,
       'createdAt': result.createdAt,
       'exoId': result.exoId,
       'scoreTotal': result.scoreTotal,
