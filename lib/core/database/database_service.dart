@@ -63,11 +63,38 @@ class DatabaseService {
 
     return openDatabase(
       path,
-      version: 1,
+      version: 2,
       onCreate: (db, version) async {
         await _createAllTables(db);
       },
+      onUpgrade: (db, oldVersion, newVersion) async {
+        if (oldVersion < 2) {
+          await _addColumnIfMissing(
+            db,
+            'care_episodes',
+            'initial_report_docx_path',
+            'TEXT NULL',
+          );
+        }
+      },
     );
+  }
+
+  static Future<void> _addColumnIfMissing(
+      Database db,
+      String tableName,
+      String columnName,
+      String columnDefinition,
+      ) async {
+    final columns = await db.rawQuery('PRAGMA table_info($tableName)');
+
+    final exists = columns.any((column) => column['name'] == columnName);
+
+    if (!exists) {
+      await db.execute(
+        'ALTER TABLE $tableName ADD COLUMN $columnName $columnDefinition',
+      );
+    }
   }
 
   static Future<void> _createAllTables(Database db) async {
@@ -164,21 +191,22 @@ class DatabaseService {
 
   static Future<void> _createCareEpisodeTables(Database db) async {
     await db.execute('''
-      CREATE TABLE care_episodes (
-        care_episode_id TEXT PRIMARY KEY,
-        patient_id TEXT NOT NULL,
-        title TEXT NOT NULL,
-        pathology_label TEXT NOT NULL,
-        initial_report TEXT NULL,
-        final_conclusion TEXT NULL,
-        created_at INTEGER NOT NULL,
-        updated_at INTEGER NULL,
-        archived_at INTEGER NULL,
+  CREATE TABLE care_episodes (
+    care_episode_id TEXT PRIMARY KEY,
+    patient_id TEXT NOT NULL,
+    title TEXT NOT NULL,
+    pathology_label TEXT NOT NULL,
+    initial_report TEXT NULL,
+    initial_report_docx_path TEXT NULL,
+    final_conclusion TEXT NULL,
+    created_at INTEGER NOT NULL,
+    updated_at INTEGER NULL,
+    archived_at INTEGER NULL,
 
-        FOREIGN KEY(patient_id)
-          REFERENCES patients(patient_id)
-      )
-    ''');
+    FOREIGN KEY(patient_id)
+      REFERENCES patients(patient_id)
+  )
+''');
 
     await db.execute('''
       CREATE INDEX idx_care_episodes_patient_id

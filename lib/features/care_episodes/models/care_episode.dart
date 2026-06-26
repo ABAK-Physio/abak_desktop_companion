@@ -5,6 +5,7 @@ class CareEpisode {
   final String title;
   final String pathologyLabel;
   final String? initialReport;
+  final String? initialReportDocxPath;
   final String? finalConclusion;
 
   final int createdAt;
@@ -17,6 +18,7 @@ class CareEpisode {
     required this.title,
     required this.pathologyLabel,
     this.initialReport,
+    this.initialReportDocxPath,
     required this.createdAt,
     this.updatedAt,
     this.archivedAt,
@@ -30,6 +32,7 @@ class CareEpisode {
       title: map['title']?.toString() ?? '',
       pathologyLabel: map['pathology_label']?.toString() ?? '',
       initialReport: map['initial_report']?.toString(),
+      initialReportDocxPath: map['initial_report_docx_path']?.toString(),
       createdAt: (map['created_at'] as num?)?.toInt() ?? 0,
       updatedAt: (map['updated_at'] as num?)?.toInt(),
       archivedAt: (map['archived_at'] as num?)?.toInt(),
@@ -44,6 +47,7 @@ class CareEpisode {
       'title': title,
       'pathology_label': pathologyLabel,
       'initial_report': initialReport,
+      'initial_report_docx_path': initialReportDocxPath,
       'created_at': createdAt,
       'updated_at': updatedAt,
       'archived_at': archivedAt,

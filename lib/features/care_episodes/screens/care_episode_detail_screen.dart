@@ -9,6 +9,7 @@ import '../../results/data/desktop_result_repository.dart';
 import '../../results/models/desktop_result.dart';
 import '../../results/result_detail_screen.dart';
 import 'package:abak_shared/abak_shared.dart';
+import '../../documents/services/initial_report_document_service.dart';
 
 class CareEpisodeDetailScreen extends StatefulWidget {
   final CareEpisode episode;
@@ -31,6 +32,8 @@ class _CareEpisodeDetailScreenState extends State<CareEpisodeDetailScreen> {
   int _refreshToken = 0;
   bool _hasChanged = false;
   late CareEpisode _episode;
+  final InitialReportDocumentService _initialReportDocumentService =
+  const InitialReportDocumentService();
 
   @override
   void initState() {
@@ -106,6 +109,81 @@ class _CareEpisodeDetailScreenState extends State<CareEpisodeDetailScreen> {
 
     setState(() {
       _episode = updatedEpisode;
+    });
+  }
+
+  Future<void> _associateInitialReportDocx() async {
+    final path = await _initialReportDocumentService.pickExistingDocx();
+
+    if (path == null) return;
+
+    await _repository.updateInitialReportDocxPath(
+      careEpisodeId: _episode.careEpisodeId,
+      initialReportDocxPath: path,
+    );
+
+    if (!mounted) return;
+
+    setState(() {
+      _episode = CareEpisode(
+        careEpisodeId: _episode.careEpisodeId,
+        patientId: _episode.patientId,
+        title: _episode.title,
+        pathologyLabel: _episode.pathologyLabel,
+        initialReport: _episode.initialReport,
+        initialReportDocxPath: path,
+        finalConclusion: _episode.finalConclusion,
+        createdAt: _episode.createdAt,
+        updatedAt: DateTime.now().millisecondsSinceEpoch,
+        archivedAt: _episode.archivedAt,
+      );
+      _hasChanged = true;
+    });
+  }
+
+  Future<void> _openInitialReportDocx() async {
+    final path = _episode.initialReportDocxPath;
+
+    if (path == null || path.trim().isEmpty) return;
+
+    final exists = await _initialReportDocumentService.exists(path);
+
+    if (!mounted) return;
+
+    if (!exists) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Le fichier associé est introuvable.'),
+        ),
+      );
+      return;
+    }
+
+    await _initialReportDocumentService.open(path);
+  }
+
+  Future<void> _unlinkInitialReportDocx() async {
+    await _repository.updateInitialReportDocxPath(
+      careEpisodeId: _episode.careEpisodeId,
+      initialReportDocxPath: null,
+    );
+
+    if (!mounted) return;
+
+    setState(() {
+      _episode = CareEpisode(
+        careEpisodeId: _episode.careEpisodeId,
+        patientId: _episode.patientId,
+        title: _episode.title,
+        pathologyLabel: _episode.pathologyLabel,
+        initialReport: _episode.initialReport,
+        initialReportDocxPath: null,
+        finalConclusion: _episode.finalConclusion,
+        createdAt: _episode.createdAt,
+        updatedAt: DateTime.now().millisecondsSinceEpoch,
+        archivedAt: _episode.archivedAt,
+      );
+      _hasChanged = true;
     });
   }
 
@@ -291,6 +369,56 @@ class _CareEpisodeDetailScreenState extends State<CareEpisodeDetailScreen> {
                     ),
                     const SizedBox(height: 12),
                     Text(_episode.displayInitialReport),
+                    const SizedBox(height: 20),
+                    const Divider(),
+                    const SizedBox(height: 12),
+                    Text(
+                      'Bilan initial',
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    const SizedBox(height: 8),
+                    if (_episode.initialReportDocxPath == null ||
+                        _episode.initialReportDocxPath!.trim().isEmpty) ...[
+                      const Text('Aucun document de bilan associé.'),
+                      const SizedBox(height: 12),
+                      OutlinedButton.icon(
+                        onPressed: _associateInitialReportDocx,
+                        icon: const Icon(Icons.attach_file_outlined),
+                        label: const Text('Associer un bilan existant…'),
+                      ),
+                    ] else ...[
+                      ListTile(
+                        contentPadding: EdgeInsets.zero,
+                        leading: const Icon(Icons.description_outlined),
+                        title: Text(
+                          _initialReportDocumentService.fileName(
+                            _episode.initialReportDocxPath!,
+                          ),
+                        ),
+                        subtitle: const Text('Document de bilan associé'),
+                      ),
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        children: [
+                          OutlinedButton.icon(
+                            onPressed: _openInitialReportDocx,
+                            icon: const Icon(Icons.open_in_new),
+                            label: const Text('Ouvrir'),
+                          ),
+                          OutlinedButton.icon(
+                            onPressed: _associateInitialReportDocx,
+                            icon: const Icon(Icons.swap_horiz),
+                            label: const Text('Changer…'),
+                          ),
+                          OutlinedButton.icon(
+                            onPressed: _unlinkInitialReportDocx,
+                            icon: const Icon(Icons.link_off),
+                            label: const Text('Dissocier'),
+                          ),
+                        ],
+                      ),
+                    ],
                   ],
                 ),
               ),

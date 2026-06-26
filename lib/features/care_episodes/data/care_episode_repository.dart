@@ -168,4 +168,21 @@ class CareEpisodeRepository {
 
     return rows.map(CareEpisodeSummary.fromMap).toList();
   }
+
+  Future<void> updateInitialReportDocxPath({
+    required String careEpisodeId,
+    required String? initialReportDocxPath,
+  }) async {
+    final db = await DatabaseService.database;
+
+    await db.update(
+      'care_episodes',
+      {
+        'initial_report_docx_path': initialReportDocxPath,
+        'updated_at': DateTime.now().millisecondsSinceEpoch,
+      },
+      where: 'care_episode_id = ?',
+      whereArgs: [careEpisodeId],
+    );
+  }
 }
