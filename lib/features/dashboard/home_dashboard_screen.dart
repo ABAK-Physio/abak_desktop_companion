@@ -19,6 +19,7 @@ import 'package:abak_desktop_companion/features/home/widgets/system_alerts_card.
 import 'package:abak_desktop_companion/features/home/widgets/quick_actions_card.dart';
 import 'package:abak_desktop_companion/features/home/widgets/system_overview_bar.dart';
 import 'package:abak_desktop_companion/features/home/widgets/pending_resolution_card.dart';
+import '../preferences/preferences_screen.dart';
 
 class HomeDashboardScreen extends StatefulWidget {
   const HomeDashboardScreen({super.key});
@@ -39,6 +40,7 @@ class _HomeDashboardScreenState
     'Kinés',
     'Appareils',
     'Archives',
+    'Paramètres',
     'Réglages',
     'Informations',
   ];
@@ -109,6 +111,11 @@ class _HomeDashboardScreenState
                 icon: Icon(Icons.folder_outlined),
                 selectedIcon: Icon(Icons.folder),
                 label: Text('Archives'),
+              ),
+              NavigationRailDestination(
+                icon: Icon(Icons.tune_outlined),
+                selectedIcon: Icon(Icons.tune),
+                label: Text('Paramètres'),
               ),
               NavigationRailDestination(
                 icon: Icon(Icons.settings_outlined),
@@ -302,8 +309,10 @@ class _HomeDashboardScreenState
       case 4:
         return const ReportArchiveScreen();
       case 5:
-        return const SettingsScreen();
+        return const PreferencesScreen();
       case 6:
+        return const SettingsScreen();
+      case 7:
         return const AboutScreen();
       default:
         return const SizedBox.shrink();
