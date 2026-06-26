@@ -79,6 +79,296 @@ class S {
       args: [],
     );
   }
+
+  /// `Kinés`
+  String get practitioners {
+    return Intl.message(
+      'Kinés',
+      name: 'practitioners',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Appareils`
+  String get devices {
+    return Intl.message(
+      'Appareils',
+      name: 'devices',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Archives`
+  String get archives {
+    return Intl.message(
+      'Archives',
+      name: 'archives',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Réglages`
+  String get settings {
+    return Intl.message(
+      'Réglages',
+      name: 'settings',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Informations`
+  String get information {
+    return Intl.message(
+      'Informations',
+      name: 'information',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Station clinique locale ABAK`
+  String get dashboardTitle {
+    return Intl.message(
+      'Station clinique locale ABAK',
+      name: 'dashboardTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Associer un téléphone`
+  String get pairPhone {
+    return Intl.message(
+      'Associer un téléphone',
+      name: 'pairPhone',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Actualiser le tableau de bord`
+  String get refreshDashboard {
+    return Intl.message(
+      'Actualiser le tableau de bord',
+      name: 'refreshDashboard',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Associer un téléphone`
+  String get pairPhoneDialogTitle {
+    return Intl.message(
+      'Associer un téléphone',
+      name: 'pairPhoneDialogTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Adresse IP introuvable`
+  String get ipAddressNotFound {
+    return Intl.message(
+      'Adresse IP introuvable',
+      name: 'ipAddressNotFound',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Impossible de déterminer l'adresse IP locale du Desktop.\n\nVérifiez que l'ordinateur est connecté au réseau local.`
+  String get ipAddressNotFoundMessage {
+    return Intl.message(
+      'Impossible de déterminer l\'adresse IP locale du Desktop.\n\nVérifiez que l\'ordinateur est connecté au réseau local.',
+      name: 'ipAddressNotFoundMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Fermer`
+  String get close {
+    return Intl.message(
+      'Fermer',
+      name: 'close',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `OK`
+  String get ok {
+    return Intl.message(
+      'OK',
+      name: 'ok',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Adresse`
+  String get desktopAddress {
+    return Intl.message(
+      'Adresse',
+      name: 'desktopAddress',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Port`
+  String get desktopPort {
+    return Intl.message(
+      'Port',
+      name: 'desktopPort',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Scannez ce QR code depuis ABAK Mobile pour configurer automatiquement la connexion au Desktop.`
+  String get pairPhoneInstructions {
+    return Intl.message(
+      'Scannez ce QR code depuis ABAK Mobile pour configurer automatiquement la connexion au Desktop.',
+      name: 'pairPhoneInstructions',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Paramètres utilisateur`
+  String get userPreferences {
+    return Intl.message(
+      'Paramètres utilisateur',
+      name: 'userPreferences',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Langue de l'application`
+  String get applicationLanguage {
+    return Intl.message(
+      'Langue de l\'application',
+      name: 'applicationLanguage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Langue enregistrée.`
+  String get languageSaved {
+    return Intl.message(
+      'Langue enregistrée.',
+      name: 'languageSaved',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Dossier d'échange ABAK`
+  String get exchangeDirectory {
+    return Intl.message(
+      'Dossier d\'échange ABAK',
+      name: 'exchangeDirectory',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Chargement...`
+  String get loading {
+    return Intl.message(
+      'Chargement...',
+      name: 'loading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Aucun dossier défini`
+  String get noDirectoryDefined {
+    return Intl.message(
+      'Aucun dossier défini',
+      name: 'noDirectoryDefined',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Ouvrir`
+  String get open {
+    return Intl.message(
+      'Ouvrir',
+      name: 'open',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Modifier`
+  String get modify {
+    return Intl.message(
+      'Modifier',
+      name: 'modify',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Réinitialiser`
+  String get reset {
+    return Intl.message(
+      'Réinitialiser',
+      name: 'reset',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Dossier d'échange ABAK mis à jour`
+  String get exchangeDirectoryUpdated {
+    return Intl.message(
+      'Dossier d\'échange ABAK mis à jour',
+      name: 'exchangeDirectoryUpdated',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Dossier d'échange réinitialisé`
+  String get exchangeDirectoryReset {
+    return Intl.message(
+      'Dossier d\'échange réinitialisé',
+      name: 'exchangeDirectoryReset',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Ouverture du dossier d'échange`
+  String get openingExchangeDirectory {
+    return Intl.message(
+      'Ouverture du dossier d\'échange',
+      name: 'openingExchangeDirectory',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Diagnostic Carte Vitale`
+  String get smartCardDiagnostic {
+    return Intl.message(
+      'Diagnostic Carte Vitale',
+      name: 'smartCardDiagnostic',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

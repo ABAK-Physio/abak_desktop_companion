@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'dart:io';
+import '../../generated/l10n.dart';
 
 import 'package:qr_flutter/qr_flutter.dart';
 import '../local_exchange/services/local_exchange_server.dart';
@@ -12,7 +13,6 @@ import '../informations/about.dart';
 import '../practitioners/practitioner_list_screen.dart';
 import '../devices/device_list_screen.dart';
 import '../import_export/abak_import_launcher.dart';
-import '../../generated/l10n.dart';
 import 'package:abak_desktop_companion/features/home/widgets/home_import_summary_card.dart';
 import 'package:abak_desktop_companion/features/home/widgets/recent_imports_card.dart';
 import 'package:abak_desktop_companion/features/home/widgets/system_status_card.dart';
@@ -71,12 +71,12 @@ class _HomeDashboardScreenState
         actions: [
           if (selectedIndex == 0)
             IconButton(
-              tooltip: 'Associer un téléphone',
+              tooltip: S.of(context).pairPhone,
               onPressed: _showDesktopPairingQr,
               icon: const Icon(Icons.qr_code_2_outlined),
             ),
           IconButton(
-            tooltip: 'Actualiser le tableau de bord',
+            tooltip: S.of(context).refreshDashboard,
             onPressed: _refreshDashboard,
             icon: const Icon(Icons.refresh_outlined),
           ),
@@ -94,31 +94,32 @@ class _HomeDashboardScreenState
               });
             },
             labelType: NavigationRailLabelType.all,
-            destinations: const [
+            destinations: [
               NavigationRailDestination(
                 icon: Icon(Icons.dashboard_outlined),
                 selectedIcon: Icon(Icons.dashboard),
-                label: Text('Accueil'),
+                label: Text(S.of(context).home),
               ),
               NavigationRailDestination(
                 icon: Icon(Icons.people_outline),
                 selectedIcon: Icon(Icons.people),
-                label: Text('Patients'),
+                label: Text(S.of(context).patients
+                ),
               ),
               NavigationRailDestination(
                 icon: Icon(Icons.medical_services_outlined),
                 selectedIcon: Icon(Icons.medical_services),
-                label: Text('Kinés'),
+                label: Text(S.of(context).practitioners),
               ),
               NavigationRailDestination(
                 icon: Icon(Icons.devices_other_outlined),
                 selectedIcon: Icon(Icons.devices_other),
-                label: Text('Appareils'),
+                label: Text(S.of(context).devices),
               ),
               NavigationRailDestination(
                 icon: Icon(Icons.folder_outlined),
                 selectedIcon: Icon(Icons.folder),
-                label: Text('Archives'),
+                label: Text(S.of(context).archives),
               ),
               NavigationRailDestination(
                 icon: Icon(Icons.tune_outlined),
@@ -128,12 +129,12 @@ class _HomeDashboardScreenState
               NavigationRailDestination(
                 icon: Icon(Icons.settings_outlined),
                 selectedIcon: Icon(Icons.settings),
-                label: Text('Réglages'),
+                label: Text(S.of(context).settings),
               ),
               NavigationRailDestination(
                 icon: Icon(Icons.info_outline),
                 selectedIcon: Icon(Icons.info),
-                label: Text('Informations'),
+                label: Text(S.of(context).information),
               ),
             ],
           ),
@@ -157,15 +158,14 @@ class _HomeDashboardScreenState
         context: context,
         builder: (dialogContext) {
           return AlertDialog(
-            title: const Text('Adresse IP introuvable'),
-            content: const Text(
-              'Impossible de déterminer l’adresse IP locale du Desktop.\n\n'
-                  'Vérifiez que l’ordinateur est connecté au réseau local.',
+            title: Text(S.of(context).ipAddressNotFound),
+            content: Text(
+              S.of(context).ipAddressNotFoundMessage,
             ),
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(dialogContext).pop(),
-                child: const Text('OK'),
+                child: Text(S.of(context).ok),
               ),
             ],
           );
@@ -185,7 +185,7 @@ class _HomeDashboardScreenState
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
-          title: const Text('Associer un téléphone'),
+          title: Text(S.of(context).pairPhoneDialogTitle),
           content: SizedBox(
             width: 360,
             child: Column(
@@ -199,7 +199,8 @@ class _HomeDashboardScreenState
                 ),
                 const SizedBox(height: 16),
                 SelectableText(
-                  'Adresse : $host\nPort : $port',
+                  '${S.of(context).desktopAddress} : $host\n'
+                      '${S.of(context).desktopPort} : $port',
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 12),
@@ -253,8 +254,8 @@ class _HomeDashboardScreenState
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const Text(
-                    'Station clinique locale ABAK',
+                  Text(
+                    S.of(context).dashboardTitle,
                     style: TextStyle(fontSize: 24),
                   ),
                   const SizedBox(height: 24),
