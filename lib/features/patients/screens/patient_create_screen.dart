@@ -2,6 +2,8 @@
 import 'package:flutter/material.dart';
 
 import '../data/patient_repository.dart';
+import '../../smart_card/models/vitale_identity.dart';
+import '../../smart_card/screens/vitale_identity_screen.dart';
 
 class PatientCreateScreen extends StatefulWidget {
   const PatientCreateScreen({super.key});
@@ -28,6 +30,45 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
     _firstNameController.dispose();
     _birthDateController.dispose();
     super.dispose();
+  }
+
+  Future<void> _readVitaleIdentity() async {
+    if (_saving) return;
+
+    final identity = await Navigator.of(context).push<VitaleIdentity>(
+      MaterialPageRoute(
+        builder: (_) => const VitaleIdentityScreen(),
+      ),
+    );
+
+    if (!mounted || identity == null) return;
+
+    setState(() {
+      if (identity.lastName?.trim().isNotEmpty == true) {
+        _lastNameController.text = identity.lastName!.trim();
+      }
+
+      if (identity.firstName?.trim().isNotEmpty == true) {
+        _firstNameController.text = identity.firstName!.trim();
+      }
+
+      final birthDate = identity.birthDate;
+      if (birthDate != null) {
+        _birthDateController.text =
+            birthDate.toIso8601String().split('T').first;
+      }
+
+      final sexCode = identity.sexCode?.trim().toUpperCase();
+      if (sexCode == 'M' || sexCode == 'F') {
+        _sexCode = sexCode!;
+      }
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Informations patient préremplies depuis la Carte Vitale.'),
+      ),
+    );
   }
 
   Future<void> _save() async {
@@ -90,9 +131,20 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          'Identité du patient',
-                          style: Theme.of(context).textTheme.titleLarge,
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                'Identité du patient',
+                                style: Theme.of(context).textTheme.titleLarge,
+                              ),
+                            ),
+                            OutlinedButton.icon(
+                              onPressed: _saving ? null : _readVitaleIdentity,
+                              icon: const Icon(Icons.credit_card_outlined),
+                              label: const Text('Lire Carte Vitale'),
+                            ),
+                          ],
                         ),
                         const SizedBox(height: 24),
 

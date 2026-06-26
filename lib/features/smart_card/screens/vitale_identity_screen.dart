@@ -58,7 +58,7 @@ class _VitaleIdentityScreenState extends State<VitaleIdentityScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Lire identité Carte Vitale'),
+        title: const Text('Lire identité  Carte Vitale'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
