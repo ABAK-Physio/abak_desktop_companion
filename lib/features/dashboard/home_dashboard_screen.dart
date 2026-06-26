@@ -12,6 +12,7 @@ import '../informations/about.dart';
 import '../practitioners/practitioner_list_screen.dart';
 import '../devices/device_list_screen.dart';
 import '../import_export/abak_import_launcher.dart';
+import '../../generated/l10n.dart';
 import 'package:abak_desktop_companion/features/home/widgets/home_import_summary_card.dart';
 import 'package:abak_desktop_companion/features/home/widgets/recent_imports_card.dart';
 import 'package:abak_desktop_companion/features/home/widgets/system_status_card.dart';
@@ -22,7 +23,12 @@ import 'package:abak_desktop_companion/features/home/widgets/pending_resolution_
 import '../preferences/preferences_screen.dart';
 
 class HomeDashboardScreen extends StatefulWidget {
-  const HomeDashboardScreen({super.key});
+  final VoidCallback onLocaleChanged;
+
+  const HomeDashboardScreen({
+    super.key,
+    required this.onLocaleChanged,
+  });
 
 
   @override
@@ -34,16 +40,18 @@ class _HomeDashboardScreenState
     extends State<HomeDashboardScreen> {
   int selectedIndex = 0;
 
-  final List<String> titles = const [
-    'Accueil',
-    'Patients',
-    'Kinés',
-    'Appareils',
-    'Archives',
-    'Paramètres',
-    'Réglages',
-    'Informations',
-  ];
+  List<String> _titles(BuildContext context) {
+    return [
+      S.of(context).home,
+      S.of(context).patients,
+      'Kinés',
+      'Appareils',
+      'Archives',
+      'Paramètres',
+      'Réglages',
+      'Informations',
+    ];
+  }
 
   AbakImportLauncherResult? lastImportResult;
 
@@ -59,7 +67,7 @@ class _HomeDashboardScreenState
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(titles[selectedIndex]),
+        title: Text(_titles(context)[selectedIndex]),
         actions: [
           if (selectedIndex == 0)
             IconButton(
@@ -309,7 +317,9 @@ class _HomeDashboardScreenState
       case 4:
         return const ReportArchiveScreen();
       case 5:
-        return const PreferencesScreen();
+        return PreferencesScreen(
+          onLanguageChanged: widget.onLocaleChanged,
+        );
       case 6:
         return const SettingsScreen();
       case 7:

@@ -4,7 +4,12 @@ import 'package:flutter/material.dart';
 import '../../core/settings/language_preference_service.dart';
 
 class PreferencesScreen extends StatefulWidget {
-  const PreferencesScreen({super.key});
+  final VoidCallback onLanguageChanged;
+
+  const PreferencesScreen({
+    super.key,
+    required this.onLanguageChanged,
+  });
 
   @override
   State<PreferencesScreen> createState() => _PreferencesScreenState();
@@ -54,6 +59,8 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
     setState(() {
       _languageCode = code;
     });
+
+    widget.onLanguageChanged();
 
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
