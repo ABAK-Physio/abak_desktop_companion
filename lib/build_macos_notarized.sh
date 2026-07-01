@@ -4,9 +4,15 @@ set -euo pipefail
 BUILD_NAME=${1:-"1.0.0"}
 BUILD_NUMBER=${2:-"1"}
 
-TEAM_ID="LP84QVHHSV"
-SIGN_IDENTITY="Developer ID Application: Abak Metrics (LP84QVHHSV)"
-KEYCHAIN_PROFILE="ABAK_Notary"
+CONFIG_FILE="build_macos.env"
+
+if [[ ! -f "${CONFIG_FILE}" ]]; then
+  echo "❌ Fichier de configuration manquant : ${CONFIG_FILE}"
+  echo "Crée ce fichier à la racine du projet avec TEAM_ID, SIGN_IDENTITY et KEYCHAIN_PROFILE."
+  exit 1
+fi
+
+source "${CONFIG_FILE}"
 
 DATE=$(date +%F)
 
