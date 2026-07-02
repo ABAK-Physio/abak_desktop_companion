@@ -1,7 +1,22 @@
 @echo off
-setlocal
+setlocal enabledelayedexpansion
 
 echo === ABAK Desktop Companion - Build Windows Installer ===
+
+echo.
+echo [0/4] Lecture de la version dans pubspec.yaml...
+
+for /f "tokens=2 delims=: " %%A in ('findstr /b "version:" pubspec.yaml') do (
+  set APP_VERSION=%%A
+)
+
+if "%APP_VERSION%"=="" (
+  echo ERREUR: version introuvable dans pubspec.yaml
+  pause
+  exit /b 1
+)
+
+echo Version detectee : %APP_VERSION%
 
 echo.
 echo [1/4] Nettoyage Flutter...
@@ -42,7 +57,7 @@ if not exist "%ISCC%" (
   exit /b 1
 )
 
-call "%ISCC%" installer\windows\abak_desktop_companion.iss
+call "%ISCC%" /DMyAppVersion=%APP_VERSION% installer\windows\abak_desktop_companion.iss
 if errorlevel 1 (
   echo ERREUR pendant la creation de l'installateur
   pause
@@ -51,5 +66,6 @@ if errorlevel 1 (
 
 echo.
 echo === Build termine avec succes ===
+echo Version : %APP_VERSION%
 echo Installateur genere dans build\installer\
 pause

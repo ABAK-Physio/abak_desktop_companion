@@ -330,3 +330,5 @@ La publication d'une release est considérée comme terminée lorsque :
 Cette procédure constitue la méthode officielle de fabrication et de publication des versions d'ABAK Desktop Companion.
 
 Toute évolution de cette procédure devra être documentée dans ce fichier afin de préserver la reproductibilité des publications, la traçabilité des versions et la continuité du projetité du projet.
+
+À ce jour, les versions Windows sont distribuées sans signature numérique. Cette décision est volontaire et tient au fait qu'ABAK Desktop Companion est un logiciel gratuit dont la diffusion reste limitée. La mise en place d'une signature de code sera réévaluée lorsque le contexte de diffusion le justifiera.

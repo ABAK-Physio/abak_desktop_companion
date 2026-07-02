@@ -725,3 +725,16 @@ Cette vérification permet de détecter immédiatement :
 ### Références
 
 Voir **RELEASE_PROCESS.md**, chapitre **7 – Clôture de la release**.
+
+## Signature numérique (évolution future)
+
+WIndows
+
+La chaîne de fabrication Windows est actuellement limitée à :
+
+- compilation Flutter ;
+- création de l'installateur Inno Setup.
+
+La signature numérique de l'installateur n'est volontairement pas mise en œuvre à ce stade du projet.
+
+Lorsque le contexte de diffusion le justifiera, cette étape pourra être ajoutée sans remettre en cause l'architecture générale de la chaîne de fabrication.

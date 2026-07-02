@@ -1,5 +1,7 @@
 #define MyAppName "ABAK Desktop Companion"
-#define MyAppVersion "0.1.0-beta"
+#ifndef MyAppVersion
+  #define MyAppVersion "0.0.0-dev"
+#endif
 #define MyAppPublisher "ABAK Physio"
 #define MyAppExeName "abak_desktop_companion.exe"
 
@@ -18,6 +20,7 @@ SolidCompression=yes
 WizardStyle=modern
 ArchitecturesAllowed=x64compatible
 ArchitecturesInstallIn64BitMode=x64compatible
+
 [Languages]
 Name: "french"; MessagesFile: "compiler:Languages\French.isl"
 
