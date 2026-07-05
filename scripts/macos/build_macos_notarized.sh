@@ -1,3 +1,5 @@
+# Ceci est le script à utiliser pour créer la version macOs de Companion
+# Modifier le numéro de la VERSION BUILD_NAME et le numéro de la release BUILD_Number
 #!/usr/bin/env zsh
 set -euo pipefail
 
@@ -17,10 +19,12 @@ source "${CONFIG_FILE}"
 DATE=$(date +%F)
 
 APP_NAME="abak_desktop_companion"
+APP_ARTIFACT_NAME="ABAK_Desktop_Companion"
+
 APP_PATH="build/macos/Build/Products/Release/${APP_NAME}.app"
 
-ZIP_UNSIGNED="build/${APP_NAME}_${BUILD_NAME}_unsigned.zip"
-ZIP_FINAL="build/${APP_NAME}_${BUILD_NAME}_macOS.zip"
+ZIP_UNSIGNED="build/${APP_ARTIFACT_NAME}_${BUILD_NAME}_macOS_unsigned.zip"
+ZIP_FINAL="build/${APP_ARTIFACT_NAME}_${BUILD_NAME}_macOS.zip"
 
 DEBUG_INFO_DIR="build/debug-info/macos/${DATE}"
 
