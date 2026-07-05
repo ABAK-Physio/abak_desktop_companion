@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'package:path/path.dart';
+import '../data/database_backup_repository.dart';
 import '../../../core/database/database_service.dart';
 import 'local_database_backup_service.dart';
 
@@ -53,6 +55,14 @@ class LocalDatabaseResetService {
       }
 
       await DatabaseService.reopenDatabase();
+
+      await DatabaseBackupRepository().insertBackup(
+        fileName: basename(backupResult.backupPath!),
+        filePath: backupResult.backupPath!,
+        fileSize: await File(backupResult.backupPath!).length(),
+      );
+
+
 
       return LocalDatabaseResetResult.success(
         backupPath: backupResult.backupPath ?? '',
