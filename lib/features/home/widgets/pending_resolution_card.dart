@@ -156,8 +156,18 @@ class _PendingResolutionCardState extends State<PendingResolutionCard> {
   @override
   Widget build(BuildContext context) {
     final files = _files;
+    final accentColor = files.isNotEmpty
+        ? Colors.orange
+        : Colors.green;
 
     return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: BorderSide(
+          color: accentColor,
+          width: 2,
+        ),
+      ),
       child: ExpansionTile(
         key: const PageStorageKey<String>('pending_resolution_card'),
         maintainState: true,
@@ -166,7 +176,7 @@ class _PendingResolutionCardState extends State<PendingResolutionCard> {
           files.isNotEmpty
               ? Icons.medical_information_outlined
               : Icons.check_circle_outline,
-          color: files.isNotEmpty ? Colors.orange : Colors.green,
+          color: accentColor,
         ),
         title: Text(
           'Nouveaux résultats ABAK à associer à un patient',
@@ -180,9 +190,7 @@ class _PendingResolutionCardState extends State<PendingResolutionCard> {
               : '${files.length} import${files.length > 1 ? 's' : ''} en attente d’association',
           style: TextStyle(
             fontWeight: FontWeight.w600,
-            color: files.isNotEmpty
-                ? Colors.orange
-                : Colors.green,
+            color: accentColor,
           ),
         ),
         childrenPadding: const EdgeInsets.fromLTRB(20, 0, 20, 20),

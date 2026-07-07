@@ -1,4 +1,7 @@
 import 'dart:async';
+import 'dart:io';
+
+import 'package:abak_desktop_companion/core/settings/cabinet_identity_service.dart';
 
 import 'package:flutter/material.dart';
 
@@ -18,6 +21,12 @@ class _SystemOverviewBarState extends State<SystemOverviewBar> {
   bool _isLoading = true;
   Timer? _timer;
 
+  final CabinetIdentityService _cabinetIdentityService =
+  const CabinetIdentityService();
+
+  String? _cabinetName;
+  String? _cabinetLogoPath;
+
   String _formatFileSize(int bytes) {
     if (bytes < 1024) return '$bytes o';
 
@@ -32,11 +41,25 @@ class _SystemOverviewBarState extends State<SystemOverviewBar> {
   void initState() {
     super.initState();
     _refresh();
+    _loadCabinetIdentity();
 
     _timer = Timer.periodic(
       const Duration(seconds: 3),
           (_) => _refresh(),
     );
+  }
+
+  Future<void> _loadCabinetIdentity() async {
+    final cabinetName = await _cabinetIdentityService.getCabinetName();
+    final cabinetLogoPath =
+    await _cabinetIdentityService.getCabinetLogoPath();
+
+    if (!mounted) return;
+
+    setState(() {
+      _cabinetName = cabinetName;
+      _cabinetLogoPath = cabinetLogoPath;
+    });
   }
 
   Future<void> _refresh() async {
@@ -190,7 +213,10 @@ class _SystemOverviewBarState extends State<SystemOverviewBar> {
               ),
             ),
             const SizedBox(width: 24),
-            const _CabinetIdentityPanel(),
+            _CabinetIdentityPanel(
+              cabinetName: _cabinetName,
+              logoPath: _cabinetLogoPath,
+            ),
           ],
         ),
       ),
@@ -199,12 +225,21 @@ class _SystemOverviewBarState extends State<SystemOverviewBar> {
 }
 
 class _CabinetIdentityPanel extends StatelessWidget {
-  const _CabinetIdentityPanel();
+  final String? cabinetName;
+  final String? logoPath;
+
+  const _CabinetIdentityPanel({
+    required this.cabinetName,
+    required this.logoPath,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final logoFile = logoPath == null ? null : File(logoPath!);
+    final hasLogo = logoFile != null && logoFile.existsSync();
+
     return Container(
-      width: 260,
+      width: 300,
       padding: const EdgeInsets.only(left: 24),
       decoration: BoxDecoration(
         border: Border(
@@ -216,31 +251,40 @@ class _CabinetIdentityPanel extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.image_outlined,
-            size: 42,
-            color: Theme.of(context).colorScheme.primary,
+          Container(
+            width: 58,
+            height: 58,
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: Theme.of(context).dividerColor,
+              ),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: hasLogo
+                ? ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: Image.file(
+                logoFile,
+                fit: BoxFit.contain,
+              ),
+            )
+                : Icon(
+              Icons.image_outlined,
+              size: 32,
+              color: Theme.of(context).colorScheme.primary,
+            ),
           ),
           const SizedBox(width: 14),
           Flexible(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Nom du cabinet',
-                  overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  'Logo du cabinet',
-                  overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
-              ],
+            child: Text(
+              cabinetName?.trim().isNotEmpty == true
+                  ? cabinetName!.trim()
+                  : 'Nom du cabinet',
+              overflow: TextOverflow.ellipsis,
+              maxLines: 2,
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w700,
+              ),
             ),
           ),
         ],
