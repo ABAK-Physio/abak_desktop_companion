@@ -196,7 +196,7 @@ class _ImportReportCard extends StatelessWidget {
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const Divider(height: 28),
-            Text(_reportText()),
+            _ImportReportMessage(session: session),
             const SizedBox(height: 16),
             _InfoRow(label: 'Début', value: startedLabel),
             _InfoRow(label: 'Fin', value: completedLabel),
@@ -233,26 +233,91 @@ class _ImportReportCard extends StatelessWidget {
       ),
     );
   }
+}
+
+class _ImportReportMessage extends StatelessWidget {
+  final ImportSession session;
+
+  const _ImportReportMessage({
+    required this.session,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final style = _messageStyle(context);
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: style.color.withValues(alpha: 0.10),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: style.color.withValues(alpha: 0.35),
+        ),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(
+            style.icon,
+            color: style.color,
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              _reportText(),
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                color: style.color,
+                height: 1.35,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  _ImportReportMessageStyle _messageStyle(BuildContext context) {
+    if (session.failedFilesCount > 0 || session.status == 'failed') {
+      return _ImportReportMessageStyle(
+        icon: Icons.error_outline,
+        color: Theme.of(context).colorScheme.error,
+      );
+    }
+
+    if (session.status == 'needs_resolution' ||
+        session.conflictResultsCount > 0 ||
+        session.skippedResultsCount > 0 ||
+        session.status == 'completed_with_errors') {
+      return const _ImportReportMessageStyle(
+        icon: Icons.warning_amber_outlined,
+        color: Colors.orange,
+      );
+    }
+
+    return const _ImportReportMessageStyle(
+      icon: Icons.check_circle_outline,
+      color: Colors.green,
+    );
+  }
 
   String _reportText() {
     if (session.status == 'needs_resolution') {
-      return 'Le fichier a été reçu, mais l’import n’a pas encore été finalisé. '
-          'Il reste en attente de résolution dans le flux d’import.';
+      return 'Le fichier a été reçu, mais l’import n’a pas encore été finalisé.';
     }
 
     if (session.failedFilesCount > 0 || session.status == 'failed') {
-      return 'L’import n’a pas pu être terminé correctement. '
-          'Consulter le détail des fichiers pour identifier la cause.';
+      return 'L’import n’a pas pu être terminé correctement. Consulter le détail des fichiers pour identifier la cause.';
     }
 
     if (session.conflictResultsCount > 0) {
-      return 'Un conflit a été détecté entre les données importées et les données déjà présentes. '
-          'Une vérification est recommandée.';
+      return 'Un conflit a été détecté entre les données importées et les données déjà présentes. Une vérification est recommandée.';
     }
 
     if (session.skippedResultsCount > 0 && session.importedResultsCount == 0) {
-      return 'Aucun nouveau résultat n’a été importé. '
-          'Les résultats étaient probablement déjà présents dans Companion.';
+      return 'Aucun nouveau résultat n’a été importé. Les résultats étaient probablement déjà présents dans Companion.';
     }
 
     if (session.skippedResultsCount > 0) {
@@ -262,6 +327,17 @@ class _ImportReportCard extends StatelessWidget {
     return 'L’import est terminé sans anomalie détectée.';
   }
 }
+
+class _ImportReportMessageStyle {
+  final IconData icon;
+  final Color color;
+
+  const _ImportReportMessageStyle({
+    required this.icon,
+    required this.color,
+  });
+}
+
 
 class _ImportFileTile extends StatelessWidget {
   final ImportSessionFile file;
