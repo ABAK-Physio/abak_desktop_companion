@@ -63,7 +63,7 @@ class DatabaseService {
 
     return openDatabase(
       path,
-      version: 3,
+      version: 4,  ///////////////////// numéro de version
       onCreate: (db, version) async {
         await _createAllTables(db);
       },
@@ -99,6 +99,9 @@ class DatabaseService {
             'TEXT NULL',
           );
         }
+        if (oldVersion < 4) {
+          await _createApplicationSettingsTable(db);
+        }
       },
     );
   }
@@ -119,9 +122,9 @@ class DatabaseService {
       );
     }
   }
-
   static Future<void> _createAllTables(Database db) async {
     await _createCoreTables(db);
+    await _createApplicationSettingsTable(db);
     await _createPatientClinicalTables(db);
     await _createCareEpisodeTables(db);
     await _createCareEpisodeNoteTables(db);
@@ -149,6 +152,7 @@ class DatabaseService {
     await db.execute('DROP TABLE IF EXISTS paired_devices');
     await db.execute('DROP TABLE IF EXISTS practitioners');
     await db.execute('DROP TABLE IF EXISTS patients');
+    await db.execute('DROP TABLE IF EXISTS application_settings');
 
     // Nettoyage des anciennes tables si une base de test les contient encore.
     await db.execute('DROP TABLE IF EXISTS mobile_cases');
@@ -210,6 +214,16 @@ class DatabaseService {
           REFERENCES practitioners(practitioner_id)
       )
     ''');
+  }
+
+  static Future<void> _createApplicationSettingsTable(Database db) async {
+    await db.execute('''
+    CREATE TABLE IF NOT EXISTS application_settings (
+      setting_key TEXT PRIMARY KEY,
+      setting_value TEXT NOT NULL,
+      updated_at INTEGER NOT NULL
+    )
+  ''');
   }
 
   static Future<void> _createCareEpisodeTables(Database db) async {

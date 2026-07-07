@@ -1,4 +1,5 @@
-import 'package:shared_preferences/shared_preferences.dart';
+import '../database/database_service.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 class CabinetIdentityService {
   const CabinetIdentityService();
@@ -7,33 +8,68 @@ class CabinetIdentityService {
   static const _cabinetLogoPathKey = 'cabinet_logo_path';
 
   Future<String?> getCabinetName() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString(_cabinetNameKey);
+    return _getValue(_cabinetNameKey);
   }
 
   Future<void> setCabinetName(String value) async {
-    final prefs = await SharedPreferences.getInstance();
     final trimmed = value.trim();
 
     if (trimmed.isEmpty) {
-      await prefs.remove(_cabinetNameKey);
+      await _deleteValue(_cabinetNameKey);
     } else {
-      await prefs.setString(_cabinetNameKey, trimmed);
+      await _setValue(_cabinetNameKey, trimmed);
     }
   }
 
   Future<String?> getCabinetLogoPath() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString(_cabinetLogoPathKey);
+    return _getValue(_cabinetLogoPathKey);
   }
 
   Future<void> setCabinetLogoPath(String path) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_cabinetLogoPathKey, path);
+    await _setValue(_cabinetLogoPathKey, path);
   }
 
   Future<void> clearCabinetLogoPath() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove(_cabinetLogoPathKey);
+    await _deleteValue(_cabinetLogoPathKey);
+  }
+
+  Future<String?> _getValue(String key) async {
+    final db = await DatabaseService.database;
+
+    final rows = await db.query(
+      'application_settings',
+      columns: ['setting_value'],
+      where: 'setting_key = ?',
+      whereArgs: [key],
+      limit: 1,
+    );
+
+    if (rows.isEmpty) return null;
+
+    return rows.first['setting_value'] as String?;
+  }
+
+  Future<void> _setValue(String key, String value) async {
+    final db = await DatabaseService.database;
+
+    await db.insert(
+      'application_settings',
+      {
+        'setting_key': key,
+        'setting_value': value,
+        'updated_at': DateTime.now().millisecondsSinceEpoch,
+      },
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  Future<void> _deleteValue(String key) async {
+    final db = await DatabaseService.database;
+
+    await db.delete(
+      'application_settings',
+      where: 'setting_key = ?',
+      whereArgs: [key],
+    );
   }
 }
