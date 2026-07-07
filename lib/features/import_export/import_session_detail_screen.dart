@@ -35,59 +35,19 @@ class ImportSessionDetailScreen extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(24),
         children: [
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Résumé de la session',
-                    style: Theme.of(context).textTheme.titleLarge,
-                  ),
-                  const Divider(height: 28),
-                  _InfoRow(
-                    label: 'Début',
-                    value: formatter.format(startedDate),
-                  ),
-                  _InfoRow(
-                    label: 'Fin',
-                    value: completedDate == null
-                        ? 'Non terminée'
-                        : formatter.format(completedDate),
-                  ),
-                  _InfoRow(
-                    label: 'Fichiers traités',
-                    value: session.processedFilesCount.toString(),
-                  ),
-                  _InfoRow(
-                    label: 'Fichiers en erreur',
-                    value: session.failedFilesCount.toString(),
-                  ),
-                  _InfoRow(
-                    label: 'Résultats importés',
-                    value: session.importedResultsCount.toString(),
-                  ),
-                  _InfoRow(
-                    label: 'Résultats ignorés',
-                    value: session.skippedResultsCount.toString(),
-                  ),
-                  _InfoRow(
-                    label: 'Conflits détectés',
-                    value: session.conflictResultsCount.toString(),
-                  ),
-                  _InfoRow(
-                    label: 'Métriques importées',
-                    value: session.importedMetricsCount.toString(),
-                  ),
-                  if (session.sourceLabel != null)
-                    _InfoRow(
-                      label: 'Source',
-                      value: session.sourceLabel!,
-                    ),
-                ],
-              ),
-            ),
+          _BusinessSummaryCard(
+            session: session,
+            dateLabel: completedDate == null
+                ? formatter.format(startedDate)
+                : formatter.format(completedDate),
+          ),
+          const SizedBox(height: 16),
+          _ImportReportCard(
+            session: session,
+            startedLabel: formatter.format(startedDate),
+            completedLabel: completedDate == null
+                ? 'Non terminé'
+                : formatter.format(completedDate),
           ),
           const SizedBox(height: 16),
           FutureBuilder<List<ImportSessionFile>>(
@@ -120,7 +80,7 @@ class ImportSessionDetailScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Fichiers traités',
+                        'Fichiers',
                         style: Theme.of(context).textTheme.titleLarge,
                       ),
                       const Divider(height: 28),
@@ -136,6 +96,170 @@ class ImportSessionDetailScreen extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+class _BusinessSummaryCard extends StatelessWidget {
+  final ImportSession session;
+  final String dateLabel;
+
+  const _BusinessSummaryCard({
+    required this.session,
+    required this.dateLabel,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              _statusTitle(session),
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            const SizedBox(height: 4),
+            Text(
+              dateLabel,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
+            ),
+            const Divider(height: 28),
+            _InfoRow(
+              label: 'Patient',
+              value: _valueOrUnknown(session.summaryPatientLabel),
+            ),
+            _InfoRow(
+              label: 'Suivi clinique',
+              value: _valueOrUnknown(session.summaryEpisodeLabel),
+            ),
+            _InfoRow(
+              label: 'Activité importée',
+              value: _valueOrUnknown(session.summaryExercisesLabel),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  static String _statusTitle(ImportSession session) {
+    if (session.status == 'needs_resolution') {
+      return 'Import en attente de résolution';
+    }
+
+    if (session.failedFilesCount > 0 || session.status == 'failed') {
+      return 'Import en échec';
+    }
+
+    if (session.conflictResultsCount > 0 ||
+        session.skippedResultsCount > 0 ||
+        session.status == 'completed_with_errors') {
+      return 'Import terminé avec avertissement';
+    }
+
+    return 'Import réalisé avec succès';
+  }
+
+  static String _valueOrUnknown(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'Non renseigné';
+    }
+    return value;
+  }
+}
+
+class _ImportReportCard extends StatelessWidget {
+  final ImportSession session;
+  final String startedLabel;
+  final String completedLabel;
+
+  const _ImportReportCard({
+    required this.session,
+    required this.startedLabel,
+    required this.completedLabel,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Compte rendu d’import',
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            const Divider(height: 28),
+            Text(_reportText()),
+            const SizedBox(height: 16),
+            _InfoRow(label: 'Début', value: startedLabel),
+            _InfoRow(label: 'Fin', value: completedLabel),
+            _InfoRow(
+              label: 'Fichiers traités',
+              value: session.processedFilesCount.toString(),
+            ),
+            _InfoRow(
+              label: 'Résultats importés',
+              value: session.importedResultsCount.toString(),
+            ),
+            if (session.skippedResultsCount > 0)
+              _InfoRow(
+                label: 'Résultats ignorés',
+                value: session.skippedResultsCount.toString(),
+              ),
+            if (session.conflictResultsCount > 0)
+              _InfoRow(
+                label: 'Conflits détectés',
+                value: session.conflictResultsCount.toString(),
+              ),
+            if (session.failedFilesCount > 0)
+              _InfoRow(
+                label: 'Fichiers en erreur',
+                value: session.failedFilesCount.toString(),
+              ),
+            if (session.sourceLabel != null)
+              _InfoRow(
+                label: 'Source',
+                value: session.sourceLabel!,
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  String _reportText() {
+    if (session.status == 'needs_resolution') {
+      return 'Le fichier a été reçu, mais l’import n’a pas encore été finalisé. '
+          'Il reste en attente de résolution dans le flux d’import.';
+    }
+
+    if (session.failedFilesCount > 0 || session.status == 'failed') {
+      return 'L’import n’a pas pu être terminé correctement. '
+          'Consulter le détail des fichiers pour identifier la cause.';
+    }
+
+    if (session.conflictResultsCount > 0) {
+      return 'Un conflit a été détecté entre les données importées et les données déjà présentes. '
+          'Une vérification est recommandée.';
+    }
+
+    if (session.skippedResultsCount > 0 && session.importedResultsCount == 0) {
+      return 'Aucun nouveau résultat n’a été importé. '
+          'Les résultats étaient probablement déjà présents dans Companion.';
+    }
+
+    if (session.skippedResultsCount > 0) {
+      return 'L’import est terminé. Certains résultats ont été ignorés car ils étaient déjà présents.';
+    }
+
+    return 'L’import est terminé sans anomalie détectée.';
   }
 }
 
@@ -170,9 +294,7 @@ class _ImportFileTile extends StatelessWidget {
       contentPadding: EdgeInsets.zero,
       leading: Icon(
         isError ? Icons.error_outline : Icons.check_circle_outline,
-        color: isError
-            ? Theme.of(context).colorScheme.error
-            : null,
+        color: isError ? Theme.of(context).colorScheme.error : null,
       ),
       title: Text(file.fileName),
       subtitle: Text(
@@ -182,8 +304,7 @@ class _ImportFileTile extends StatelessWidget {
             : '${_formatFileSize(file.fileSize)} · '
             '${file.importedResultsCount} importé(s), '
             '${file.skippedResultsCount} ignoré(s), '
-            '${file.conflictResultsCount} conflit(s), '
-            '${file.importedMetricsCount} métrique(s)',
+            '${file.conflictResultsCount} conflit(s)',
       ),
     );
   }

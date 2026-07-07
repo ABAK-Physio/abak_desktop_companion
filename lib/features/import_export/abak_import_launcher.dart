@@ -43,6 +43,8 @@ class AbakImportLauncher {
       final failedFileNames = <String>[];
       final importedPatientIds = <String>{};
       final importedPatientLabels = <String>{};
+      final importedEpisodeLabels = <String>{};
+      final importedExerciseLabels = <String>{};
 
       for (final pickedFile in result.files) {
         try {
@@ -100,6 +102,14 @@ class AbakImportLauncher {
             careEpisodeId: assignment.careEpisode.careEpisodeId,
           );
 
+          if (summary.summaryEpisodeLabel != null) {
+            importedEpisodeLabels.add(summary.summaryEpisodeLabel!);
+          }
+
+          if (summary.summaryExercisesLabel != null) {
+            importedExerciseLabels.add(summary.summaryExercisesLabel!);
+          }
+
           await importSessionRepository.addFileLog(
             importSessionId: importSessionId,
             fileName: pickedFile.name,
@@ -145,6 +155,15 @@ class AbakImportLauncher {
         skippedResultsCount: totalSkippedResults,
         conflictResultsCount: totalConflictResults,
         importedMetricsCount: totalImportedMetrics,
+        summaryPatientLabel: importedPatientLabels.isEmpty
+            ? null
+            : importedPatientLabels.join(', '),
+        summaryEpisodeLabel: importedEpisodeLabels.isEmpty
+            ? null
+            : importedEpisodeLabels.join(', '),
+        summaryExercisesLabel: importedExerciseLabels.isEmpty
+            ? null
+            : importedExerciseLabels.join(', '),
       );
 
       final launcherResult = AbakImportLauncherResult(
@@ -382,6 +401,9 @@ class AbakImportLauncher {
         skippedResultsCount: summary.skippedResults,
         conflictResultsCount: summary.conflictResults,
         importedMetricsCount: summary.importedMetrics,
+        summaryPatientLabel: summary.summaryPatientLabel,
+        summaryEpisodeLabel: summary.summaryEpisodeLabel,
+        summaryExercisesLabel: summary.summaryExercisesLabel,
       );
 
       await importSessionRepository.markFilesResolvedByPath(filePath);

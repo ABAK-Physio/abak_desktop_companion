@@ -109,6 +109,9 @@ class ImportSessionRepository {
     required int importedMetricsCount,
     required int conflictResultsCount,
     String? status,
+    String? summaryPatientLabel,
+    String? summaryEpisodeLabel,
+    String? summaryExercisesLabel,
   }) async {
     final db = await DatabaseService.database;
 
@@ -122,6 +125,9 @@ class ImportSessionRepository {
         'skipped_results_count': skippedResultsCount,
         'imported_metrics_count': importedMetricsCount,
         'conflict_results_count': conflictResultsCount,
+        'summary_patient_label': summaryPatientLabel,
+        'summary_episode_label': summaryEpisodeLabel,
+        'summary_exercises_label': summaryExercisesLabel,
         'status': status ??
             (failedFilesCount > 0 ? 'completed_with_errors' : 'completed'),
       },

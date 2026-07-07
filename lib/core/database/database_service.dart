@@ -63,7 +63,7 @@ class DatabaseService {
 
     return openDatabase(
       path,
-      version: 2,
+      version: 3,
       onCreate: (db, version) async {
         await _createAllTables(db);
       },
@@ -73,6 +73,29 @@ class DatabaseService {
             db,
             'care_episodes',
             'initial_report_docx_path',
+            'TEXT NULL',
+          );
+        }
+
+        if (oldVersion < 3) {
+          await _addColumnIfMissing(
+            db,
+            'desktop_import_sessions',
+            'summary_patient_label',
+            'TEXT NULL',
+          );
+
+          await _addColumnIfMissing(
+            db,
+            'desktop_import_sessions',
+            'summary_episode_label',
+            'TEXT NULL',
+          );
+
+          await _addColumnIfMissing(
+            db,
+            'desktop_import_sessions',
+            'summary_exercises_label',
             'TEXT NULL',
           );
         }
@@ -374,6 +397,10 @@ class DatabaseService {
 
         source_label TEXT NULL,
         notes TEXT NULL,
+        
+        summary_patient_label TEXT NULL,
+        summary_episode_label TEXT NULL,
+        summary_exercises_label TEXT NULL,
 
         FOREIGN KEY(selected_patient_id)
           REFERENCES patients(patient_id),

@@ -15,6 +15,10 @@ class ImportSession {
   final String status;
   final int conflictResultsCount;
 
+  final String? summaryPatientLabel;
+  final String? summaryEpisodeLabel;
+  final String? summaryExercisesLabel;
+
   const ImportSession({
     required this.importSessionId,
     required this.startedAt,
@@ -28,6 +32,9 @@ class ImportSession {
     required this.notes,
     required this.status,
     required this.conflictResultsCount,
+    required this.summaryPatientLabel,
+    required this.summaryEpisodeLabel,
+    required this.summaryExercisesLabel,
   });
 
   factory ImportSession.fromMap(Map<String, dynamic> map) {
@@ -43,8 +50,10 @@ class ImportSession {
       sourceLabel: map['source_label'] as String?,
       notes: map['notes'] as String?,
       status: map['status'] as String,
-      conflictResultsCount:
-      map['conflict_results_count'] as int,
+      conflictResultsCount: map['conflict_results_count'] as int,
+      summaryPatientLabel: map['summary_patient_label'] as String?,
+      summaryEpisodeLabel: map['summary_episode_label'] as String?,
+      summaryExercisesLabel: map['summary_exercises_label'] as String?,
     );
   }
 }

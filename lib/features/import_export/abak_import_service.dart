@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
-
+import 'package:abak_shared/abak_shared.dart';
 import '../patients/models/patient.dart';
 import '../results/data/desktop_result_repository.dart';
 import '../results/models/desktop_result.dart';
@@ -25,8 +25,23 @@ class AbakImportService {
     int conflictResults = 0;
     int importedMetrics = 0;
 
+    final exerciseLabels = <String>{};
+
+    final summaryPatientLabel = patient.displayName;
+    final summaryEpisodeLabel =
+        package.clinicalEpisode?.pathologyLabel ??
+            package.clinicalEpisode?.episodeId;
+
     for (final rawResult in package.results) {
       final resultMap = rawResult.raw;
+
+      final exoId = resultMap['exoId']?.toString();
+
+      if (exoId != null && exoId.isNotEmpty) {
+        exerciseLabels.add(
+          ClinicalActivityCatalog.displayLabel(exoId),
+        );
+      }
 
       final resultId = resultMap['result_id']?.toString();
 
@@ -190,6 +205,10 @@ class AbakImportService {
       skippedResults: skippedResults,
       conflictResults: conflictResults,
       importedMetrics: importedMetrics,
+      summaryPatientLabel: summaryPatientLabel,
+      summaryEpisodeLabel: summaryEpisodeLabel,
+      summaryExercisesLabel:
+      exerciseLabels.isEmpty ? null : exerciseLabels.join(', '),
     );
   }
 }
@@ -200,10 +219,17 @@ class AbakImportSummary {
   final int conflictResults;
   final int importedMetrics;
 
+  final String? summaryPatientLabel;
+  final String? summaryEpisodeLabel;
+  final String? summaryExercisesLabel;
+
   const AbakImportSummary({
     required this.importedResults,
     required this.skippedResults,
     required this.conflictResults,
     required this.importedMetrics,
+    required this.summaryPatientLabel,
+    required this.summaryEpisodeLabel,
+    required this.summaryExercisesLabel,
   });
 }
