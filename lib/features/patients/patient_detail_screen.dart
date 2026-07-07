@@ -38,6 +38,35 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
   final CareEpisodeRepository _careEpisodeRepository =
   CareEpisodeRepository();
 
+  String _formatBirthDate(BuildContext context) {
+    if (widget.patient.birthDate == null) {
+      return 'Non renseignée';
+    }
+
+    final birthDate = DateTime.parse(widget.patient.birthDate!);
+    final now = DateTime.now();
+
+    var age = now.year - birthDate.year;
+
+    if (now.month < birthDate.month ||
+        (now.month == birthDate.month &&
+            now.day < birthDate.day)) {
+      age--;
+    }
+
+    final date = DateFormatUtils.formatIsoDateForDisplay(
+      context,
+      widget.patient.birthDate,
+    );
+
+    return '$date ($age ans)';
+  }
+
+  String _formatPatientTitle() {
+    return '${widget.patient.lastName.toUpperCase()} ${widget.patient.firstName}';
+  }
+
+
   Future<void> _editCareEpisode(CareEpisode episode) async {
     final pathologyController = TextEditingController(
       text: episode.pathologyLabel,
@@ -210,13 +239,11 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final birthDateText = widget.patient.birthDate == null
-        ? 'Non renseignée'
-        : DateFormatUtils.formatIsoDateForDisplay(context, widget.patient.birthDate);
+    final birthDateText = _formatBirthDate(context);
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.patient.displayName),
+        title: Text(_formatPatientTitle()),
       ),
       body: ListView(
         padding: const EdgeInsets.all(24),
@@ -225,11 +252,22 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
             title: 'Informations patient',
             icon: Icons.person_outline,
             children: [
-              _InfoRow(label: 'Nom', value: widget.patient.lastName),
-              _InfoRow(label: 'Prénom', value: widget.patient.firstName),
-              _InfoRow(label: 'Date de naissance', value: birthDateText),
-              _InfoRow(label: 'Sexe', value: widget.patient.sexCode),
-              _InfoRow(label: 'Identifiant local', value: widget.patient.patientId),
+              _InfoRow(
+                label: 'Nom',
+                value: widget.patient.lastName.toUpperCase(),
+              ),
+              _InfoRow(
+                label: 'Prénom',
+                value: widget.patient.firstName,
+              ),
+              _InfoRow(
+                label: 'Né(e) le',
+                value: birthDateText,
+              ),
+              _InfoRow(
+                label: 'Sexe',
+                value: widget.patient.sexCode,
+              ),
               const SizedBox(height: 16),
             ],
           ),
@@ -255,8 +293,6 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
               });
             },
           ),
-
-
         ],
       ),
     );
@@ -425,75 +461,84 @@ class _PatientClinicalDataSection extends StatelessWidget {
             else if (snapshot.hasError)
               Text('Erreur : ${snapshot.error}')
             else ...[
-                Text(
-                  'Identité administrative',
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-                const SizedBox(height: 8),
-                _InfoRow(
-                  label: 'Identifiant national',
-                  value: data?.identity?.nationalHealthId ?? 'Non renseigné',
-                ),
-                _InfoRow(
-                  label: 'Pays système santé',
-                  value: data?.identity?.healthSystemCountry ?? 'Non renseigné',
-                ),
-                _InfoRow(
-                  label: 'Source identité',
-                  value: data?.identity?.identitySource ?? 'Non renseigné',
-                ),
-                _InfoRow(
-                  label: 'Téléphone',
-                  value: data?.identity?.phone ?? 'Non renseigné',
-                ),
-                _InfoRow(
-                  label: 'Email',
-                  value: data?.identity?.email ?? 'Non renseigné',
-                ),
-                _InfoRow(
-                  label: 'Adresse',
-                  value: data?.identity?.address ?? 'Non renseigné',
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  'Profil patient',
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-                const SizedBox(height: 8),
-                _InfoRow(
-                  label: 'Côté dominant',
-                  value: _attributeValue(
-                    data?.attributes ?? [],
-                    'dominant_side',
-                  ),
-                ),
-                _InfoRow(
-                  label: 'Profession',
-                  value: _attributeValue(
-                    data?.attributes ?? [],
-                    'profession',
-                  ),
-                ),
-                _InfoRow(
-                  label: 'Activité sportive',
-                  value: _attributeValue(
-                    data?.attributes ?? [],
-                    'sport',
-                  ),
-                ),
-                _InfoRow(
-                  label: 'Taille',
-                  value: _attributeValue(
-                    data?.attributes ?? [],
-                    'height_cm',
-                  ),
-                ),
-                _InfoRow(
-                  label: 'Poids',
-                  value: _attributeValue(
-                    data?.attributes ?? [],
-                    'weight_kg',
-                  ),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: _ClinicalDataColumn(
+                        title: 'Identité administrative',
+                        children: [
+                          _InfoRow(
+                            label: 'Identifiant national',
+                            value: data?.identity?.nationalHealthId ?? 'Non renseigné',
+                          ),
+                          _InfoRow(
+                            label: 'Pays système santé',
+                            value: data?.identity?.healthSystemCountry ?? 'Non renseigné',
+                          ),
+                          _InfoRow(
+                            label: 'Source identité',
+                            value: data?.identity?.identitySource ?? 'Non renseigné',
+                          ),
+                          _InfoRow(
+                            label: 'Téléphone',
+                            value: data?.identity?.phone ?? 'Non renseigné',
+                          ),
+                          _InfoRow(
+                            label: 'Email',
+                            value: data?.identity?.email ?? 'Non renseigné',
+                          ),
+                          _InfoRow(
+                            label: 'Adresse',
+                            value: data?.identity?.address ?? 'Non renseigné',
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 32),
+                    Expanded(
+                      child: _ClinicalDataColumn(
+                        title: 'Profil patient',
+                        children: [
+                          _InfoRow(
+                            label: 'Côté dominant',
+                            value: _attributeValue(
+                              data?.attributes ?? [],
+                              'dominant_side',
+                            ),
+                          ),
+                          _InfoRow(
+                            label: 'Profession',
+                            value: _attributeValue(
+                              data?.attributes ?? [],
+                              'profession',
+                            ),
+                          ),
+                          _InfoRow(
+                            label: 'Activité sportive',
+                            value: _attributeValue(
+                              data?.attributes ?? [],
+                              'sport',
+                            ),
+                          ),
+                          _InfoRow(
+                            label: 'Taille',
+                            value: _attributeValue(
+                              data?.attributes ?? [],
+                              'height_cm',
+                            ),
+                          ),
+                          _InfoRow(
+                            label: 'Poids',
+                            value: _attributeValue(
+                              data?.attributes ?? [],
+                              'weight_kg',
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ],
           ],
@@ -509,6 +554,31 @@ class _PatientClinicalDataSection extends StatelessWidget {
     return _PatientClinicalData(
       identity: identity,
       attributes: attributes,
+    );
+  }
+}
+
+class _ClinicalDataColumn extends StatelessWidget {
+  final String title;
+  final List<Widget> children;
+
+  const _ClinicalDataColumn({
+    required this.title,
+    required this.children,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
+        const SizedBox(height: 8),
+        ...children,
+      ],
     );
   }
 }
