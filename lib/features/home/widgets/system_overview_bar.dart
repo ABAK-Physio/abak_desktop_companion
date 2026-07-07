@@ -41,8 +41,7 @@ class _SystemOverviewBarState extends State<SystemOverviewBar> {
 
   Future<void> _refresh() async {
     try {
-      final newHealth =
-      await const SystemHealthService().loadSnapshot();
+      final newHealth = await const SystemHealthService().loadSnapshot();
 
       if (!mounted) return;
 
@@ -82,7 +81,6 @@ class _SystemOverviewBarState extends State<SystemOverviewBar> {
     return [
       health.databaseSizeBytes,
       alertCount,
-      health.importsCount,
       health.activePatientsCount,
       health.archivedPatientsCount,
       health.backupsCount,
@@ -152,47 +150,100 @@ class _SystemOverviewBarState extends State<SystemOverviewBar> {
       child: Padding(
         padding: const EdgeInsets.symmetric(
           horizontal: 20,
-          vertical: 14,
+          vertical: 16,
         ),
-        child: Wrap(
-          spacing: 16,
-          runSpacing: 12,
+        child: Row(
           children: [
-            _OverviewItem(
-              icon: Icons.storage_outlined,
-              label: 'Base locale',
-              value: _formatFileSize(health.databaseSizeBytes),
-              color: Colors.green,
+            Expanded(
+              child: Wrap(
+                spacing: 18,
+                runSpacing: 14,
+                children: [
+                  _OverviewItem(
+                    icon: Icons.storage_outlined,
+                    label: 'Base locale',
+                    value: _formatFileSize(health.databaseSizeBytes),
+                  ),
+                  _OverviewItem(
+                    icon: Icons.people_outline,
+                    label: 'Patients actifs',
+                    value: health.activePatientsCount.toString(),
+                  ),
+                  _OverviewItem(
+                    icon: Icons.archive_outlined,
+                    label: 'Patients archivés',
+                    value: health.archivedPatientsCount.toString(),
+                  ),
+                  _OverviewItem(
+                    icon: Icons.backup_outlined,
+                    label: 'Sauvegardes',
+                    value:
+                    '${health.backupsCount} · ${_formatFileSize(health.backupsTotalSizeBytes)}',
+                  ),
+                  _OverviewItem(
+                    icon: Icons.warning_amber_outlined,
+                    label: 'Alertes',
+                    value: alertCount.toString(),
+                    color: alertCount > 0 ? Colors.orange : Colors.green,
+                  ),
+                ],
+              ),
             ),
-            _OverviewItem(
-              icon: Icons.warning_amber_outlined,
-              label: 'Alertes',
-              value: alertCount.toString(),
-              color: alertCount > 0 ? Colors.orange : Colors.green,
-            ),
-            _OverviewItem(
-              icon: Icons.history_outlined,
-              label: 'Imports',
-              value: health.importsCount.toString(),
-            ),
-            _OverviewItem(
-              icon: Icons.people_outline,
-              label: 'Patients actifs',
-              value: health.activePatientsCount.toString(),
-            ),
-            _OverviewItem(
-              icon: Icons.archive_outlined,
-              label: 'Archivés',
-              value: health.archivedPatientsCount.toString(),
-            ),
-            _OverviewItem(
-              icon: Icons.backup_outlined,
-              label: 'Sauvegardes',
-              value:
-              '${health.backupsCount} · ${_formatFileSize(health.backupsTotalSizeBytes)}',
-            ),
+            const SizedBox(width: 24),
+            const _CabinetIdentityPanel(),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _CabinetIdentityPanel extends StatelessWidget {
+  const _CabinetIdentityPanel();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 260,
+      padding: const EdgeInsets.only(left: 24),
+      decoration: BoxDecoration(
+        border: Border(
+          left: BorderSide(
+            color: Theme.of(context).dividerColor,
+          ),
+        ),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.image_outlined,
+            size: 42,
+            color: Theme.of(context).colorScheme.primary,
+          ),
+          const SizedBox(width: 14),
+          Flexible(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Nom du cabinet',
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'Logo du cabinet',
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -218,38 +269,39 @@ class _OverviewItem extends StatelessWidget {
 
     return ConstrainedBox(
       constraints: const BoxConstraints(
-        minWidth: 190,
-        maxWidth: 280,
+        minWidth: 140,
+        maxWidth: 210,
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(
             icon,
-            size: 18,
+            size: 22,
             color: effectiveColor,
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: 10),
           Flexible(
-            child: Text.rich(
-              TextSpan(
-                children: [
-                  TextSpan(
-                    text: '$label : ',
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w600,
-                    ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    fontWeight: FontWeight.w600,
                   ),
-                  TextSpan(
-                    text: value,
-                    style: TextStyle(
-                      color: effectiveColor,
-                      fontWeight: FontWeight.w700,
-                    ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  value,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    color: effectiveColor,
+                    fontWeight: FontWeight.w700,
                   ),
-                ],
-              ),
-              overflow: TextOverflow.ellipsis,
+                ),
+              ],
             ),
           ),
         ],

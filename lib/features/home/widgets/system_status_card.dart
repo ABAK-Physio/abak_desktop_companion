@@ -4,7 +4,6 @@ import 'package:intl/intl.dart';
 import '../../import_export/data/import_session_repository.dart';
 import '../../import_export/models/import_session.dart';
 import '../../patients/services/patient_purge_service.dart';
-
 import '../../maintenance/data/database_backup_repository.dart';
 import '../../maintenance/models/database_backup.dart';
 
@@ -15,8 +14,7 @@ class SystemStatusCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final importRepository = ImportSessionRepository();
     final patientPurgeService = PatientPurgeService();
-    final backupRepository =
-    DatabaseBackupRepository();
+    final backupRepository = DatabaseBackupRepository();
 
     return Card(
       child: Padding(
@@ -38,6 +36,10 @@ class SystemStatusCard extends StatelessWidget {
                 ? null
                 : data[1] as PatientPurgePreview;
 
+            final lastBackup = data == null
+                ? null
+                : data[2] as DatabaseBackup?;
+
             final failedImports = sessions
                 .where(
                   (session) =>
@@ -48,13 +50,14 @@ class SystemStatusCard extends StatelessWidget {
 
             final conflictCount = sessions.fold<int>(
               0,
-                  (total, session) =>
-              total + session.conflictResultsCount,
+                  (total, session) => total + session.conflictResultsCount,
             );
 
-            final lastBackup = data == null
-                ? null
-                : data[2] as DatabaseBackup?;
+            final hasWarning =
+                failedImports > 0 ||
+                    conflictCount > 0 ||
+                    (purgePreview?.hasPurgeablePatients ?? false) ||
+                    lastBackup == null;
 
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -76,26 +79,18 @@ class SystemStatusCard extends StatelessWidget {
                     child: Center(child: CircularProgressIndicator()),
                   )
                 else ...[
+                  _GeneralStatusLine(hasWarning: hasWarning),
+                  const Divider(height: 28),
                   _StatusLine(
-                    label: 'Base locale',
-                    value: 'Active',
-                    icon: Icons.storage_outlined,
-                  ),
-                  _StatusLine(
-                    label: 'Imports enregistrés',
-                    value: sessions.length.toString(),
-                    icon: Icons.history_outlined,
-                  ),
-                  _StatusLine(
-                    label: 'Imports avec erreur',
+                    label: 'Imports à vérifier',
                     value: failedImports.toString(),
                     icon: Icons.error_outline,
                     isWarning: failedImports > 0,
                   ),
                   _StatusLine(
-                    label: 'Conflits détectés',
+                    label: 'Patients à associer',
                     value: conflictCount.toString(),
-                    icon: Icons.report_problem_outlined,
+                    icon: Icons.person_search_outlined,
                     isWarning: conflictCount > 0,
                   ),
                   if (purgePreview != null) ...[
@@ -106,39 +101,74 @@ class SystemStatusCard extends StatelessWidget {
                       icon: Icons.archive_outlined,
                     ),
                     _StatusLine(
-                      label: 'Patients purgeables',
+                      label: 'Dossiers supprimables',
                       value: purgePreview.purgeablePatients.toString(),
                       icon: Icons.delete_sweep_outlined,
                       isWarning: purgePreview.hasPurgeablePatients,
                     ),
-                    _StatusLine(
-                      label: 'Rétention corbeille',
-                      value: '${purgePreview.retentionDays} jours',
-                      icon: Icons.schedule_outlined,
-                    ),
-                    const Divider(height: 28),
-
-                    _StatusLine(
-                      label: 'Dernière sauvegarde',
-                      value: lastBackup == null
-                          ? 'Aucune'
-                          : DateFormat(
-                        'dd/MM/yyyy HH:mm',
-                      ).format(
-                        DateTime.fromMillisecondsSinceEpoch(
-                          lastBackup.createdAt,
-                        ),
-                      ),
-                      icon: Icons.save_outlined,
-                      isWarning: lastBackup == null,
-                    ),
                   ],
+                  const Divider(height: 28),
+                  _StatusLine(
+                    label: 'Dernière sauvegarde',
+                    value: _formatLastBackup(lastBackup),
+                    icon: Icons.save_outlined,
+                    isWarning: lastBackup == null,
+                  ),
                 ],
               ],
             );
           },
         ),
       ),
+    );
+  }
+
+  String _formatLastBackup(DatabaseBackup? lastBackup) {
+    if (lastBackup == null) {
+      return 'Aucune';
+    }
+
+    return DateFormat('dd/MM/yyyy HH:mm').format(
+      DateTime.fromMillisecondsSinceEpoch(lastBackup.createdAt),
+    );
+  }
+}
+
+class _GeneralStatusLine extends StatelessWidget {
+  final bool hasWarning;
+
+  const _GeneralStatusLine({
+    required this.hasWarning,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final color = hasWarning
+        ? Theme.of(context).colorScheme.error
+        : Colors.green;
+
+    return Row(
+      children: [
+        Icon(
+          hasWarning
+              ? Icons.warning_amber_outlined
+              : Icons.check_circle_outline,
+          size: 22,
+          color: color,
+        ),
+        const SizedBox(width: 10),
+        Expanded(
+          child: Text(
+            hasWarning
+                ? 'Une intervention est nécessaire'
+                : 'Tout fonctionne normalement',
+            style: TextStyle(
+              fontWeight: FontWeight.w600,
+              color: color,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

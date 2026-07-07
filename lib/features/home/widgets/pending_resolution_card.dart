@@ -169,13 +169,21 @@ class _PendingResolutionCardState extends State<PendingResolutionCard> {
           color: files.isNotEmpty ? Colors.orange : Colors.green,
         ),
         title: Text(
-          'Nouveaux résultats ABAK',
-          style: Theme.of(context).textTheme.titleMedium,
+          'Nouveaux résultats ABAK à associer à un patient',
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+            fontWeight: FontWeight.w700,
+          ),
         ),
         subtitle: Text(
           files.isEmpty
               ? 'Aucun import en attente'
               : '${files.length} import${files.length > 1 ? 's' : ''} en attente d’association',
+          style: TextStyle(
+            fontWeight: FontWeight.w600,
+            color: files.isNotEmpty
+                ? Colors.orange
+                : Colors.green,
+          ),
         ),
         childrenPadding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
         children: [

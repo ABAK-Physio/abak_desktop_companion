@@ -13,7 +13,6 @@ import '../informations/about.dart';
 import '../practitioners/practitioner_list_screen.dart';
 import '../devices/device_list_screen.dart';
 import '../import_export/abak_import_launcher.dart';
-import 'package:abak_desktop_companion/features/home/widgets/home_import_summary_card.dart';
 import 'package:abak_desktop_companion/features/home/widgets/recent_imports_card.dart';
 import 'package:abak_desktop_companion/features/home/widgets/system_status_card.dart';
 import 'package:abak_desktop_companion/features/home/widgets/system_alerts_card.dart';
@@ -66,24 +65,6 @@ class _HomeDashboardScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(_titles(context)[selectedIndex]),
-        actions: [
-          if (selectedIndex == 0)
-            IconButton(
-              tooltip: S.of(context).pairPhone,
-              onPressed: _showDesktopPairingQr,
-              icon: const Icon(Icons.qr_code_2_outlined),
-            ),
-          IconButton(
-            tooltip: S.of(context).refreshDashboard,
-            onPressed: _refreshDashboard,
-            icon: const Icon(Icons.refresh_outlined),
-          ),
-          const SizedBox(width: 12),
-        ],
-
-      ),
       body: Row(
         children: [
           NavigationRail(
@@ -246,60 +227,59 @@ class _HomeDashboardScreenState
   Widget _buildContent() {
     switch (selectedIndex) {
       case 0:
-        return SingleChildScrollView(
-          padding: const EdgeInsets.all(32),
-          child: Center(
+        return Align(
+          alignment: Alignment.topLeft,
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(24, 4, 24, 24),
             child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 1120),
+              constraints: const BoxConstraints(maxWidth: 1700),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Text(
-                    S.of(context).dashboardTitle,
-                    style: TextStyle(fontSize: 24),
+                  _DashboardHeader(
+                    title: _titles(context)[selectedIndex],
+                    onPairPhone: _showDesktopPairingQr,
+                    onRefresh: _refreshDashboard,
                   ),
+                  const SizedBox(height: 8),
+                  const SystemOverviewBar(),
                   const SizedBox(height: 24),
-                  SystemOverviewBar(),
-
-                  const SizedBox(height: 24),
-                  Wrap(
-                    spacing: 24,
-                    runSpacing: 24,
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      if (lastImportResult != null)
-                        SizedBox(
-                          width: 520,
-                          child: HomeImportSummaryCard(
-                            result: lastImportResult!,
-                          ),
-                        ),
-                      const SizedBox(
-                        width: 520,
+                      const Expanded(
+                        flex: 2,
                         child: RecentImportsCard(),
                       ),
-                      const SizedBox(
-                        width: 520,
-                        child: SystemStatusCard(),
+                      const SizedBox(width: 24),
+                      Expanded(
+                        flex: 2,
+                        child: Column(
+                          children: const [
+                            SystemStatusCard(),
+                            SizedBox(height: 24),
+                            PendingResolutionCard(),
+                          ],
+                        ),
                       ),
-                      const SizedBox(
-                        width: 520,
-                        child: SystemAlertsCard(),
-                      ),
-                      const SizedBox(
-                        width: 520,
-                        child: PendingResolutionCard(),
-                      ),
-                      SizedBox(
-                        width: 520,
-                        child: QuickActionsCard(
-                          onImportCompleted: (result) {
-                            setState(() {
-                              lastImportResult = result;
-                            });
-                          },
-                          onMaintenanceCompleted: () {
-                            setState(() {});
-                          },
+                      const SizedBox(width: 24),
+                      Expanded(
+                        flex: 2,
+                        child: Column(
+                          children: [
+                            const SystemAlertsCard(),
+                            const SizedBox(height: 24),
+                            QuickActionsCard(
+                              onImportCompleted: (result) {
+                                setState(() {
+                                  lastImportResult = result;
+                                });
+                              },
+                              onMaintenanceCompleted: () {
+                                setState(() {});
+                              },
+                            ),
+                          ],
                         ),
                       ),
                     ],
@@ -328,5 +308,42 @@ class _HomeDashboardScreenState
       default:
         return const SizedBox.shrink();
     }
+  }
+}
+class _DashboardHeader extends StatelessWidget {
+  final String title;
+  final VoidCallback onPairPhone;
+  final VoidCallback onRefresh;
+
+  const _DashboardHeader({
+    required this.title,
+    required this.onPairPhone,
+    required this.onRefresh,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 32,
+      child: Row(
+        children: [
+          Text(
+            title,
+            style: Theme.of(context).textTheme.headlineSmall,
+          ),
+          const Spacer(),
+          IconButton(
+            tooltip: S.of(context).pairPhone,
+            onPressed: onPairPhone,
+            icon: const Icon(Icons.qr_code_2_outlined),
+          ),
+          IconButton(
+            tooltip: S.of(context).refreshDashboard,
+            onPressed: onRefresh,
+            icon: const Icon(Icons.refresh_outlined),
+          ),
+        ],
+      ),
+    );
   }
 }
