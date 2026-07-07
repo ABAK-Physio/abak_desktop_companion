@@ -5,7 +5,6 @@ import '../../import_export/import_history_screen.dart';
 import '../../maintenance/backup_history_screen.dart';
 import '../../maintenance/services/local_database_backup_service.dart';
 import '../../maintenance/services/local_database_reset_service.dart';
-import '../../patients/screens/contact_form_template_diagnostic_screen.dart';
 
 class QuickActionsCard extends StatelessWidget {
   final ValueChanged<AbakImportLauncherResult>? onImportCompleted;
@@ -16,6 +15,33 @@ class QuickActionsCard extends StatelessWidget {
     this.onImportCompleted,
     this.onMaintenanceCompleted,
   });
+
+  Widget _actionButton({
+    required VoidCallback onPressed,
+    required IconData icon,
+    required String label,
+    bool primary = false,
+    Color? foregroundColor,
+  }) {
+    if (primary) {
+      return FilledButton.icon(
+        onPressed: onPressed,
+        icon: Icon(icon),
+        label: Text(label),
+      );
+    }
+
+    return OutlinedButton.icon(
+      onPressed: onPressed,
+      style: foregroundColor == null
+          ? null
+          : OutlinedButton.styleFrom(
+        foregroundColor: foregroundColor,
+      ),
+      icon: Icon(icon),
+      label: Text(label),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +66,8 @@ class QuickActionsCard extends StatelessWidget {
               spacing: 12,
               runSpacing: 12,
               children: [
-                FilledButton.icon(
+                _actionButton(
+                  primary: true,
                   onPressed: () async {
                     final result =
                     await AbakImportLauncher.importArchiveFromPicker(
@@ -51,10 +78,10 @@ class QuickActionsCard extends StatelessWidget {
                       onImportCompleted?.call(result);
                     }
                   },
-                  icon: const Icon(Icons.file_upload_outlined),
-                  label: const Text('Importer'),
+                  icon: Icons.file_upload_outlined,
+                  label: 'Importer',
                 ),
-                OutlinedButton.icon(
+                _actionButton(
                   onPressed: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
@@ -62,22 +89,10 @@ class QuickActionsCard extends StatelessWidget {
                       ),
                     );
                   },
-                  icon: const Icon(Icons.history_outlined),
-                  label: const Text('Historique'),
+                  icon: Icons.history_outlined,
+                  label: 'Historique',
                 ),
-                OutlinedButton.icon(
-                  onPressed: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) =>
-                        const ContactFormTemplateDiagnosticScreen(),
-                      ),
-                    );
-                  },
-                  icon: const Icon(Icons.cleaning_services_outlined),
-                  label: const Text('Maintenance'),
-                ),
-                OutlinedButton.icon(
+                _actionButton(
                   onPressed: () async {
                     final result =
                     await LocalDatabaseBackupService().createBackup();
@@ -88,8 +103,8 @@ class QuickActionsCard extends StatelessWidget {
                       SnackBar(
                         content: Text(
                           result.success
-                              ? 'Sauvegarde créée : ${result.backupPath}'
-                              : 'Erreur sauvegarde : ${result.error}',
+                              ? 'Sauvegarde créée avec succès.'
+                              : 'Erreur lors de la sauvegarde : ${result.error}',
                         ),
                       ),
                     );
@@ -98,13 +113,22 @@ class QuickActionsCard extends StatelessWidget {
                       onMaintenanceCompleted?.call();
                     }
                   },
-                  icon: const Icon(Icons.save_outlined),
-                  label: const Text('Sauvegarde SQLite'),
+                  icon: Icons.save_outlined,
+                  label: 'Créer une sauvegarde',
                 ),
-                OutlinedButton.icon(
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: Colors.red,
-                  ),
+                _actionButton(
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => const BackupHistoryScreen(),
+                      ),
+                    );
+                  },
+                  icon: Icons.folder_copy_outlined,
+                  label: 'Gérer les sauvegardes',
+                ),
+                _actionButton(
+                  foregroundColor: Colors.red,
                   onPressed: () async {
                     final messenger = ScaffoldMessenger.of(context);
 
@@ -205,8 +229,8 @@ class QuickActionsCard extends StatelessWidget {
                       SnackBar(
                         content: Text(
                           result.success
-                              ? 'Base réinitialisée. Sauvegarde : ${result.backupPath}'
-                              : 'Erreur reset : ${result.error}',
+                              ? 'Base réinitialisée. Sauvegarde automatique créée.'
+                              : 'Erreur lors de la réinitialisation : ${result.error}',
                         ),
                       ),
                     );
@@ -215,19 +239,8 @@ class QuickActionsCard extends StatelessWidget {
                       onMaintenanceCompleted?.call();
                     }
                   },
-                  icon: const Icon(Icons.restart_alt_outlined),
-                  label: const Text('Réinitialiser DB'),
-                ),
-                OutlinedButton.icon(
-                  onPressed: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => const BackupHistoryScreen(),
-                      ),
-                    );
-                  },
-                  icon: const Icon(Icons.folder_copy_outlined),
-                  label: const Text('Sauvegardes'),
+                  icon: Icons.restart_alt_outlined,
+                  label: 'Réinitialiser la base',
                 ),
               ],
             ),
