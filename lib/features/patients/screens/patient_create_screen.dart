@@ -1,5 +1,6 @@
 // Gestion du flux métier patient - épisode
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import '../data/patient_repository.dart';
 import '../../smart_card/models/vitale_identity.dart';
@@ -32,6 +33,41 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
     super.dispose();
   }
 
+  DateFormat _birthDateDisplayFormat(BuildContext context) {
+    final locale = Localizations.localeOf(context).toString();
+    return DateFormat.yMd(locale);
+  }
+
+  String _toIsoDate(DateTime date) {
+    return DateFormat('yyyy-MM-dd').format(date);
+  }
+
+  Future<void> _selectBirthDate() async {
+    if (_saving) return;
+
+    final now = DateTime.now();
+
+    final selectedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime(now.year - 30),
+      firstDate: DateTime(1900),
+      lastDate: now,
+    );
+
+    if (selectedDate == null || !mounted) return;
+
+    _birthDateController.text =
+        _birthDateDisplayFormat(context).format(selectedDate);
+  }
+
+  String? _birthDateToIsoOrNull() {
+    final text = _birthDateController.text.trim();
+    if (text.isEmpty) return null;
+
+    final parsedDate = _birthDateDisplayFormat(context).parseStrict(text);
+    return _toIsoDate(parsedDate);
+  }
+
   Future<void> _readVitaleIdentity() async {
     if (_saving) return;
 
@@ -55,7 +91,7 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
       final birthDate = identity.birthDate;
       if (birthDate != null) {
         _birthDateController.text =
-            birthDate.toIso8601String().split('T').first;
+            _birthDateDisplayFormat(context).format(birthDate);
       }
 
       final sexCode = identity.sexCode?.trim().toUpperCase();
@@ -87,9 +123,7 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
       await _patientRepository.createPatient(
         lastName: _lastNameController.text.trim(),
         firstName: _firstNameController.text.trim(),
-        birthDate: _birthDateController.text.trim().isEmpty
-            ? null
-            : _birthDateController.text.trim(),
+        birthDate: _birthDateToIsoOrNull(),
         sexCode: _sexCode,
       );
 
@@ -186,10 +220,12 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
                           controller: _birthDateController,
                           decoration: const InputDecoration(
                             labelText: 'Date de naissance',
-                            hintText: 'YYYY-MM-DD',
+                            hintText: 'JJ/MM/AAAA',
                             border: OutlineInputBorder(),
+                            suffixIcon: Icon(Icons.calendar_today_outlined),
                           ),
-                          textInputAction: TextInputAction.next,
+                          readOnly: true,
+                          onTap: _selectBirthDate,
                         ),
 
                         const SizedBox(height: 16),
