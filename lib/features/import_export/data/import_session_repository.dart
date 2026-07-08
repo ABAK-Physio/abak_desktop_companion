@@ -181,4 +181,21 @@ class ImportSessionRepository {
       ],
     );
   }
+  Future<void> deleteSession(String importSessionId) async {
+    final db = await DatabaseService.database;
+
+    await db.transaction((txn) async {
+      await txn.delete(
+        'desktop_import_session_files',
+        where: 'import_session_id = ?',
+        whereArgs: [importSessionId],
+      );
+
+      await txn.delete(
+        'desktop_import_sessions',
+        where: 'import_session_id = ?',
+        whereArgs: [importSessionId],
+      );
+    });
+  }
 }

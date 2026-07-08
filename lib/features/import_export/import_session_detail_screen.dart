@@ -4,6 +4,88 @@ import 'package:intl/intl.dart';
 import 'data/import_session_repository.dart';
 import 'models/import_session.dart';
 import 'models/import_session_file.dart';
+import 'abak_import_launcher.dart';
+
+enum ImportActionKind {
+  associatePatient,
+  deleteImport,
+}
+
+class ImportActionInfo {
+  final String title;
+  final String message;
+  final IconData icon;
+  final Color color;
+  final List<ImportActionKind> actions;
+
+  const ImportActionInfo({
+    required this.title,
+    required this.message,
+    required this.icon,
+    required this.color,
+    required this.actions,
+  });
+
+  bool get canAssociatePatient =>
+      actions.contains(ImportActionKind.associatePatient);
+
+  bool get canDeleteImport =>
+      actions.contains(ImportActionKind.deleteImport);
+}
+
+class ImportActionInfoService {
+  const ImportActionInfoService();
+
+  ImportActionInfo describe(BuildContext context, ImportSession session) {
+    if (session.status == 'needs_resolution') {
+      return const ImportActionInfo(
+        title: 'Association patient requise',
+        message:
+        'Le fichier a bien été reçu. Pour terminer l’import, associez ce dossier à un patient.',
+        icon: Icons.person_search,
+        color: Colors.orange,
+        actions: [
+          ImportActionKind.associatePatient,
+          ImportActionKind.deleteImport,
+        ],
+      );
+    }
+
+    if (session.failedFilesCount > 0 || session.status == 'failed') {
+      return ImportActionInfo(
+        title: 'Import impossible',
+        message:
+        'L’import n’a pas pu être terminé. Consultez le détail des fichiers, puis supprimez cet import s’il ne peut pas être corrigé.',
+        icon: Icons.error_outline,
+        color: Theme.of(context).colorScheme.error,
+        actions: const [
+          ImportActionKind.deleteImport,
+        ],
+      );
+    }
+
+    if (session.conflictResultsCount > 0 ||
+        session.skippedResultsCount > 0 ||
+        session.status == 'completed_with_errors') {
+      return const ImportActionInfo(
+        title: 'Import terminé avec avertissement',
+        message:
+        'L’import est terminé, mais certains résultats ont été ignorés ou nécessitent une vérification.',
+        icon: Icons.warning_amber_outlined,
+        color: Colors.orange,
+        actions: [],
+      );
+    }
+
+    return const ImportActionInfo(
+      title: 'Import réalisé avec succès',
+      message: 'L’import est terminé sans anomalie détectée.',
+      icon: Icons.check_circle_outline,
+      color: Colors.green,
+      actions: [],
+    );
+  }
+}
 
 class ImportSessionDetailScreen extends StatelessWidget {
   final ImportSession session;
@@ -28,18 +110,51 @@ class ImportSessionDetailScreen extends StatelessWidget {
       Localizations.localeOf(context).toLanguageTag(),
     ).add_Hm();
 
+    final actionInfo = const ImportActionInfoService().describe(
+      context,
+      session,
+    );
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Détail import'),
+        title: const Text("Suivi de l'import"),
       ),
       body: ListView(
         padding: const EdgeInsets.all(24),
         children: [
           _BusinessSummaryCard(
             session: session,
+            actionInfo: actionInfo,
             dateLabel: completedDate == null
                 ? formatter.format(startedDate)
                 : formatter.format(completedDate),
+          ),
+          const SizedBox(height: 16),
+          FutureBuilder<List<ImportSessionFile>>(
+            future: repository.getFilesForSession(session.importSessionId),
+            builder: (context, snapshot) {
+              final files = snapshot.data ?? [];
+
+              ImportSessionFile? fileToResolve;
+
+              for (final file in files) {
+                if (file.status == 'needs_resolution') {
+                  fileToResolve = file;
+                  break;
+                }
+              }
+
+              if (actionInfo.actions.isEmpty) {
+                return const SizedBox.shrink();
+              }
+
+              return _ImportActionsBar(
+                session: session,
+                repository: repository,
+                actionInfo: actionInfo,
+                fileToResolve: fileToResolve,
+              );
+            },
           ),
           const SizedBox(height: 16),
           _ImportReportCard(
@@ -54,6 +169,15 @@ class ImportSessionDetailScreen extends StatelessWidget {
             future: repository.getFilesForSession(session.importSessionId),
             builder: (context, snapshot) {
               final files = snapshot.data ?? [];
+
+              ImportSessionFile? fileToResolve;
+
+              for (final file in files) {
+                if (file.status == 'needs_resolution') {
+                  fileToResolve = file;
+                  break;
+                }
+              }
 
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(
@@ -79,6 +203,7 @@ class ImportSessionDetailScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+
                       Text(
                         'Fichiers',
                         style: Theme.of(context).textTheme.titleLarge,
@@ -101,10 +226,12 @@ class ImportSessionDetailScreen extends StatelessWidget {
 
 class _BusinessSummaryCard extends StatelessWidget {
   final ImportSession session;
+  final ImportActionInfo actionInfo;
   final String dateLabel;
 
   const _BusinessSummaryCard({
     required this.session,
+    required this.actionInfo,
     required this.dateLabel,
   });
 
@@ -117,7 +244,7 @@ class _BusinessSummaryCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              _statusTitle(session),
+              actionInfo.title,
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 4),
@@ -146,27 +273,9 @@ class _BusinessSummaryCard extends StatelessWidget {
     );
   }
 
-  static String _statusTitle(ImportSession session) {
-    if (session.status == 'needs_resolution') {
-      return 'Import en attente de résolution';
-    }
-
-    if (session.failedFilesCount > 0 || session.status == 'failed') {
-      return 'Import en échec';
-    }
-
-    if (session.conflictResultsCount > 0 ||
-        session.skippedResultsCount > 0 ||
-        session.status == 'completed_with_errors') {
-      return 'Import terminé avec avertissement';
-    }
-
-    return 'Import réalisé avec succès';
-  }
-
   static String _valueOrUnknown(String? value) {
     if (value == null || value.trim().isEmpty) {
-      return 'Non renseigné';
+      return 'En attente';
     }
     return value;
   }
@@ -192,7 +301,7 @@ class _ImportReportCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Compte rendu d’import',
+              "État de l'import",
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const Divider(height: 28),
@@ -244,32 +353,35 @@ class _ImportReportMessage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final style = _messageStyle(context);
+    final actionInfo = const ImportActionInfoService().describe(
+      context,
+      session,
+    );
 
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: style.color.withValues(alpha: 0.10),
+        color: actionInfo.color.withValues(alpha: 0.10),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: style.color.withValues(alpha: 0.35),
+          color: actionInfo.color.withValues(alpha: 0.35),
         ),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Icon(
-            style.icon,
-            color: style.color,
+            actionInfo.icon,
+            color: actionInfo.color,
           ),
           const SizedBox(width: 12),
           Expanded(
             child: Text(
-              _reportText(),
+              actionInfo.message,
               style: TextStyle(
                 fontWeight: FontWeight.w600,
-                color: style.color,
+                color: actionInfo.color,
                 height: 1.35,
               ),
             ),
@@ -278,66 +390,7 @@ class _ImportReportMessage extends StatelessWidget {
       ),
     );
   }
-
-  _ImportReportMessageStyle _messageStyle(BuildContext context) {
-    if (session.failedFilesCount > 0 || session.status == 'failed') {
-      return _ImportReportMessageStyle(
-        icon: Icons.error_outline,
-        color: Theme.of(context).colorScheme.error,
-      );
-    }
-
-    if (session.status == 'needs_resolution' ||
-        session.conflictResultsCount > 0 ||
-        session.skippedResultsCount > 0 ||
-        session.status == 'completed_with_errors') {
-      return const _ImportReportMessageStyle(
-        icon: Icons.warning_amber_outlined,
-        color: Colors.orange,
-      );
-    }
-
-    return const _ImportReportMessageStyle(
-      icon: Icons.check_circle_outline,
-      color: Colors.green,
-    );
-  }
-
-  String _reportText() {
-    if (session.status == 'needs_resolution') {
-      return 'Le fichier a été reçu, mais l’import n’a pas encore été finalisé.';
-    }
-
-    if (session.failedFilesCount > 0 || session.status == 'failed') {
-      return 'L’import n’a pas pu être terminé correctement. Consulter le détail des fichiers pour identifier la cause.';
-    }
-
-    if (session.conflictResultsCount > 0) {
-      return 'Un conflit a été détecté entre les données importées et les données déjà présentes. Une vérification est recommandée.';
-    }
-
-    if (session.skippedResultsCount > 0 && session.importedResultsCount == 0) {
-      return 'Aucun nouveau résultat n’a été importé. Les résultats étaient probablement déjà présents dans Companion.';
-    }
-
-    if (session.skippedResultsCount > 0) {
-      return 'L’import est terminé. Certains résultats ont été ignorés car ils étaient déjà présents.';
-    }
-
-    return 'L’import est terminé sans anomalie détectée.';
-  }
 }
-
-class _ImportReportMessageStyle {
-  final IconData icon;
-  final Color color;
-
-  const _ImportReportMessageStyle({
-    required this.icon,
-    required this.color,
-  });
-}
-
 
 class _ImportFileTile extends StatelessWidget {
   final ImportSessionFile file;
@@ -414,6 +467,96 @@ class _InfoRow extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _ImportActionsBar extends StatelessWidget {
+  final ImportSession session;
+  final ImportSessionRepository repository;
+  final ImportActionInfo actionInfo;
+  final ImportSessionFile? fileToResolve;
+
+  const _ImportActionsBar({
+    required this.session,
+    required this.repository,
+    required this.actionInfo,
+    required this.fileToResolve,
+  });
+
+  Future<void> _confirmDelete(BuildContext context) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: const Text('Supprimer cet import ?'),
+          content: const Text(
+            'Cette action supprimera l’historique de cet import. '
+                'Elle ne supprimera pas les données patient déjà importées.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(false),
+              child: const Text('Annuler'),
+            ),
+            FilledButton.icon(
+              onPressed: () => Navigator.of(dialogContext).pop(true),
+              icon: const Icon(Icons.delete_outline),
+              label: const Text('Supprimer'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (confirmed != true) return;
+
+    await repository.deleteSession(session.importSessionId);
+
+    if (!context.mounted) return;
+
+    Navigator.of(context).pop(true);
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Import supprimé.'),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
+      spacing: 12,
+      runSpacing: 12,
+      children: [
+        if (actionInfo.canAssociatePatient)
+          FilledButton.icon(
+            onPressed: fileToResolve?.filePath == null
+                ? null
+                : () async {
+              final result =
+              await AbakImportLauncher.importArchiveFromPathWithResolution(
+                context,
+                fileToResolve!.filePath!,
+              );
+
+              if (!context.mounted) return;
+
+              if (result != null) {
+                Navigator.of(context).pop(true);
+              }
+            },
+            icon: const Icon(Icons.person_search_outlined),
+            label: const Text('Associer à un patient'),
+          ),
+        if (actionInfo.canDeleteImport)
+          OutlinedButton.icon(
+            onPressed: () => _confirmDelete(context),
+            icon: const Icon(Icons.delete_outline),
+            label: const Text('Supprimer cet import'),
+          ),
+      ],
     );
   }
 }

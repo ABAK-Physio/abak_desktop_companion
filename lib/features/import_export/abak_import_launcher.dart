@@ -423,12 +423,18 @@ class AbakImportLauncher {
       onImportCompleted?.call();
 
       if (context.mounted) {
+        final message =
+        summary.importedResults == 0 && summary.skippedResults > 0
+            ? 'Aucun nouveau résultat importé : ce fichier avait déjà été traité. '
+            '${summary.skippedResults} résultat(s) déjà présent(s).'
+            : 'Import terminé : ${summary.importedResults} résultat(s) importé(s) '
+            'dans ${assignment.careEpisode.title}.';
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(
-              'Import terminé : ${summary.importedResults} résultat(s) importé(s) '
-                  'dans ${assignment.careEpisode.title}.',
-            ),
+            duration: const Duration(seconds: 5),
+            behavior: SnackBarBehavior.floating,
+            content: Text(message),
           ),
         );
       }

@@ -6,18 +6,38 @@ import '../../import_export/import_history_screen.dart';
 import '../../import_export/models/import_session.dart';
 import '../../import_export/import_session_detail_screen.dart';
 
-class RecentImportsCard extends StatelessWidget {
+class RecentImportsCard extends StatefulWidget {
   const RecentImportsCard({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final repository = ImportSessionRepository();
+  State<RecentImportsCard> createState() => _RecentImportsCardState();
+}
 
+class _RecentImportsCardState extends State<RecentImportsCard> {
+  final ImportSessionRepository repository = ImportSessionRepository();
+  late Future<List<ImportSession>> _sessionsFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _sessionsFuture = repository.getSessions();
+  }
+
+  void _refreshSessions() {
+    setState(() {
+      _sessionsFuture = repository.getSessions();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Card(
       child: FutureBuilder<List<ImportSession>>(
-        future: repository.getSessions(),
+        future: _sessionsFuture,
         builder: (context, snapshot) {
-          final sessions = (snapshot.data ?? []).take(5).toList();
+          final sessions = snapshot.hasData
+              ? snapshot.data!.take(5).toList()
+              : <ImportSession>[];
 
           return ExpansionTile(
             initiallyExpanded: true,
@@ -25,12 +45,7 @@ class RecentImportsCard extends StatelessWidget {
               horizontal: 20,
               vertical: 8,
             ),
-            childrenPadding: const EdgeInsets.fromLTRB(
-              20,
-              0,
-              20,
-              20,
-            ),
+            childrenPadding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
             leading: const Icon(Icons.history_outlined),
             title: Text(
               'Imports récents',
@@ -47,10 +62,7 @@ class RecentImportsCard extends StatelessWidget {
                       ),
                     );
                   },
-                  icon: const Icon(
-                    Icons.open_in_new_outlined,
-                    size: 18,
-                  ),
+                  icon: const Icon(Icons.open_in_new_outlined, size: 18),
                   label: const Text('Historique'),
                 ),
                 const SizedBox(width: 8),
@@ -61,21 +73,30 @@ class RecentImportsCard extends StatelessWidget {
               if (snapshot.connectionState == ConnectionState.waiting)
                 const Padding(
                   padding: EdgeInsets.all(16),
-                  child: Center(
-                    child: CircularProgressIndicator(),
+                  child: Center(child: CircularProgressIndicator()),
+                )
+              else if (snapshot.hasError)
+                Text(
+                  'Impossible de charger les imports récents.',
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.error,
+                    fontWeight: FontWeight.w600,
                   ),
                 )
               else if (sessions.isEmpty)
-                Text(
-                  'Aucun import enregistré.',
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  Text(
+                    'Aucun import enregistré.',
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+                  )
+                else
+                  ...sessions.map(
+                        (session) => _RecentImportTile(
+                      session: session,
+                      onChanged: _refreshSessions,
+                    ),
                   ),
-                )
-              else
-                ...sessions.map(
-                      (session) => _RecentImportTile(session: session),
-                ),
             ],
           );
         },
@@ -86,9 +107,11 @@ class RecentImportsCard extends StatelessWidget {
 
 class _RecentImportTile extends StatelessWidget {
   final ImportSession session;
+  final VoidCallback onChanged;
 
   const _RecentImportTile({
     required this.session,
+    required this.onChanged,
   });
 
   @override
@@ -99,42 +122,43 @@ class _RecentImportTile extends StatelessWidget {
 
     final formattedDate = DateFormat('dd/MM/yyyy HH:mm').format(date);
 
-    final hasErrors = session.failedFilesCount > 0;
+    final needsResolution = session.status == 'needs_resolution';
+    final hasErrors =
+        session.failedFilesCount > 0 || session.status == 'failed';
     final hasConflicts = session.conflictResultsCount > 0;
+
+    final icon = hasErrors
+        ? Icons.error_outline
+        : (needsResolution || hasConflicts)
+        ? Icons.warning_amber_outlined
+        : Icons.check_circle_outline;
+
+    final color = hasErrors
+        ? Theme.of(context).colorScheme.error
+        : (needsResolution || hasConflicts)
+        ? Colors.orange
+        : Colors.green;
 
     return ListTile(
       contentPadding: EdgeInsets.zero,
-      leading: Icon(
-        hasErrors
-            ? Icons.error_outline
-            : hasConflicts
-            ? Icons.warning_amber_outlined
-            : Icons.check_circle_outline,
-        color: hasErrors
-            ? Theme.of(context).colorScheme.error
-            : hasConflicts
-            ? Colors.orange
-            : Colors.green,
-      ),
+      leading: Icon(icon, color: color),
       title: Row(
         children: [
-          Expanded(
-            child: Text(formattedDate),
-          ),
-          _StatusChip(
-            status: session.status,
-          ),
+          Expanded(child: Text(formattedDate)),
+          _StatusChip(status: session.status),
         ],
       ),
       subtitle: _ImportSummary(session: session),
-      onTap: () {
-        Navigator.of(context).push(
+      onTap: () async {
+        final changed = await Navigator.of(context).push<bool>(
           MaterialPageRoute(
-            builder: (_) => ImportSessionDetailScreen(
-              session: session,
-            ),
+            builder: (_) => ImportSessionDetailScreen(session: session),
           ),
         );
+
+        if (changed == true) {
+          onChanged();
+        }
       },
     );
   }
@@ -153,10 +177,12 @@ class _ImportSummary extends StatelessWidget {
 
     if (session.summaryPatientLabel != null &&
         session.summaryPatientLabel!.isNotEmpty) {
-      lines.add(Text(
-        session.summaryPatientLabel!,
-        style: const TextStyle(fontWeight: FontWeight.w600),
-      ));
+      lines.add(
+        Text(
+          session.summaryPatientLabel!,
+          style: const TextStyle(fontWeight: FontWeight.w600),
+        ),
+      );
     }
 
     if (session.summaryEpisodeLabel != null &&
@@ -176,21 +202,12 @@ class _ImportSummary extends StatelessWidget {
       );
     }
 
-    // Compatibilité avec les anciennes sessions
-    if (lines.isEmpty) {
-      return Text(
-        _legacySummary(session),
-        style: Theme.of(context).textTheme.bodySmall,
-      );
-    }
-
-    // En cas de problème rencontré pendant l'import
     if (session.status == 'needs_resolution') {
       lines.add(
         Text(
-          'Association patient nécessaire',
+          'Action requise : associer ce dossier à un patient',
           style: TextStyle(
-            color: Theme.of(context).colorScheme.error,
+            color: Colors.orange,
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -203,6 +220,15 @@ class _ImportSummary extends StatelessWidget {
             color: Colors.orange,
             fontWeight: FontWeight.w600,
           ),
+        ),
+      );
+    }
+
+    if (lines.isEmpty) {
+      lines.add(
+        Text(
+          _legacySummary(session),
+          style: Theme.of(context).textTheme.bodySmall,
         ),
       );
     }
@@ -275,9 +301,9 @@ class _StatusChip extends StatelessWidget {
         break;
 
       case 'needs_resolution':
-        label = 'À résoudre';
+        label = 'Action requise';
         color = Colors.orange;
-        icon = Icons.help_outline;
+        icon = Icons.warning_amber_outlined;
         break;
 
       default:
