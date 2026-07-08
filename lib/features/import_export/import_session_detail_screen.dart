@@ -170,15 +170,6 @@ class ImportSessionDetailScreen extends StatelessWidget {
             builder: (context, snapshot) {
               final files = snapshot.data ?? [];
 
-              ImportSessionFile? fileToResolve;
-
-              for (final file in files) {
-                if (file.status == 'needs_resolution') {
-                  fileToResolve = file;
-                  break;
-                }
-              }
-
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(
                   child: Padding(
@@ -203,7 +194,6 @@ class ImportSessionDetailScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-
                       Text(
                         'Fichiers',
                         style: Theme.of(context).textTheme.titleLarge,
