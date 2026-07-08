@@ -320,15 +320,12 @@ class _ImportResolutionScreenState extends State<ImportResolutionScreen> {
                 children: [
                   Card(
                     child: ListTile(
-                      leading: const Icon(Icons.description_outlined),
-                      title: Text(
-                        clinicalEpisode?.label ??
-                            clinicalEpisode?.pathologyLabel ??
-                            mobileCase?.caseLabel ??
-                            'Import ABAK',
-                      ),
+                      leading: const Icon(Icons.download_done_outlined),
+                      title: const Text('Import reçu'),
                       subtitle: Text(
                         [
+                          if (clinicalEpisode?.label != null)
+                            'Épisode ABAK : ${clinicalEpisode!.label}',
                           if (clinicalEpisode?.pathologyLabel != null)
                             'Pathologie ABAK : ${clinicalEpisode!.pathologyLabel}',
                           if (clinicalEpisode?.patientLabel != null)
@@ -420,17 +417,21 @@ class _ImportResolutionScreenState extends State<ImportResolutionScreen> {
               child: _selectedPatient == null
                   ? const Center(
                 child: Text(
-                  'Sélectionne un patient pour afficher ses prises en charge.',
+                  'Choisis d’abord un patient pour afficher ou créer une prise en charge.',
                 ),
               )
                   : Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    '2. Choisir la prise en charge de ${_selectedPatient!.displayName}',
-                    style: const TextStyle(
+                  const Text(
+                    '2. Choisir ou créer une prise en charge',
+                    style: TextStyle(
                       fontWeight: FontWeight.bold,
                     ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Patient sélectionné : ${_selectedPatient!.displayName}',
                   ),
                   const SizedBox(height: 12),
                   Align(

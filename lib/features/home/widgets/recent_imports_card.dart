@@ -7,7 +7,12 @@ import '../../import_export/models/import_session.dart';
 import '../../import_export/import_session_detail_screen.dart';
 
 class RecentImportsCard extends StatefulWidget {
-  const RecentImportsCard({super.key});
+  final int refreshToken;
+
+  const RecentImportsCard({
+    super.key,
+    this.refreshToken = 0,
+  });
 
   @override
   State<RecentImportsCard> createState() => _RecentImportsCardState();
@@ -23,11 +28,22 @@ class _RecentImportsCardState extends State<RecentImportsCard> {
     _sessionsFuture = repository.getSessions();
   }
 
+  @override
+  void didUpdateWidget(covariant RecentImportsCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (oldWidget.refreshToken != widget.refreshToken) {
+      _refreshSessions();
+    }
+  }
+
   void _refreshSessions() {
     setState(() {
       _sessionsFuture = repository.getSessions();
     });
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +52,14 @@ class _RecentImportsCardState extends State<RecentImportsCard> {
         future: _sessionsFuture,
         builder: (context, snapshot) {
           final sessions = snapshot.hasData
-              ? snapshot.data!.take(5).toList()
+              ? snapshot.data!
+              .where((session) =>
+          session.importedResultsCount > 0 ||
+              session.failedFilesCount > 0 ||
+              session.conflictResultsCount > 0 ||
+              session.status == 'needs_resolution')
+              .take(5)
+              .toList()
               : <ImportSession>[];
 
           return ExpansionTile(

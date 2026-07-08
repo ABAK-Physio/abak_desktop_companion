@@ -343,9 +343,22 @@ class AbakImportLauncher {
       return null;
     }
 
-    final importSessionId = await importSessionRepository.startSession(
-      sourceLabel: 'manual_resolution_from_incoming',
-    );
+    final importSessionId =
+    await importSessionRepository.findPendingSessionIdByFilePath(filePath);
+
+    if (importSessionId == null) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Impossible de retrouver la session d’import pour : $fileName',
+            ),
+          ),
+        );
+      }
+
+      return null;
+    }
 
     try {
       final jsonString = await file.readAsString();
@@ -393,6 +406,8 @@ class AbakImportLauncher {
         importedMetricsCount: summary.importedMetrics,
       );
 
+      await importSessionRepository.markFilesResolvedByPath(filePath);
+
       await importSessionRepository.completeSession(
         importSessionId: importSessionId,
         processedFilesCount: 1,
@@ -405,8 +420,6 @@ class AbakImportLauncher {
         summaryEpisodeLabel: summary.summaryEpisodeLabel,
         summaryExercisesLabel: summary.summaryExercisesLabel,
       );
-
-      await importSessionRepository.markFilesResolvedByPath(filePath);
 
       final launcherResult = AbakImportLauncherResult(
         processedFiles: 1,

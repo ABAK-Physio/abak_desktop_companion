@@ -164,22 +164,87 @@ class ImportSessionRepository {
     );
   }
 
-  Future<void> markFilesResolvedByPath(String filePath) async {
+  Future<String?> findPendingSessionIdByFilePath(String filePath) async {
     final db = await DatabaseService.database;
 
-    await db.update(
+    final rows = await db.query(
       'desktop_import_session_files',
-      {
-        'status': 'resolved',
-        'error_message': null,
-      },
+      columns: ['import_session_id'],
       where: "status = ? AND (file_path = ? OR error_message = ?)",
       whereArgs: [
         'needs_resolution',
         filePath,
         filePath,
       ],
+      limit: 1,
     );
+
+    if (rows.isEmpty) return null;
+
+    return rows.first['import_session_id'] as String?;
+  }
+
+  Future<void> markFilesResolvedByPath(String filePath) async {
+    final db = await DatabaseService.database;
+
+    await db.transaction((txn) async {
+      final rows = await txn.query(
+        'desktop_import_session_files',
+        columns: ['import_session_id'],
+        where: "status = ? AND (file_path = ? OR error_message = ?)",
+        whereArgs: [
+          'needs_resolution',
+          filePath,
+          filePath,
+        ],
+      );
+
+      final sessionIds = rows
+          .map((row) => row['import_session_id'] as String)
+          .toSet()
+          .toList();
+
+      await txn.update(
+        'desktop_import_session_files',
+        {
+          'status': 'resolved',
+          'error_message': null,
+        },
+        where: "status = ? AND (file_path = ? OR error_message = ?)",
+        whereArgs: [
+          'needs_resolution',
+          filePath,
+          filePath,
+        ],
+      );
+
+      for (final sessionId in sessionIds) {
+        final remainingRows = await txn.query(
+          'desktop_import_session_files',
+          where: 'import_session_id = ? AND status = ?',
+          whereArgs: [
+            sessionId,
+            'needs_resolution',
+          ],
+        );
+
+        if (remainingRows.isEmpty) {
+          await txn.update(
+            'desktop_import_sessions',
+            {
+              'status': 'completed',
+              'completed_at': DateTime.now().millisecondsSinceEpoch,
+              'notes': null,
+            },
+            where: 'import_session_id = ? AND status = ?',
+            whereArgs: [
+              sessionId,
+              'needs_resolution',
+            ],
+          );
+        }
+      }
+    });
   }
   Future<void> deleteSession(String importSessionId) async {
     final db = await DatabaseService.database;

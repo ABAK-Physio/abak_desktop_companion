@@ -38,7 +38,7 @@ class HomeDashboardScreen extends StatefulWidget {
 class _HomeDashboardScreenState
     extends State<HomeDashboardScreen> {
   int selectedIndex = 0;
-
+  int _refreshToken = 0;
   List<String> _titles(BuildContext context) {
     return [
       S.of(context).home,
@@ -56,9 +56,7 @@ class _HomeDashboardScreenState
 
   void _refreshDashboard() {
     setState(() {
-      // Reconstruction volontaire du tableau de bord.
-      // Les cards qui ont leur propre logique interne
-      // décident ensuite si elles doivent vraiment se rafraîchir.
+      _refreshToken++;
     });
   }
 
@@ -242,23 +240,30 @@ class _HomeDashboardScreenState
                     onRefresh: _refreshDashboard,
                   ),
                   const SizedBox(height: 8),
-                  const SystemOverviewBar(),
+                  SystemOverviewBar(
+                    key: ValueKey('overview-$_refreshToken'),
+                  ),
                   const SizedBox(height: 24),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Expanded(
+                      Expanded(
                         flex: 2,
-                        child: RecentImportsCard(),
+                        child: RecentImportsCard(
+                          key: ValueKey('imports-$_refreshToken'),
+                        ),
                       ),
                       const SizedBox(width: 24),
                       Expanded(
                         flex: 2,
                         child: Column(
-                          children: const [
+                          children:  [
                             SystemStatusCard(),
                             SizedBox(height: 24),
-                            PendingResolutionCard(),
+                            PendingResolutionCard(
+                              key: ValueKey('pending-$_refreshToken'),
+                              onImportCompleted: _refreshDashboard,
+                            ),
                           ],
                         ),
                       ),
@@ -274,10 +279,9 @@ class _HomeDashboardScreenState
                                 setState(() {
                                   lastImportResult = result;
                                 });
+                                _refreshDashboard();
                               },
-                              onMaintenanceCompleted: () {
-                                setState(() {});
-                              },
+                              onMaintenanceCompleted: _refreshDashboard,
                             ),
                           ],
                         ),

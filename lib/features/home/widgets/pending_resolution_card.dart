@@ -11,7 +11,12 @@ import '../../import_export/data/import_session_repository.dart';
 import '../../import_export/models/pending_import_view_model.dart';
 
 class PendingResolutionCard extends StatefulWidget {
-  const PendingResolutionCard({super.key});
+  final VoidCallback? onImportCompleted;
+
+  const PendingResolutionCard({
+    super.key,
+    this.onImportCompleted,
+  });
 
   @override
   State<PendingResolutionCard> createState() =>
@@ -145,12 +150,17 @@ class _PendingResolutionCardState extends State<PendingResolutionCard> {
       return;
     }
 
+    final result =
     await AbakImportLauncher.importArchiveFromPathWithResolution(
       context,
       filePath,
     );
 
     await _refresh();
+
+    if (result != null) {
+      widget.onImportCompleted?.call();
+    }
   }
 
   @override

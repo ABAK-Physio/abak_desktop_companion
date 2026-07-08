@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -60,6 +61,8 @@ class DatabaseService {
     databaseFactory = databaseFactoryFfi;
 
     final path = await databasePath;
+
+    debugPrint('📦 Base SQLite : $path');
 
     return openDatabase(
       path,

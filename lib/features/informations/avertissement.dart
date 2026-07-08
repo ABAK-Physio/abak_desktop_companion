@@ -19,7 +19,7 @@ class AvertissementScreen extends StatelessWidget {
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 16),
-            const Text(
+            Text(
               'ABAK Desktop Companion est un logiciel d’aide à l’organisation, '
                   'à l’importation et à la consultation de résultats cliniques issus '
                   'de l’écosystème ABAK.\n\n'
