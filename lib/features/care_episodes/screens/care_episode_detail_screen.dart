@@ -10,6 +10,8 @@ import '../../results/models/desktop_result.dart';
 import '../../results/result_detail_screen.dart';
 import 'package:abak_shared/abak_shared.dart';
 import '../../documents/services/initial_report_document_service.dart';
+import '../../patients/data/patient_repository.dart';
+import '../../patients/models/patient.dart';
 
 class CareEpisodeDetailScreen extends StatefulWidget {
   final CareEpisode episode;
@@ -34,11 +36,25 @@ class _CareEpisodeDetailScreenState extends State<CareEpisodeDetailScreen> {
   late CareEpisode _episode;
   final InitialReportDocumentService _initialReportDocumentService =
   const InitialReportDocumentService();
+  final PatientRepository _patientRepository = PatientRepository();
+
+  Patient? _patient;
 
   @override
   void initState() {
     super.initState();
     _episode = widget.episode;
+    _loadPatient();
+  }
+
+  Future<void> _loadPatient() async {
+    final patient = await _patientRepository.getPatientById(_episode.patientId);
+
+    if (!mounted) return;
+
+    setState(() {
+      _patient = patient;
+    });
   }
 
   void _refresh() {
@@ -49,25 +65,31 @@ class _CareEpisodeDetailScreenState extends State<CareEpisodeDetailScreen> {
 
   Future<void> _editInitialReport() async {
     final controller = TextEditingController(
-      text: _episode.initialReport ?? '',
+      text: _episode.initialReport?.trim().isNotEmpty == true
+          ? _episode.initialReport!.trim()
+          : _initialReportTemplate(),
     );
 
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Compte rendu initial'),
+          title: const Text('Entretien initial'),
           content: SizedBox(
-            width: 520,
+            width: MediaQuery.of(context).size.width * 0.55,
+            height: MediaQuery.of(context).size.height * 0.60,
             child: TextField(
               controller: controller,
               decoration: const InputDecoration(
-                labelText: 'Compte rendu initial',
+                labelText: 'Entretien initial',
+                helperText: 'Structure inspirée du modèle SOAP • Subjectif',
                 border: OutlineInputBorder(),
                 alignLabelWithHint: true,
               ),
-              minLines: 5,
-              maxLines: 10,
+              expands: true,
+              minLines: null,
+              maxLines: null,
+              textAlignVertical: TextAlignVertical.top,
             ),
           ),
           actions: [
@@ -312,6 +334,24 @@ class _CareEpisodeDetailScreenState extends State<CareEpisodeDetailScreen> {
     _refresh();
   }
 
+  String _initialReportTemplate() {
+    return '''
+Motif de consultation :
+
+Histoire de la maladie actuelle :
+
+Douleur :
+
+Limitations fonctionnelles :
+
+Objectifs du patient :
+
+Antécédents médicaux :
+
+Observations complémentaires :
+'''.trim();
+  }
+
   @override
   Widget build(BuildContext context) {
     return PopScope(
@@ -323,7 +363,11 @@ class _CareEpisodeDetailScreenState extends State<CareEpisodeDetailScreen> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: Text(_episode.displayTitle),
+          title: Text(
+            _patient == null
+                ? _episode.displayTitle
+                : '${_patient!.lastName.toUpperCase()} ${_patient!.firstName}',
+          ),
         ),
         body: ListView(
           key: ValueKey(_refreshToken),
@@ -355,9 +399,30 @@ class _CareEpisodeDetailScreenState extends State<CareEpisodeDetailScreen> {
                     Row(
                       children: [
                         Expanded(
-                          child: Text(
-                            'Compte rendu initial',
-                            style: Theme.of(context).textTheme.titleLarge,
+                          child: Row(
+                            children: [
+                              Text(
+                                'Entretien initial',
+                                style: Theme.of(context).textTheme.titleLarge,
+                              ),
+                              const SizedBox(width: 12),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 2,
+                                ),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(999),
+                                  border: Border.all(
+                                    color: Theme.of(context).colorScheme.outlineVariant,
+                                  ),
+                                ),
+                                child: Text(
+                                  'SOAP • Subjectif',
+                                  style: Theme.of(context).textTheme.labelMedium,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                         OutlinedButton.icon(
