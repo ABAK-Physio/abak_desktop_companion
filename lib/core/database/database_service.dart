@@ -66,7 +66,7 @@ class DatabaseService {
 
     return openDatabase(
       path,
-      version: 4,  ///////////////////// numéro de version
+      version: 7,  ///////////////////// numéro de version
       onCreate: (db, version) async {
         await _createAllTables(db);
       },
@@ -104,6 +104,30 @@ class DatabaseService {
         }
         if (oldVersion < 4) {
           await _createApplicationSettingsTable(db);
+        }
+        if (oldVersion < 5) {
+          await _addColumnIfMissing(
+            db,
+            'care_episodes',
+            'objective_data',
+            'TEXT NULL',
+          );
+        }
+        if (oldVersion < 6) {
+          await _addColumnIfMissing(
+            db,
+            'care_episodes',
+            'assessment_data',
+            'TEXT NULL',
+          );
+        }
+        if (oldVersion < 7) {
+          await _addColumnIfMissing(
+            db,
+            'care_episodes',
+            'treatment_plan',
+            'TEXT NULL',
+          );
         }
       },
     );
@@ -238,6 +262,9 @@ class DatabaseService {
     pathology_label TEXT NOT NULL,
     initial_report TEXT NULL,
     initial_report_docx_path TEXT NULL,
+    objective_data TEXT NULL,
+    assessment_data TEXT NULL,
+    treatment_plan TEXT NULL,
     final_conclusion TEXT NULL,
     created_at INTEGER NOT NULL,
     updated_at INTEGER NULL,

@@ -63,6 +63,262 @@ class _CareEpisodeDetailScreenState extends State<CareEpisodeDetailScreen> {
     });
   }
 
+  String _objectiveDataTemplate() {
+    return '''
+  Signes vitaux :
+
+  Résultats de l'examen physique :
+
+  Évaluation fonctionnelle :
+  '''.trim();
+  }
+
+  String _assessmentDataTemplate() {
+    return '''
+  Synthèse clinique :
+
+  Hypothèses / impression clinique :
+
+  Évolution / points de vigilance :
+  '''.trim();
+  }
+
+  String _treatmentPlanTemplate() {
+    return '''
+  Interventions prévues :
+
+  Éducation / conseils au patient :
+
+  Planification du suivi :
+  - Fréquence :
+  - Durée estimée :
+  - Points à réévaluer :
+  '''.trim();
+  }
+
+  Future<void> _editObjectiveData() async {
+    final controller = TextEditingController(
+      text: _episode.objectiveData?.trim().isNotEmpty == true
+          ? _episode.objectiveData!.trim()
+          : _objectiveDataTemplate(),
+    );
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Évaluation clinique'),
+          content: SizedBox(
+            width: MediaQuery.of(context).size.width * 0.55,
+            height: MediaQuery.of(context).size.height * 0.60,
+            child: TextField(
+              controller: controller,
+              decoration: const InputDecoration(
+                labelText: 'Évaluation clinique',
+                helperText: 'Structure inspirée du modèle SOAP • Objectif',
+                border: OutlineInputBorder(),
+                alignLabelWithHint: true,
+              ),
+              expands: true,
+              minLines: null,
+              maxLines: null,
+              textAlignVertical: TextAlignVertical.top,
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('Annuler'),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: const Text('Enregistrer'),
+            ),
+          ],
+        );
+      },
+    );
+
+    final objectiveData = controller.text.trim();
+    controller.dispose();
+
+    if (confirmed != true) return;
+
+    final updatedEpisode = CareEpisode(
+      careEpisodeId: _episode.careEpisodeId,
+      patientId: _episode.patientId,
+      title: _episode.title,
+      pathologyLabel: _episode.pathologyLabel,
+      initialReport: _episode.initialReport,
+      initialReportDocxPath: _episode.initialReportDocxPath,
+      objectiveData: objectiveData.isEmpty ? null : objectiveData,
+      finalConclusion: _episode.finalConclusion,
+      createdAt: _episode.createdAt,
+      updatedAt: DateTime.now().millisecondsSinceEpoch,
+      archivedAt: _episode.archivedAt,
+    );
+
+    await _repository.updateCareEpisode(updatedEpisode);
+
+    _hasChanged = true;
+
+    if (!mounted) return;
+
+    setState(() {
+      _episode = updatedEpisode;
+    });
+  }
+
+
+  Future<void> _editAssessmentData() async {
+    final controller = TextEditingController(
+      text: _episode.assessmentData?.trim().isNotEmpty == true
+          ? _episode.assessmentData!.trim()
+          : _assessmentDataTemplate(),
+    );
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Analyse clinique'),
+          content: SizedBox(
+            width: MediaQuery.of(context).size.width * 0.55,
+            height: MediaQuery.of(context).size.height * 0.60,
+            child: TextField(
+              controller: controller,
+              decoration: const InputDecoration(
+                labelText: 'Analyse clinique',
+                helperText: 'Structure inspirée du modèle SOAP • Analyse',
+                border: OutlineInputBorder(),
+                alignLabelWithHint: true,
+              ),
+              expands: true,
+              minLines: null,
+              maxLines: null,
+              textAlignVertical: TextAlignVertical.top,
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('Annuler'),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: const Text('Enregistrer'),
+            ),
+          ],
+        );
+      },
+    );
+
+    final assessmentData = controller.text.trim();
+    controller.dispose();
+
+    if (confirmed != true) return;
+
+    final updatedEpisode = CareEpisode(
+      careEpisodeId: _episode.careEpisodeId,
+      patientId: _episode.patientId,
+      title: _episode.title,
+      pathologyLabel: _episode.pathologyLabel,
+      initialReport: _episode.initialReport,
+      initialReportDocxPath: _episode.initialReportDocxPath,
+      objectiveData: _episode.objectiveData,
+      assessmentData: assessmentData.isEmpty ? null : assessmentData,
+      finalConclusion: _episode.finalConclusion,
+      createdAt: _episode.createdAt,
+      updatedAt: DateTime.now().millisecondsSinceEpoch,
+      archivedAt: _episode.archivedAt,
+    );
+
+    await _repository.updateCareEpisode(updatedEpisode);
+
+    _hasChanged = true;
+
+    if (!mounted) return;
+
+    setState(() {
+      _episode = updatedEpisode;
+    });
+  }
+
+  Future<void> _editTreatmentPlan() async {
+    final controller = TextEditingController(
+      text: _episode.treatmentPlan?.trim().isNotEmpty == true
+          ? _episode.treatmentPlan!.trim()
+          : _treatmentPlanTemplate(),
+    );
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Plan de traitement'),
+          content: SizedBox(
+            width: MediaQuery.of(context).size.width * 0.55,
+            height: MediaQuery.of(context).size.height * 0.60,
+            child: TextField(
+              controller: controller,
+              decoration: const InputDecoration(
+                labelText: 'Plan de traitement',
+                helperText: 'Structure inspirée du modèle SOAP • Plan',
+                border: OutlineInputBorder(),
+                alignLabelWithHint: true,
+              ),
+              expands: true,
+              minLines: null,
+              maxLines: null,
+              textAlignVertical: TextAlignVertical.top,
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('Annuler'),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: const Text('Enregistrer'),
+            ),
+          ],
+        );
+      },
+    );
+
+    final treatmentPlan = controller.text.trim();
+    controller.dispose();
+
+    if (confirmed != true) return;
+
+    final updatedEpisode = CareEpisode(
+      careEpisodeId: _episode.careEpisodeId,
+      patientId: _episode.patientId,
+      title: _episode.title,
+      pathologyLabel: _episode.pathologyLabel,
+      initialReport: _episode.initialReport,
+      initialReportDocxPath: _episode.initialReportDocxPath,
+      objectiveData: _episode.objectiveData,
+      assessmentData: _episode.assessmentData,
+      treatmentPlan: treatmentPlan.isEmpty ? null : treatmentPlan,
+      finalConclusion: _episode.finalConclusion,
+      createdAt: _episode.createdAt,
+      updatedAt: DateTime.now().millisecondsSinceEpoch,
+      archivedAt: _episode.archivedAt,
+    );
+
+    await _repository.updateCareEpisode(updatedEpisode);
+
+    _hasChanged = true;
+
+    if (!mounted) return;
+
+    setState(() {
+      _episode = updatedEpisode;
+    });
+  }
+
   Future<void> _editInitialReport() async {
     final controller = TextEditingController(
       text: _episode.initialReport?.trim().isNotEmpty == true
@@ -484,6 +740,153 @@ Observations complémentaires :
                         ],
                       ),
                     ],
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Row(
+                            children: [
+                              Text(
+                                'Évaluation clinique',
+                                style: Theme.of(context).textTheme.titleLarge,
+                              ),
+                              const SizedBox(width: 12),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 2,
+                                ),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(999),
+                                  border: Border.all(
+                                    color: Theme.of(context).colorScheme.outlineVariant,
+                                  ),
+                                ),
+                                child: Text(
+                                  'SOAP • Objectif',
+                                  style: Theme.of(context).textTheme.labelMedium,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        OutlinedButton.icon(
+                          onPressed: _editObjectiveData,
+                          icon: const Icon(Icons.edit_outlined),
+                          label: const Text('Modifier'),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    Text(_episode.displayObjectiveData),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Row(
+                            children: [
+                              Text(
+                                'Analyse clinique',
+                                style: Theme.of(context).textTheme.titleLarge,
+                              ),
+                              const SizedBox(width: 12),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 2,
+                                ),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(999),
+                                  border: Border.all(
+                                    color: Theme.of(context).colorScheme.outlineVariant,
+                                  ),
+                                ),
+                                child: Text(
+                                  'SOAP • Analyse',
+                                  style: Theme.of(context).textTheme.labelMedium,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        OutlinedButton.icon(
+                          onPressed: _editAssessmentData,
+                          icon: const Icon(Icons.edit_outlined),
+                          label: const Text('Modifier'),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    Text(_episode.displayAssessmentData),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Row(
+                            children: [
+                              Text(
+                                'Plan de traitement',
+                                style: Theme.of(context).textTheme.titleLarge,
+                              ),
+                              const SizedBox(width: 12),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 2,
+                                ),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(999),
+                                  border: Border.all(
+                                    color: Theme.of(context).colorScheme.outlineVariant,
+                                  ),
+                                ),
+                                child: Text(
+                                  'SOAP • Plan',
+                                  style: Theme.of(context).textTheme.labelMedium,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        OutlinedButton.icon(
+                          onPressed: _editTreatmentPlan,
+                          icon: const Icon(Icons.edit_outlined),
+                          label: const Text('Modifier'),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    Text(_episode.displayTreatmentPlan),
                   ],
                 ),
               ),
