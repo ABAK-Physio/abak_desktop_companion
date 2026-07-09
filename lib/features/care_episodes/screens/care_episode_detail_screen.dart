@@ -12,6 +12,7 @@ import 'package:abak_shared/abak_shared.dart';
 import '../../documents/services/initial_report_document_service.dart';
 import '../../patients/data/patient_repository.dart';
 import '../../patients/models/patient.dart';
+import '../../results/evolution/episode_evolution_screen.dart';
 
 class CareEpisodeDetailScreen extends StatefulWidget {
   final CareEpisode episode;
@@ -896,6 +897,9 @@ Observations complémentaires :
               repository: _resultRepository,
               careEpisodeId: _episode.careEpisodeId,
               refreshToken: _refreshToken,
+              patientName: _patient == null
+                  ? _episode.displayTitle
+                  : '${_patient!.lastName.toUpperCase()} ${_patient!.firstName}',
               onChanged: () {
                 _hasChanged = true;
                 _refresh();
@@ -1029,12 +1033,14 @@ class _AbakResultsCard extends StatelessWidget {
   final String careEpisodeId;
   final int refreshToken;
   final VoidCallback onChanged;
+  final String patientName;
 
   const _AbakResultsCard({
     required this.repository,
     required this.careEpisodeId,
     required this.refreshToken,
     required this.onChanged,
+    required this.patientName,
   });
 
   @override
@@ -1051,10 +1057,33 @@ class _AbakResultsCard extends StatelessWidget {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'Résultats ABAK',
-                  style: Theme.of(context).textTheme.titleLarge,
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        'Résultats ABAK',
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
+                    ),
+                    OutlinedButton.icon(
+                      onPressed: results.isEmpty
+                          ? null
+                          : () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => EpisodeEvolutionScreen(
+                              careEpisodeId: careEpisodeId,
+                              patientName: patientName,
+                            ),
+                          ),
+                        );
+                      },
+                      icon: const Icon(Icons.show_chart),
+                      label: const Text('Évolution'),
+                    ),
+                  ],
                 ),
+                const SizedBox(height: 12),
                 const SizedBox(height: 12),
                 if (snapshot.connectionState == ConnectionState.waiting)
                   const Padding(

@@ -31,6 +31,7 @@ dependencies:
   url_launcher: ^6.3.1
   cupertino_icons: ^1.0.8
   package_info_plus: ^8.0.2
+  fl_chart: ^1.2.0
   abak_shared:
     path: ../abak_shared
 
