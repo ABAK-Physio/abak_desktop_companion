@@ -3,8 +3,10 @@ import 'package:intl/intl.dart';
 
 import 'package:abak_desktop_companion/features/results/data/desktop_result_repository.dart';
 import 'package:abak_desktop_companion/features/results/models/desktop_result.dart';
-import 'exercise_evolution_detail_screen.dart';
 import 'package:abak_shared/abak_shared.dart';
+
+import '../services/structured_metric_reader.dart';
+import 'exercise_evolution_detail_screen.dart';
 
 class EpisodeEvolutionScreen extends StatelessWidget {
   final String careEpisodeId;
@@ -27,10 +29,91 @@ class EpisodeEvolutionScreen extends StatelessWidget {
     }
 
     for (final entry in grouped.entries) {
-      entry.value.sort((a, b) => a.createdAt.compareTo(b.createdAt));
+      entry.value.sort(
+            (a, b) => a.createdAt.compareTo(b.createdAt),
+      );
     }
 
     return grouped;
+  }
+
+  ExerciseMetricDefinition? _followUpMetric(
+      ExerciseDefinition definition,
+      ) {
+    for (final metric in definition.metrics) {
+      if (metric.useForFollowUp) {
+        return metric;
+      }
+    }
+
+    return null;
+  }
+
+  double? _readFollowUpValue({
+    required DesktopResult measure,
+    required ExerciseDefinition definition,
+  }) {
+    final metric = _followUpMetric(definition);
+
+    if (metric != null) {
+      final metricValue = StructuredMetricReader.readDouble(
+        structuredJson: measure.structuredJson,
+        path: metric.path,
+      );
+
+      if (metricValue != null) {
+        return metricValue;
+      }
+    }
+
+    return measure.scoreTotal;
+  }
+
+  String? _resolvedUnit(
+      ExerciseDefinition definition,
+      ) {
+    final metric = _followUpMetric(definition);
+
+    final unit = metric?.defaultUnit ?? definition.defaultUnit;
+    final normalizedUnit = unit?.trim();
+
+    if (normalizedUnit == null || normalizedUnit.isEmpty) {
+      return null;
+    }
+
+    return normalizedUnit;
+  }
+
+  int _resolvedScoreDecimals(
+      ExerciseDefinition definition,
+      ) {
+    final metric = _followUpMetric(definition);
+
+    return metric?.scoreDecimals ?? definition.scoreDecimals;
+  }
+
+  bool _hasChartSeriesWithEvolution({
+    required List<DesktopResult> measures,
+    required ExerciseDefinition definition,
+  }) {
+    final chartMetrics = definition.metrics
+        .where((metric) => metric.showOnEvolutionChart);
+
+    for (final metric in chartMetrics) {
+      final valueCount = measures.where((measure) {
+        return StructuredMetricReader.readDouble(
+          structuredJson: measure.structuredJson,
+          path: metric.path,
+        ) !=
+            null;
+      }).length;
+
+      if (valueCount >= 2) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   @override
@@ -44,24 +127,37 @@ class EpisodeEvolutionScreen extends StatelessWidget {
       body: FutureBuilder<List<DesktopResult>>(
         future: repository.getResultsForCareEpisode(careEpisodeId),
         builder: (context, snapshot) {
-          final results = snapshot.data ?? [];
-          final grouped = _groupResultsByExercise(results);
-          final exercises = grouped.entries.toList()
-            ..sort((a, b) {
-              final labelA = ClinicalActivityCatalog.displayLabel(a.key);
-              final labelB = ClinicalActivityCatalog.displayLabel(b.key);
-              return labelA.compareTo(labelB);
-            });
-
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
           }
+
+          final results = snapshot.data ?? [];
 
           if (results.isEmpty) {
             return const Center(
-              child: Text("Aucun résultat disponible pour cet épisode."),
+              child: Text(
+                "Aucun résultat disponible pour cet épisode.",
+              ),
             );
           }
+
+          final grouped = _groupResultsByExercise(results);
+
+          final exercises = grouped.entries.toList()
+            ..sort((a, b) {
+              final labelA =
+              ClinicalActivityCatalog.displayLabel(a.key);
+              final labelB =
+              ClinicalActivityCatalog.displayLabel(b.key);
+
+              return labelA.compareTo(labelB);
+            });
+
+          final formatter = DateFormat.yMd(
+            Localizations.localeOf(context).toLanguageTag(),
+          );
 
           return ListView(
             padding: const EdgeInsets.all(24),
@@ -82,40 +178,78 @@ class EpisodeEvolutionScreen extends StatelessWidget {
               ),
               const SizedBox(height: 16),
               ...exercises.map((entry) {
-                final String exoId = entry.key;
+                final exoId = entry.key;
                 final measures = entry.value;
 
-                final first = measures.first;
-                final last = measures.last;
+                final definition =
+                ClinicalActivityCatalog.infoFor(exoId);
 
-                final unit = last.measureUnit?.trim().isNotEmpty == true
-                    ? ' ${last.measureUnit!.trim()}'
-                    : '';
+                final followUpMeasures = measures.where((measure) {
+                  return _readFollowUpValue(
+                    measure: measure,
+                    definition: definition,
+                  ) !=
+                      null;
+                }).toList();
 
-                final firstValue = first.scoreTotal == null
-                    ? '-'
-                    : '${first.scoreTotal!.toStringAsFixed(2)}$unit';
+                final unit = _resolvedUnit(definition);
+                final scoreDecimals =
+                _resolvedScoreDecimals(definition);
 
-                final lastValue = last.scoreTotal == null
-                    ? '-'
-                    : '${last.scoreTotal!.toStringAsFixed(2)}$unit';
+                String formatValue(double? value) {
+                  if (value == null) {
+                    return '-';
+                  }
 
-                final formatter = DateFormat.yMd(
-                  Localizations.localeOf(context).toLanguageTag(),
+                  final formattedValue =
+                  value.toStringAsFixed(scoreDecimals);
+
+                  if (unit == null) {
+                    return formattedValue;
+                  }
+
+                  return '$formattedValue $unit';
+                }
+
+                final DesktopResult firstMeasure;
+                final DesktopResult lastMeasure;
+
+                if (followUpMeasures.isNotEmpty) {
+                  firstMeasure = followUpMeasures.first;
+                  lastMeasure = followUpMeasures.last;
+                } else {
+                  firstMeasure = measures.first;
+                  lastMeasure = measures.last;
+                }
+
+                final firstValue = _readFollowUpValue(
+                  measure: firstMeasure,
+                  definition: definition,
+                );
+
+                final lastValue = _readFollowUpValue(
+                  measure: lastMeasure,
+                  definition: definition,
                 );
 
                 final firstDate = formatter.format(
-                  DateTime.fromMillisecondsSinceEpoch(first.createdAt),
+                  DateTime.fromMillisecondsSinceEpoch(
+                    firstMeasure.createdAt,
+                  ),
                 );
 
                 final lastDate = formatter.format(
-                  DateTime.fromMillisecondsSinceEpoch(last.createdAt),
+                  DateTime.fromMillisecondsSinceEpoch(
+                    lastMeasure.createdAt,
+                  ),
                 );
 
-                final numericCount =
-                    measures.where((measure) => measure.scoreTotal != null).length;
-
-                final canShowEvolution = numericCount >= 2;
+                final canShowEvolution =
+                    followUpMeasures.length >= 2 ||
+                        _hasChartSeriesWithEvolution(
+                          measures: measures,
+                          definition: definition,
+                        );
 
                 return Card(
                   margin: const EdgeInsets.only(bottom: 12),
@@ -126,16 +260,27 @@ class EpisodeEvolutionScreen extends StatelessWidget {
                       children: [
                         Text(
                           ClinicalActivityCatalog.displayLabel(exoId),
-                          style: Theme.of(context).textTheme.titleMedium,
+                          style:
+                          Theme.of(context).textTheme.titleMedium,
                         ),
                         const SizedBox(height: 12),
                         Text(
-                          "${measures.length} évaluation${measures.length > 1 ? 's' : ''}",
-                          style: Theme.of(context).textTheme.bodyMedium,
+                          "${measures.length} "
+                              "évaluation${measures.length > 1 ? 's' : ''}",
+                          style:
+                          Theme.of(context).textTheme.bodyMedium,
                         ),
                         const SizedBox(height: 12),
-                        Text("Première : $firstValue ($firstDate)"),
-                        Text("Dernière : $lastValue ($lastDate)"),
+                        Text(
+                          "Première : "
+                              "${formatValue(firstValue)} "
+                              "($firstDate)",
+                        ),
+                        Text(
+                          "Dernière : "
+                              "${formatValue(lastValue)} "
+                              "($lastDate)",
+                        ),
                         const SizedBox(height: 16),
                         Align(
                           alignment: Alignment.centerRight,
@@ -144,20 +289,25 @@ class EpisodeEvolutionScreen extends StatelessWidget {
                             onPressed: () {
                               Navigator.of(context).push(
                                 MaterialPageRoute(
-                                  builder: (_) => ExerciseEvolutionDetailScreen(
-                                    patientName: patientName,
-                                    exoId: exoId,
-                                    measures: measures,
-                                  ),
+                                  builder: (_) =>
+                                      ExerciseEvolutionDetailScreen(
+                                        patientName: patientName,
+                                        exoId: exoId,
+                                        measures: measures,
+                                      ),
                                 ),
                               );
                             },
                             icon: const Icon(Icons.show_chart),
-                            label: const Text("Voir l'évolution"),
+                            label: const Text(
+                              "Voir l'évolution",
+                            ),
                           )
                               : Text(
                             'Une seule valeur chiffrée disponible',
-                            style: Theme.of(context).textTheme.bodySmall,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodySmall,
                           ),
                         ),
                       ],
