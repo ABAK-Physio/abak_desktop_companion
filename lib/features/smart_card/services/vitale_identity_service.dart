@@ -42,23 +42,14 @@ class VitaleIdentityService {
       );
 
       if (result == null) {
-        return {
-          'success': false,
-          'error': 'Réponse native vide',
-        };
+        return {'success': false, 'error': 'Réponse native vide'};
       }
 
       return Map<String, dynamic>.from(result);
     } on PlatformException catch (error) {
-      return {
-        'success': false,
-        'error': error.message ?? error.code,
-      };
+      return {'success': false, 'error': error.message ?? error.code};
     } catch (error) {
-      return {
-        'success': false,
-        'error': error.toString(),
-      };
+      return {'success': false, 'error': error.toString()};
     }
   }
 }

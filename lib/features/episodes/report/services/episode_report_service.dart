@@ -26,7 +26,6 @@ class EpisodeReportService {
   final EpisodeNoteRepository noteRepository;
   final MobileCaseRepository mobileCaseRepository;
 
-
   EpisodeReportService({
     PatientRepository? patientRepository,
     PatientIdentityRepository? identityRepository,
@@ -37,23 +36,17 @@ class EpisodeReportService {
     EpisodeDocumentRepository? documentRepository,
     EpisodeNoteRepository? noteRepository,
     MobileCaseRepository? mobileCaseRepository,
-  })  : patientRepository = patientRepository ?? PatientRepository(),
-        identityRepository =
-            identityRepository ?? PatientIdentityRepository(),
-        attributeRepository =
-            attributeRepository ?? PatientAttributeRepository(),
-        conclusionRepository =
-            conclusionRepository ?? EpisodeConclusionRepository(),
-        formRepository =
-            formRepository ?? EpisodeFormRepository(),
-        resultRepository =
-            resultRepository ?? DesktopResultRepository(),
-        documentRepository =
-            documentRepository ?? EpisodeDocumentRepository(),
-        noteRepository =
-            noteRepository ?? EpisodeNoteRepository(),
-        mobileCaseRepository =
-            mobileCaseRepository ?? MobileCaseRepository();
+  }) : patientRepository = patientRepository ?? PatientRepository(),
+       identityRepository = identityRepository ?? PatientIdentityRepository(),
+       attributeRepository =
+           attributeRepository ?? PatientAttributeRepository(),
+       conclusionRepository =
+           conclusionRepository ?? EpisodeConclusionRepository(),
+       formRepository = formRepository ?? EpisodeFormRepository(),
+       resultRepository = resultRepository ?? DesktopResultRepository(),
+       documentRepository = documentRepository ?? EpisodeDocumentRepository(),
+       noteRepository = noteRepository ?? EpisodeNoteRepository(),
+       mobileCaseRepository = mobileCaseRepository ?? MobileCaseRepository();
 
   Future<EpisodeReportViewModel> buildReport({
     required String patientId,
@@ -63,9 +56,7 @@ class EpisodeReportService {
     final patient = await patientRepository.getPatientById(patientId);
     final identity = await identityRepository.getByPatientId(patientId);
     final attributes = await attributeRepository.getByPatientId(patientId);
-    final conclusion = await conclusionRepository.getActiveByCaseId(
-      episodeId,
-    );
+    final conclusion = await conclusionRepository.getActiveByCaseId(episodeId);
     final mobileCase = await mobileCaseRepository.getCaseById(episodeId);
     String formTitle(String templateId) {
       switch (templateId) {
@@ -94,18 +85,13 @@ class EpisodeReportService {
         fields.add(
           ReportField(
             label: field.label,
-            value: value == null || value.isEmpty
-                ? 'Non renseigné'
-                : value,
+            value: value == null || value.isEmpty ? 'Non renseigné' : value,
           ),
         );
       }
 
       formSections.add(
-        ReportFormSection(
-          title: formTitle(form.templateId),
-          fields: fields,
-        ),
+        ReportFormSection(title: formTitle(form.templateId), fields: fields),
       );
     }
 
@@ -153,10 +139,10 @@ class EpisodeReportService {
     final documents = episodeDocuments
         .map(
           (document) => ReportDocumentItem(
-        title: document.title,
-        mimeType: document.mimeType,
-      ),
-    )
+            title: document.title,
+            mimeType: document.mimeType,
+          ),
+        )
         .toList();
 
     final episodeNotes = await noteRepository.getByCaseId(episodeId);
@@ -164,18 +150,16 @@ class EpisodeReportService {
     final notes = episodeNotes
         .map(
           (note) => ReportNoteItem(
-        title: note.title,
-        content: note.content.trim().isEmpty
-            ? 'Non renseigné'
-            : note.content.trim(),
-      ),
-    )
+            title: note.title,
+            content: note.content.trim().isEmpty
+                ? 'Non renseigné'
+                : note.content.trim(),
+          ),
+        )
         .toList();
 
     String attributeValue(String key) {
-      final matching = attributes.where(
-            (a) => a.attributeKey == key,
-      );
+      final matching = attributes.where((a) => a.attributeKey == key);
 
       if (matching.isEmpty) {
         return 'Non renseigné';
@@ -183,9 +167,7 @@ class EpisodeReportService {
 
       final value = matching.first.attributeValue?.trim();
 
-      return value == null || value.isEmpty
-          ? 'Non renseigné'
-          : value;
+      return value == null || value.isEmpty ? 'Non renseigné' : value;
     }
 
     String sexLabel(String code) {
@@ -201,34 +183,22 @@ class EpisodeReportService {
     }
 
     return EpisodeReportViewModel(
-      patientDisplayName:
-      patient?.displayName ?? patientDisplayName,
+      patientDisplayName: patient?.displayName ?? patientDisplayName,
       birthDate: patient?.birthDate,
-      sex: patient == null
-          ? null
-          : sexLabel(patient.sexCode),
+      sex: patient == null ? null : sexLabel(patient.sexCode),
       episodeTitle: mobileCase?.caseLabel ?? episodeId,
       patientProfileFields: [
         ReportField(
           label: 'Téléphone',
           value: identity?.phone ?? 'Non renseigné',
         ),
-        ReportField(
-          label: 'Email',
-          value: identity?.email ?? 'Non renseigné',
-        ),
+        ReportField(label: 'Email', value: identity?.email ?? 'Non renseigné'),
         ReportField(
           label: 'Côté dominant',
           value: attributeValue('dominant_side'),
         ),
-        ReportField(
-          label: 'Profession',
-          value: attributeValue('profession'),
-        ),
-        ReportField(
-          label: 'Activité sportive',
-          value: attributeValue('sport'),
-        ),
+        ReportField(label: 'Profession', value: attributeValue('profession')),
+        ReportField(label: 'Activité sportive', value: attributeValue('sport')),
       ],
       formSections: formSections,
       resultSections: resultSections,

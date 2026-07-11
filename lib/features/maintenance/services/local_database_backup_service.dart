@@ -19,11 +19,9 @@ class LocalDatabaseBackupResult {
 }
 
 class LocalDatabaseBackupService {
-  Future<LocalDatabaseBackupResult>
-  createBackup() async {
+  Future<LocalDatabaseBackupResult> createBackup() async {
     try {
-      final appSupportDir =
-      await getApplicationSupportDirectory();
+      final appSupportDir = await getApplicationSupportDirectory();
 
       final databasePath = join(
         appSupportDir.path,
@@ -40,14 +38,10 @@ class LocalDatabaseBackupService {
         );
       }
 
-      final DatabaseBackupRepository repository =
-      DatabaseBackupRepository();
+      final DatabaseBackupRepository repository = DatabaseBackupRepository();
 
-
-      final selectedDirectory =
-      await FilePicker.platform.getDirectoryPath(
-        dialogTitle:
-        'Choisir le dossier de sauvegarde ABAK',
+      final selectedDirectory = await FilePicker.platform.getDirectoryPath(
+        dialogTitle: 'Choisir le dossier de sauvegarde ABAK',
       );
 
       if (selectedDirectory == null) {
@@ -57,17 +51,11 @@ class LocalDatabaseBackupService {
         );
       }
 
-      final timestamp = DateFormat(
-        'yyyyMMdd_HHmmss',
-      ).format(DateTime.now());
+      final timestamp = DateFormat('yyyyMMdd_HHmmss').format(DateTime.now());
 
-      final backupFileName =
-          'abak_backup_$timestamp.db';
+      final backupFileName = 'abak_backup_$timestamp.db';
 
-      final backupPath = join(
-        selectedDirectory,
-        backupFileName,
-      );
+      final backupPath = join(selectedDirectory, backupFileName);
 
       await databaseFile.copy(backupPath);
       final backupFile = File(backupPath);
@@ -78,15 +66,9 @@ class LocalDatabaseBackupService {
         fileSize: await backupFile.length(),
       );
 
-      return LocalDatabaseBackupResult(
-        success: true,
-        backupPath: backupPath,
-      );
+      return LocalDatabaseBackupResult(success: true, backupPath: backupPath);
     } catch (e) {
-      return LocalDatabaseBackupResult(
-        success: false,
-        error: e.toString(),
-      );
+      return LocalDatabaseBackupResult(success: false, error: e.toString());
     }
   }
 }

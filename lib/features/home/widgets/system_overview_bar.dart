@@ -22,7 +22,7 @@ class _SystemOverviewBarState extends State<SystemOverviewBar> {
   Timer? _timer;
 
   final CabinetIdentityService _cabinetIdentityService =
-  const CabinetIdentityService();
+      const CabinetIdentityService();
 
   String? _cabinetName;
   String? _cabinetLogoPath;
@@ -43,16 +43,12 @@ class _SystemOverviewBarState extends State<SystemOverviewBar> {
     _refresh();
     _loadCabinetIdentity();
 
-    _timer = Timer.periodic(
-      const Duration(seconds: 3),
-          (_) => _refresh(),
-    );
+    _timer = Timer.periodic(const Duration(seconds: 3), (_) => _refresh());
   }
 
   Future<void> _loadCabinetIdentity() async {
     final cabinetName = await _cabinetIdentityService.getCabinetName();
-    final cabinetLogoPath =
-    await _cabinetIdentityService.getCabinetLogoPath();
+    final cabinetLogoPath = await _cabinetIdentityService.getCabinetLogoPath();
 
     if (!mounted) return;
 
@@ -98,8 +94,8 @@ class _SystemOverviewBarState extends State<SystemOverviewBar> {
 
     final alertCount =
         health.failedImportsCount +
-            (health.hasNoBackup || health.hasOldBackup ? 1 : 0) +
-            (health.hasRunningImports ? 1 : 0);
+        (health.hasNoBackup || health.hasOldBackup ? 1 : 0) +
+        (health.hasRunningImports ? 1 : 0);
 
     return [
       health.databaseSizeBytes,
@@ -164,17 +160,14 @@ class _SystemOverviewBarState extends State<SystemOverviewBar> {
 
     final alertCount =
         health.failedImportsCount +
-            (health.hasNoBackup || health.hasOldBackup ? 1 : 0) +
-            (health.hasRunningImports ? 1 : 0);
+        (health.hasNoBackup || health.hasOldBackup ? 1 : 0) +
+        (health.hasRunningImports ? 1 : 0);
 
     return Card(
       elevation: 0,
       color: Theme.of(context).colorScheme.surfaceContainerHighest,
       child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 20,
-          vertical: 16,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
         child: Row(
           children: [
             Expanded(
@@ -201,7 +194,7 @@ class _SystemOverviewBarState extends State<SystemOverviewBar> {
                     icon: Icons.backup_outlined,
                     label: 'Sauvegardes',
                     value:
-                    '${health.backupsCount} · ${_formatFileSize(health.backupsTotalSizeBytes)}',
+                        '${health.backupsCount} · ${_formatFileSize(health.backupsTotalSizeBytes)}',
                   ),
                   _OverviewItem(
                     icon: Icons.warning_amber_outlined,
@@ -242,11 +235,7 @@ class _CabinetIdentityPanel extends StatelessWidget {
       width: 300,
       padding: const EdgeInsets.only(left: 24),
       decoration: BoxDecoration(
-        border: Border(
-          left: BorderSide(
-            color: Theme.of(context).dividerColor,
-          ),
-        ),
+        border: Border(left: BorderSide(color: Theme.of(context).dividerColor)),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -255,24 +244,19 @@ class _CabinetIdentityPanel extends StatelessWidget {
             width: 58,
             height: 58,
             decoration: BoxDecoration(
-              border: Border.all(
-                color: Theme.of(context).dividerColor,
-              ),
+              border: Border.all(color: Theme.of(context).dividerColor),
               borderRadius: BorderRadius.circular(12),
             ),
             child: hasLogo
                 ? ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: Image.file(
-                logoFile,
-                fit: BoxFit.contain,
-              ),
-            )
+                    borderRadius: BorderRadius.circular(12),
+                    child: Image.file(logoFile, fit: BoxFit.contain),
+                  )
                 : Icon(
-              Icons.image_outlined,
-              size: 32,
-              color: Theme.of(context).colorScheme.primary,
-            ),
+                    Icons.image_outlined,
+                    size: 32,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
           ),
           const SizedBox(width: 14),
           Flexible(
@@ -282,9 +266,9 @@ class _CabinetIdentityPanel extends StatelessWidget {
                   : 'Nom du cabinet',
               overflow: TextOverflow.ellipsis,
               maxLines: 2,
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.w700,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
             ),
           ),
         ],
@@ -308,22 +292,14 @@ class _OverviewItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final effectiveColor =
-        color ?? Theme.of(context).colorScheme.primary;
+    final effectiveColor = color ?? Theme.of(context).colorScheme.primary;
 
     return ConstrainedBox(
-      constraints: const BoxConstraints(
-        minWidth: 140,
-        maxWidth: 210,
-      ),
+      constraints: const BoxConstraints(minWidth: 140, maxWidth: 210),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            icon,
-            size: 22,
-            color: effectiveColor,
-          ),
+          Icon(icon, size: 22, color: effectiveColor),
           const SizedBox(width: 10),
           Flexible(
             child: Column(
@@ -332,9 +308,9 @@ class _OverviewItem extends StatelessWidget {
                 Text(
                   label,
                   overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600),
                 ),
                 const SizedBox(height: 2),
                 Text(

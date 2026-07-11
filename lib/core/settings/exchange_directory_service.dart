@@ -54,8 +54,8 @@ class ExchangeDirectoryService {
 
     final fallbackDirectory = Directory(
       '${appSupportDirectory.path}'
-          '${Platform.pathSeparator}'
-          'ABAK_Echanges',
+      '${Platform.pathSeparator}'
+      'ABAK_Echanges',
     );
 
     if (!await fallbackDirectory.exists()) {

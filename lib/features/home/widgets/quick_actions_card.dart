@@ -35,9 +35,7 @@ class QuickActionsCard extends StatelessWidget {
       onPressed: onPressed,
       style: foregroundColor == null
           ? null
-          : OutlinedButton.styleFrom(
-        foregroundColor: foregroundColor,
-      ),
+          : OutlinedButton.styleFrom(foregroundColor: foregroundColor),
       icon: Icon(icon),
       label: Text(label),
     );
@@ -70,9 +68,9 @@ class QuickActionsCard extends StatelessWidget {
                   primary: true,
                   onPressed: () async {
                     final result =
-                    await AbakImportLauncher.importArchiveFromPicker(
-                      context,
-                    );
+                        await AbakImportLauncher.importArchiveFromPicker(
+                          context,
+                        );
 
                     if (result != null) {
                       onImportCompleted?.call(result);
@@ -94,8 +92,8 @@ class QuickActionsCard extends StatelessWidget {
                 ),
                 _actionButton(
                   onPressed: () async {
-                    final result =
-                    await LocalDatabaseBackupService().createBackup();
+                    final result = await LocalDatabaseBackupService()
+                        .createBackup();
 
                     if (!context.mounted) return;
 
@@ -139,8 +137,8 @@ class QuickActionsCard extends StatelessWidget {
                           title: const Text('Réinitialiser la base locale ?'),
                           content: const Text(
                             'Cette action supprimera toutes les données locales '
-                                '(patients, résultats, imports, historiques).\n\n'
-                                'Une sauvegarde automatique sera créée avant la réinitialisation.',
+                            '(patients, résultats, imports, historiques).\n\n'
+                            'Une sauvegarde automatique sera créée avant la réinitialisation.',
                           ),
                           actions: [
                             TextButton(
@@ -196,7 +194,7 @@ class QuickActionsCard extends StatelessWidget {
                               onPressed: () {
                                 final valid =
                                     controller.text.trim().toUpperCase() ==
-                                        'RESET';
+                                    'RESET';
                                 Navigator.of(dialogContext).pop(valid);
                               },
                               child: const Text('Réinitialiser'),
@@ -212,16 +210,14 @@ class QuickActionsCard extends StatelessWidget {
                       if (!context.mounted) return;
 
                       messenger.showSnackBar(
-                        const SnackBar(
-                          content: Text('Confirmation invalide.'),
-                        ),
+                        const SnackBar(content: Text('Confirmation invalide.')),
                       );
 
                       return;
                     }
 
-                    final result =
-                    await LocalDatabaseResetService().resetDatabase();
+                    final result = await LocalDatabaseResetService()
+                        .resetDatabase();
 
                     if (!context.mounted) return;
 

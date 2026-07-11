@@ -15,7 +15,7 @@ class BackupHistoryScreen extends StatefulWidget {
 class _BackupHistoryScreenState extends State<BackupHistoryScreen> {
   final DatabaseBackupRepository _repository = DatabaseBackupRepository();
   final LocalDatabaseRestoreService _restoreService =
-  const LocalDatabaseRestoreService();
+      const LocalDatabaseRestoreService();
 
   late Future<List<DatabaseBackup>> _futureBackups;
 
@@ -33,8 +33,8 @@ class _BackupHistoryScreenState extends State<BackupHistoryScreen> {
           title: const Text('Restaurer cette sauvegarde ?'),
           content: const Text(
             'Cette opération remplacera totalement la base actuelle.\n\n'
-                'Une sauvegarde automatique de sécurité sera créée avant restauration.\n\n'
-                'Continuer ?',
+            'Une sauvegarde automatique de sécurité sera créée avant restauration.\n\n'
+            'Continuer ?',
           ),
           actions: [
             TextButton(
@@ -74,24 +74,18 @@ class _BackupHistoryScreenState extends State<BackupHistoryScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Historique des sauvegardes'),
-      ),
+      appBar: AppBar(title: const Text('Historique des sauvegardes')),
       body: FutureBuilder<List<DatabaseBackup>>(
         future: _futureBackups,
         builder: (context, snapshot) {
           final backups = snapshot.data ?? [];
 
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
+            return const Center(child: CircularProgressIndicator());
           }
 
           if (backups.isEmpty) {
-            return const Center(
-              child: Text('Aucune sauvegarde enregistrée.'),
-            );
+            return const Center(child: Text('Aucune sauvegarde enregistrée.'));
           }
 
           return ListView.separated(
@@ -115,10 +109,7 @@ class _BackupTile extends StatelessWidget {
   final DatabaseBackup backup;
   final VoidCallback onRestore;
 
-  const _BackupTile({
-    required this.backup,
-    required this.onRestore,
-  });
+  const _BackupTile({required this.backup, required this.onRestore});
 
   String _formatFileSize(int bytes) {
     if (bytes < 1024) return '$bytes o';
@@ -132,20 +123,16 @@ class _BackupTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final date = DateTime.fromMillisecondsSinceEpoch(
-      backup.createdAt,
-    );
+    final date = DateTime.fromMillisecondsSinceEpoch(backup.createdAt);
 
-    final formattedDate = DateFormat(
-      'dd/MM/yyyy HH:mm',
-    ).format(date);
+    final formattedDate = DateFormat('dd/MM/yyyy HH:mm').format(date);
 
     return ListTile(
       leading: const Icon(Icons.save_outlined),
       title: Text(backup.fileName),
       subtitle: Text(
         '$formattedDate · ${_formatFileSize(backup.fileSize)}\n'
-            '${backup.filePath}',
+        '${backup.filePath}',
       ),
       isThreeLine: true,
       trailing: OutlinedButton.icon(

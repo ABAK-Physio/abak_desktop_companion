@@ -17,10 +17,7 @@ class EpisodeReportTextExportService {
 
     final file = File(path);
 
-    return file.writeAsString(
-      document.toPlainText(),
-      flush: true,
-    );
+    return file.writeAsString(document.toPlainText(), flush: true);
   }
 
   String _sanitizeFileName(String value) {

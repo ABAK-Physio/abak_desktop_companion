@@ -10,10 +10,7 @@ import '../../core/settings/language_preference_service.dart';
 class PreferencesScreen extends StatefulWidget {
   final VoidCallback onLanguageChanged;
 
-  const PreferencesScreen({
-    super.key,
-    required this.onLanguageChanged,
-  });
+  const PreferencesScreen({super.key, required this.onLanguageChanged});
 
   @override
   State<PreferencesScreen> createState() => _PreferencesScreenState();
@@ -21,13 +18,12 @@ class PreferencesScreen extends StatefulWidget {
 
 class _PreferencesScreenState extends State<PreferencesScreen> {
   final LanguagePreferenceService _languageService =
-  const LanguagePreferenceService();
+      const LanguagePreferenceService();
 
   final CabinetIdentityService _cabinetIdentityService =
-  const CabinetIdentityService();
+      const CabinetIdentityService();
 
-  final TextEditingController _cabinetNameController =
-  TextEditingController();
+  final TextEditingController _cabinetNameController = TextEditingController();
 
   String? _languageCode;
   String? _cabinetLogoPath;
@@ -58,8 +54,7 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
   Future<void> _loadPreferences() async {
     final languageCode = await _languageService.getLanguageCode();
     final cabinetName = await _cabinetIdentityService.getCabinetName();
-    final cabinetLogoPath =
-    await _cabinetIdentityService.getCabinetLogoPath();
+    final cabinetLogoPath = await _cabinetIdentityService.getCabinetLogoPath();
 
     if (!mounted) return;
 
@@ -84,25 +79,19 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
 
     widget.onLanguageChanged();
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Langue enregistrée.'),
-      ),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('Langue enregistrée.')));
   }
 
   Future<void> _saveCabinetName() async {
-    await _cabinetIdentityService.setCabinetName(
-      _cabinetNameController.text,
-    );
+    await _cabinetIdentityService.setCabinetName(_cabinetNameController.text);
 
     if (!mounted) return;
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Nom du cabinet enregistré.'),
-      ),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('Nom du cabinet enregistré.')));
   }
 
   Future<void> _chooseLogo() async {
@@ -123,9 +112,7 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
     });
 
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Logo du cabinet enregistré.'),
-      ),
+      const SnackBar(content: Text('Logo du cabinet enregistré.')),
     );
   }
 
@@ -138,17 +125,14 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
       _cabinetLogoPath = null;
     });
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Logo du cabinet supprimé.'),
-      ),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('Logo du cabinet supprimé.')));
   }
 
   @override
   Widget build(BuildContext context) {
-    final languageCode =
-        _languageCode ?? AbakSupportedLanguages.defaultCode;
+    final languageCode = _languageCode ?? AbakSupportedLanguages.defaultCode;
 
     return Center(
       child: SizedBox(
@@ -257,9 +241,7 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
 class _LogoPreview extends StatelessWidget {
   final String? path;
 
-  const _LogoPreview({
-    required this.path,
-  });
+  const _LogoPreview({required this.path});
 
   @override
   Widget build(BuildContext context) {
@@ -270,23 +252,15 @@ class _LogoPreview extends StatelessWidget {
       width: 96,
       height: 96,
       decoration: BoxDecoration(
-        border: Border.all(
-          color: Theme.of(context).dividerColor,
-        ),
+        border: Border.all(color: Theme.of(context).dividerColor),
         borderRadius: BorderRadius.circular(12),
       ),
       child: hasLogo
           ? ClipRRect(
-        borderRadius: BorderRadius.circular(12),
-        child: Image.file(
-          logoFile,
-          fit: BoxFit.contain,
-        ),
-      )
-          : const Icon(
-        Icons.image_outlined,
-        size: 40,
-      ),
+              borderRadius: BorderRadius.circular(12),
+              child: Image.file(logoFile, fit: BoxFit.contain),
+            )
+          : const Icon(Icons.image_outlined, size: 40),
     );
   }
 }

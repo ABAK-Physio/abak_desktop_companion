@@ -11,8 +11,9 @@ class SystemHealthService {
     final databasePath = await DatabaseService.databasePath;
 
     final databaseFile = File(databasePath);
-    final databaseSizeBytes =
-    await databaseFile.exists() ? await databaseFile.length() : 0;
+    final databaseSizeBytes = await databaseFile.exists()
+        ? await databaseFile.length()
+        : 0;
 
     final backups = await db.query(
       'desktop_backups',
@@ -22,16 +23,16 @@ class SystemHealthService {
     final backupsCount = backups.length;
     final backupsTotalSizeBytes = backups.fold<int>(
       0,
-          (sum, row) => sum + ((row['file_size'] as int?) ?? 0),
+      (sum, row) => sum + ((row['file_size'] as int?) ?? 0),
     );
 
     final lastBackupAt = backups
         .map((row) => row['created_at'] as int?)
         .whereType<int>()
         .fold<int?>(null, (previous, value) {
-      if (previous == null || value > previous) return value;
-      return previous;
-    });
+          if (previous == null || value > previous) return value;
+          return previous;
+        });
 
     final activePatientsCount = await _count(
       table: 'patients',
@@ -67,9 +68,9 @@ class SystemHealthService {
         .map((row) => row['restored_at'] as int?)
         .whereType<int>()
         .fold<int?>(null, (previous, value) {
-      if (previous == null || value > previous) return value;
-      return previous;
-    });
+          if (previous == null || value > previous) return value;
+          return previous;
+        });
 
     return SystemHealthSnapshot(
       databaseSizeBytes: databaseSizeBytes,
@@ -85,15 +86,12 @@ class SystemHealthService {
     );
   }
 
-  Future<int> _count({
-    required String table,
-    String? where,
-  }) async {
+  Future<int> _count({required String table, String? where}) async {
     final db = await DatabaseService.database;
 
     final rows = await db.rawQuery(
       'SELECT COUNT(*) AS count FROM $table'
-          '${where == null ? '' : ' WHERE $where'}',
+      '${where == null ? '' : ' WHERE $where'}',
     );
 
     return (rows.first['count'] as int?) ?? 0;

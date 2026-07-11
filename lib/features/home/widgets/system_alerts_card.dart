@@ -27,13 +27,10 @@ class SystemAlertsCard extends StatelessWidget {
         builder: (context, snapshot) {
           final health = snapshot.data;
 
-          if (snapshot.connectionState ==
-              ConnectionState.waiting) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
             return const Padding(
               padding: EdgeInsets.all(24),
-              child: Center(
-                child: CircularProgressIndicator(),
-              ),
+              child: Center(child: CircularProgressIndicator()),
             );
           }
 
@@ -41,36 +38,33 @@ class SystemAlertsCard extends StatelessWidget {
             return const SizedBox.shrink();
           }
 
-          final hasLargeDatabase =
-              health.databaseSizeBytes >
-                  500 * 1024 * 1024;
+          final hasLargeDatabase = health.databaseSizeBytes > 500 * 1024 * 1024;
 
           final hasLargeBackupStorage =
-              health.backupsTotalSizeBytes >
-                  1024 * 1024 * 1024;
+              health.backupsTotalSizeBytes > 1024 * 1024 * 1024;
 
-          final hasManyArchivedPatients =
-              health.archivedPatientsCount >= 100;
+          final hasManyArchivedPatients = health.archivedPatientsCount >= 100;
 
-          final recentRestore = health.lastRestoreAt != null &&
+          final recentRestore =
+              health.lastRestoreAt != null &&
               DateTime.now()
-                  .difference(
-                DateTime.fromMillisecondsSinceEpoch(
-                  health.lastRestoreAt!,
-                ),
-              )
-                  .inDays <=
+                      .difference(
+                        DateTime.fromMillisecondsSinceEpoch(
+                          health.lastRestoreAt!,
+                        ),
+                      )
+                      .inDays <=
                   7;
 
           final hasAlerts =
               health.hasFailedImports ||
-                  health.hasRunningImports ||
-                  health.hasNoBackup ||
-                  health.hasOldBackup ||
-                  hasLargeDatabase ||
-                  hasLargeBackupStorage ||
-                  hasManyArchivedPatients ||
-                  recentRestore;
+              health.hasRunningImports ||
+              health.hasNoBackup ||
+              health.hasOldBackup ||
+              hasLargeDatabase ||
+              hasLargeBackupStorage ||
+              hasManyArchivedPatients ||
+              recentRestore;
 
           return ExpansionTile(
             initiallyExpanded: hasAlerts,
@@ -78,12 +72,7 @@ class SystemAlertsCard extends StatelessWidget {
               horizontal: 20,
               vertical: 8,
             ),
-            childrenPadding: const EdgeInsets.fromLTRB(
-              20,
-              0,
-              20,
-              20,
-            ),
+            childrenPadding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
             leading: Icon(
               hasAlerts
                   ? Icons.warning_amber_outlined
@@ -98,49 +87,36 @@ class SystemAlertsCard extends StatelessWidget {
             ),
             children: [
               if (!hasAlerts)
-                const Text(
-                  'Aucune alerte détectée.',
-                )
+                const Text('Aucune alerte détectée.')
               else ...[
                 if (health.hasFailedImports)
                   _AlertLine(
                     icon: Icons.error_outline,
                     label: 'Imports en erreur',
-                    value:
-                    '${health.failedImportsCount}',
-                    color:
-                    Theme.of(context)
-                        .colorScheme
-                        .error,
+                    value: '${health.failedImportsCount}',
+                    color: Theme.of(context).colorScheme.error,
                   ),
 
                 if (health.hasRunningImports)
                   _AlertLine(
                     icon: Icons.sync_outlined,
-                    label:
-                    'Imports interrompus ou en cours',
-                    value:
-                    '${health.runningImportsCount}',
+                    label: 'Imports interrompus ou en cours',
+                    value: '${health.runningImportsCount}',
                     color: Colors.blueGrey,
                   ),
 
                 if (health.hasNoBackup)
                   _AlertLine(
                     icon: Icons.save_outlined,
-                    label:
-                    'Aucune sauvegarde enregistrée',
+                    label: 'Aucune sauvegarde enregistrée',
                     value: 'À faire',
-                    color:
-                    Theme.of(context)
-                        .colorScheme
-                        .error,
+                    color: Theme.of(context).colorScheme.error,
                   ),
 
                 if (health.hasOldBackup)
                   _AlertLine(
                     icon: Icons.schedule_outlined,
-                    label:
-                    'Dernière sauvegarde ancienne',
+                    label: 'Dernière sauvegarde ancienne',
                     value: '+7 jours',
                     color: Colors.orange,
                   ),
@@ -149,41 +125,31 @@ class SystemAlertsCard extends StatelessWidget {
                   _AlertLine(
                     icon: Icons.storage_outlined,
                     label: 'Base SQLite volumineuse',
-                    value: _formatBytes(
-                      health.databaseSizeBytes,
-                    ),
+                    value: _formatBytes(health.databaseSizeBytes),
                     color: Colors.orange,
                   ),
 
                 if (hasLargeBackupStorage)
                   _AlertLine(
                     icon: Icons.folder_outlined,
-                    label:
-                    'Sauvegardes très volumineuses',
-                    value: _formatBytes(
-                      health.backupsTotalSizeBytes,
-                    ),
+                    label: 'Sauvegardes très volumineuses',
+                    value: _formatBytes(health.backupsTotalSizeBytes),
                     color: Colors.orange,
                   ),
 
                 if (hasManyArchivedPatients)
                   _AlertLine(
                     icon: Icons.archive_outlined,
-                    label:
-                    'Nombre important de patients archivés',
-                    value:
-                    '${health.archivedPatientsCount}',
+                    label: 'Nombre important de patients archivés',
+                    value: '${health.archivedPatientsCount}',
                     color: Colors.orange,
                   ),
 
                 if (recentRestore)
                   _AlertLine(
                     icon: Icons.restore_outlined,
-                    label:
-                    'Restauration récente détectée',
-                    value: DateFormat(
-                      'dd/MM/yyyy',
-                    ).format(
+                    label: 'Restauration récente détectée',
+                    value: DateFormat('dd/MM/yyyy').format(
                       DateTime.fromMillisecondsSinceEpoch(
                         health.lastRestoreAt!,
                       ),
@@ -218,21 +184,12 @@ class _AlertLine extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 12),
       child: Row(
         children: [
-          Icon(
-            icon,
-            size: 18,
-            color: color,
-          ),
+          Icon(icon, size: 18, color: color),
           const SizedBox(width: 8),
-          Expanded(
-            child: Text(label),
-          ),
+          Expanded(child: Text(label)),
           Text(
             value,
-            style: TextStyle(
-              fontWeight: FontWeight.w600,
-              color: color,
-            ),
+            style: TextStyle(fontWeight: FontWeight.w600, color: color),
           ),
         ],
       ),

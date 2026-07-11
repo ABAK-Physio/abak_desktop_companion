@@ -16,7 +16,6 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 import 'package:flutter/material.dart';
 import 'package:window_manager/window_manager.dart';
 
@@ -46,13 +45,9 @@ Future<void> main() async {
 
   await LocalExchangeServer.instance.start();
 
-  AirDropImportWatcher.instance.onImportMessage =
-      (message) {
+  AirDropImportWatcher.instance.onImportMessage = (message) {
     rootScaffoldMessengerKey.currentState?.showSnackBar(
-      SnackBar(
-        content: Text(message),
-        duration: const Duration(seconds: 5),
-      ),
+      SnackBar(content: Text(message), duration: const Duration(seconds: 5)),
     );
   };
 
@@ -60,17 +55,16 @@ Future<void> main() async {
 
   debugPrint(
     '📡 serveur local ABAK actif sur le port '
-        '${LocalExchangeServer.instance.port}',
+    '${LocalExchangeServer.instance.port}',
   );
 
   await ImportSessionRepository().recoverInterruptedSessions();
 
-  final purgeResult =
-  await PatientPurgeService().purgeArchivedPatients();
+  final purgeResult = await PatientPurgeService().purgeArchivedPatients();
 
   debugPrint(
     '🧹 purge patients : '
-        '${purgeResult.deletedPatients} supprimé(s)',
+    '${purgeResult.deletedPatients} supprimé(s)',
   );
 
   final backupCleanupResult = await LocalBackupCleanupService(
@@ -79,17 +73,14 @@ Future<void> main() async {
 
   debugPrint(
     '🧹 purge sauvegardes SQLite : '
-        '${backupCleanupResult.deletedCount} supprimée(s), '
-        '${backupCleanupResult.keptCount} conservée(s)',
+    '${backupCleanupResult.deletedCount} supprimée(s), '
+    '${backupCleanupResult.keptCount} conservée(s)',
   );
 
-  windowManager.waitUntilReadyToShow(
-    windowOptions,
-        () async {
-      await windowManager.show();
-      await windowManager.focus();
-    },
-  );
+  windowManager.waitUntilReadyToShow(windowOptions, () async {
+    await windowManager.show();
+    await windowManager.focus();
+  });
 
   runApp(const AbakDesktopApp());
 }

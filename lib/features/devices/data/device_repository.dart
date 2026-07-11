@@ -17,10 +17,7 @@ class DeviceRepository {
   Future<void> insertDevice(PairedDevice device) async {
     final db = await DatabaseService.database;
 
-    await db.insert(
-      'paired_devices',
-      device.toMap(),
-    );
+    await db.insert('paired_devices', device.toMap());
   }
 
   Future<void> archiveDevice(String deviceId) async {
@@ -28,9 +25,7 @@ class DeviceRepository {
 
     await db.update(
       'paired_devices',
-      {
-        'archived_at': DateTime.now().millisecondsSinceEpoch,
-      },
+      {'archived_at': DateTime.now().millisecondsSinceEpoch},
       where: 'device_id = ?',
       whereArgs: [deviceId],
     );
@@ -53,12 +48,9 @@ class DeviceRepository {
 
     await db.update(
       'paired_devices',
-      {
-        'archived_at': null,
-      },
+      {'archived_at': null},
       where: 'device_id = ?',
       whereArgs: [deviceId],
     );
   }
-
 }

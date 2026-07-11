@@ -5,31 +5,26 @@ import '../models/import_session.dart';
 import '../models/import_session_file.dart';
 
 class ImportSessionRepository {
-  Future<String> startSession({
-    String? sourceLabel,
-    String? notes,
-  }) async {
+  Future<String> startSession({String? sourceLabel, String? notes}) async {
     final db = await DatabaseService.database;
 
     final sessionId = const Uuid().v4();
     final now = DateTime.now().millisecondsSinceEpoch;
 
-    await db.insert(
-      'desktop_import_sessions',
-      {
-        'import_session_id': sessionId,
-        'started_at': now,
-        'completed_at': null,
-        'processed_files_count': 0,
-        'failed_files_count': 0,
-        'imported_results_count': 0,
-        'skipped_results_count': 0,
-        'imported_metrics_count': 0,
-        'source_label': sourceLabel,
-        'notes': notes,
-        'status': 'running',
-      },
-    );
+    await db.insert('desktop_import_sessions', {
+      'import_session_id': sessionId,
+      'started_at': now,
+      'completed_at': null,
+      'processed_files_count': 0,
+      'failed_files_count': 0,
+      'imported_results_count': 0,
+      'skipped_results_count': 0,
+      'duplicate_results_count': 0,
+      'imported_metrics_count': 0,
+      'source_label': sourceLabel,
+      'notes': notes,
+      'status': 'running',
+    });
 
     return sessionId;
   }
@@ -46,8 +41,8 @@ class ImportSessionRepository {
   }
 
   Future<List<ImportSessionFile>> getFilesForSession(
-      String importSessionId,
-      ) async {
+    String importSessionId,
+  ) async {
     final db = await DatabaseService.database;
 
     final rows = await db.query(
@@ -66,7 +61,6 @@ class ImportSessionRepository {
     return rows.map(ImportSessionFile.fromMap).toList();
   }
 
-
   Future<void> addFileLog({
     required String importSessionId,
     required String fileName,
@@ -74,6 +68,7 @@ class ImportSessionRepository {
     required String status,
     required int importedResultsCount,
     required int skippedResultsCount,
+    required int duplicateResultsCount,
     required int importedMetricsCount,
     required int conflictResultsCount,
     String? filePath,
@@ -81,23 +76,21 @@ class ImportSessionRepository {
   }) async {
     final db = await DatabaseService.database;
 
-    await db.insert(
-      'desktop_import_session_files',
-      {
-        'session_file_id': const Uuid().v4(),
-        'import_session_id': importSessionId,
-        'file_name': fileName,
-        'file_path': filePath,
-        'file_size': fileSize,
-        'processed_at': DateTime.now().millisecondsSinceEpoch,
-        'imported_results_count': importedResultsCount,
-        'skipped_results_count': skippedResultsCount,
-        'imported_metrics_count': importedMetricsCount,
-        'conflict_results_count': conflictResultsCount,
-        'status': status,
-        'error_message': errorMessage,
-      },
-    );
+    await db.insert('desktop_import_session_files', {
+      'session_file_id': const Uuid().v4(),
+      'import_session_id': importSessionId,
+      'file_name': fileName,
+      'file_path': filePath,
+      'file_size': fileSize,
+      'processed_at': DateTime.now().millisecondsSinceEpoch,
+      'imported_results_count': importedResultsCount,
+      'skipped_results_count': skippedResultsCount,
+      'duplicate_results_count': duplicateResultsCount,
+      'imported_metrics_count': importedMetricsCount,
+      'conflict_results_count': conflictResultsCount,
+      'status': status,
+      'error_message': errorMessage,
+    });
   }
 
   Future<void> completeSession({
@@ -106,6 +99,7 @@ class ImportSessionRepository {
     required int failedFilesCount,
     required int importedResultsCount,
     required int skippedResultsCount,
+    required int duplicateResultsCount,
     required int importedMetricsCount,
     required int conflictResultsCount,
     String? status,
@@ -123,12 +117,14 @@ class ImportSessionRepository {
         'failed_files_count': failedFilesCount,
         'imported_results_count': importedResultsCount,
         'skipped_results_count': skippedResultsCount,
+        'duplicate_results_count': duplicateResultsCount,
         'imported_metrics_count': importedMetricsCount,
         'conflict_results_count': conflictResultsCount,
         'summary_patient_label': summaryPatientLabel,
         'summary_episode_label': summaryEpisodeLabel,
         'summary_exercises_label': summaryExercisesLabel,
-        'status': status ??
+        'status':
+            status ??
             (failedFilesCount > 0 ? 'completed_with_errors' : 'completed'),
       },
       where: 'import_session_id = ?',
@@ -171,11 +167,7 @@ class ImportSessionRepository {
       'desktop_import_session_files',
       columns: ['import_session_id'],
       where: "status = ? AND (file_path = ? OR error_message = ?)",
-      whereArgs: [
-        'needs_resolution',
-        filePath,
-        filePath,
-      ],
+      whereArgs: ['needs_resolution', filePath, filePath],
       limit: 1,
     );
 
@@ -192,11 +184,7 @@ class ImportSessionRepository {
         'desktop_import_session_files',
         columns: ['import_session_id'],
         where: "status = ? AND (file_path = ? OR error_message = ?)",
-        whereArgs: [
-          'needs_resolution',
-          filePath,
-          filePath,
-        ],
+        whereArgs: ['needs_resolution', filePath, filePath],
       );
 
       final sessionIds = rows
@@ -206,26 +194,16 @@ class ImportSessionRepository {
 
       await txn.update(
         'desktop_import_session_files',
-        {
-          'status': 'resolved',
-          'error_message': null,
-        },
+        {'status': 'resolved', 'error_message': null},
         where: "status = ? AND (file_path = ? OR error_message = ?)",
-        whereArgs: [
-          'needs_resolution',
-          filePath,
-          filePath,
-        ],
+        whereArgs: ['needs_resolution', filePath, filePath],
       );
 
       for (final sessionId in sessionIds) {
         final remainingRows = await txn.query(
           'desktop_import_session_files',
           where: 'import_session_id = ? AND status = ?',
-          whereArgs: [
-            sessionId,
-            'needs_resolution',
-          ],
+          whereArgs: [sessionId, 'needs_resolution'],
         );
 
         if (remainingRows.isEmpty) {
@@ -237,15 +215,13 @@ class ImportSessionRepository {
               'notes': null,
             },
             where: 'import_session_id = ? AND status = ?',
-            whereArgs: [
-              sessionId,
-              'needs_resolution',
-            ],
+            whereArgs: [sessionId, 'needs_resolution'],
           );
         }
       }
     });
   }
+
   Future<void> deleteSession(String importSessionId) async {
     final db = await DatabaseService.database;
 

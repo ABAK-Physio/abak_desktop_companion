@@ -7,10 +7,7 @@ import 'package:intl/intl.dart';
 class HomeImportSummaryCard extends StatelessWidget {
   final AbakImportLauncherResult result;
 
-  HomeImportSummaryCard({
-    super.key,
-    required this.result,
-  });
+  HomeImportSummaryCard({super.key, required this.result});
 
   final _patientRepository = PatientRepository();
 
@@ -34,9 +31,7 @@ class HomeImportSummaryCard extends StatelessWidget {
                   const SizedBox(width: 8),
                   Text(
                     'Dernier import ABAK',
-                    style: Theme.of(context)
-                        .textTheme
-                        .titleMedium,
+                    style: Theme.of(context).textTheme.titleMedium,
                   ),
                 ],
               ),
@@ -44,7 +39,9 @@ class HomeImportSummaryCard extends StatelessWidget {
 
               _InfoLine(
                 label: 'Date import',
-                value: DateFormat('dd/MM/yyyy HH:mm').format(result.completedAt),
+                value: DateFormat(
+                  'dd/MM/yyyy HH:mm',
+                ).format(result.completedAt),
               ),
 
               _InfoLine(
@@ -82,64 +79,51 @@ class HomeImportSummaryCard extends StatelessWidget {
 
                 Text(
                   'Patients concernés',
-                  style: Theme.of(context)
-                      .textTheme
-                      .titleSmall,
+                  style: Theme.of(context).textTheme.titleSmall,
                 ),
 
                 const SizedBox(height: 20),
 
-                ...List.generate(
-                  result.patientLabels.length,
-                      (index) {
-                    final label = result.patientLabels[index];
-                    final patientId = result.patientIds[index];
+                ...List.generate(result.patientLabels.length, (index) {
+                  final label = result.patientLabels[index];
+                  final patientId = result.patientIds[index];
 
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 10),
-                      child: Row(
-                        children: [
-                          const Icon(
-                            Icons.person_outline,
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 10),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.person_outline, size: 18),
+
+                        const SizedBox(width: 8),
+
+                        Expanded(child: Text(label)),
+
+                        TextButton.icon(
+                          onPressed: () async {
+                            final patient = await _patientRepository
+                                .getPatientById(patientId);
+
+                            if (patient == null || !context.mounted) {
+                              return;
+                            }
+
+                            await Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (_) =>
+                                    PatientDetailScreen(patient: patient),
+                              ),
+                            );
+                          },
+                          icon: const Icon(
+                            Icons.folder_open_outlined,
                             size: 18,
                           ),
-
-                          const SizedBox(width: 8),
-
-                          Expanded(
-                            child: Text(label),
-                          ),
-
-                          TextButton.icon(
-                            onPressed: () async {
-                              final patient =
-                              await _patientRepository.getPatientById(
-                                patientId,
-                              );
-
-                              if (patient == null || !context.mounted) {
-                                return;
-                              }
-
-                              await Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (_) => PatientDetailScreen(
-                                    patient: patient,
-                                  ),
-                                ),
-                              );
-                            },
-                            icon: const Icon(
-                              Icons.folder_open_outlined,
-                              size: 18,
-                            ),
-                            label: const Text('Ouvrir'),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                ),
+                          label: const Text('Ouvrir'),
+                        ),
+                      ],
+                    ),
+                  );
+                }),
               ],
             ],
           ),
@@ -153,10 +137,7 @@ class _InfoLine extends StatelessWidget {
   final String label;
   final String value;
 
-  const _InfoLine({
-    required this.label,
-    required this.value,
-  });
+  const _InfoLine({required this.label, required this.value});
 
   @override
   Widget build(BuildContext context) {
@@ -168,14 +149,10 @@ class _InfoLine extends StatelessWidget {
             width: 180,
             child: Text(
               label,
-              style: const TextStyle(
-                fontWeight: FontWeight.w600,
-              ),
+              style: const TextStyle(fontWeight: FontWeight.w600),
             ),
           ),
-          Expanded(
-            child: Text(value),
-          ),
+          Expanded(child: Text(value)),
         ],
       ),
     );

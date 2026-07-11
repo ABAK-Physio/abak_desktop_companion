@@ -95,27 +95,25 @@ class _DeviceListScreenState extends State<DeviceListScreen> {
           floatingActionButton: _showArchived
               ? null
               : FloatingActionButton.extended(
-            onPressed: _createDevice,
-            icon: const Icon(Icons.devices),
-            label: const Text('Nouvel appareil'),
-          ),
+                  onPressed: _createDevice,
+                  icon: const Icon(Icons.devices),
+                  label: const Text('Nouvel appareil'),
+                ),
         );
       },
     );
   }
 
   Widget _buildBody(
-      AsyncSnapshot<List<PairedDevice>> snapshot,
-      List<PairedDevice> devices,
-      ) {
+    AsyncSnapshot<List<PairedDevice>> snapshot,
+    List<PairedDevice> devices,
+  ) {
     if (snapshot.connectionState == ConnectionState.waiting) {
       return const Center(child: CircularProgressIndicator());
     }
 
     if (snapshot.hasError) {
-      return Center(
-        child: Text('Erreur : ${snapshot.error}'),
-      );
+      return Center(child: Text('Erreur : ${snapshot.error}'));
     }
 
     return Column(
@@ -149,63 +147,63 @@ class _DeviceListScreenState extends State<DeviceListScreen> {
         Expanded(
           child: devices.isEmpty
               ? Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Icon(Icons.devices_other_outlined, size: 64),
-                const SizedBox(height: 16),
-                Text(
-                  _showArchived
-                      ? 'Aucun appareil archivé'
-                      : 'Aucun appareil associé',
-                  style: const TextStyle(fontSize: 22),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  _showArchived
-                      ? 'La corbeille des appareils est vide pour le moment.'
-                      : 'Les téléphones ABAK associés au cabinet apparaîtront ici.',
-                  style: Theme.of(context).textTheme.bodyMedium,
-                ),
-              ],
-            ),
-          )
-              : ListView.separated(
-            padding: const EdgeInsets.all(16),
-            itemCount: devices.length,
-            separatorBuilder: (_, _) => const Divider(height: 1),
-            itemBuilder: (context, index) {
-              final device = devices[index];
-
-              return ListTile(
-                leading: const CircleAvatar(
-                  child: Icon(Icons.phone_android),
-                ),
-                title: Text(device.deviceLabel),
-                subtitle: Text(
-                  _showArchived
-                      ? 'Archivé le ${DateFormatUtils.formatTimestampForDisplay(context, device.archivedAt)}'
-                      : [
-                    if (device.platform != null)
-                      'Plateforme : ${device.platform}',
-                    if (device.practitionerId != null)
-                      'Kiné associé : ${device.practitionerId}',
-                  ].join(' · '),
-                ),
-                trailing: _showArchived
-                    ? IconButton(
-                  tooltip: 'Restaurer',
-                  icon: const Icon(Icons.restore),
-                  onPressed: () => _restoreDevice(device),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.devices_other_outlined, size: 64),
+                      const SizedBox(height: 16),
+                      Text(
+                        _showArchived
+                            ? 'Aucun appareil archivé'
+                            : 'Aucun appareil associé',
+                        style: const TextStyle(fontSize: 22),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        _showArchived
+                            ? 'La corbeille des appareils est vide pour le moment.'
+                            : 'Les téléphones ABAK associés au cabinet apparaîtront ici.',
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                    ],
+                  ),
                 )
-                    : IconButton(
-                  tooltip: 'Archiver',
-                  icon: const Icon(Icons.archive_outlined),
-                  onPressed: () => _archiveDevice(device),
+              : ListView.separated(
+                  padding: const EdgeInsets.all(16),
+                  itemCount: devices.length,
+                  separatorBuilder: (_, _) => const Divider(height: 1),
+                  itemBuilder: (context, index) {
+                    final device = devices[index];
+
+                    return ListTile(
+                      leading: const CircleAvatar(
+                        child: Icon(Icons.phone_android),
+                      ),
+                      title: Text(device.deviceLabel),
+                      subtitle: Text(
+                        _showArchived
+                            ? 'Archivé le ${DateFormatUtils.formatTimestampForDisplay(context, device.archivedAt)}'
+                            : [
+                                if (device.platform != null)
+                                  'Plateforme : ${device.platform}',
+                                if (device.practitionerId != null)
+                                  'Kiné associé : ${device.practitionerId}',
+                              ].join(' · '),
+                      ),
+                      trailing: _showArchived
+                          ? IconButton(
+                              tooltip: 'Restaurer',
+                              icon: const Icon(Icons.restore),
+                              onPressed: () => _restoreDevice(device),
+                            )
+                          : IconButton(
+                              tooltip: 'Archiver',
+                              icon: const Icon(Icons.archive_outlined),
+                              onPressed: () => _archiveDevice(device),
+                            ),
+                    );
+                  },
                 ),
-              );
-            },
-          ),
         ),
       ],
     );

@@ -40,11 +40,13 @@ class EpisodeReportDocxBuilder {
     buffer.write(_paragraph('Rapport clinique', style: 'Title'));
 
     buffer.write(_paragraph('Patient', style: 'Heading1'));
-    buffer.write(_table([
-      ('Nom', report.patientDisplayName),
-      ('Date de naissance', report.birthDate ?? 'Non renseigné'),
-      ('Sexe', report.sex ?? 'Non renseigné'),
-    ]));
+    buffer.write(
+      _table([
+        ('Nom', report.patientDisplayName),
+        ('Date de naissance', report.birthDate ?? 'Non renseigné'),
+        ('Sexe', report.sex ?? 'Non renseigné'),
+      ]),
+    );
 
     if (report.episodeTitle?.trim().isNotEmpty == true) {
       buffer.write(_paragraph('Épisode', style: 'Heading1'));
@@ -52,20 +54,24 @@ class EpisodeReportDocxBuilder {
     }
 
     buffer.write(_paragraph('Profil patient', style: 'Heading1'));
-    buffer.write(_table([
-      for (final field in report.patientProfileFields)
-        if (!field.isEmpty) (field.label, field.value),
-    ]));
+    buffer.write(
+      _table([
+        for (final field in report.patientProfileFields)
+          if (!field.isEmpty) (field.label, field.value),
+      ]),
+    );
 
     buffer.write(_paragraph('Formulaires', style: 'Heading1'));
     for (final form in report.formSections) {
       if (form.isEmpty) continue;
 
       buffer.write(_paragraph(form.title, style: 'Heading2'));
-      buffer.write(_table([
-        for (final field in form.fields)
-          if (!field.isEmpty) (field.label, field.value),
-      ]));
+      buffer.write(
+        _table([
+          for (final field in form.fields)
+            if (!field.isEmpty) (field.label, field.value),
+        ]),
+      );
       buffer.write(_paragraph(''));
     }
 
@@ -199,11 +205,7 @@ class EpisodeReportDocxBuilder {
 ''';
   }
 
-  String _cellText(
-      String text, {
-        bool bold = false,
-        int width = 0,
-      }) {
+  String _cellText(String text, {bool bold = false, int width = 0}) {
     final widthXml = width > 0
         ? '<w:tcW w:w="$width" w:type="dxa"/>'
         : '<w:tcW w:w="0" w:type="auto"/>';
@@ -218,11 +220,7 @@ class EpisodeReportDocxBuilder {
 ''';
   }
 
-  String _paragraph(
-      String text, {
-        String? style,
-        bool bold = false,
-      }) {
+  String _paragraph(String text, {String? style, bool bold = false}) {
     final escaped = _escapeXml(_sanitizeForDocx(text));
     final styleXml = style == null ? '' : '<w:pStyle w:val="$style"/>';
     final boldXml = bold ? '<w:b/>' : '';

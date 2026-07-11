@@ -31,10 +31,7 @@ class AbakFileExportService {
 
     final file = File(path);
 
-    await file.writeAsString(
-      json,
-      flush: true,
-    );
+    await file.writeAsString(json, flush: true);
 
     final exists = await file.exists();
     final length = exists ? await file.length() : 0;
@@ -46,9 +43,7 @@ class AbakFileExportService {
   }
 
   String _sanitizeFileName(String input) {
-    final sanitized = input
-        .replaceAll(RegExp(r'[\\/:*?"<>|]'), '_')
-        .trim();
+    final sanitized = input.replaceAll(RegExp(r'[\\/:*?"<>|]'), '_').trim();
 
     if (sanitized.isEmpty) {
       return 'abak_export.abak';

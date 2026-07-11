@@ -20,9 +20,7 @@ class DatabaseBackup {
     required this.notes,
   });
 
-  factory DatabaseBackup.fromMap(
-      Map<String, dynamic> map,
-      ) {
+  factory DatabaseBackup.fromMap(Map<String, dynamic> map) {
     return DatabaseBackup(
       backupId: map['backup_id'] as String,
       fileName: map['file_name'] as String,

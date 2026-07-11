@@ -15,9 +15,7 @@ class EpisodeConclusion {
     this.archivedAt,
   });
 
-  factory EpisodeConclusion.fromMap(
-      Map<String, dynamic> map,
-      ) {
+  factory EpisodeConclusion.fromMap(Map<String, dynamic> map) {
     return EpisodeConclusion(
       conclusionId: map['conclusion_id'] as String,
       caseId: map['case_id'] as String,

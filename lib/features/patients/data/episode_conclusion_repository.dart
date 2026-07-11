@@ -75,10 +75,7 @@ class EpisodeConclusionRepository {
 
     await db.update(
       'episode_conclusions',
-      {
-        'archived_at': now,
-        'updated_at': now,
-      },
+      {'archived_at': now, 'updated_at': now},
       where: 'conclusion_id = ?',
       whereArgs: [conclusionId],
     );

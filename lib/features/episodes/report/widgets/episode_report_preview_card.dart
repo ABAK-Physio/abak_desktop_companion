@@ -42,9 +42,7 @@ class EpisodeReportPreviewCard extends StatelessWidget {
     if (!context.mounted) return;
 
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Rapport DOCX exporté : ${file.path}'),
-      ),
+      SnackBar(content: Text('Rapport DOCX exporté : ${file.path}')),
     );
   }
 
@@ -65,26 +63,18 @@ class EpisodeReportPreviewCard extends StatelessWidget {
 
     if (!context.mounted) return;
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Rapport exporté : ${file.path}'),
-      ),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text('Rapport exporté : ${file.path}')));
   }
 
   Future<void> _copyToClipboard(BuildContext context) async {
-    await Clipboard.setData(
-      ClipboardData(
-        text: document.toPlainText(),
-      ),
-    );
+    await Clipboard.setData(ClipboardData(text: document.toPlainText()));
 
     if (!context.mounted) return;
 
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Rapport copié dans le presse-papiers.'),
-      ),
+      const SnackBar(content: Text('Rapport copié dans le presse-papiers.')),
     );
   }
 

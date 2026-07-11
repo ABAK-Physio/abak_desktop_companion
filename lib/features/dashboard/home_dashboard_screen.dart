@@ -24,19 +24,13 @@ import '../preferences/preferences_screen.dart';
 class HomeDashboardScreen extends StatefulWidget {
   final VoidCallback onLocaleChanged;
 
-  const HomeDashboardScreen({
-    super.key,
-    required this.onLocaleChanged,
-  });
-
+  const HomeDashboardScreen({super.key, required this.onLocaleChanged});
 
   @override
-  State<HomeDashboardScreen> createState() =>
-      _HomeDashboardScreenState();
+  State<HomeDashboardScreen> createState() => _HomeDashboardScreenState();
 }
 
-class _HomeDashboardScreenState
-    extends State<HomeDashboardScreen> {
+class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
   int selectedIndex = 0;
   int _refreshToken = 0;
   List<String> _titles(BuildContext context) {
@@ -82,8 +76,7 @@ class _HomeDashboardScreenState
               NavigationRailDestination(
                 icon: Icon(Icons.people_outline),
                 selectedIcon: Icon(Icons.people),
-                label: Text(S.of(context).patients
-                ),
+                label: Text(S.of(context).patients),
               ),
               NavigationRailDestination(
                 icon: Icon(Icons.medical_services_outlined),
@@ -118,9 +111,7 @@ class _HomeDashboardScreenState
             ],
           ),
           const VerticalDivider(width: 1),
-          Expanded(
-            child: _buildContent(),
-          ),
+          Expanded(child: _buildContent()),
         ],
       ),
     );
@@ -138,9 +129,7 @@ class _HomeDashboardScreenState
         builder: (dialogContext) {
           return AlertDialog(
             title: Text(S.of(context).ipAddressNotFound),
-            content: Text(
-              S.of(context).ipAddressNotFoundMessage,
-            ),
+            content: Text(S.of(context).ipAddressNotFoundMessage),
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(dialogContext).pop(),
@@ -179,13 +168,13 @@ class _HomeDashboardScreenState
                 const SizedBox(height: 16),
                 SelectableText(
                   '${S.of(context).desktopAddress} : $host\n'
-                      '${S.of(context).desktopPort} : $port',
+                  '${S.of(context).desktopPort} : $port',
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 12),
                 const Text(
                   'Scannez ce QR code depuis ABAK Mobile pour configurer '
-                      'automatiquement la connexion au Desktop.',
+                  'automatiquement la connexion au Desktop.',
                   textAlign: TextAlign.center,
                 ),
               ],
@@ -240,9 +229,7 @@ class _HomeDashboardScreenState
                     onRefresh: _refreshDashboard,
                   ),
                   const SizedBox(height: 8),
-                  SystemOverviewBar(
-                    key: ValueKey('overview-$_refreshToken'),
-                  ),
+                  SystemOverviewBar(key: ValueKey('overview-$_refreshToken')),
                   const SizedBox(height: 24),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -257,7 +244,7 @@ class _HomeDashboardScreenState
                       Expanded(
                         flex: 2,
                         child: Column(
-                          children:  [
+                          children: [
                             SystemStatusCard(),
                             SizedBox(height: 24),
                             PendingResolutionCard(
@@ -302,9 +289,7 @@ class _HomeDashboardScreenState
       case 4:
         return const ReportArchiveScreen();
       case 5:
-        return PreferencesScreen(
-          onLanguageChanged: widget.onLocaleChanged,
-        );
+        return PreferencesScreen(onLanguageChanged: widget.onLocaleChanged);
       case 6:
         return const SettingsScreen();
       case 7:
@@ -314,6 +299,7 @@ class _HomeDashboardScreenState
     }
   }
 }
+
 class _DashboardHeader extends StatelessWidget {
   final String title;
   final VoidCallback onPairPhone;
@@ -331,10 +317,7 @@ class _DashboardHeader extends StatelessWidget {
       height: 32,
       child: Row(
         children: [
-          Text(
-            title,
-            style: Theme.of(context).textTheme.headlineSmall,
-          ),
+          Text(title, style: Theme.of(context).textTheme.headlineSmall),
           const Spacer(),
           IconButton(
             tooltip: S.of(context).pairPhone,

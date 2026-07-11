@@ -17,11 +17,7 @@ class EpisodeDocumentStorageService {
     final appSupportDir = await getApplicationSupportDirectory();
 
     final documentsDir = Directory(
-      p.join(
-        appSupportDir.path,
-        'episode_documents',
-        caseId,
-      ),
+      p.join(appSupportDir.path, 'episode_documents', caseId),
     );
 
     if (!await documentsDir.exists()) {
@@ -51,10 +47,7 @@ class EpisodeDocumentStorageService {
     var counter = 1;
 
     while (await File(candidate).exists()) {
-      candidate = p.join(
-        directoryPath,
-        '${baseName}_$counter$extension',
-      );
+      candidate = p.join(directoryPath, '${baseName}_$counter$extension');
       counter++;
     }
 
@@ -62,8 +55,6 @@ class EpisodeDocumentStorageService {
   }
 
   String _safeFileName(String fileName) {
-    return fileName
-        .replaceAll(RegExp(r'[\\/:*?"<>|]'), '_')
-        .trim();
+    return fileName.replaceAll(RegExp(r'[\\/:*?"<>|]'), '_').trim();
   }
 }

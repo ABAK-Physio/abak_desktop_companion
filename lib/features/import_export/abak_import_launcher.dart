@@ -12,9 +12,9 @@ import 'services/abak_import_resolution_service.dart';
 
 class AbakImportLauncher {
   static Future<AbakImportLauncherResult?> importArchiveFromPicker(
-      BuildContext context, {
-        VoidCallback? onImportCompleted,
-      }) async {
+    BuildContext context, {
+    VoidCallback? onImportCompleted,
+  }) async {
     final importSessionRepository = ImportSessionRepository();
     final importService = AbakImportService();
     final resolutionService = AbakImportResolutionService();
@@ -38,6 +38,7 @@ class AbakImportLauncher {
       int totalSkippedResults = 0;
       int totalImportedMetrics = 0;
       int totalConflictResults = 0;
+      int totalDuplicateResults = 0;
 
       final resolutionMessages = <String>[];
       final failedFileNames = <String>[];
@@ -75,9 +76,7 @@ class AbakImportLauncher {
 
           final assignment = await Navigator.of(context).push<ImportAssignment>(
             MaterialPageRoute(
-              builder: (_) => ImportResolutionScreen(
-                package: package,
-              ),
+              builder: (_) => ImportResolutionScreen(package: package),
             ),
           );
 
@@ -89,8 +88,8 @@ class AbakImportLauncher {
 
           resolutionMessages.add(
             '${pickedFile.name} : rattaché à '
-                '${assignment.patient.displayName} / '
-                '${assignment.careEpisode.title}',
+            '${assignment.patient.displayName} / '
+            '${assignment.careEpisode.title}',
           );
 
           importedPatientIds.add(assignment.patient.patientId);
@@ -117,6 +116,7 @@ class AbakImportLauncher {
             status: 'success',
             importedResultsCount: summary.importedResults,
             skippedResultsCount: summary.skippedResults,
+            duplicateResultsCount: summary.duplicateResults,
             importedMetricsCount: summary.importedMetrics,
             conflictResultsCount: summary.conflictResults,
           );
@@ -126,6 +126,7 @@ class AbakImportLauncher {
           totalSkippedResults += summary.skippedResults;
           totalImportedMetrics += summary.importedMetrics;
           totalConflictResults += summary.conflictResults;
+          totalDuplicateResults += summary.duplicateResults;
         } catch (e, stack) {
           failedFiles++;
           failedFileNames.add(pickedFile.name);
@@ -137,6 +138,7 @@ class AbakImportLauncher {
             status: 'error',
             importedResultsCount: 0,
             skippedResultsCount: 0,
+            duplicateResultsCount: 0,
             conflictResultsCount: 0,
             importedMetricsCount: 0,
             errorMessage: e.toString(),
@@ -153,6 +155,7 @@ class AbakImportLauncher {
         failedFilesCount: failedFiles,
         importedResultsCount: totalImportedResults,
         skippedResultsCount: totalSkippedResults,
+        duplicateResultsCount: totalDuplicateResults,
         conflictResultsCount: totalConflictResults,
         importedMetricsCount: totalImportedMetrics,
         summaryPatientLabel: importedPatientLabels.isEmpty
@@ -171,6 +174,7 @@ class AbakImportLauncher {
         failedFiles: failedFiles,
         importedResults: totalImportedResults,
         skippedResults: totalSkippedResults,
+        duplicateResults: totalDuplicateResults,
         conflictResults: totalConflictResults,
         importedMetrics: totalImportedMetrics,
         patientIds: importedPatientIds.toList(),
@@ -193,9 +197,7 @@ class AbakImportLauncher {
           : '\n\nRésolution :\n${resolutionMessages.join('\n')}';
 
       if (failedFileNames.isNotEmpty) {
-        debugPrint(
-          '❌ Fichiers non importés : ${failedFileNames.join(', ')}',
-        );
+        debugPrint('❌ Fichiers non importés : ${failedFileNames.join(', ')}');
       }
 
       ScaffoldMessenger.of(context).showSnackBar(
@@ -204,13 +206,14 @@ class AbakImportLauncher {
           behavior: SnackBarBehavior.floating,
           content: Text(
             'Import terminé\n\n'
-                'Fichiers traités : ${launcherResult.processedFiles}\n'
-                'Résultats importés : ${launcherResult.importedResults}\n'
-                'Résultats ignorés : ${launcherResult.skippedResults}\n'
-                'Conflits : ${launcherResult.conflictResults}\n'
-                'Métriques importées : ${launcherResult.importedMetrics}'
-                '$errorSuffix'
-                '$resolutionText',
+            'Fichiers traités : ${launcherResult.processedFiles}\n'
+            'Résultats importés : ${launcherResult.importedResults}\n'
+            'Résultats ignorés : ${launcherResult.skippedResults}\n'
+            'Conflits : ${launcherResult.conflictResults}\n'
+            'Résultats déjà présents : ${launcherResult.duplicateResults}\n'
+            'Métriques importées : ${launcherResult.importedMetrics}'
+            '$errorSuffix'
+            '$resolutionText',
             style: const TextStyle(height: 1.4),
           ),
         ),
@@ -225,20 +228,18 @@ class AbakImportLauncher {
         return null;
       }
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Erreur import : $e'),
-        ),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Erreur import : $e')));
 
       return null;
     }
   }
 
   static Future<Map<String, dynamic>> importArchiveFromPath(
-      String filePath, {
-        String sourceLabel = 'local_network_upload',
-      }) async {
+    String filePath, {
+    String sourceLabel = 'local_network_upload',
+  }) async {
     final importSessionRepository = ImportSessionRepository();
 
     final file = File(filePath);
@@ -266,6 +267,7 @@ class AbakImportLauncher {
         status: 'needs_resolution',
         importedResultsCount: 0,
         skippedResultsCount: 0,
+        duplicateResultsCount: 0,
         conflictResultsCount: 0,
         importedMetricsCount: 0,
       );
@@ -276,6 +278,7 @@ class AbakImportLauncher {
         failedFilesCount: 0,
         importedResultsCount: 0,
         skippedResultsCount: 0,
+        duplicateResultsCount: 0,
         conflictResultsCount: 0,
         importedMetricsCount: 0,
         status: 'needs_resolution',
@@ -299,6 +302,7 @@ class AbakImportLauncher {
         status: 'error',
         importedResultsCount: 0,
         skippedResultsCount: 0,
+        duplicateResultsCount: 0,
         conflictResultsCount: 0,
         importedMetricsCount: 0,
         errorMessage: e.toString(),
@@ -310,6 +314,7 @@ class AbakImportLauncher {
         failedFilesCount: 1,
         importedResultsCount: 0,
         skippedResultsCount: 0,
+        duplicateResultsCount: 0,
         conflictResultsCount: 0,
         importedMetricsCount: 0,
       );
@@ -324,10 +329,10 @@ class AbakImportLauncher {
   }
 
   static Future<AbakImportLauncherResult?> importArchiveFromPathWithResolution(
-      BuildContext context,
-      String filePath, {
-        VoidCallback? onImportCompleted,
-      }) async {
+    BuildContext context,
+    String filePath, {
+    VoidCallback? onImportCompleted,
+  }) async {
     final importSessionRepository = ImportSessionRepository();
     final importService = AbakImportService();
 
@@ -343,8 +348,8 @@ class AbakImportLauncher {
       return null;
     }
 
-    final importSessionId =
-    await importSessionRepository.findPendingSessionIdByFilePath(filePath);
+    final importSessionId = await importSessionRepository
+        .findPendingSessionIdByFilePath(filePath);
 
     if (importSessionId == null) {
       if (context.mounted) {
@@ -369,9 +374,7 @@ class AbakImportLauncher {
 
       final assignment = await Navigator.of(context).push<ImportAssignment>(
         MaterialPageRoute(
-          builder: (_) => ImportResolutionScreen(
-            package: package,
-          ),
+          builder: (_) => ImportResolutionScreen(package: package),
         ),
       );
 
@@ -382,6 +385,7 @@ class AbakImportLauncher {
           failedFilesCount: 1,
           importedResultsCount: 0,
           skippedResultsCount: 0,
+          duplicateResultsCount: 0,
           conflictResultsCount: 0,
           importedMetricsCount: 0,
         );
@@ -402,6 +406,7 @@ class AbakImportLauncher {
         status: 'success',
         importedResultsCount: summary.importedResults,
         skippedResultsCount: summary.skippedResults,
+        duplicateResultsCount: summary.duplicateResults,
         conflictResultsCount: summary.conflictResults,
         importedMetricsCount: summary.importedMetrics,
       );
@@ -414,6 +419,7 @@ class AbakImportLauncher {
         failedFilesCount: 0,
         importedResultsCount: summary.importedResults,
         skippedResultsCount: summary.skippedResults,
+        duplicateResultsCount: summary.duplicateResults,
         conflictResultsCount: summary.conflictResults,
         importedMetricsCount: summary.importedMetrics,
         summaryPatientLabel: summary.summaryPatientLabel,
@@ -426,6 +432,7 @@ class AbakImportLauncher {
         failedFiles: 0,
         importedResults: summary.importedResults,
         skippedResults: summary.skippedResults,
+        duplicateResults: summary.duplicateResults,
         conflictResults: summary.conflictResults,
         importedMetrics: summary.importedMetrics,
         patientIds: [assignment.patient.patientId],
@@ -437,9 +444,12 @@ class AbakImportLauncher {
 
       if (context.mounted) {
         final message =
-        summary.importedResults == 0 && summary.skippedResults > 0
+        summary.importedResults == 0 &&
+            summary.duplicateResults > 0 &&
+            summary.skippedResults == 0 &&
+            summary.conflictResults == 0
             ? 'Aucun nouveau résultat importé : ce fichier avait déjà été traité. '
-            '${summary.skippedResults} résultat(s) déjà présent(s).'
+            '${summary.duplicateResults} résultat(s) déjà présent(s).'
             : 'Import terminé : ${summary.importedResults} résultat(s) importé(s) '
             'dans ${assignment.careEpisode.title}.';
 
@@ -458,9 +468,9 @@ class AbakImportLauncher {
       debugPrint('$stack');
 
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Erreur import : $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Erreur import : $e')));
       }
 
       return null;
@@ -474,6 +484,7 @@ class AbakImportLauncherResult {
   final int importedResults;
   final int skippedResults;
   final int conflictResults;
+  final int duplicateResults;
   final int importedMetrics;
   final DateTime completedAt;
 
@@ -486,6 +497,7 @@ class AbakImportLauncherResult {
     required this.importedResults,
     required this.skippedResults,
     required this.conflictResults,
+    required this.duplicateResults,
     required this.importedMetrics,
     required this.patientIds,
     required this.patientLabels,
@@ -508,6 +520,7 @@ class AbakImportLauncherResult {
         'importedResults: $importedResults, '
         'skippedResults: $skippedResults, '
         'conflictResults: $conflictResults, '
+        'duplicateResults: $duplicateResults, '
         'importedMetrics: $importedMetrics, '
         'patientIds: $patientIds, '
         'patientLabels: $patientLabels, '

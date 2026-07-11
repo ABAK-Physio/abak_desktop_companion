@@ -5,18 +5,14 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 class DesktopResultRepository {
   Future<List<DesktopResult>> getResultsForPatient(
-      String patientId, {
-        List<String>? syncStates,
-      }) async {
+    String patientId, {
+    List<String>? syncStates,
+  }) async {
     final db = await DatabaseService.database;
 
-    final whereParts = <String>[
-      'patient_id = ?',
-    ];
+    final whereParts = <String>['patient_id = ?'];
 
-    final whereArgs = <Object?>[
-      patientId,
-    ];
+    final whereArgs = <Object?>[patientId];
 
     if (syncStates != null && syncStates.isNotEmpty) {
       final placeholders = List.filled(syncStates.length, '?').join(', ');
@@ -34,9 +30,7 @@ class DesktopResultRepository {
     return rows.map(DesktopResult.fromMap).toList();
   }
 
-  Future<List<DesktopResult>> getResultsByIds(
-      List<String> resultIds,
-      ) async {
+  Future<List<DesktopResult>> getResultsByIds(List<String> resultIds) async {
     if (resultIds.isEmpty) {
       return [];
     }
@@ -68,9 +62,7 @@ class DesktopResultRepository {
     return rows.isNotEmpty;
   }
 
-  Future<List<DesktopResultMetric>> getMetricsForResult(
-      String resultId,
-      ) async {
+  Future<List<DesktopResultMetric>> getMetricsForResult(String resultId) async {
     final db = await DatabaseService.database;
 
     final rows = await db.query(
@@ -84,8 +76,8 @@ class DesktopResultRepository {
   }
 
   Future<List<DesktopResultMetric>> getMetricsForResultIds(
-      List<String> resultIds,
-      ) async {
+    List<String> resultIds,
+  ) async {
     if (resultIds.isEmpty) {
       return [];
     }
@@ -191,9 +183,7 @@ class DesktopResultRepository {
 
     await db.update(
       'desktop_results',
-      {
-        'archived_at': DateTime.now().millisecondsSinceEpoch,
-      },
+      {'archived_at': DateTime.now().millisecondsSinceEpoch},
       where: 'result_id = ?',
       whereArgs: [resultId],
     );
@@ -242,27 +232,23 @@ class DesktopResultRepository {
     final db = await DatabaseService.database;
     final now = DateTime.now().millisecondsSinceEpoch;
 
-    await db.insert(
-      'desktop_result_conflicts',
-      {
-        'conflict_id': 'conflict_${resultId}_$now',
-        'result_id': resultId,
-        'existing_hash': existingHash,
-        'incoming_hash': incomingHash,
-        'existing_json': existingJson,
-        'incoming_json': incomingJson,
-        'detected_at': now,
-        'resolution_status': 'pending',
-        'resolved_at': null,
-        'resolution_note': null,
-      },
-      conflictAlgorithm: ConflictAlgorithm.abort,
-    );
+    await db.insert('desktop_result_conflicts', {
+      'conflict_id': 'conflict_${resultId}_$now',
+      'result_id': resultId,
+      'existing_hash': existingHash,
+      'incoming_hash': incomingHash,
+      'existing_json': existingJson,
+      'incoming_json': incomingJson,
+      'detected_at': now,
+      'resolution_status': 'pending',
+      'resolved_at': null,
+      'resolution_note': null,
+    }, conflictAlgorithm: ConflictAlgorithm.abort);
   }
 
   Future<List<DesktopResult>> getResultsForCareEpisode(
-      String careEpisodeId,
-      ) async {
+    String careEpisodeId,
+  ) async {
     final db = await DatabaseService.database;
 
     final rows = await db.query(

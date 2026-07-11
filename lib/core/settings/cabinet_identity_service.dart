@@ -52,15 +52,11 @@ class CabinetIdentityService {
   Future<void> _setValue(String key, String value) async {
     final db = await DatabaseService.database;
 
-    await db.insert(
-      'application_settings',
-      {
-        'setting_key': key,
-        'setting_value': value,
-        'updated_at': DateTime.now().millisecondsSinceEpoch,
-      },
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
+    await db.insert('application_settings', {
+      'setting_key': key,
+      'setting_value': value,
+      'updated_at': DateTime.now().millisecondsSinceEpoch,
+    }, conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
   Future<void> _deleteValue(String key) async {

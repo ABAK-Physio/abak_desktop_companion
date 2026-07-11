@@ -9,9 +9,7 @@ class LocalBackupCleanupService {
 
   final DatabaseBackupRepository repository;
 
-  const LocalBackupCleanupService({
-    required this.repository,
-  });
+  const LocalBackupCleanupService({required this.repository});
 
   Future<BackupCleanupResult> cleanupOldBackups() async {
     final backups = await repository.getBackups();
@@ -27,17 +25,11 @@ class LocalBackupCleanupService {
 
     final sortedBackups = [...backups];
 
-    sortedBackups.sort(
-          (a, b) => b.createdAt.compareTo(a.createdAt),
-    );
+    sortedBackups.sort((a, b) => b.createdAt.compareTo(a.createdAt));
 
-    final backupsToKeep = sortedBackups
-        .take(minimumBackupsToKeep)
-        .toList();
+    final backupsToKeep = sortedBackups.take(minimumBackupsToKeep).toList();
 
-    final backupsToDelete = sortedBackups
-        .skip(minimumBackupsToKeep)
-        .toList();
+    final backupsToDelete = sortedBackups.skip(minimumBackupsToKeep).toList();
 
     final deletedPaths = <String>[];
 
@@ -46,9 +38,7 @@ class LocalBackupCleanupService {
 
       deletedPaths.add(backup.filePath);
 
-      await repository.deleteBackup(
-        backup.backupId,
-      );
+      await repository.deleteBackup(backup.backupId);
     }
 
     return BackupCleanupResult(
@@ -59,9 +49,7 @@ class LocalBackupCleanupService {
     );
   }
 
-  Future<void> _deleteBackupFile(
-      DatabaseBackup backup,
-      ) async {
+  Future<void> _deleteBackupFile(DatabaseBackup backup) async {
     final file = File(backup.filePath);
 
     if (await file.exists()) {

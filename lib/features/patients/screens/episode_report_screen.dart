@@ -34,30 +34,27 @@ class EpisodeReportScreen extends StatefulWidget {
   });
 
   @override
-  State<EpisodeReportScreen> createState() =>
-      _EpisodeReportScreenState();
+  State<EpisodeReportScreen> createState() => _EpisodeReportScreenState();
 }
 
 class _EpisodeReportScreenState extends State<EpisodeReportScreen> {
-  final EpisodeFormRepository _formRepository =
-  EpisodeFormRepository();
+  final EpisodeFormRepository _formRepository = EpisodeFormRepository();
 
   final EpisodeDocumentRepository _documentRepository =
-  EpisodeDocumentRepository();
+      EpisodeDocumentRepository();
 
-  final EpisodeNoteRepository _noteRepository =
-  EpisodeNoteRepository();
+  final EpisodeNoteRepository _noteRepository = EpisodeNoteRepository();
 
   late Future<_EpisodeReportData> _futureData;
 
   final PatientIdentityRepository _identityRepository =
-  PatientIdentityRepository();
+      PatientIdentityRepository();
 
   final PatientAttributeRepository _attributeRepository =
-  PatientAttributeRepository();
+      PatientAttributeRepository();
 
   final EpisodeConclusionRepository _conclusionRepository =
-  EpisodeConclusionRepository();
+      EpisodeConclusionRepository();
 
   @override
   void initState() {
@@ -79,18 +76,17 @@ class _EpisodeReportScreenState extends State<EpisodeReportScreen> {
 
     final results = <DesktopResult>[];
 
-    final documents =
-    await _documentRepository.getByCaseId(widget.caseId);
-    final notes =
-    await _noteRepository.getByCaseId(widget.caseId);
-    final identity =
-    await _identityRepository.getByPatientId(widget.patientId);
+    final documents = await _documentRepository.getByCaseId(widget.caseId);
+    final notes = await _noteRepository.getByCaseId(widget.caseId);
+    final identity = await _identityRepository.getByPatientId(widget.patientId);
 
-    final attributes =
-    await _attributeRepository.getByPatientId(widget.patientId);
+    final attributes = await _attributeRepository.getByPatientId(
+      widget.patientId,
+    );
 
-    final conclusion =
-    await _conclusionRepository.getActiveByCaseId(widget.caseId);
+    final conclusion = await _conclusionRepository.getActiveByCaseId(
+      widget.caseId,
+    );
 
     return _EpisodeReportData(
       formsCount: forms.length,
@@ -144,10 +140,7 @@ class _EpisodeReportScreenState extends State<EpisodeReportScreen> {
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 8),
-            EpisodeReportPreviewCard(
-              document: document,
-              report: report,
-            ),
+            EpisodeReportPreviewCard(document: document, report: report),
           ],
         );
       },
@@ -164,21 +157,13 @@ class _EpisodeReportScreenState extends State<EpisodeReportScreen> {
           attributes: data.attributes,
         ),
         const SizedBox(height: 16),
-        _ReportFormsCard(
-          formAnswers: data.formAnswers,
-        ),
+        _ReportFormsCard(formAnswers: data.formAnswers),
         const SizedBox(height: 16),
-        _ReportResultsCard(
-          results: data.results,
-        ),
+        _ReportResultsCard(results: data.results),
         const SizedBox(height: 16),
-        _ReportDocumentsCard(
-          documents: data.documents,
-        ),
+        _ReportDocumentsCard(documents: data.documents),
         const SizedBox(height: 16),
-        _ReportNotesCard(
-          notes: data.notes,
-        ),
+        _ReportNotesCard(notes: data.notes),
         const SizedBox(height: 16),
         _ReportConclusionCard(
           caseId: widget.caseId,
@@ -210,23 +195,17 @@ class _EpisodeReportScreenState extends State<EpisodeReportScreen> {
         future: _futureData,
         builder: (context, snapshot) {
           if (snapshot.connectionState != ConnectionState.done) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
+            return const Center(child: CircularProgressIndicator());
           }
 
           if (snapshot.hasError) {
-            return Center(
-              child: Text('Erreur : ${snapshot.error}'),
-            );
+            return Center(child: Text('Erreur : ${snapshot.error}'));
           }
 
           final data = snapshot.data;
 
           if (data == null) {
-            return const Center(
-              child: Text('Aucune donnée à afficher.'),
-            );
+            return const Center(child: Text('Aucune donnée à afficher.'));
           }
 
           return _buildContent(data);
@@ -249,7 +228,6 @@ class _EpisodeReportData {
   final List<EpisodeNote> notes;
   final EpisodeConclusion? conclusion;
 
-
   const _EpisodeReportData({
     required this.formsCount,
     required this.resultsCount,
@@ -262,7 +240,6 @@ class _EpisodeReportData {
     required this.documents,
     required this.notes,
     required this.conclusion,
-
   });
 }
 
@@ -275,7 +252,6 @@ class _SectionCard extends StatelessWidget {
     required this.title,
     required this.subtitle,
     required this.icon,
-
   });
 
   @override
@@ -325,17 +301,11 @@ class _ReportPatientCard extends StatelessWidget {
               children: [
                 const Icon(Icons.person_outline),
                 const SizedBox(width: 8),
-                Text(
-                  'Patient',
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
+                Text('Patient', style: Theme.of(context).textTheme.titleLarge),
               ],
             ),
             const Divider(height: 28),
-            _ReportRow(
-              label: 'Nom',
-              value: patientDisplayName,
-            ),
+            _ReportRow(label: 'Nom', value: patientDisplayName),
             _ReportRow(
               label: 'Téléphone',
               value: identity?.phone ?? 'Non renseigné',
@@ -367,10 +337,7 @@ class _ReportRow extends StatelessWidget {
   final String label;
   final String value;
 
-  const _ReportRow({
-    required this.label,
-    required this.value,
-  });
+  const _ReportRow({required this.label, required this.value});
 
   @override
   Widget build(BuildContext context) {
@@ -386,9 +353,7 @@ class _ReportRow extends StatelessWidget {
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
-          Expanded(
-            child: SelectableText(value),
-          ),
+          Expanded(child: SelectableText(value)),
         ],
       ),
     );
@@ -398,9 +363,7 @@ class _ReportRow extends StatelessWidget {
 class _ReportFormsCard extends StatelessWidget {
   final List<Map<ContactFormField, EpisodeFormAnswer?>> formAnswers;
 
-  const _ReportFormsCard({
-    required this.formAnswers,
-  });
+  const _ReportFormsCard({required this.formAnswers});
 
   @override
   Widget build(BuildContext context) {
@@ -449,9 +412,7 @@ class _ReportFormsCard extends StatelessWidget {
 class _ReportResultsCard extends StatelessWidget {
   final List<DesktopResult> results;
 
-  const _ReportResultsCard({
-    required this.results,
-  });
+  const _ReportResultsCard({required this.results});
 
   @override
   Widget build(BuildContext context) {
@@ -484,16 +445,14 @@ class _ReportResultsCard extends StatelessWidget {
               Builder(
                 builder: (context) {
                   final mobileOrigin =
-                      result.mobilePathologyLabel ??
-                          result.mobilePatientLabel;
+                      result.mobilePathologyLabel ?? result.mobilePatientLabel;
 
                   return _ReportRow(
                     label: ClinicalActivityCatalog.displayLabel(result.exoId),
                     value: [
                       if (result.scoreTotal != null)
                         'Score : ${result.scoreTotal!.toStringAsFixed(2)}',
-                      if (result.measureUnit != null)
-                        result.measureUnit!,
+                      if (result.measureUnit != null) result.measureUnit!,
                       if (mobileOrigin != null &&
                           mobileOrigin.trim().isNotEmpty)
                         'Origine ABAK : ${mobileOrigin.trim()}',
@@ -512,9 +471,7 @@ class _ReportResultsCard extends StatelessWidget {
 class _ReportDocumentsCard extends StatelessWidget {
   final List<EpisodeDocument> documents;
 
-  const _ReportDocumentsCard({
-    required this.documents,
-  });
+  const _ReportDocumentsCard({required this.documents});
 
   @override
   Widget build(BuildContext context) {
@@ -558,9 +515,7 @@ class _ReportDocumentsCard extends StatelessWidget {
 class _ReportNotesCard extends StatelessWidget {
   final List<EpisodeNote> notes;
 
-  const _ReportNotesCard({
-    required this.notes,
-  });
+  const _ReportNotesCard({required this.notes});
 
   @override
   Widget build(BuildContext context) {
@@ -582,18 +537,12 @@ class _ReportNotesCard extends StatelessWidget {
               children: [
                 const Icon(Icons.notes_outlined),
                 const SizedBox(width: 8),
-                Text(
-                  'Notes',
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
+                Text('Notes', style: Theme.of(context).textTheme.titleLarge),
               ],
             ),
             const Divider(height: 28),
             for (final note in notes) ...[
-              Text(
-                note.title,
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
+              Text(note.title, style: Theme.of(context).textTheme.titleMedium),
               const SizedBox(height: 6),
               SelectableText(
                 note.content.trim().isEmpty
@@ -608,6 +557,7 @@ class _ReportNotesCard extends StatelessWidget {
     );
   }
 }
+
 class _ReportConclusionCard extends StatelessWidget {
   final String caseId;
   final EpisodeConclusion? conclusion;
@@ -683,10 +633,7 @@ class _EpisodeConclusionEditorScreen extends StatefulWidget {
   final String caseId;
   final EpisodeConclusion? conclusion;
 
-  const _EpisodeConclusionEditorScreen({
-    required this.caseId,
-    this.conclusion,
-  });
+  const _EpisodeConclusionEditorScreen({required this.caseId, this.conclusion});
 
   @override
   State<_EpisodeConclusionEditorScreen> createState() =>
@@ -695,8 +642,7 @@ class _EpisodeConclusionEditorScreen extends StatefulWidget {
 
 class _EpisodeConclusionEditorScreenState
     extends State<_EpisodeConclusionEditorScreen> {
-  final EpisodeConclusionRepository _repository =
-  EpisodeConclusionRepository();
+  final EpisodeConclusionRepository _repository = EpisodeConclusionRepository();
 
   final _controller = TextEditingController();
 
@@ -719,9 +665,7 @@ class _EpisodeConclusionEditorScreenState
 
     if (content.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('La conclusion ne peut pas être vide.'),
-        ),
+        const SnackBar(content: Text('La conclusion ne peut pas être vide.')),
       );
 
       return;
@@ -731,10 +675,7 @@ class _EpisodeConclusionEditorScreenState
       _saving = true;
     });
 
-    await _repository.upsertForCase(
-      caseId: widget.caseId,
-      content: content,
-    );
+    await _repository.upsertForCase(caseId: widget.caseId, content: content);
 
     if (!mounted) return;
 
@@ -748,9 +689,7 @@ class _EpisodeConclusionEditorScreenState
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          isEditing
-              ? 'Modifier la conclusion'
-              : 'Ajouter une conclusion',
+          isEditing ? 'Modifier la conclusion' : 'Ajouter une conclusion',
         ),
         actions: [
           TextButton.icon(

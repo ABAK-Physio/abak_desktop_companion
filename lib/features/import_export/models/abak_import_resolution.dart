@@ -1,13 +1,9 @@
-enum AbakImportResolutionType {
-  requiresManualAssignment,
-}
+enum AbakImportResolutionType { requiresManualAssignment }
 
 class AbakImportResolution {
   final AbakImportResolutionType type;
 
-  const AbakImportResolution({
-    required this.type,
-  });
+  const AbakImportResolution({required this.type});
 
   bool get requiresManualAssignment {
     return type == AbakImportResolutionType.requiresManualAssignment;

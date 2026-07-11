@@ -13,14 +13,10 @@ import '../../import_export/models/pending_import_view_model.dart';
 class PendingResolutionCard extends StatefulWidget {
   final VoidCallback? onImportCompleted;
 
-  const PendingResolutionCard({
-    super.key,
-    this.onImportCompleted,
-  });
+  const PendingResolutionCard({super.key, this.onImportCompleted});
 
   @override
-  State<PendingResolutionCard> createState() =>
-      _PendingResolutionCardState();
+  State<PendingResolutionCard> createState() => _PendingResolutionCardState();
 }
 
 class _PendingResolutionCardState extends State<PendingResolutionCard> {
@@ -34,10 +30,7 @@ class _PendingResolutionCardState extends State<PendingResolutionCard> {
     super.initState();
     _refresh();
 
-    _timer = Timer.periodic(
-      const Duration(seconds: 5),
-          (_) => _refresh(),
-    );
+    _timer = Timer.periodic(const Duration(seconds: 5), (_) => _refresh());
   }
 
   Future<void> _refresh() async {
@@ -57,18 +50,19 @@ class _PendingResolutionCardState extends State<PendingResolutionCard> {
   }
 
   String _filesSignature(List<Map<String, dynamic>> files) {
-    final paths = files
-        .map((file) => file['file_path']?.toString() ?? '')
-        .where((path) => path.isNotEmpty)
-        .toList()
-      ..sort();
+    final paths =
+        files
+            .map((file) => file['file_path']?.toString() ?? '')
+            .where((path) => path.isNotEmpty)
+            .toList()
+          ..sort();
 
     return paths.join('|');
   }
 
   Future<PendingImportViewModel> _buildViewModel(
-      Map<String, dynamic> fileRow,
-      ) async {
+    Map<String, dynamic> fileRow,
+  ) async {
     final fileName = fileRow['file_name']?.toString() ?? 'Fichier ABAK';
     final filePath = fileRow['file_path']?.toString() ?? '';
 
@@ -87,13 +81,13 @@ class _PendingResolutionCardState extends State<PendingResolutionCard> {
 
       final exerciseLabels = results
           .map((result) {
-        final raw = result.raw;
-        return raw['title']?.toString() ??
-            raw['testName']?.toString() ??
-            raw['exoTitle']?.toString() ??
-            raw['exoId']?.toString() ??
-            'Exercice ABAK';
-      })
+            final raw = result.raw;
+            return raw['title']?.toString() ??
+                raw['testName']?.toString() ??
+                raw['exoTitle']?.toString() ??
+                raw['exoId']?.toString() ??
+                'Exercice ABAK';
+          })
           .where((label) => label.trim().isNotEmpty)
           .toList();
 
@@ -102,11 +96,11 @@ class _PendingResolutionCardState extends State<PendingResolutionCard> {
         filePath: filePath,
         fileSize: fileSize,
         pathologyLabel:
-        package.clinicalEpisode?.pathologyLabel ??
+            package.clinicalEpisode?.pathologyLabel ??
             package.mobileCase?.pathologyCode ??
             '',
         patientLabel:
-        package.clinicalEpisode?.patientLabel ??
+            package.clinicalEpisode?.patientLabel ??
             package.clinicalEpisode?.patientRef ??
             '',
         examinationDate: createdAt == null
@@ -136,22 +130,19 @@ class _PendingResolutionCardState extends State<PendingResolutionCard> {
   }
 
   Future<void> _openImportResolution(
-      BuildContext context,
-      String filePath,
-      ) async {
+    BuildContext context,
+    String filePath,
+  ) async {
     if (filePath.isEmpty || !filePath.toLowerCase().endsWith('.abak')) {
       if (!context.mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Chemin du fichier invalide : $filePath'),
-        ),
+        SnackBar(content: Text('Chemin du fichier invalide : $filePath')),
       );
       return;
     }
 
-    final result =
-    await AbakImportLauncher.importArchiveFromPathWithResolution(
+    final result = await AbakImportLauncher.importArchiveFromPathWithResolution(
       context,
       filePath,
     );
@@ -166,17 +157,12 @@ class _PendingResolutionCardState extends State<PendingResolutionCard> {
   @override
   Widget build(BuildContext context) {
     final files = _files;
-    final accentColor = files.isNotEmpty
-        ? Colors.orange
-        : Colors.green;
+    final accentColor = files.isNotEmpty ? Colors.orange : Colors.green;
 
     return Card(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
-        side: BorderSide(
-          color: accentColor,
-          width: 2,
-        ),
+        side: BorderSide(color: accentColor, width: 2),
       ),
       child: ExpansionTile(
         key: const PageStorageKey<String>('pending_resolution_card'),
@@ -190,56 +176,49 @@ class _PendingResolutionCardState extends State<PendingResolutionCard> {
         ),
         title: Text(
           'Nouveaux résultats ABAK à associer à un patient',
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.w700,
-          ),
+          style: Theme.of(
+            context,
+          ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
         ),
         subtitle: Text(
           files.isEmpty
               ? 'Aucun import en attente'
               : '${files.length} import${files.length > 1 ? 's' : ''} en attente d’association',
-          style: TextStyle(
-            fontWeight: FontWeight.w600,
-            color: accentColor,
-          ),
+          style: TextStyle(fontWeight: FontWeight.w600, color: accentColor),
         ),
         childrenPadding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
         children: [
           if (files.isEmpty)
             const Text('Aucun résultat ABAK à associer.')
           else
-            ...files.map(
-                  (fileRow) {
-                final filePath = fileRow['file_path']?.toString() ?? '';
+            ...files.map((fileRow) {
+              final filePath = fileRow['file_path']?.toString() ?? '';
 
-                return FutureBuilder<PendingImportViewModel>(
-                  key: ValueKey('pending-import-$filePath'),
-                  future: _buildViewModel(fileRow),
-                  builder: (context, snapshot) {
-                    final vm = snapshot.data;
+              return FutureBuilder<PendingImportViewModel>(
+                key: ValueKey('pending-import-$filePath'),
+                future: _buildViewModel(fileRow),
+                builder: (context, snapshot) {
+                  final vm = snapshot.data;
 
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Padding(
-                        padding: EdgeInsets.all(16),
-                        child: LinearProgressIndicator(),
-                      );
-                    }
-
-                    if (vm == null) {
-                      return const Text('Import ABAK illisible.');
-                    }
-
-                    return _PendingImportTile(
-                      viewModel: vm,
-                      onAssociate: () => _openImportResolution(
-                        context,
-                        vm.filePath,
-                      ),
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Padding(
+                      padding: EdgeInsets.all(16),
+                      child: LinearProgressIndicator(),
                     );
-                  },
-                );
-              },
-            ),
+                  }
+
+                  if (vm == null) {
+                    return const Text('Import ABAK illisible.');
+                  }
+
+                  return _PendingImportTile(
+                    viewModel: vm,
+                    onAssociate: () =>
+                        _openImportResolution(context, vm.filePath),
+                  );
+                },
+              );
+            }),
         ],
       ),
     );
@@ -260,8 +239,8 @@ class _PendingImportTile extends StatelessWidget {
     final dateText = viewModel.examinationDate == null
         ? 'Date non renseignée'
         : DateFormat.yMMMMd(
-      Localizations.localeOf(context).toLanguageTag(),
-    ).format(viewModel.examinationDate!);
+            Localizations.localeOf(context).toLanguageTag(),
+          ).format(viewModel.examinationDate!);
 
     return Card(
       margin: const EdgeInsets.only(top: 12),
@@ -293,7 +272,7 @@ class _PendingImportTile extends StatelessWidget {
             if (viewModel.visibleExerciseLabels.isNotEmpty) ...[
               const SizedBox(height: 8),
               ...viewModel.visibleExerciseLabels.map(
-                    (label) => Padding(
+                (label) => Padding(
                   padding: const EdgeInsets.only(left: 32, bottom: 4),
                   child: Text('• $label'),
                 ),
@@ -323,14 +302,8 @@ class _PendingImportTile extends StatelessWidget {
               tilePadding: EdgeInsets.zero,
               title: const Text('Informations techniques'),
               children: [
-                _TechnicalInfoRow(
-                  label: 'Fichier',
-                  value: viewModel.fileName,
-                ),
-                _TechnicalInfoRow(
-                  label: 'Chemin',
-                  value: viewModel.filePath,
-                ),
+                _TechnicalInfoRow(label: 'Fichier', value: viewModel.fileName),
+                _TechnicalInfoRow(label: 'Chemin', value: viewModel.filePath),
                 _TechnicalInfoRow(
                   label: 'Taille',
                   value: viewModel.fileSize == null
@@ -384,10 +357,7 @@ class _TechnicalInfoRow extends StatelessWidget {
   final String label;
   final String value;
 
-  const _TechnicalInfoRow({
-    required this.label,
-    required this.value,
-  });
+  const _TechnicalInfoRow({required this.label, required this.value});
 
   @override
   Widget build(BuildContext context) {
@@ -395,11 +365,7 @@ class _TechnicalInfoRow extends StatelessWidget {
       dense: true,
       contentPadding: EdgeInsets.zero,
       title: Text(label),
-      subtitle: Text(
-        value,
-        overflow: TextOverflow.ellipsis,
-        maxLines: 3,
-      ),
+      subtitle: Text(value, overflow: TextOverflow.ellipsis, maxLines: 3),
     );
   }
 }

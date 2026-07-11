@@ -13,24 +13,18 @@ class ImportHistoryScreen extends StatelessWidget {
     final repository = ImportSessionRepository();
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Historique des imports'),
-      ),
+      appBar: AppBar(title: const Text('Historique des imports')),
       body: FutureBuilder<List<ImportSession>>(
         future: repository.getSessions(),
         builder: (context, snapshot) {
           final sessions = snapshot.data ?? [];
 
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
+            return const Center(child: CircularProgressIndicator());
           }
 
           if (sessions.isEmpty) {
-            return const Center(
-              child: Text('Aucun import enregistré.'),
-            );
+            return const Center(child: Text('Aucun import enregistré.'));
           }
 
           return ListView.separated(
@@ -54,10 +48,7 @@ class _ImportSessionTile extends StatelessWidget {
   final ImportSession session;
   final ImportSessionRepository repository;
 
-  const _ImportSessionTile({
-    required this.session,
-    required this.repository,
-  });
+  const _ImportSessionTile({required this.session, required this.repository});
 
   @override
   Widget build(BuildContext context) {
@@ -72,27 +63,25 @@ class _ImportSessionTile extends StatelessWidget {
           session.conflictResultsCount > 0
               ? Icons.report_problem_outlined
               : switch (session.status) {
-            'running' => Icons.sync_outlined,
-            'completed_with_errors' => Icons.warning_amber_outlined,
-            'failed' => Icons.error_outline,
-            _ => Icons.check_circle_outline,
-          },
+                  'running' => Icons.sync_outlined,
+                  'completed_with_errors' => Icons.warning_amber_outlined,
+                  'failed' => Icons.error_outline,
+                  _ => Icons.check_circle_outline,
+                },
         ),
         title: Text(formatter.format(date)),
         subtitle: Text(
           '${session.status} · '
-              '${session.processedFilesCount} fichier(s) · '
-              '${session.importedResultsCount} importé(s) · '
-              '${session.skippedResultsCount} ignoré(s) · '
-              '${session.conflictResultsCount} conflit(s)',
+          '${session.processedFilesCount} fichier(s) · '
+          '${session.importedResultsCount} importé(s) · '
+          '${session.skippedResultsCount} ignoré(s) · '
+          '${session.conflictResultsCount} conflit(s)',
         ),
         trailing: const Icon(Icons.chevron_right),
         onTap: () {
           Navigator.of(context).push(
             MaterialPageRoute(
-              builder: (_) => ImportSessionDetailScreen(
-                session: session,
-              ),
+              builder: (_) => ImportSessionDetailScreen(session: session),
             ),
           );
         },

@@ -71,10 +71,7 @@ class ContactFormTemplateRepository {
 
     await db.update(
       'contact_form_templates',
-      {
-        'archived_at': now,
-        'updated_at': now,
-      },
+      {'archived_at': now, 'updated_at': now},
       where: 'template_id = ?',
       whereArgs: [templateId],
     );
@@ -86,10 +83,7 @@ class ContactFormTemplateRepository {
 
     await db.update(
       'contact_form_fields',
-      {
-        'archived_at': now,
-        'updated_at': now,
-      },
+      {'archived_at': now, 'updated_at': now},
       where: 'field_id = ?',
       whereArgs: [fieldId],
     );

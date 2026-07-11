@@ -9,9 +9,7 @@ import '../models/restore_result.dart';
 class LocalDatabaseRestoreService {
   const LocalDatabaseRestoreService();
 
-  Future<RestoreResult> restoreDatabase({
-    required String backupPath,
-  }) async {
+  Future<RestoreResult> restoreDatabase({required String backupPath}) async {
     final sourceFile = File(backupPath);
 
     if (!await sourceFile.exists()) {
@@ -86,10 +84,7 @@ class LocalDatabaseRestoreService {
     final timestamp =
         '${now.year}${_two(now.month)}${_two(now.day)}_${_two(now.hour)}${_two(now.minute)}${_two(now.second)}';
 
-    return p.join(
-      databaseDir.path,
-      'abak_desktop_pre_restore_$timestamp.db',
-    );
+    return p.join(databaseDir.path, 'abak_desktop_pre_restore_$timestamp.db');
   }
 
   Future<void> _insertRestoreHistory({
@@ -101,17 +96,14 @@ class LocalDatabaseRestoreService {
   }) async {
     final db = await DatabaseService.database;
 
-    await db.insert(
-      'desktop_restore_history',
-      {
-        'restore_id': const Uuid().v4(),
-        'restored_at': restoredAt,
-        'source_backup_path': sourceBackupPath,
-        'safety_backup_path': safetyBackupPath,
-        'success': success ? 1 : 0,
-        'message': message,
-      },
-    );
+    await db.insert('desktop_restore_history', {
+      'restore_id': const Uuid().v4(),
+      'restored_at': restoredAt,
+      'source_backup_path': sourceBackupPath,
+      'safety_backup_path': safetyBackupPath,
+      'success': success ? 1 : 0,
+      'message': message,
+    });
   }
 
   String _two(int value) => value.toString().padLeft(2, '0');

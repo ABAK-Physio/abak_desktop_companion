@@ -74,9 +74,7 @@ class EpisodeDocumentRepository {
     final db = await DatabaseService.database;
     final now = DateTime.now().millisecondsSinceEpoch;
 
-    final values = <String, Object?>{
-      'updated_at': now,
-    };
+    final values = <String, Object?>{'updated_at': now};
 
     if (title != null) {
       values['title'] = title;
@@ -108,10 +106,7 @@ class EpisodeDocumentRepository {
 
     await db.update(
       'episode_documents',
-      {
-        'archived_at': now,
-        'updated_at': now,
-      },
+      {'archived_at': now, 'updated_at': now},
       where: 'document_id = ?',
       whereArgs: [documentId],
     );
@@ -133,10 +128,7 @@ class EpisodeDocumentRepository {
 
     await db.update(
       'episode_documents',
-      {
-        'archived_at': now,
-        'updated_at': now,
-      },
+      {'archived_at': now, 'updated_at': now},
       where: 'case_id = ? AND archived_at IS NULL',
       whereArgs: [caseId],
     );

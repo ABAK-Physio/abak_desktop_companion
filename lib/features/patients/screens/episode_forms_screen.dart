@@ -23,7 +23,7 @@ class EpisodeFormsScreen extends StatefulWidget {
 class _EpisodeFormsScreenState extends State<EpisodeFormsScreen> {
   final EpisodeFormRepository _formRepository = EpisodeFormRepository();
   final ContactFormTemplateRepository _templateRepository =
-  ContactFormTemplateRepository();
+      ContactFormTemplateRepository();
 
   late Future<_EpisodeFormsData> _futureData;
 
@@ -40,8 +40,7 @@ class _EpisodeFormsScreenState extends State<EpisodeFormsScreen> {
     final completionByFormId = <String, bool>{};
 
     for (final form in forms) {
-      completionByFormId[form.formId] =
-      await _formRepository.isFormComplete(
+      completionByFormId[form.formId] = await _formRepository.isFormComplete(
         form.formId,
       );
     }
@@ -50,8 +49,7 @@ class _EpisodeFormsScreenState extends State<EpisodeFormsScreen> {
       forms: forms,
       templates: templates,
       templatesById: {
-        for (final template in templates)
-          template.templateId: template,
+        for (final template in templates) template.templateId: template,
       },
       completionByFormId: completionByFormId,
     );
@@ -92,37 +90,33 @@ class _EpisodeFormsScreenState extends State<EpisodeFormsScreen> {
   }
 
   Widget _buildFormTile(
-      EpisodeForm form,
-      ContactFormTemplate? template,
-      bool completed,
-      ) {
+    EpisodeForm form,
+    ContactFormTemplate? template,
+    bool completed,
+  ) {
     return ListTile(
       contentPadding: EdgeInsets.zero,
       leading: const Icon(Icons.assignment_outlined),
-      title: Text(
-        template?.name ?? 'Formulaire',
-      ),
+      title: Text(template?.name ?? 'Formulaire'),
       subtitle: Text(
         [
-          if (template?.category != null)
-            'Catégorie : ${template!.category}',
+          if (template?.category != null) 'Catégorie : ${template!.category}',
           'Créé le : ${DateTime.fromMillisecondsSinceEpoch(form.createdAt).toLocal()}',
           'État : ${completed ? 'complété' : 'en cours'}',
         ].join('\n'),
       ),
-      trailing: const Icon(Icons.chevron_right),onTap: () async {
-      final changed = await Navigator.of(context).push<bool>(
-        MaterialPageRoute(
-          builder: (_) => EpisodeFormEditorScreen(
-            formId: form.formId,
+      trailing: const Icon(Icons.chevron_right),
+      onTap: () async {
+        final changed = await Navigator.of(context).push<bool>(
+          MaterialPageRoute(
+            builder: (_) => EpisodeFormEditorScreen(formId: form.formId),
           ),
-        ),
-      );
+        );
 
-      if (changed == true) {
-        await _refresh();
-      }
-    },
+        if (changed == true) {
+          await _refresh();
+        }
+      },
     );
   }
 
@@ -142,12 +136,10 @@ class _EpisodeFormsScreenState extends State<EpisodeFormsScreen> {
                 ),
                 const Divider(height: 28),
                 if (data.forms.isEmpty)
-                  const Text(
-                    'Aucun formulaire créé pour cet épisode.',
-                  )
+                  const Text('Aucun formulaire créé pour cet épisode.')
                 else
                   ...data.forms.map(
-                        (form) => _buildFormTile(
+                    (form) => _buildFormTile(
                       form,
                       data.templatesById[form.templateId],
                       data.completionByFormId[form.formId] ?? false,
@@ -170,9 +162,7 @@ class _EpisodeFormsScreenState extends State<EpisodeFormsScreen> {
                 ),
                 const Divider(height: 28),
                 if (data.templates.isEmpty)
-                  const Text(
-                    'Aucun modèle de formulaire disponible.',
-                  )
+                  const Text('Aucun modèle de formulaire disponible.')
                 else
                   ...data.templates.map(_buildTemplateTile),
               ],
@@ -200,9 +190,7 @@ class _EpisodeFormsScreenState extends State<EpisodeFormsScreen> {
         future: _futureData,
         builder: (context, snapshot) {
           if (snapshot.connectionState != ConnectionState.done) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
+            return const Center(child: CircularProgressIndicator());
           }
 
           if (snapshot.hasError) {
@@ -220,9 +208,7 @@ class _EpisodeFormsScreenState extends State<EpisodeFormsScreen> {
           final data = snapshot.data;
 
           if (data == null) {
-            return const Center(
-              child: Text('Aucune donnée à afficher.'),
-            );
+            return const Center(child: Text('Aucune donnée à afficher.'));
           }
 
           return _buildContent(data);

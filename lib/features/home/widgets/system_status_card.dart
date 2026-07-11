@@ -36,28 +36,26 @@ class SystemStatusCard extends StatelessWidget {
                 ? null
                 : data[1] as PatientPurgePreview;
 
-            final lastBackup = data == null
-                ? null
-                : data[2] as DatabaseBackup?;
+            final lastBackup = data == null ? null : data[2] as DatabaseBackup?;
 
             final failedImports = sessions
                 .where(
                   (session) =>
-              session.status == 'failed' ||
-                  session.failedFilesCount > 0,
-            )
+                      session.status == 'failed' ||
+                      session.failedFilesCount > 0,
+                )
                 .length;
 
             final conflictCount = sessions.fold<int>(
               0,
-                  (total, session) => total + session.conflictResultsCount,
+              (total, session) => total + session.conflictResultsCount,
             );
 
             final hasWarning =
                 failedImports > 0 ||
-                    conflictCount > 0 ||
-                    (purgePreview?.hasPurgeablePatients ?? false) ||
-                    lastBackup == null;
+                conflictCount > 0 ||
+                (purgePreview?.hasPurgeablePatients ?? false) ||
+                lastBackup == null;
 
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -128,18 +126,16 @@ class SystemStatusCard extends StatelessWidget {
       return 'Aucune';
     }
 
-    return DateFormat('dd/MM/yyyy HH:mm').format(
-      DateTime.fromMillisecondsSinceEpoch(lastBackup.createdAt),
-    );
+    return DateFormat(
+      'dd/MM/yyyy HH:mm',
+    ).format(DateTime.fromMillisecondsSinceEpoch(lastBackup.createdAt));
   }
 }
 
 class _GeneralStatusLine extends StatelessWidget {
   final bool hasWarning;
 
-  const _GeneralStatusLine({
-    required this.hasWarning,
-  });
+  const _GeneralStatusLine({required this.hasWarning});
 
   @override
   Widget build(BuildContext context) {
@@ -162,10 +158,7 @@ class _GeneralStatusLine extends StatelessWidget {
             hasWarning
                 ? 'Une intervention est nécessaire'
                 : 'Tout fonctionne normalement',
-            style: TextStyle(
-              fontWeight: FontWeight.w600,
-              color: color,
-            ),
+            style: TextStyle(fontWeight: FontWeight.w600, color: color),
           ),
         ),
       ],
@@ -196,19 +189,12 @@ class _StatusLine extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 12),
       child: Row(
         children: [
-          Icon(
-            icon,
-            size: 18,
-            color: color,
-          ),
+          Icon(icon, size: 18, color: color),
           const SizedBox(width: 8),
           Expanded(child: Text(label)),
           Text(
             value,
-            style: TextStyle(
-              fontWeight: FontWeight.w600,
-              color: color,
-            ),
+            style: TextStyle(fontWeight: FontWeight.w600, color: color),
           ),
         ],
       ),

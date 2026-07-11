@@ -1,6 +1,5 @@
 import '../../patients/models/patient_prefill_data.dart';
 
-
 class VitaleIdentity {
   const VitaleIdentity({
     this.lastName,

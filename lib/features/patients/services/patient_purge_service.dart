@@ -12,17 +12,14 @@ class PatientPurgeResult {
 }
 
 class PatientPurgeService {
-  final PatientRepository _repository =
-  PatientRepository();
+  final PatientRepository _repository = PatientRepository();
 
   /// Durée avant suppression définitive
   /// des patients archivés.
   static const int retentionDays = 30;
 
-  Future<PatientPurgeResult>
-  purgeArchivedPatients() async {
-    final archivedPatients =
-    await _repository.getArchivedPatients();
+  Future<PatientPurgeResult> purgeArchivedPatients() async {
+    final archivedPatients = await _repository.getArchivedPatients();
 
     final now = DateTime.now();
 
@@ -33,13 +30,9 @@ class PatientPurgeService {
 
       if (archivedAt == null) continue;
 
-      final archivedDate =
-      DateTime.fromMillisecondsSinceEpoch(
-        archivedAt,
-      );
+      final archivedDate = DateTime.fromMillisecondsSinceEpoch(archivedAt);
 
-      final difference =
-          now.difference(archivedDate).inDays;
+      final difference = now.difference(archivedDate).inDays;
 
       if (difference >= retentionDays) {
         await _deletePatientPermanently(patient);
@@ -53,17 +46,12 @@ class PatientPurgeService {
     );
   }
 
-  Future<void> _deletePatientPermanently(
-      Patient patient,
-      ) async {
-    await _repository.deletePatientPermanently(
-      patient.patientId,
-    );
+  Future<void> _deletePatientPermanently(Patient patient) async {
+    await _repository.deletePatientPermanently(patient.patientId);
   }
 
   Future<PatientPurgePreview> previewArchivedPatientsPurge() async {
-    final archivedPatients =
-    await _repository.getArchivedPatients();
+    final archivedPatients = await _repository.getArchivedPatients();
 
     final now = DateTime.now();
 
@@ -74,13 +62,9 @@ class PatientPurgeService {
 
       if (archivedAt == null) continue;
 
-      final archivedDate =
-      DateTime.fromMillisecondsSinceEpoch(
-        archivedAt,
-      );
+      final archivedDate = DateTime.fromMillisecondsSinceEpoch(archivedAt);
 
-      final difference =
-          now.difference(archivedDate).inDays;
+      final difference = now.difference(archivedDate).inDays;
 
       if (difference >= retentionDays) {
         purgeable++;

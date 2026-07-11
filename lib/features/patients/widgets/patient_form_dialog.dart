@@ -6,10 +6,7 @@ import '../models/patient.dart';
 class PatientFormDialog extends StatefulWidget {
   final Patient? initialPatient;
 
-  const PatientFormDialog({
-    super.key,
-    this.initialPatient,
-  });
+  const PatientFormDialog({super.key, this.initialPatient});
 
   @override
   State<PatientFormDialog> createState() => _PatientFormDialogState();
@@ -32,15 +29,11 @@ class _PatientFormDialogState extends State<PatientFormDialog> {
 
     final patient = widget.initialPatient;
 
-    _lastNameController = TextEditingController(
-      text: patient?.lastName ?? '',
-    );
+    _lastNameController = TextEditingController(text: patient?.lastName ?? '');
     _firstNameController = TextEditingController(
       text: patient?.firstName ?? '',
     );
-    _birthDateController = TextEditingController(
-      text: '',
-    );
+    _birthDateController = TextEditingController(text: '');
 
     _sexCode = patient?.sexCode ?? 'U';
   }
@@ -50,8 +43,9 @@ class _PatientFormDialogState extends State<PatientFormDialog> {
     super.didChangeDependencies();
 
     if (_birthDateController.text.isEmpty) {
-      _birthDateController.text =
-          _formatIsoDateForDisplay(widget.initialPatient?.birthDate);
+      _birthDateController.text = _formatIsoDateForDisplay(
+        widget.initialPatient?.birthDate,
+      );
     }
   }
 
@@ -81,11 +75,10 @@ class _PatientFormDialogState extends State<PatientFormDialog> {
     Navigator.of(context).pop(patient);
   }
 
-
-
   DateFormat get _displayDateFormat {
     return DateFormat('dd/MM/yyyy');
   }
+
   String _formatIsoDateForDisplay(String? isoDate) {
     if (isoDate == null || isoDate.trim().isEmpty) return '';
 

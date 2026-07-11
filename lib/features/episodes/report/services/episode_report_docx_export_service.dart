@@ -16,10 +16,7 @@ class EpisodeReportDocxExportService {
 
     final file = File(path);
 
-    return file.writeAsBytes(
-      bytes,
-      flush: true,
-    );
+    return file.writeAsBytes(bytes, flush: true);
   }
 
   String _sanitizeFileName(String value) {

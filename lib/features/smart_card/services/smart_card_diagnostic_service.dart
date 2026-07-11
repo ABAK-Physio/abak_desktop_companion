@@ -49,7 +49,8 @@ class SmartCardDiagnosticService {
       return SmartCardDiagnosticResult(
         readerDetected: false,
         cardDetected: false,
-        rawOutput: '''
+        rawOutput:
+            '''
 Exception:
 $e
 
@@ -78,10 +79,7 @@ $stackTrace
         protocol: data['protocol'] is int ? data['protocol'] as int : null,
       );
     } catch (e) {
-      return SmartCardApduResult(
-        success: false,
-        error: e.toString(),
-      );
+      return SmartCardApduResult(success: false, error: e.toString());
     }
   }
 }

@@ -7,10 +7,7 @@ import '../models/episode_form_answer.dart';
 class EpisodeFormEditorScreen extends StatefulWidget {
   final String formId;
 
-  const EpisodeFormEditorScreen({
-    super.key,
-    required this.formId,
-  });
+  const EpisodeFormEditorScreen({super.key, required this.formId});
 
   @override
   State<EpisodeFormEditorScreen> createState() =>
@@ -43,9 +40,7 @@ class _EpisodeFormEditorScreenState extends State<EpisodeFormEditorScreen> {
   }
 
   Future<Map<ContactFormField, EpisodeFormAnswer?>> _loadData() async {
-    final data = await _repository.getFormWithAnswers(
-      formId: widget.formId,
-    );
+    final data = await _repository.getFormWithAnswers(formId: widget.formId);
 
     for (final entry in data.entries) {
       final field = entry.key;
@@ -55,9 +50,7 @@ class _EpisodeFormEditorScreenState extends State<EpisodeFormEditorScreen> {
       if (field.fieldType == 'single_choice') {
         _choiceValues[field.fieldId] = value.isEmpty ? null : value;
       } else {
-        _controllers[field.fieldId] = TextEditingController(
-          text: value,
-        );
+        _controllers[field.fieldId] = TextEditingController(text: value);
       }
     }
 
@@ -81,9 +74,7 @@ class _EpisodeFormEditorScreenState extends State<EpisodeFormEditorScreen> {
         .toList();
   }
 
-  Future<void> _save(
-      Map<ContactFormField, EpisodeFormAnswer?> data,
-      ) async {
+  Future<void> _save(Map<ContactFormField, EpisodeFormAnswer?> data) async {
     for (final field in data.keys) {
       if (!field.required) {
         continue;
@@ -95,11 +86,7 @@ class _EpisodeFormEditorScreenState extends State<EpisodeFormEditorScreen> {
 
       if (value == null || value.isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              'Le champ "${field.label}" est obligatoire.',
-            ),
-          ),
+          SnackBar(content: Text('Le champ "${field.label}" est obligatoire.')),
         );
 
         return;
@@ -170,11 +157,8 @@ class _EpisodeFormEditorScreenState extends State<EpisodeFormEditorScreen> {
         ),
         items: options
             .map(
-              (option) => DropdownMenuItem(
-            value: option,
-            child: Text(option),
-          ),
-        )
+              (option) => DropdownMenuItem(value: option, child: Text(option)),
+            )
             .toList(),
         onChanged: (value) {
           setState(() {
@@ -230,10 +214,8 @@ class _EpisodeFormEditorScreenState extends State<EpisodeFormEditorScreen> {
             return;
           }
 
-          final day =
-          selectedDate.day.toString().padLeft(2, '0');
-          final month =
-          selectedDate.month.toString().padLeft(2, '0');
+          final day = selectedDate.day.toString().padLeft(2, '0');
+          final month = selectedDate.month.toString().padLeft(2, '0');
           final year = selectedDate.year;
 
           controller.text = '$day/$month/$year';
@@ -258,14 +240,10 @@ class _EpisodeFormEditorScreenState extends State<EpisodeFormEditorScreen> {
     }
   }
 
-  Widget _buildContent(
-      Map<ContactFormField, EpisodeFormAnswer?> data,
-      ) {
+  Widget _buildContent(Map<ContactFormField, EpisodeFormAnswer?> data) {
     return ListView(
       padding: const EdgeInsets.all(24),
-      children: [
-        for (final field in data.keys) _buildField(field),
-      ],
+      children: [for (final field in data.keys) _buildField(field)],
     );
   }
 
@@ -281,8 +259,7 @@ class _EpisodeFormEditorScreenState extends State<EpisodeFormEditorScreen> {
             title: const Text('Modifier le formulaire'),
             actions: [
               TextButton.icon(
-                onPressed:
-                data == null || _saving ? null : () => _save(data),
+                onPressed: data == null || _saving ? null : () => _save(data),
                 icon: const Icon(Icons.save_outlined),
                 label: const Text('Enregistrer'),
               ),
@@ -293,9 +270,7 @@ class _EpisodeFormEditorScreenState extends State<EpisodeFormEditorScreen> {
               : snapshot.hasError
               ? Center(child: Text('Erreur : ${snapshot.error}'))
               : data == null || data.isEmpty
-              ? const Center(
-            child: Text('Aucun champ à afficher.'),
-          )
+              ? const Center(child: Text('Aucun champ à afficher.'))
               : _buildContent(data),
         );
       },

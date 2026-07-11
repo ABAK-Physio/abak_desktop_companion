@@ -4,10 +4,7 @@ class CareEpisodeSummary {
   final CareEpisode episode;
   final int notesCount;
 
-  const CareEpisodeSummary({
-    required this.episode,
-    required this.notesCount,
-  });
+  const CareEpisodeSummary({required this.episode, required this.notesCount});
 
   factory CareEpisodeSummary.fromMap(Map<String, dynamic> map) {
     return CareEpisodeSummary(

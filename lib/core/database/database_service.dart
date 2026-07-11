@@ -35,18 +35,13 @@ class DatabaseService {
   static Future<String> get databasePath async {
     final appSupportDir = await getApplicationSupportDirectory();
 
-    final databaseDir = Directory(
-      join(appSupportDir.path, 'database'),
-    );
+    final databaseDir = Directory(join(appSupportDir.path, 'database'));
 
     if (!await databaseDir.exists()) {
       await databaseDir.create(recursive: true);
     }
 
-    return join(
-      databaseDir.path,
-      'abak_desktop.db',
-    );
+    return join(databaseDir.path, 'abak_desktop.db');
   }
 
   static Future<void> resetUserDatabase() async {
@@ -66,7 +61,7 @@ class DatabaseService {
 
     return openDatabase(
       path,
-      version: 7,  ///////////////////// numéro de version
+      version: 8, ///////////////////// numéro de version
       onCreate: (db, version) async {
         await _createAllTables(db);
       },
@@ -79,7 +74,6 @@ class DatabaseService {
             'TEXT NULL',
           );
         }
-
         if (oldVersion < 3) {
           await _addColumnIfMissing(
             db,
@@ -87,14 +81,12 @@ class DatabaseService {
             'summary_patient_label',
             'TEXT NULL',
           );
-
           await _addColumnIfMissing(
             db,
             'desktop_import_sessions',
             'summary_episode_label',
             'TEXT NULL',
           );
-
           await _addColumnIfMissing(
             db,
             'desktop_import_sessions',
@@ -129,16 +121,31 @@ class DatabaseService {
             'TEXT NULL',
           );
         }
+        if (oldVersion < 8) {
+          await _addColumnIfMissing(
+            db,
+            'desktop_import_sessions',
+            'duplicate_results_count',
+            'INTEGER NOT NULL DEFAULT 0',
+          );
+
+          await _addColumnIfMissing(
+            db,
+            'desktop_import_session_files',
+            'duplicate_results_count',
+            'INTEGER NOT NULL DEFAULT 0',
+          );
+        }
       },
     );
   }
 
   static Future<void> _addColumnIfMissing(
-      Database db,
-      String tableName,
-      String columnName,
-      String columnDefinition,
-      ) async {
+    Database db,
+    String tableName,
+    String columnName,
+    String columnDefinition,
+  ) async {
     final columns = await db.rawQuery('PRAGMA table_info($tableName)');
 
     final exists = columns.any((column) => column['name'] == columnName);
@@ -149,6 +156,7 @@ class DatabaseService {
       );
     }
   }
+
   static Future<void> _createAllTables(Database db) async {
     await _createCoreTables(db);
     await _createApplicationSettingsTable(db);
@@ -436,6 +444,7 @@ class DatabaseService {
 
         imported_results_count INTEGER NOT NULL DEFAULT 0,
         skipped_results_count INTEGER NOT NULL DEFAULT 0,
+        duplicate_results_count INTEGER NOT NULL DEFAULT 0,
         conflict_results_count INTEGER NOT NULL DEFAULT 0,
         imported_metrics_count INTEGER NOT NULL DEFAULT 0,
 
@@ -468,6 +477,7 @@ class DatabaseService {
 
         imported_results_count INTEGER NOT NULL DEFAULT 0,
         skipped_results_count INTEGER NOT NULL DEFAULT 0,
+        duplicate_results_count INTEGER NOT NULL DEFAULT 0,
         conflict_results_count INTEGER NOT NULL DEFAULT 0,
         imported_metrics_count INTEGER NOT NULL DEFAULT 0,
 

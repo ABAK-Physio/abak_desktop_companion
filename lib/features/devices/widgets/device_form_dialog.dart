@@ -18,7 +18,7 @@ class _DeviceFormDialogState extends State<DeviceFormDialog> {
   final _deviceLabelController = TextEditingController();
 
   final PractitionerRepository _practitionerRepository =
-  PractitionerRepository();
+      PractitionerRepository();
 
   late Future<List<Practitioner>> _practitionersFuture;
 
@@ -28,8 +28,7 @@ class _DeviceFormDialogState extends State<DeviceFormDialog> {
   @override
   void initState() {
     super.initState();
-    _practitionersFuture =
-        _practitionerRepository.getActivePractitioners();
+    _practitionersFuture = _practitionerRepository.getActivePractitioners();
   }
 
   @override
@@ -87,9 +86,7 @@ class _DeviceFormDialogState extends State<DeviceFormDialog> {
                   const SizedBox(height: 12),
                   DropdownButtonFormField<String>(
                     initialValue: _platform,
-                    decoration: const InputDecoration(
-                      labelText: 'Plateforme',
-                    ),
+                    decoration: const InputDecoration(labelText: 'Plateforme'),
                     items: const [
                       DropdownMenuItem(value: 'ios', child: Text('iOS')),
                       DropdownMenuItem(
@@ -115,7 +112,7 @@ class _DeviceFormDialogState extends State<DeviceFormDialog> {
                         child: Text('Aucun / appareil partagé'),
                       ),
                       ...practitioners.map(
-                            (p) => DropdownMenuItem<String?>(
+                        (p) => DropdownMenuItem<String?>(
                           value: p.practitionerId,
                           child: Text(p.displayName),
                         ),
@@ -138,10 +135,7 @@ class _DeviceFormDialogState extends State<DeviceFormDialog> {
           onPressed: () => Navigator.of(context).pop(null),
           child: const Text('Annuler'),
         ),
-        FilledButton(
-          onPressed: _submit,
-          child: const Text('Créer'),
-        ),
+        FilledButton(onPressed: _submit, child: const Text('Créer')),
       ],
     );
   }

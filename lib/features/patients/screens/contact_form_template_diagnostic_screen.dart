@@ -16,7 +16,7 @@ class ContactFormTemplateDiagnosticScreen extends StatefulWidget {
 class _ContactFormTemplateDiagnosticScreenState
     extends State<ContactFormTemplateDiagnosticScreen> {
   final ContactFormTemplateRepository _repository =
-  ContactFormTemplateRepository();
+      ContactFormTemplateRepository();
 
   late Future<_TemplateDiagnosticData> _futureData;
 
@@ -35,10 +35,7 @@ class _ContactFormTemplateDiagnosticScreenState
         ? <ContactFormField>[]
         : await _repository.getFields(template.templateId);
 
-    return _TemplateDiagnosticData(
-      template: template,
-      fields: fields,
-    );
+    return _TemplateDiagnosticData(template: template, fields: fields);
   }
 
   Future<void> _refresh() async {
@@ -66,9 +63,7 @@ class _ContactFormTemplateDiagnosticScreenState
     return Chip(
       label: Text(scope),
       backgroundColor: color.withValues(alpha: 0.15),
-      side: BorderSide(
-        color: color.withValues(alpha: 0.5),
-      ),
+      side: BorderSide(color: color.withValues(alpha: 0.5)),
     );
   }
 
@@ -104,10 +99,7 @@ class _ContactFormTemplateDiagnosticScreenState
                 'Praticien',
                 template.practitionerId ?? 'Modèle système',
               ),
-              _buildInfoLine(
-                'Catégorie',
-                template.category ?? 'Non définie',
-              ),
+              _buildInfoLine('Catégorie', template.category ?? 'Non définie'),
               _buildInfoLine(
                 'Modèle par défaut',
                 template.isDefault ? 'Oui' : 'Non',
@@ -125,7 +117,7 @@ class _ContactFormTemplateDiagnosticScreenState
         title: Text(field.label),
         subtitle: Text(
           'Type : ${field.fieldType} • Ordre : ${field.sortOrder}'
-              '${field.required ? ' • Obligatoire' : ''}',
+          '${field.required ? ' • Obligatoire' : ''}',
         ),
         trailing: _buildScopeChip(field.targetScope),
       ),
@@ -137,9 +129,7 @@ class _ContactFormTemplateDiagnosticScreenState
 
     if (template == null) {
       return const Center(
-        child: Text(
-          'Aucun modèle de fiche d’entretien initial trouvé.',
-        ),
+        child: Text('Aucun modèle de fiche d’entretien initial trouvé.'),
       );
     }
 
@@ -175,9 +165,7 @@ class _ContactFormTemplateDiagnosticScreenState
         future: _futureData,
         builder: (context, snapshot) {
           if (snapshot.connectionState != ConnectionState.done) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
+            return const Center(child: CircularProgressIndicator());
           }
 
           if (snapshot.hasError) {
@@ -195,9 +183,7 @@ class _ContactFormTemplateDiagnosticScreenState
           final data = snapshot.data;
 
           if (data == null) {
-            return const Center(
-              child: Text('Aucune donnée à afficher.'),
-            );
+            return const Center(child: Text('Aucune donnée à afficher.'));
           }
 
           return _buildContent(data);
@@ -211,8 +197,5 @@ class _TemplateDiagnosticData {
   final ContactFormTemplate? template;
   final List<ContactFormField> fields;
 
-  const _TemplateDiagnosticData({
-    required this.template,
-    required this.fields,
-  });
+  const _TemplateDiagnosticData({required this.template, required this.fields});
 }

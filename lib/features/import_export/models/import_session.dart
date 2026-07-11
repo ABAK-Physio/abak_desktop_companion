@@ -8,6 +8,7 @@ class ImportSession {
 
   final int importedResultsCount;
   final int skippedResultsCount;
+  final int duplicateResultsCount;
   final int importedMetricsCount;
 
   final String? sourceLabel;
@@ -27,6 +28,7 @@ class ImportSession {
     required this.failedFilesCount,
     required this.importedResultsCount,
     required this.skippedResultsCount,
+    required this.duplicateResultsCount,
     required this.importedMetricsCount,
     required this.sourceLabel,
     required this.notes,
@@ -42,15 +44,23 @@ class ImportSession {
       importSessionId: map['import_session_id'] as String,
       startedAt: map['started_at'] as int,
       completedAt: map['completed_at'] as int?,
-      processedFilesCount: map['processed_files_count'] as int,
-      failedFilesCount: map['failed_files_count'] as int,
-      importedResultsCount: map['imported_results_count'] as int,
-      skippedResultsCount: map['skipped_results_count'] as int,
-      importedMetricsCount: map['imported_metrics_count'] as int,
+      processedFilesCount:
+      (map['processed_files_count'] as num?)?.toInt() ?? 0,
+      failedFilesCount:
+      (map['failed_files_count'] as num?)?.toInt() ?? 0,
+      importedResultsCount:
+      (map['imported_results_count'] as num?)?.toInt() ?? 0,
+      skippedResultsCount:
+      (map['skipped_results_count'] as num?)?.toInt() ?? 0,
+      duplicateResultsCount:
+      (map['duplicate_results_count'] as num?)?.toInt() ?? 0,
+      importedMetricsCount:
+      (map['imported_metrics_count'] as num?)?.toInt() ?? 0,
       sourceLabel: map['source_label'] as String?,
       notes: map['notes'] as String?,
       status: map['status'] as String,
-      conflictResultsCount: map['conflict_results_count'] as int,
+      conflictResultsCount:
+      (map['conflict_results_count'] as num?)?.toInt() ?? 0,
       summaryPatientLabel: map['summary_patient_label'] as String?,
       summaryEpisodeLabel: map['summary_episode_label'] as String?,
       summaryExercisesLabel: map['summary_exercises_label'] as String?,

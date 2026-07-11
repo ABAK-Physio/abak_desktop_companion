@@ -8,10 +8,7 @@ import '../models/patient_identity.dart';
 class PatientClinicalDataEditScreen extends StatefulWidget {
   final String patientId;
 
-  const PatientClinicalDataEditScreen({
-    super.key,
-    required this.patientId,
-  });
+  const PatientClinicalDataEditScreen({super.key, required this.patientId});
 
   @override
   State<PatientClinicalDataEditScreen> createState() =>
@@ -21,10 +18,10 @@ class PatientClinicalDataEditScreen extends StatefulWidget {
 class _PatientClinicalDataEditScreenState
     extends State<PatientClinicalDataEditScreen> {
   final PatientIdentityRepository _identityRepository =
-  PatientIdentityRepository();
+      PatientIdentityRepository();
 
   final PatientAttributeRepository _attributeRepository =
-  PatientAttributeRepository();
+      PatientAttributeRepository();
 
   final _nationalHealthIdController = TextEditingController();
   final _professionController = TextEditingController();
@@ -62,32 +59,29 @@ class _PatientClinicalDataEditScreenState
   }
 
   Future<void> _loadExistingData() async {
-    final identity =
-    await _identityRepository.getByPatientId(widget.patientId);
+    final identity = await _identityRepository.getByPatientId(widget.patientId);
 
-    final attributes =
-    await _attributeRepository.getByPatientId(widget.patientId);
+    final attributes = await _attributeRepository.getByPatientId(
+      widget.patientId,
+    );
 
     _nationalHealthIdController.text = identity?.nationalHealthId ?? '';
     _healthSystemCountry =
-    identity?.healthSystemCountry?.trim().isNotEmpty == true
+        identity?.healthSystemCountry?.trim().isNotEmpty == true
         ? identity!.healthSystemCountry!
         : 'FR';
 
-    _identitySource =
-    identity?.identitySource?.trim().isNotEmpty == true
+    _identitySource = identity?.identitySource?.trim().isNotEmpty == true
         ? identity!.identitySource!
         : 'saisie manuelle';
     _phoneController.text = identity?.phone ?? '';
     _emailController.text = identity?.email ?? '';
     _addressController.text = identity?.address ?? '';
 
-    final dominantSide =
-    _attributeValue(attributes, 'dominant_side');
+    final dominantSide = _attributeValue(attributes, 'dominant_side');
 
     _dominantSide = _normalizeDominantSide(dominantSide);
-    _professionController.text =
-        _attributeValue(attributes, 'profession');
+    _professionController.text = _attributeValue(attributes, 'profession');
     _sportController.text = _attributeValue(attributes, 'sport');
     _heightController.text = _attributeValue(attributes, 'height_cm');
     _weightController.text = _attributeValue(attributes, 'weight_kg');
@@ -99,10 +93,7 @@ class _PatientClinicalDataEditScreenState
     });
   }
 
-  String _attributeValue(
-      List<PatientAttribute> attributes,
-      String key,
-      ) {
+  String _attributeValue(List<PatientAttribute> attributes, String key) {
     final matching = attributes.where((a) => a.attributeKey == key);
 
     if (matching.isEmpty) return '';
@@ -141,18 +132,12 @@ class _PatientClinicalDataEditScreenState
           labelText: label,
         ),
         items: values
-            .map(
-              (e) => DropdownMenuItem(
-            value: e,
-            child: Text(e),
-          ),
-        )
+            .map((e) => DropdownMenuItem(value: e, child: Text(e)))
             .toList(),
         onChanged: onChanged,
       ),
     );
   }
-
 
   Future<void> _save() async {
     setState(() {
@@ -246,9 +231,7 @@ class _PatientClinicalDataEditScreenState
         _buildDropdownField(
           label: 'Pays du système de santé',
           value: _healthSystemCountry,
-          values: const [
-            'FR',
-          ],
+          values: const ['FR'],
           onChanged: (value) {
             if (value == null) return;
 
@@ -260,10 +243,7 @@ class _PatientClinicalDataEditScreenState
         _buildDropdownField(
           label: 'Source de l’identité',
           value: _identitySource,
-          values: const [
-            'saisie manuelle',
-            'Carte Vitale',
-          ],
+          values: const ['saisie manuelle', 'Carte Vitale'],
           onChanged: (value) {
             if (value == null) return;
 
@@ -290,20 +270,12 @@ class _PatientClinicalDataEditScreenState
           keyboardType: TextInputType.multiline,
         ),
         const SizedBox(height: 24),
-        Text(
-          'Profil patient',
-          style: Theme.of(context).textTheme.titleMedium,
-        ),
+        Text('Profil patient', style: Theme.of(context).textTheme.titleMedium),
         const SizedBox(height: 16),
         _buildDropdownField(
           label: 'Côté dominant',
           value: _dominantSide,
-          values: const [
-            'droite',
-            'gauche',
-            'ambidextre',
-            'non précisé',
-          ],
+          values: const ['droite', 'gauche', 'ambidextre', 'non précisé'],
           onChanged: (value) {
             if (value == null) return;
 
@@ -312,10 +284,7 @@ class _PatientClinicalDataEditScreenState
             });
           },
         ),
-        _buildTextField(
-          controller: _professionController,
-          label: 'Profession',
-        ),
+        _buildTextField(controller: _professionController, label: 'Profession'),
         _buildTextField(
           controller: _sportController,
           label: 'Activité sportive habituelle',

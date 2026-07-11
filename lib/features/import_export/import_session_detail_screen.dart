@@ -6,10 +6,7 @@ import 'models/import_session.dart';
 import 'models/import_session_file.dart';
 import 'abak_import_launcher.dart';
 
-enum ImportActionKind {
-  associatePatient,
-  deleteImport,
-}
+enum ImportActionKind { associatePatient, deleteImport }
 
 class ImportActionInfo {
   final String title;
@@ -29,8 +26,7 @@ class ImportActionInfo {
   bool get canAssociatePatient =>
       actions.contains(ImportActionKind.associatePatient);
 
-  bool get canDeleteImport =>
-      actions.contains(ImportActionKind.deleteImport);
+  bool get canDeleteImport => actions.contains(ImportActionKind.deleteImport);
 }
 
 class ImportActionInfoService {
@@ -41,7 +37,7 @@ class ImportActionInfoService {
       return const ImportActionInfo(
         title: 'Association patient requise',
         message:
-        'Le fichier a bien été reçu. Pour terminer l’import, associez ce dossier à un patient.',
+            'Le fichier a bien été reçu. Pour terminer l’import, associez ce dossier à un patient.',
         icon: Icons.person_search,
         color: Colors.orange,
         actions: [
@@ -55,12 +51,10 @@ class ImportActionInfoService {
       return ImportActionInfo(
         title: 'Import impossible',
         message:
-        'L’import n’a pas pu être terminé. Consultez le détail des fichiers, puis supprimez cet import s’il ne peut pas être corrigé.',
+            'L’import n’a pas pu être terminé. Consultez le détail des fichiers, puis supprimez cet import s’il ne peut pas être corrigé.',
         icon: Icons.error_outline,
         color: Theme.of(context).colorScheme.error,
-        actions: const [
-          ImportActionKind.deleteImport,
-        ],
+        actions: const [ImportActionKind.deleteImport],
       );
     }
 
@@ -70,9 +64,22 @@ class ImportActionInfoService {
       return const ImportActionInfo(
         title: 'Import terminé avec avertissement',
         message:
-        'L’import est terminé, mais certains résultats ont été ignorés ou nécessitent une vérification.',
+        'L’import est terminé, mais certains résultats n’ont pas pu être '
+            'importés ou nécessitent une vérification.',
         icon: Icons.warning_amber_outlined,
         color: Colors.orange,
+        actions: [],
+      );
+    }
+
+    if (session.duplicateResultsCount > 0) {
+      return const ImportActionInfo(
+        title: 'Import réalisé avec succès',
+        message:
+        'L’import est terminé. Les résultats déjà présents ont été '
+            'reconnus et n’ont pas été importés une seconde fois.',
+        icon: Icons.check_circle_outline,
+        color: Colors.green,
         actions: [],
       );
     }
@@ -90,17 +97,13 @@ class ImportActionInfoService {
 class ImportSessionDetailScreen extends StatelessWidget {
   final ImportSession session;
 
-  const ImportSessionDetailScreen({
-    super.key,
-    required this.session,
-  });
+  const ImportSessionDetailScreen({super.key, required this.session});
 
   @override
   Widget build(BuildContext context) {
     final repository = ImportSessionRepository();
 
-    final startedDate =
-    DateTime.fromMillisecondsSinceEpoch(session.startedAt);
+    final startedDate = DateTime.fromMillisecondsSinceEpoch(session.startedAt);
 
     final completedDate = session.completedAt == null
         ? null
@@ -116,9 +119,7 @@ class ImportSessionDetailScreen extends StatelessWidget {
     );
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Suivi de l'import"),
-      ),
+      appBar: AppBar(title: const Text("Suivi de l'import")),
       body: ListView(
         padding: const EdgeInsets.all(24),
         children: [
@@ -199,9 +200,7 @@ class ImportSessionDetailScreen extends StatelessWidget {
                         style: Theme.of(context).textTheme.titleLarge,
                       ),
                       const Divider(height: 28),
-                      ...files.map(
-                            (file) => _ImportFileTile(file: file),
-                      ),
+                      ...files.map((file) => _ImportFileTile(file: file)),
                     ],
                   ),
                 ),
@@ -307,6 +306,11 @@ class _ImportReportCard extends StatelessWidget {
               label: 'Résultats importés',
               value: session.importedResultsCount.toString(),
             ),
+            if (session.duplicateResultsCount > 0)
+              _InfoRow(
+                label: 'Résultats déjà présents',
+                value: session.duplicateResultsCount.toString(),
+              ),
             if (session.skippedResultsCount > 0)
               _InfoRow(
                 label: 'Résultats ignorés',
@@ -323,10 +327,7 @@ class _ImportReportCard extends StatelessWidget {
                 value: session.failedFilesCount.toString(),
               ),
             if (session.sourceLabel != null)
-              _InfoRow(
-                label: 'Source',
-                value: session.sourceLabel!,
-              ),
+              _InfoRow(label: 'Source', value: session.sourceLabel!),
           ],
         ),
       ),
@@ -337,9 +338,7 @@ class _ImportReportCard extends StatelessWidget {
 class _ImportReportMessage extends StatelessWidget {
   final ImportSession session;
 
-  const _ImportReportMessage({
-    required this.session,
-  });
+  const _ImportReportMessage({required this.session});
 
   @override
   Widget build(BuildContext context) {
@@ -354,17 +353,12 @@ class _ImportReportMessage extends StatelessWidget {
       decoration: BoxDecoration(
         color: actionInfo.color.withValues(alpha: 0.10),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: actionInfo.color.withValues(alpha: 0.35),
-        ),
+        border: Border.all(color: actionInfo.color.withValues(alpha: 0.35)),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(
-            actionInfo.icon,
-            color: actionInfo.color,
-          ),
+          Icon(actionInfo.icon, color: actionInfo.color),
           const SizedBox(width: 12),
           Expanded(
             child: Text(
@@ -385,9 +379,7 @@ class _ImportReportMessage extends StatelessWidget {
 class _ImportFileTile extends StatelessWidget {
   final ImportSessionFile file;
 
-  const _ImportFileTile({
-    required this.file,
-  });
+  const _ImportFileTile({required this.file});
 
   String _formatFileSize(int? bytes) {
     if (bytes == null) return 'Taille inconnue';
@@ -419,9 +411,10 @@ class _ImportFileTile extends StatelessWidget {
       subtitle: Text(
         isError
             ? '${_formatFileSize(file.fileSize)} · '
-            '${file.errorMessage ?? 'Erreur inconnue'}'
+                  '${file.errorMessage ?? 'Erreur inconnue'}'
             : '${_formatFileSize(file.fileSize)} · '
             '${file.importedResultsCount} importé(s), '
+            '${file.duplicateResultsCount} déjà présent(s), '
             '${file.skippedResultsCount} ignoré(s), '
             '${file.conflictResultsCount} conflit(s)',
       ),
@@ -433,10 +426,7 @@ class _InfoRow extends StatelessWidget {
   final String label;
   final String value;
 
-  const _InfoRow({
-    required this.label,
-    required this.value,
-  });
+  const _InfoRow({required this.label, required this.value});
 
   @override
   Widget build(BuildContext context) {
@@ -452,9 +442,7 @@ class _InfoRow extends StatelessWidget {
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
-          Expanded(
-            child: SelectableText(value),
-          ),
+          Expanded(child: SelectableText(value)),
         ],
       ),
     );
@@ -482,7 +470,7 @@ class _ImportActionsBar extends StatelessWidget {
           title: const Text('Supprimer cet import ?'),
           content: const Text(
             'Cette action supprimera l’historique de cet import. '
-                'Elle ne supprimera pas les données patient déjà importées.',
+            'Elle ne supprimera pas les données patient déjà importées.',
           ),
           actions: [
             TextButton(
@@ -507,11 +495,9 @@ class _ImportActionsBar extends StatelessWidget {
 
     Navigator.of(context).pop(true);
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Import supprimé.'),
-      ),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('Import supprimé.')));
   }
 
   @override
@@ -525,18 +511,18 @@ class _ImportActionsBar extends StatelessWidget {
             onPressed: fileToResolve?.filePath == null
                 ? null
                 : () async {
-              final result =
-              await AbakImportLauncher.importArchiveFromPathWithResolution(
-                context,
-                fileToResolve!.filePath!,
-              );
+                    final result =
+                        await AbakImportLauncher.importArchiveFromPathWithResolution(
+                          context,
+                          fileToResolve!.filePath!,
+                        );
 
-              if (!context.mounted) return;
+                    if (!context.mounted) return;
 
-              if (result != null) {
-                Navigator.of(context).pop(true);
-              }
-            },
+                    if (result != null) {
+                      Navigator.of(context).pop(true);
+                    }
+                  },
             icon: const Icon(Icons.person_search_outlined),
             label: const Text('Associer à un patient'),
           ),

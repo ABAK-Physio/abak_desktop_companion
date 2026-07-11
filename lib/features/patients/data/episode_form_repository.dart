@@ -115,9 +115,7 @@ class EpisodeFormRepository {
   }
 
   Future<bool> isFormComplete(String formId) async {
-    final data = await getFormWithAnswers(
-      formId: formId,
-    );
+    final data = await getFormWithAnswers(formId: formId);
 
     for (final entry in data.entries) {
       final field = entry.key;
@@ -143,10 +141,7 @@ class EpisodeFormRepository {
 
     await db.update(
       'episode_forms',
-      {
-        'archived_at': now,
-        'updated_at': now,
-      },
+      {'archived_at': now, 'updated_at': now},
       where: 'form_id = ?',
       whereArgs: [formId],
     );
@@ -199,12 +194,12 @@ class EpisodeFormRepository {
       final answer = answerId == null
           ? null
           : EpisodeFormAnswer(
-        answerId: answerId,
-        formId: row['answer_form_id'] as String,
-        fieldId: row['field_id'] as String,
-        value: row['answer_value'] as String?,
-        updatedAt: row['answer_updated_at'] as int,
-      );
+              answerId: answerId,
+              formId: row['answer_form_id'] as String,
+              fieldId: row['field_id'] as String,
+              value: row['answer_value'] as String?,
+              updatedAt: row['answer_updated_at'] as int,
+            );
 
       result[field] = answer;
     }

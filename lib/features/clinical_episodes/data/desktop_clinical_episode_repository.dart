@@ -3,9 +3,7 @@ import '../../../core/database/database_service.dart';
 import '../models/desktop_clinical_episode.dart';
 
 class DesktopClinicalEpisodeRepository {
-  Future<DesktopClinicalEpisode?> getEpisodeById(
-      String episodeId,
-      ) async {
+  Future<DesktopClinicalEpisode?> getEpisodeById(String episodeId) async {
     final db = await DatabaseService.database;
 
     final rows = await db.query(
@@ -23,8 +21,8 @@ class DesktopClinicalEpisodeRepository {
   }
 
   Future<List<DesktopClinicalEpisode>> getEpisodesForPatient(
-      String patientId,
-      ) async {
+    String patientId,
+  ) async {
     final db = await DatabaseService.database;
 
     final rows = await db.query(
@@ -34,14 +32,12 @@ class DesktopClinicalEpisodeRepository {
       orderBy: 'created_at DESC',
     );
 
-    return rows
-        .map(DesktopClinicalEpisode.fromMap)
-        .toList();
+    return rows.map(DesktopClinicalEpisode.fromMap).toList();
   }
 
   Future<List<DesktopClinicalEpisode>> getEpisodesForMobileCase(
-      String caseId,
-      ) async {
+    String caseId,
+  ) async {
     final db = await DatabaseService.database;
 
     final rows = await db.query(
@@ -51,14 +47,10 @@ class DesktopClinicalEpisodeRepository {
       orderBy: 'created_at DESC',
     );
 
-    return rows
-        .map(DesktopClinicalEpisode.fromMap)
-        .toList();
+    return rows.map(DesktopClinicalEpisode.fromMap).toList();
   }
 
-  Future<void> upsertEpisode(
-      DesktopClinicalEpisode episode,
-      ) async {
+  Future<void> upsertEpisode(DesktopClinicalEpisode episode) async {
     final db = await DatabaseService.database;
 
     await db.insert(
@@ -68,9 +60,7 @@ class DesktopClinicalEpisodeRepository {
     );
   }
 
-  Future<void> deleteEpisode(
-      String episodeId,
-      ) async {
+  Future<void> deleteEpisode(String episodeId) async {
     final db = await DatabaseService.database;
 
     await db.delete(
@@ -80,9 +70,7 @@ class DesktopClinicalEpisodeRepository {
     );
   }
 
-  Future<int> countEpisodesForPatient(
-      String patientId,
-      ) async {
+  Future<int> countEpisodesForPatient(String patientId) async {
     final db = await DatabaseService.database;
 
     final result = await db.rawQuery(

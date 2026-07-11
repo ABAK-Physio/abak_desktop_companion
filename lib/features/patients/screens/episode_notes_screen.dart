@@ -14,8 +14,7 @@ class EpisodeNotesScreen extends StatefulWidget {
   });
 
   @override
-  State<EpisodeNotesScreen> createState() =>
-      _EpisodeNotesScreenState();
+  State<EpisodeNotesScreen> createState() => _EpisodeNotesScreenState();
 }
 
 class _EpisodeNotesScreenState extends State<EpisodeNotesScreen> {
@@ -39,15 +38,11 @@ class _EpisodeNotesScreenState extends State<EpisodeNotesScreen> {
     });
   }
 
-  Future<void> _openEditor({
-    EpisodeNote? note,
-  }) async {
+  Future<void> _openEditor({EpisodeNote? note}) async {
     final changed = await Navigator.of(context).push<bool>(
       MaterialPageRoute(
-        builder: (_) => _EpisodeNoteEditorScreen(
-          caseId: widget.caseId,
-          note: note,
-        ),
+        builder: (_) =>
+            _EpisodeNoteEditorScreen(caseId: widget.caseId, note: note),
       ),
     );
 
@@ -67,8 +62,7 @@ class _EpisodeNotesScreenState extends State<EpisodeNotesScreen> {
         subtitle: Text(
           [
             'Modifiée le : ${date.toLocal()}',
-            if (note.content.trim().isNotEmpty)
-              note.content.trim(),
+            if (note.content.trim().isNotEmpty) note.content.trim(),
           ].join('\n'),
           maxLines: 3,
           overflow: TextOverflow.ellipsis,
@@ -90,18 +84,14 @@ class _EpisodeNotesScreenState extends State<EpisodeNotesScreen> {
       builder: (dialogContext) {
         return AlertDialog(
           title: const Text('Archiver la note ?'),
-          content: Text(
-            'La note "${note.title}" ne sera plus affichée.',
-          ),
+          content: Text('La note "${note.title}" ne sera plus affichée.'),
           actions: [
             TextButton(
-              onPressed: () =>
-                  Navigator.of(dialogContext).pop(false),
+              onPressed: () => Navigator.of(dialogContext).pop(false),
               child: const Text('Annuler'),
             ),
             FilledButton(
-              onPressed: () =>
-                  Navigator.of(dialogContext).pop(true),
+              onPressed: () => Navigator.of(dialogContext).pop(true),
               child: const Text('Archiver'),
             ),
           ],
@@ -133,15 +123,11 @@ class _EpisodeNotesScreenState extends State<EpisodeNotesScreen> {
           final notes = snapshot.data ?? [];
 
           if (snapshot.connectionState != ConnectionState.done) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
+            return const Center(child: CircularProgressIndicator());
           }
 
           if (snapshot.hasError) {
-            return Center(
-              child: Text('Erreur : ${snapshot.error}'),
-            );
+            return Center(child: Text('Erreur : ${snapshot.error}'));
           }
 
           return ListView(
@@ -157,12 +143,10 @@ class _EpisodeNotesScreenState extends State<EpisodeNotesScreen> {
               ),
               const SizedBox(height: 16),
               if (notes.isEmpty)
-                const Text(
-                  'Aucune note associée à cet épisode.',
-                )
+                const Text('Aucune note associée à cet épisode.')
               else
                 ...notes.map(
-                      (note) => Dismissible(
+                  (note) => Dismissible(
                     key: ValueKey(note.noteId),
                     direction: DismissDirection.endToStart,
                     confirmDismiss: (_) async {
@@ -193,18 +177,14 @@ class _EpisodeNoteEditorScreen extends StatefulWidget {
   final String caseId;
   final EpisodeNote? note;
 
-  const _EpisodeNoteEditorScreen({
-    required this.caseId,
-    this.note,
-  });
+  const _EpisodeNoteEditorScreen({required this.caseId, this.note});
 
   @override
   State<_EpisodeNoteEditorScreen> createState() =>
       _EpisodeNoteEditorScreenState();
 }
 
-class _EpisodeNoteEditorScreenState
-    extends State<_EpisodeNoteEditorScreen> {
+class _EpisodeNoteEditorScreenState extends State<_EpisodeNoteEditorScreen> {
   final EpisodeNoteRepository _repository = EpisodeNoteRepository();
 
   final _titleController = TextEditingController();
@@ -233,9 +213,7 @@ class _EpisodeNoteEditorScreenState
 
     if (title.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Le titre est obligatoire.'),
-        ),
+        const SnackBar(content: Text('Le titre est obligatoire.')),
       );
 
       return;
@@ -270,9 +248,7 @@ class _EpisodeNoteEditorScreenState
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          isEditing ? 'Modifier la note' : 'Nouvelle note',
-        ),
+        title: Text(isEditing ? 'Modifier la note' : 'Nouvelle note'),
         actions: [
           TextButton.icon(
             onPressed: _saving ? null : _save,

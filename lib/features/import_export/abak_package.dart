@@ -28,44 +28,40 @@ class AbakPackage {
       sourceDevice: json['sourceDevice'] == null
           ? null
           : AbakSourceDevice.fromJson(
-        json['sourceDevice'] as Map<String, dynamic>,
-      ),
+              json['sourceDevice'] as Map<String, dynamic>,
+            ),
       practitioner: json['practitioner'] == null
           ? null
           : AbakPractitionerSnapshot.fromJson(
-        json['practitioner'] as Map<String, dynamic>,
-      ),
+              json['practitioner'] as Map<String, dynamic>,
+            ),
       patient: json['patient'] == null
           ? null
           : AbakPatientSnapshot.fromJson(
-        json['patient'] as Map<String, dynamic>,
-      ),
+              json['patient'] as Map<String, dynamic>,
+            ),
 
       mobileCase: json['mobileCase'] == null
           ? null
           : AbakMobileCaseSnapshot.fromJson(
-        json['mobileCase'] as Map<String, dynamic>,
-      ),
+              json['mobileCase'] as Map<String, dynamic>,
+            ),
 
       clinicalEpisode: json['clinicalEpisode'] == null
           ? null
           : AbakClinicalEpisodeSnapshot.fromJson(
-        json['clinicalEpisode'] as Map<String, dynamic>,
-      ),
+              json['clinicalEpisode'] as Map<String, dynamic>,
+            ),
 
       results: (json['results'] as List<dynamic>? ?? [])
           .map(
-            (item) => AbakResultPayload.fromJson(
-          item as Map<String, dynamic>,
-        ),
-      )
+            (item) => AbakResultPayload.fromJson(item as Map<String, dynamic>),
+          )
           .toList(),
       metrics: (json['metrics'] as List<dynamic>? ?? [])
           .map(
-            (item) => AbakMetricPayload.fromJson(
-          item as Map<String, dynamic>,
-        ),
-      )
+            (item) => AbakMetricPayload.fromJson(item as Map<String, dynamic>),
+          )
           .toList(),
     );
   }
@@ -130,10 +126,7 @@ class AbakPractitionerSnapshot {
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'practitionerId': practitionerId,
-      'displayName': displayName,
-    };
+    return {'practitionerId': practitionerId, 'displayName': displayName};
   }
 }
 
@@ -184,9 +177,7 @@ class AbakMobileCaseSnapshot {
     this.pathologyCode,
   });
 
-  factory AbakMobileCaseSnapshot.fromJson(
-      Map<String, dynamic> json,
-      ) {
+  factory AbakMobileCaseSnapshot.fromJson(Map<String, dynamic> json) {
     return AbakMobileCaseSnapshot(
       caseId: json['caseId'] as String,
       caseLabel: json['caseLabel'] as String,
@@ -238,9 +229,7 @@ class AbakClinicalEpisodeSnapshot {
     this.status = 'active',
   });
 
-  factory AbakClinicalEpisodeSnapshot.fromJson(
-      Map<String, dynamic> json,
-      ) {
+  factory AbakClinicalEpisodeSnapshot.fromJson(Map<String, dynamic> json) {
     return AbakClinicalEpisodeSnapshot(
       episodeId: json['episode_id']?.toString() ?? '',
       patientRef: json['patient_ref']?.toString(),
@@ -282,9 +271,7 @@ class AbakClinicalEpisodeSnapshot {
 class AbakResultPayload {
   final Map<String, dynamic> raw;
 
-  const AbakResultPayload({
-    required this.raw,
-  });
+  const AbakResultPayload({required this.raw});
 
   factory AbakResultPayload.fromJson(Map<String, dynamic> json) {
     return AbakResultPayload(raw: json);
@@ -296,9 +283,7 @@ class AbakResultPayload {
 class AbakMetricPayload {
   final Map<String, dynamic> raw;
 
-  const AbakMetricPayload({
-    required this.raw,
-  });
+  const AbakMetricPayload({required this.raw});
 
   factory AbakMetricPayload.fromJson(Map<String, dynamic> json) {
     return AbakMetricPayload(raw: json);

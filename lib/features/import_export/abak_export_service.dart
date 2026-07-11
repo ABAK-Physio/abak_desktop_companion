@@ -6,9 +6,8 @@ import '../results/models/desktop_result.dart';
 import 'abak_package.dart';
 
 class AbakExportService {
-  AbakExportService({
-    DesktopResultRepository? repository,
-  }) : _repository = repository ?? DesktopResultRepository();
+  AbakExportService({DesktopResultRepository? repository})
+    : _repository = repository ?? DesktopResultRepository();
 
   final DesktopResultRepository _repository;
 
@@ -44,9 +43,7 @@ class AbakExportService {
         sexCode: patient.sexCode,
       ),
       results: results
-          .map((result) => AbakResultPayload(
-        raw: _buildResultPayload(result),
-      ))
+          .map((result) => AbakResultPayload(raw: _buildResultPayload(result)))
           .toList(),
       metrics: metrics
           .map((metric) => AbakMetricPayload(raw: metric.toMap()))
@@ -65,15 +62,12 @@ class AbakExportService {
       return _repository.getResultsByIds(resultIds);
     }
 
-    return _repository.getResultsForPatient(
-      patientId,
-      syncStates: syncStates,
-    );
+    return _repository.getResultsForPatient(patientId, syncStates: syncStates);
   }
 
   AbakPractitionerSnapshot? _buildPractitionerSnapshot(
-      List<DesktopResult> results,
-      ) {
+    List<DesktopResult> results,
+  ) {
     if (results.isEmpty) {
       return null;
     }

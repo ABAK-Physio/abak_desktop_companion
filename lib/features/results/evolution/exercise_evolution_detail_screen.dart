@@ -24,76 +24,18 @@ class ExerciseEvolutionDetailScreen extends StatelessWidget {
     final sortedMeasures = [...measures]
       ..sort((a, b) => a.createdAt.compareTo(b.createdAt));
 
-
     final exerciseDefinition =
     ClinicalActivityCatalog.infoFor(exoId);
 
-    final followUpMetric = _findFollowUpMetric(
-      exerciseDefinition,
-    );
-
-    final followUpUnit =
-        followUpMetric?.defaultUnit ?? exerciseDefinition.defaultUnit;
-
-    final followUpScoreDecimals =
-        followUpMetric?.scoreDecimals ?? exerciseDefinition.scoreDecimals;
-
-    final followUpScoreDirection =
-        followUpMetric?.scoreDirection ?? exerciseDefinition.scoreDirection;
-
-    final followUpThreshold =
-        followUpMetric?.meaningfulChangeThreshold ??
-            exerciseDefinition.meaningfulChangeThreshold;
-
-    final evolutionSeries = _buildEvolutionSeries(
+    final measureGroups = _buildMeasureGroups(
       measures: sortedMeasures,
       definition: exerciseDefinition,
     );
 
-    final followUpValues = sortedMeasures
-        .map(
-          (measure) => _readFollowUpValue(
-        measure: measure,
-        definition: exerciseDefinition,
-      ),
-    )
-        .whereType<double>()
-        .toList();
-
-    final canShowChart = evolutionSeries.any(
-          (series) => series.spots.length >= 2,
-    );
-
-    final hasDeclaredChartMetrics = exerciseDefinition.metrics.any(
-          (metric) => metric.showOnEvolutionChart,
-    );
-
-    final shouldExplainMissingChart =
-        exerciseDefinition.followUpPolicy ==
-            FollowUpPolicy.declaredMetricsOnly &&
-            !hasDeclaredChartMetrics;
-
-    final formatter = DateFormat.yMd(
-      Localizations.localeOf(context).toLanguageTag(),
-    );
-
-    final defaultUnit = followUpUnit?.trim();
-    final scoreDecimals = followUpScoreDecimals;
-
-    final evolutionAnalysis = _analyzeEvolution(
-      followUpValues,
-      followUpScoreDirection,
-      followUpThreshold,
-    );
-
-    final unit = defaultUnit == null || defaultUnit.isEmpty
-        ? ''
-        : ' $defaultUnit';
-
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "Évolution du ${ClinicalActivityCatalog.displayLabel(exoId)}",
+          'Évolution du ${ClinicalActivityCatalog.displayLabel(exoId)}',
         ),
       ),
       body: ListView(
@@ -114,71 +56,216 @@ class ExerciseEvolutionDetailScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 16),
-          if (canShowChart) ...[
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(20),
-                child: SizedBox(
-                  height: 300,
-                  child: Column(
-                    children: [
-                      _EvolutionChartLegend(
+          for (final group in measureGroups)
+            _EvolutionGroupSection(
+              label: group.label,
+              measures: group.measures,
+              definition: exerciseDefinition,
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+class _EvolutionMeasureGroup {
+  final String key;
+  final String label;
+  final List<DesktopResult> measures;
+
+  const _EvolutionMeasureGroup({
+    required this.key,
+    required this.label,
+    required this.measures,
+  });
+}
+
+class _MeasureMetricDisplay {
+  final String label;
+  final String value;
+
+  const _MeasureMetricDisplay({
+    required this.label,
+    required this.value,
+  });
+}
+
+class _EvolutionGroupSection extends StatelessWidget {
+  final String label;
+  final List<DesktopResult> measures;
+  final ExerciseDefinition definition;
+
+  const _EvolutionGroupSection({
+    required this.label,
+    required this.measures,
+    required this.definition,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final followUpMetric = _findFollowUpMetric(definition);
+
+    final followUpUnit =
+        followUpMetric?.defaultUnit ?? definition.defaultUnit;
+
+    final scoreDecimals =
+        followUpMetric?.scoreDecimals ?? definition.scoreDecimals;
+
+    final scoreDirection =
+        followUpMetric?.scoreDirection ?? definition.scoreDirection;
+
+    final threshold =
+        followUpMetric?.meaningfulChangeThreshold ??
+            definition.meaningfulChangeThreshold;
+
+    final evolutionSeries = _buildEvolutionSeries(
+      measures: measures,
+      definition: definition,
+    );
+
+    final followUpValues = measures
+        .map(
+          (measure) => _readFollowUpValue(
+        measure: measure,
+        definition: definition,
+      ),
+    )
+        .whereType<double>()
+        .toList();
+
+    final canShowChart = evolutionSeries.any(
+          (series) => series.spots.length >= 2,
+    );
+
+    final evolutionAnalysis = _analyzeEvolution(
+      followUpValues,
+      scoreDirection,
+      threshold,
+    );
+
+    final hasDeclaredChartMetrics = definition.metrics.any(
+          (metric) => metric.showOnEvolutionChart,
+    );
+
+    final shouldExplainMissingChart =
+        definition.followUpPolicy ==
+            FollowUpPolicy.declaredMetricsOnly &&
+            !hasDeclaredChartMetrics;
+
+    final formatter = DateFormat.yMd(
+      Localizations.localeOf(context).toLanguageTag(),
+    );
+
+    final normalizedUnit = followUpUnit?.trim();
+
+    final unit = normalizedUnit == null || normalizedUnit.isEmpty
+        ? ''
+        : ' $normalizedUnit';
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
+        const SizedBox(height: 12),
+
+        if (canShowChart) ...[
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: SizedBox(
+                height: 300,
+                child: Column(
+                  children: [
+                    _EvolutionChartLegend(
+                      series: evolutionSeries,
+                    ),
+                    const SizedBox(height: 12),
+                    Expanded(
+                      child: _EvolutionLineChart(
                         series: evolutionSeries,
+                        measures: measures,
+                        unit: normalizedUnit,
+                        scoreDecimals: scoreDecimals,
                       ),
-                      const SizedBox(height: 12),
-                      Expanded(
-                        child: _EvolutionLineChart(
-                          series: evolutionSeries,
-                          measures: sortedMeasures,
-                          unit: defaultUnit,
-                          scoreDecimals: scoreDecimals,
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ),
-            const SizedBox(height: 16),
-          ],
-          if (shouldExplainMissingChart) ...[
-            const _NoEvolutionChartCard(),
-            const SizedBox(height: 16),
-          ],
-
-          if (evolutionAnalysis != null) ...[
-            _EvolutionSummaryCard(
-              analysis: evolutionAnalysis,
-              unit: defaultUnit,
-              scoreDecimals: scoreDecimals,
-            ),
-            const SizedBox(height: 16),
-          ],
-          ...sortedMeasures.map((result) {
-            final date = formatter.format(
-              DateTime.fromMillisecondsSinceEpoch(result.createdAt),
-            );
-
-            final followUpValue = _readFollowUpValue(
-              measure: result,
-              definition: exerciseDefinition,
-            );
-
-            final value = followUpValue == null
-                ? '-'
-                : '${followUpValue.toStringAsFixed(scoreDecimals)}$unit';
-
-            return Card(
-              margin: const EdgeInsets.only(bottom: 8),
-              child: ListTile(
-                leading: const Icon(Icons.timeline),
-                title: Text(value),
-                subtitle: Text(date),
-              ),
-            );
-          }),
+          ),
+          const SizedBox(height: 16),
         ],
-      ),
+
+        if (shouldExplainMissingChart) ...[
+          const _NoEvolutionChartCard(),
+          const SizedBox(height: 16),
+        ],
+
+        if (evolutionAnalysis != null) ...[
+          _EvolutionSummaryCard(
+            analysis: evolutionAnalysis,
+            unit: normalizedUnit,
+            scoreDecimals: scoreDecimals,
+          ),
+          const SizedBox(height: 16),
+        ],
+
+        ...measures.map((result) {
+          final date = formatter.format(
+            DateTime.fromMillisecondsSinceEpoch(result.createdAt),
+          );
+
+          final followUpValue = _readFollowUpValue(
+            measure: result,
+            definition: definition,
+          );
+
+          final chartMetricDisplays = _readChartMetricDisplays(
+            measure: result,
+            definition: definition,
+          );
+
+          Widget title;
+
+          if (followUpValue != null) {
+            title = Text(
+              '${followUpValue.toStringAsFixed(scoreDecimals)}$unit',
+            );
+          } else if (chartMetricDisplays.isNotEmpty) {
+            title = Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                for (final display in chartMetricDisplays)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 2),
+                    child: Text(
+                      '${display.label} : ${display.value}',
+                    ),
+                  ),
+              ],
+            );
+          } else {
+            title = const Text('-');
+          }
+
+          return Card(
+            margin: const EdgeInsets.only(bottom: 8),
+            child: ListTile(
+              leading: const Icon(Icons.timeline),
+              title: title,
+              subtitle: Padding(
+                padding: const EdgeInsets.only(top: 4),
+                child: Text(date),
+              ),
+            ),
+          );
+        }),
+
+        const SizedBox(height: 24),
+      ],
     );
   }
 }
@@ -196,10 +283,7 @@ class _NoEvolutionChartCard extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(
-              Icons.info_outline,
-              color: theme.colorScheme.primary,
-            ),
+            Icon(Icons.info_outline, color: theme.colorScheme.primary),
             const SizedBox(width: 12),
             Expanded(
               child: Column(
@@ -212,9 +296,9 @@ class _NoEvolutionChartCard extends StatelessWidget {
                   const SizedBox(height: 8),
                   Text(
                     'Les résultats de cet exercice ne sont pas représentés '
-                        'par une courbe synthétique. Ils restent disponibles '
-                        'individuellement afin d’éviter une présentation '
-                        'simplifiée ou trompeuse.',
+                    'par une courbe synthétique. Ils restent disponibles '
+                    'individuellement afin d’éviter une présentation '
+                    'simplifiée ou trompeuse.',
                     style: theme.textTheme.bodyMedium,
                   ),
                 ],
@@ -227,11 +311,7 @@ class _NoEvolutionChartCard extends StatelessWidget {
   }
 }
 
-enum _EvolutionDirection {
-  increase,
-  decrease,
-  unchanged,
-}
+enum _EvolutionDirection { increase, decrease, unchanged }
 
 enum _EvolutionInterpretation {
   expectedDirection,
@@ -240,11 +320,7 @@ enum _EvolutionInterpretation {
   notInterpretable,
 }
 
-enum _MeaningfulChangeStatus {
-  reached,
-  notReached,
-  unavailable,
-}
+enum _MeaningfulChangeStatus { reached, notReached, unavailable }
 
 enum _EvolutionConclusion {
   expectedAndMeaningful,
@@ -287,10 +363,10 @@ class _EvolutionAnalysis {
 }
 
 _EvolutionAnalysis? _analyzeEvolution(
-    List<double> values,
-    ScoreDirection scoreDirection,
-    double? meaningfulChangeThreshold,
-    ) {
+  List<double> values,
+  ScoreDirection scoreDirection,
+  double? meaningfulChangeThreshold,
+) {
   if (values.length < 2) {
     return null;
   }
@@ -353,8 +429,8 @@ _EvolutionAnalysis? _analyzeEvolution(
   }
 
   _EvolutionConfidence buildEvolutionConfidence(
-      _EvolutionConclusion conclusion,
-      ) {
+    _EvolutionConclusion conclusion,
+  ) {
     switch (conclusion) {
       case _EvolutionConclusion.expectedAndMeaningful:
       case _EvolutionConclusion.oppositeAndMeaningful:
@@ -383,9 +459,7 @@ _EvolutionAnalysis? _analyzeEvolution(
     meaningfulChangeStatus: meaningfulChangeStatus,
   );
 
-  final confidence = buildEvolutionConfidence(
-    conclusion,
-  );
+  final confidence = buildEvolutionConfidence(conclusion);
 
   return _EvolutionAnalysis(
     firstValue: firstValue,
@@ -470,9 +544,7 @@ class _EvolutionSummaryCard extends StatelessWidget {
     }
   }
 
-  String _interpretationLabel(
-      _EvolutionInterpretation interpretation,
-      ) {
+  String _interpretationLabel(_EvolutionInterpretation interpretation) {
     switch (interpretation) {
       case _EvolutionInterpretation.expectedDirection:
         return 'La variation va dans le sens attendu pour cette mesure.';
@@ -489,9 +561,7 @@ class _EvolutionSummaryCard extends StatelessWidget {
     }
   }
 
-  String _meaningfulChangeLabel(
-      _EvolutionAnalysis analysis,
-      ) {
+  String _meaningfulChangeLabel(_EvolutionAnalysis analysis) {
     switch (analysis.meaningfulChangeStatus) {
       case _MeaningfulChangeStatus.reached:
         final threshold = analysis.meaningfulChangeThreshold;
@@ -600,10 +670,7 @@ class _EvolutionSummaryCard extends StatelessWidget {
             ),
             const SizedBox(height: 20),
 
-            Text(
-              'Observation',
-              style: theme.textTheme.titleSmall,
-            ),
+            Text('Observation', style: theme.textTheme.titleSmall),
             const SizedBox(height: 12),
 
             Wrap(
@@ -638,10 +705,7 @@ class _EvolutionSummaryCard extends StatelessWidget {
             const Divider(),
             const SizedBox(height: 16),
 
-            Text(
-              'Analyse automatique',
-              style: theme.textTheme.titleSmall,
-            ),
+            Text('Analyse automatique', style: theme.textTheme.titleSmall),
             const SizedBox(height: 12),
 
             _EvolutionAnalysisLine(
@@ -650,7 +714,8 @@ class _EvolutionSummaryCard extends StatelessWidget {
                   : analysis.direction == _EvolutionDirection.decrease
                   ? Icons.arrow_downward
                   : Icons.horizontal_rule,
-              text: 'Sens observé : '
+              text:
+                  'Sens observé : '
                   '${_directionLabel(analysis.direction)}',
             ),
             const SizedBox(height: 10),
@@ -670,10 +735,7 @@ class _EvolutionSummaryCard extends StatelessWidget {
             const Divider(),
             const SizedBox(height: 16),
 
-            Text(
-              'Conclusion',
-              style: theme.textTheme.titleSmall,
-            ),
+            Text('Conclusion', style: theme.textTheme.titleSmall),
             const SizedBox(height: 12),
 
             _EvolutionConfidenceIndicator(
@@ -707,10 +769,7 @@ class _EvolutionConfidenceIndicator extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 12,
-        vertical: 8,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
         color: theme.colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(8),
@@ -718,15 +777,9 @@ class _EvolutionConfidenceIndicator extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            icon,
-            size: 20,
-          ),
+          Icon(icon, size: 20),
           const SizedBox(width: 8),
-          Text(
-            label,
-            style: theme.textTheme.labelLarge,
-          ),
+          Text(label, style: theme.textTheme.labelLarge),
         ],
       ),
     );
@@ -737,26 +790,17 @@ class _EvolutionAnalysisLine extends StatelessWidget {
   final IconData icon;
   final String text;
 
-  const _EvolutionAnalysisLine({
-    required this.icon,
-    required this.text,
-  });
+  const _EvolutionAnalysisLine({required this.icon, required this.text});
 
   @override
   Widget build(BuildContext context) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(
-          icon,
-          size: 20,
-        ),
+        Icon(icon, size: 20),
         const SizedBox(width: 10),
         Expanded(
-          child: Text(
-            text,
-            style: Theme.of(context).textTheme.bodyMedium,
-          ),
+          child: Text(text, style: Theme.of(context).textTheme.bodyMedium),
         ),
       ],
     );
@@ -767,25 +811,16 @@ class _EvolutionValueItem extends StatelessWidget {
   final String label;
   final String value;
 
-  const _EvolutionValueItem({
-    required this.label,
-    required this.value,
-  });
+  const _EvolutionValueItem({required this.label, required this.value});
 
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          label,
-          style: Theme.of(context).textTheme.bodySmall,
-        ),
+        Text(label, style: Theme.of(context).textTheme.bodySmall),
         const SizedBox(height: 4),
-        Text(
-          value,
-          style: Theme.of(context).textTheme.titleMedium,
-        ),
+        Text(value, style: Theme.of(context).textTheme.titleMedium),
       ],
     );
   }
@@ -795,23 +830,78 @@ class _EvolutionSeries {
   final String label;
   final List<FlSpot> spots;
 
-  const _EvolutionSeries({
-    required this.label,
-    required this.spots,
-  });
+  const _EvolutionSeries({required this.label, required this.spots});
+}
+
+List<_EvolutionMeasureGroup> _buildMeasureGroups({
+  required List<DesktopResult> measures,
+  required ExerciseDefinition definition,
+}) {
+  final groupPath = definition.followUpGroupPath?.trim();
+
+  if (groupPath == null || groupPath.isEmpty) {
+    return [
+      _EvolutionMeasureGroup(
+        key: 'default',
+        label: definition.fallbackLabel,
+        measures: measures,
+      ),
+    ];
+  }
+
+  final grouped = <String, List<DesktopResult>>{};
+  final labels = <String, String>{};
+
+  for (final measure in measures) {
+    final groupKey = StructuredMetricReader.readString(
+      structuredJson: measure.structuredJson,
+      path: groupPath,
+    ) ??
+        'legacy';
+
+    final labelPath = definition.followUpGroupLabelPath?.trim();
+
+    final groupLabel = labelPath == null || labelPath.isEmpty
+        ? groupKey
+        : StructuredMetricReader.readString(
+      structuredJson: measure.structuredJson,
+      path: labelPath,
+    ) ??
+        groupKey;
+
+    final resolvedGroupLabel =
+    groupKey == 'legacy'
+        ? 'Résultats antérieurs'
+        : groupLabel;
+
+    grouped.putIfAbsent(groupKey, () => []).add(measure);
+    labels.putIfAbsent(
+      groupKey,
+          () => resolvedGroupLabel,
+    );
+  }
+
+  return grouped.entries.map((entry) {
+    final sorted = [...entry.value]
+      ..sort((a, b) => a.createdAt.compareTo(b.createdAt));
+
+    return _EvolutionMeasureGroup(
+      key: entry.key,
+      label: labels[entry.key] ?? entry.key,
+      measures: sorted,
+    );
+  }).toList();
 }
 
 List<_EvolutionSeries> _buildEvolutionSeries({
   required List<DesktopResult> measures,
   required ExerciseDefinition definition,
-
 }) {
   final chartMetrics = definition.metrics
       .where((metric) => metric.showOnEvolutionChart)
       .toList();
 
-  if (definition.followUpPolicy ==
-      FollowUpPolicy.disabled) {
+  if (definition.followUpPolicy == FollowUpPolicy.disabled) {
     return const [];
   }
 
@@ -831,20 +921,12 @@ List<_EvolutionSeries> _buildEvolutionSeries({
           continue;
         }
 
-        spots.add(
-          FlSpot(
-            i.toDouble(),
-            value,
-          ),
-        );
+        spots.add(FlSpot(i.toDouble(), value));
       }
 
       if (spots.isNotEmpty) {
         metricSeries.add(
-          _EvolutionSeries(
-            label: metric.fallbackLabel,
-            spots: spots,
-          ),
+          _EvolutionSeries(label: metric.fallbackLabel, spots: spots),
         );
       }
     }
@@ -854,8 +936,7 @@ List<_EvolutionSeries> _buildEvolutionSeries({
     }
   }
 
-  if (definition.followUpPolicy ==
-      FollowUpPolicy.declaredMetricsOnly) {
+  if (definition.followUpPolicy == FollowUpPolicy.declaredMetricsOnly) {
     return const [];
   }
 
@@ -868,29 +949,17 @@ List<_EvolutionSeries> _buildEvolutionSeries({
       continue;
     }
 
-    fallbackSpots.add(
-      FlSpot(
-        i.toDouble(),
-        value,
-      ),
-    );
+    fallbackSpots.add(FlSpot(i.toDouble(), value));
   }
 
   if (fallbackSpots.isEmpty) {
     return const [];
   }
 
-  return [
-    _EvolutionSeries(
-      label: 'Score',
-      spots: fallbackSpots,
-    ),
-  ];
+  return [_EvolutionSeries(label: 'Score', spots: fallbackSpots)];
 }
 
-ExerciseMetricDefinition? _findFollowUpMetric(
-    ExerciseDefinition definition,
-    ) {
+ExerciseMetricDefinition? _findFollowUpMetric(ExerciseDefinition definition) {
   for (final metric in definition.metrics) {
     if (metric.useForFollowUp) {
       return metric;
@@ -898,6 +967,47 @@ ExerciseMetricDefinition? _findFollowUpMetric(
   }
 
   return null;
+}
+
+List<_MeasureMetricDisplay> _readChartMetricDisplays({
+  required DesktopResult measure,
+  required ExerciseDefinition definition,
+}) {
+  final displays = <_MeasureMetricDisplay>[];
+
+  for (final metric in definition.metrics) {
+    if (!metric.showOnEvolutionChart) {
+      continue;
+    }
+
+    final value = StructuredMetricReader.readDouble(
+      structuredJson: measure.structuredJson,
+      path: metric.path,
+    );
+
+    if (value == null) {
+      continue;
+    }
+
+    final unit = metric.defaultUnit ?? definition.defaultUnit;
+    final decimals = metric.scoreDecimals ?? definition.scoreDecimals;
+
+    final normalizedUnit = unit?.trim();
+
+    final formattedValue =
+    normalizedUnit == null || normalizedUnit.isEmpty
+        ? value.toStringAsFixed(decimals)
+        : '${value.toStringAsFixed(decimals)} $normalizedUnit';
+
+    displays.add(
+      _MeasureMetricDisplay(
+        label: metric.fallbackLabel,
+        value: formattedValue,
+      ),
+    );
+  }
+
+  return displays;
 }
 
 double? _readFollowUpValue({
@@ -917,18 +1027,14 @@ double? _readFollowUpValue({
     }
   }
 
-  if (definition.followUpPolicy ==
-      FollowUpPolicy.legacyScoreFallback) {
+  if (definition.followUpPolicy == FollowUpPolicy.legacyScoreFallback) {
     return measure.scoreTotal;
   }
 
   return null;
 }
 
-Color _evolutionSeriesColor(
-    BuildContext context,
-    int index,
-    ) {
+Color _evolutionSeriesColor(BuildContext context, int index) {
   final colorScheme = Theme.of(context).colorScheme;
 
   final colors = [
@@ -944,9 +1050,7 @@ Color _evolutionSeriesColor(
 class _EvolutionChartLegend extends StatelessWidget {
   final List<_EvolutionSeries> series;
 
-  const _EvolutionChartLegend({
-    required this.series,
-  });
+  const _EvolutionChartLegend({required this.series});
 
   @override
   Widget build(BuildContext context) {
@@ -1006,25 +1110,17 @@ class _EvolutionLineChart extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
-    final values = allSpots
-        .map((spot) => spot.y)
-        .toList();
+    final values = allSpots.map((spot) => spot.y).toList();
 
     final minValue = values.reduce(math.min);
     final maxValue = values.reduce(math.max);
     final range = maxValue - minValue;
 
-    final minY = range == 0
-        ? minValue - 1
-        : minValue - range * 0.15;
+    final minY = range == 0 ? minValue - 1 : minValue - range * 0.15;
 
-    final maxY = range == 0
-        ? maxValue + 1
-        : maxValue + range * 0.15;
+    final maxY = range == 0 ? maxValue + 1 : maxValue + range * 0.15;
 
-    final maxX = allSpots
-        .map((spot) => spot.x)
-        .reduce(math.max);
+    final maxX = allSpots.map((spot) => spot.x).reduce(math.max);
 
     return LineChart(
       LineChartData(
@@ -1032,10 +1128,7 @@ class _EvolutionLineChart extends StatelessWidget {
         maxX: maxX,
         minY: minY,
         maxY: maxY,
-        gridData: FlGridData(
-          show: true,
-          drawVerticalLine: false,
-        ),
+        gridData: FlGridData(show: true, drawVerticalLine: false),
         borderData: FlBorderData(show: false),
         titlesData: FlTitlesData(
           topTitles: const AxisTitles(),
@@ -1081,11 +1174,10 @@ class _EvolutionLineChart extends StatelessWidget {
               getTitlesWidget: (value, meta) {
                 final normalizedUnit = unit?.trim();
 
-                final label =
-                normalizedUnit == null || normalizedUnit.isEmpty
+                final label = normalizedUnit == null || normalizedUnit.isEmpty
                     ? value.toStringAsFixed(scoreDecimals)
                     : '${value.toStringAsFixed(scoreDecimals)} '
-                    '$normalizedUnit';
+                          '$normalizedUnit';
 
                 return Text(
                   label,
@@ -1111,5 +1203,3 @@ class _EvolutionLineChart extends StatelessWidget {
     );
   }
 }
-
-

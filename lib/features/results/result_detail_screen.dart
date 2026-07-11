@@ -9,24 +9,17 @@ import 'package:abak_shared/abak_shared.dart';
 class ResultDetailScreen extends StatefulWidget {
   final DesktopResult result;
 
-  const ResultDetailScreen({
-    super.key,
-    required this.result,
-  });
+  const ResultDetailScreen({super.key, required this.result});
 
   @override
-  State<ResultDetailScreen> createState() =>
-      _ResultDetailScreenState();
+  State<ResultDetailScreen> createState() => _ResultDetailScreenState();
 }
 
-class _ResultDetailScreenState
-    extends State<ResultDetailScreen> {
-  final DesktopResultRepository _repository =
-  DesktopResultRepository();
+class _ResultDetailScreenState extends State<ResultDetailScreen> {
+  final DesktopResultRepository _repository = DesktopResultRepository();
   late DesktopResult _result;
 
-  late final TextEditingController
-  _commentController;
+  late final TextEditingController _commentController;
 
   @override
   void initState() {
@@ -34,9 +27,7 @@ class _ResultDetailScreenState
 
     _result = widget.result;
 
-    _commentController = TextEditingController(
-      text: _result.comment ?? '',
-    );
+    _commentController = TextEditingController(text: _result.comment ?? '');
   }
 
   @override
@@ -64,11 +55,9 @@ class _ResultDetailScreenState
       );
     });
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Commentaire enregistré'),
-      ),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('Commentaire enregistré')));
   }
 
   Future<void> _markAsSynced() async {
@@ -79,16 +68,11 @@ class _ResultDetailScreenState
     if (!mounted) return;
 
     setState(() {
-      _result = _result.copyWith(
-        syncState: 'synced',
-        lastModifiedAt: now,
-      );
+      _result = _result.copyWith(syncState: 'synced', lastModifiedAt: now);
     });
 
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Résultat marqué comme synchronisé'),
-      ),
+      const SnackBar(content: Text('Résultat marqué comme synchronisé')),
     );
   }
 
@@ -100,39 +84,28 @@ class _ResultDetailScreenState
     if (!mounted) return;
 
     setState(() {
-      _result = _result.copyWith(
-        syncState: 'conflict',
-        lastModifiedAt: now,
-      );
+      _result = _result.copyWith(syncState: 'conflict', lastModifiedAt: now);
     });
 
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Résultat marqué comme conflit'),
-      ),
+      const SnackBar(content: Text('Résultat marqué comme conflit')),
     );
   }
 
-  Future<void> _archiveResult(
-      BuildContext context) async {
+  Future<void> _archiveResult(BuildContext context) async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title:
-          const Text('Archiver le résultat'),
-          content: const Text(
-            'Voulez-vous vraiment archiver ce résultat ?',
-          ),
+          title: const Text('Archiver le résultat'),
+          content: const Text('Voulez-vous vraiment archiver ce résultat ?'),
           actions: [
             TextButton(
-              onPressed: () =>
-                  Navigator.of(context).pop(false),
+              onPressed: () => Navigator.of(context).pop(false),
               child: const Text('Annuler'),
             ),
             FilledButton(
-              onPressed: () =>
-                  Navigator.of(context).pop(true),
+              onPressed: () => Navigator.of(context).pop(true),
               child: const Text('Archiver'),
             ),
           ],
@@ -142,9 +115,7 @@ class _ResultDetailScreenState
 
     if (confirmed != true) return;
 
-    await _repository.archiveResult(
-      _result.resultId,
-    );
+    await _repository.archiveResult(_result.resultId);
 
     if (context.mounted) {
       Navigator.of(context).pop(true);
@@ -153,17 +124,11 @@ class _ResultDetailScreenState
 
   @override
   Widget build(BuildContext context) {
-    final createdAt =
-    DateTime.fromMillisecondsSinceEpoch(
-      _result.createdAt,
-    );
+    final createdAt = DateTime.fromMillisecondsSinceEpoch(_result.createdAt);
 
-    final locale =
-    Localizations.localeOf(context);
+    final locale = Localizations.localeOf(context);
 
-    final formatter = DateFormat.yMd(
-      locale.toLanguageTag(),
-    );
+    final formatter = DateFormat.yMd(locale.toLanguageTag());
 
     return Scaffold(
       appBar: AppBar(
@@ -171,10 +136,8 @@ class _ResultDetailScreenState
         actions: [
           IconButton(
             tooltip: 'Archiver',
-            icon:
-            const Icon(Icons.archive_outlined),
-            onPressed: () =>
-                _archiveResult(context),
+            icon: const Icon(Icons.archive_outlined),
+            onPressed: () => _archiveResult(context),
           ),
         ],
       ),
@@ -185,40 +148,27 @@ class _ResultDetailScreenState
             title: 'Informations générales',
             icon: Icons.info_outline,
             children: [
-              _InfoRow(
-                label: 'Exercice',
-                value: _result.exoId,
-              ),
-              _InfoRow(
-                label: 'Date',
-                value:
-                formatter.format(createdAt),
-              ),
+              _InfoRow(label: 'Exercice', value: _result.exoId),
+              _InfoRow(label: 'Date', value: formatter.format(createdAt)),
               _InfoRow(
                 label: 'Score',
-                value: _result.scoreTotal
-                    ?.toString() ??
-                    '-',
+                value: _result.scoreTotal?.toString() ?? '-',
               ),
-              _InfoRow(
-                label: 'Unité',
-                value:
-                _result.measureUnit ??
-                    '-',
-              ),
+              _InfoRow(label: 'Unité', value: _result.measureUnit ?? '-'),
               _InfoRow(
                 label: 'Kiné',
-                value: widget.result
-                    .practitionerLabelSnapshot ??
-                    '-',
+                value: widget.result.practitionerLabelSnapshot ?? '-',
               ),
               if ((_result.mobilePathologyLabel ?? _result.mobilePatientLabel)
-                  ?.trim()
-                  .isNotEmpty ==
+                      ?.trim()
+                      .isNotEmpty ==
                   true)
                 _InfoRow(
                   label: 'Origine ABAK',
-                  value: (_result.mobilePathologyLabel ?? _result.mobilePatientLabel)!.trim(),
+                  value:
+                      (_result.mobilePathologyLabel ??
+                              _result.mobilePatientLabel)!
+                          .trim(),
                 ),
 
               if (_result.mobileEpisodeId?.trim().isNotEmpty == true)
@@ -256,45 +206,28 @@ class _ResultDetailScreenState
           const SizedBox(height: 16),
           _SectionCard(
             title: 'Export simple',
-            icon:
-            Icons.description_outlined,
-            children: [
-              SelectableText(
-                _result.exportSimpleText,
-              ),
-            ],
+            icon: Icons.description_outlined,
+            children: [SelectableText(_result.exportSimpleText)],
           ),
           const SizedBox(height: 16),
           _SectionCard(
             title: 'Synchronisation',
             icon: Icons.sync_outlined,
             children: [
+              _InfoRow(label: 'État sync', value: _result.syncState),
               _InfoRow(
-                label: 'État sync',
-                value:
-                _result.syncState,
-              ),
-              _InfoRow(
-                label:
-                'Dernière modification',
-                value: widget
-                    .result
-                    .lastModifiedAt ==
-                    null
+                label: 'Dernière modification',
+                value: widget.result.lastModifiedAt == null
                     ? '-'
                     : formatter.format(
-                  DateTime
-                      .fromMillisecondsSinceEpoch(
-                    widget.result
-                        .lastModifiedAt!,
-                  ),
-                ),
+                        DateTime.fromMillisecondsSinceEpoch(
+                          widget.result.lastModifiedAt!,
+                        ),
+                      ),
               ),
               _InfoRow(
                 label: 'Hash contenu',
-                value: widget
-                    .result.contentHash ??
-                    '-',
+                value: widget.result.contentHash ?? '-',
               ),
               const SizedBox(height: 8),
               Align(
@@ -317,11 +250,7 @@ class _ResultDetailScreenState
             ),
           ),
           const SizedBox(height: 16),
-          _MetricsSection(
-            repository: _repository,
-            resultId:
-            _result.resultId,
-          ),
+          _MetricsSection(repository: _repository, resultId: _result.resultId),
         ],
       ),
     );
@@ -332,19 +261,12 @@ class _MetricsSection extends StatelessWidget {
   final DesktopResultRepository repository;
   final String resultId;
 
-  const _MetricsSection({
-    required this.repository,
-    required this.resultId,
-  });
+  const _MetricsSection({required this.repository, required this.resultId});
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<
-        DesktopResultMetric>>(
-      future:
-      repository.getMetricsForResult(
-        resultId,
-      ),
+    return FutureBuilder<List<DesktopResultMetric>>(
+      future: repository.getMetricsForResult(resultId),
       builder: (context, snapshot) {
         final metrics = snapshot.data ?? [];
 
@@ -352,25 +274,19 @@ class _MetricsSection extends StatelessWidget {
           title: 'Métriques',
           icon: Icons.analytics_outlined,
           children: [
-            if (snapshot.connectionState ==
-                ConnectionState.waiting)
+            if (snapshot.connectionState == ConnectionState.waiting)
               const Padding(
                 padding: EdgeInsets.all(16),
-                child:
-                CircularProgressIndicator(),
+                child: CircularProgressIndicator(),
               )
             else if (metrics.isEmpty)
-              const Text(
-                'Aucune métrique enregistrée.',
-              )
+              const Text('Aucune métrique enregistrée.')
             else
               ...metrics.map(
-                    (metric) => _InfoRow(
-                  label:
-                  metric.label ??
-                      metric.metricKey,
+                (metric) => _InfoRow(
+                  label: metric.label ?? metric.metricKey,
                   value:
-                  '${metric.value}'
+                      '${metric.value}'
                       '${metric.unit == null ? '' : ' ${metric.unit}'}',
                 ),
               ),
@@ -396,27 +312,17 @@ class _SectionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: Padding(
-        padding:
-        const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(20),
         child: ConstrainedBox(
-          constraints:
-          const BoxConstraints(
-            maxWidth: 900,
-          ),
+          constraints: const BoxConstraints(maxWidth: 900),
           child: Column(
-            crossAxisAlignment:
-            CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
                 children: [
                   Icon(icon),
                   const SizedBox(width: 8),
-                  Text(
-                    title,
-                    style: Theme.of(context)
-                        .textTheme
-                        .titleLarge,
-                  ),
+                  Text(title, style: Theme.of(context).textTheme.titleLarge),
                 ],
               ),
               const Divider(height: 28),
@@ -433,33 +339,23 @@ class _InfoRow extends StatelessWidget {
   final String label;
   final String value;
 
-  const _InfoRow({
-    required this.label,
-    required this.value,
-  });
+  const _InfoRow({required this.label, required this.value});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding:
-      const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.only(bottom: 12),
       child: Row(
-        crossAxisAlignment:
-        CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(
             width: 180,
             child: Text(
               label,
-              style: const TextStyle(
-                fontWeight:
-                FontWeight.bold,
-              ),
+              style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
-          Expanded(
-            child: SelectableText(value),
-          ),
+          Expanded(child: SelectableText(value)),
         ],
       ),
     );

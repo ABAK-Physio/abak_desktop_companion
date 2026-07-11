@@ -19,8 +19,8 @@ class EpisodeEvolutionScreen extends StatelessWidget {
   });
 
   Map<String, List<DesktopResult>> _groupResultsByExercise(
-      List<DesktopResult> results,
-      ) {
+    List<DesktopResult> results,
+  ) {
     final grouped = <String, List<DesktopResult>>{};
 
     for (final result in results) {
@@ -29,17 +29,13 @@ class EpisodeEvolutionScreen extends StatelessWidget {
     }
 
     for (final entry in grouped.entries) {
-      entry.value.sort(
-            (a, b) => a.createdAt.compareTo(b.createdAt),
-      );
+      entry.value.sort((a, b) => a.createdAt.compareTo(b.createdAt));
     }
 
     return grouped;
   }
 
-  ExerciseMetricDefinition? _followUpMetric(
-      ExerciseDefinition definition,
-      ) {
+  ExerciseMetricDefinition? _followUpMetric(ExerciseDefinition definition) {
     for (final metric in definition.metrics) {
       if (metric.useForFollowUp) {
         return metric;
@@ -69,9 +65,7 @@ class EpisodeEvolutionScreen extends StatelessWidget {
     return measure.scoreTotal;
   }
 
-  String? _resolvedUnit(
-      ExerciseDefinition definition,
-      ) {
+  String? _resolvedUnit(ExerciseDefinition definition) {
     final metric = _followUpMetric(definition);
 
     final unit = metric?.defaultUnit ?? definition.defaultUnit;
@@ -84,9 +78,7 @@ class EpisodeEvolutionScreen extends StatelessWidget {
     return normalizedUnit;
   }
 
-  int _resolvedScoreDecimals(
-      ExerciseDefinition definition,
-      ) {
+  int _resolvedScoreDecimals(ExerciseDefinition definition) {
     final metric = _followUpMetric(definition);
 
     return metric?.scoreDecimals ?? definition.scoreDecimals;
@@ -96,15 +88,16 @@ class EpisodeEvolutionScreen extends StatelessWidget {
     required List<DesktopResult> measures,
     required ExerciseDefinition definition,
   }) {
-    final chartMetrics = definition.metrics
-        .where((metric) => metric.showOnEvolutionChart);
+    final chartMetrics = definition.metrics.where(
+      (metric) => metric.showOnEvolutionChart,
+    );
 
     for (final metric in chartMetrics) {
       final valueCount = measures.where((measure) {
         return StructuredMetricReader.readDouble(
-          structuredJson: measure.structuredJson,
-          path: metric.path,
-        ) !=
+              structuredJson: measure.structuredJson,
+              path: metric.path,
+            ) !=
             null;
       }).length;
 
@@ -121,25 +114,19 @@ class EpisodeEvolutionScreen extends StatelessWidget {
     final repository = DesktopResultRepository();
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Évolution de l'épisode"),
-      ),
+      appBar: AppBar(title: const Text("Évolution de l'épisode")),
       body: FutureBuilder<List<DesktopResult>>(
         future: repository.getResultsForCareEpisode(careEpisodeId),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
+            return const Center(child: CircularProgressIndicator());
           }
 
           final results = snapshot.data ?? [];
 
           if (results.isEmpty) {
             return const Center(
-              child: Text(
-                "Aucun résultat disponible pour cet épisode.",
-              ),
+              child: Text("Aucun résultat disponible pour cet épisode."),
             );
           }
 
@@ -147,10 +134,8 @@ class EpisodeEvolutionScreen extends StatelessWidget {
 
           final exercises = grouped.entries.toList()
             ..sort((a, b) {
-              final labelA =
-              ClinicalActivityCatalog.displayLabel(a.key);
-              final labelB =
-              ClinicalActivityCatalog.displayLabel(b.key);
+              final labelA = ClinicalActivityCatalog.displayLabel(a.key);
+              final labelB = ClinicalActivityCatalog.displayLabel(b.key);
 
               return labelA.compareTo(labelB);
             });
@@ -181,28 +166,25 @@ class EpisodeEvolutionScreen extends StatelessWidget {
                 final exoId = entry.key;
                 final measures = entry.value;
 
-                final definition =
-                ClinicalActivityCatalog.infoFor(exoId);
+                final definition = ClinicalActivityCatalog.infoFor(exoId);
 
                 final followUpMeasures = measures.where((measure) {
                   return _readFollowUpValue(
-                    measure: measure,
-                    definition: definition,
-                  ) !=
+                        measure: measure,
+                        definition: definition,
+                      ) !=
                       null;
                 }).toList();
 
                 final unit = _resolvedUnit(definition);
-                final scoreDecimals =
-                _resolvedScoreDecimals(definition);
+                final scoreDecimals = _resolvedScoreDecimals(definition);
 
                 String formatValue(double? value) {
                   if (value == null) {
                     return '-';
                   }
 
-                  final formattedValue =
-                  value.toStringAsFixed(scoreDecimals);
+                  final formattedValue = value.toStringAsFixed(scoreDecimals);
 
                   if (unit == null) {
                     return formattedValue;
@@ -233,23 +215,19 @@ class EpisodeEvolutionScreen extends StatelessWidget {
                 );
 
                 final firstDate = formatter.format(
-                  DateTime.fromMillisecondsSinceEpoch(
-                    firstMeasure.createdAt,
-                  ),
+                  DateTime.fromMillisecondsSinceEpoch(firstMeasure.createdAt),
                 );
 
                 final lastDate = formatter.format(
-                  DateTime.fromMillisecondsSinceEpoch(
-                    lastMeasure.createdAt,
-                  ),
+                  DateTime.fromMillisecondsSinceEpoch(lastMeasure.createdAt),
                 );
 
                 final canShowEvolution =
                     followUpMeasures.length >= 2 ||
-                        _hasChartSeriesWithEvolution(
-                          measures: measures,
-                          definition: definition,
-                        );
+                    _hasChartSeriesWithEvolution(
+                      measures: measures,
+                      definition: definition,
+                    );
 
                 return Card(
                   margin: const EdgeInsets.only(bottom: 12),
@@ -260,55 +238,49 @@ class EpisodeEvolutionScreen extends StatelessWidget {
                       children: [
                         Text(
                           ClinicalActivityCatalog.displayLabel(exoId),
-                          style:
-                          Theme.of(context).textTheme.titleMedium,
+                          style: Theme.of(context).textTheme.titleMedium,
                         ),
                         const SizedBox(height: 12),
                         Text(
                           "${measures.length} "
-                              "évaluation${measures.length > 1 ? 's' : ''}",
-                          style:
-                          Theme.of(context).textTheme.bodyMedium,
+                          "évaluation${measures.length > 1 ? 's' : ''}",
+                          style: Theme.of(context).textTheme.bodyMedium,
                         ),
                         const SizedBox(height: 12),
                         Text(
                           "Première : "
-                              "${formatValue(firstValue)} "
-                              "($firstDate)",
+                          "${formatValue(firstValue)} "
+                          "($firstDate)",
                         ),
                         Text(
                           "Dernière : "
-                              "${formatValue(lastValue)} "
-                              "($lastDate)",
+                          "${formatValue(lastValue)} "
+                          "($lastDate)",
                         ),
                         const SizedBox(height: 16),
                         Align(
                           alignment: Alignment.centerRight,
                           child: canShowEvolution
                               ? OutlinedButton.icon(
-                            onPressed: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (_) =>
-                                      ExerciseEvolutionDetailScreen(
-                                        patientName: patientName,
-                                        exoId: exoId,
-                                        measures: measures,
+                                  onPressed: () {
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (_) =>
+                                            ExerciseEvolutionDetailScreen(
+                                              patientName: patientName,
+                                              exoId: exoId,
+                                              measures: measures,
+                                            ),
                                       ),
-                                ),
-                              );
-                            },
-                            icon: const Icon(Icons.show_chart),
-                            label: const Text(
-                              "Voir l'évolution",
-                            ),
-                          )
+                                    );
+                                  },
+                                  icon: const Icon(Icons.show_chart),
+                                  label: const Text("Voir l'évolution"),
+                                )
                               : Text(
-                            'Une seule valeur chiffrée disponible',
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodySmall,
-                          ),
+                                  'Une seule valeur chiffrée disponible',
+                                  style: Theme.of(context).textTheme.bodySmall,
+                                ),
                         ),
                       ],
                     ),

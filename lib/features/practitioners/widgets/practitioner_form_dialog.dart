@@ -6,10 +6,7 @@ import '../models/practitioner.dart';
 class PractitionerFormDialog extends StatefulWidget {
   final Practitioner? initialPractitioner;
 
-  const PractitionerFormDialog({
-    super.key,
-    this.initialPractitioner,
-  });
+  const PractitionerFormDialog({super.key, this.initialPractitioner});
 
   @override
   State<PractitionerFormDialog> createState() => _PractitionerFormDialogState();
@@ -36,8 +33,9 @@ class _PractitionerFormDialogState extends State<PractitionerFormDialog> {
     _displayNameController = TextEditingController(text: p?.displayName ?? '');
     _firstNameController = TextEditingController(text: p?.firstName ?? '');
     _lastNameController = TextEditingController(text: p?.lastName ?? '');
-    _professionalIdController =
-        TextEditingController(text: p?.professionalId ?? '');
+    _professionalIdController = TextEditingController(
+      text: p?.professionalId ?? '',
+    );
     _emailController = TextEditingController(text: p?.email ?? '');
     _phoneController = TextEditingController(text: p?.phone ?? '');
   }
@@ -95,9 +93,7 @@ class _PractitionerFormDialogState extends State<PractitionerFormDialog> {
               children: [
                 TextFormField(
                   controller: _displayNameController,
-                  decoration: const InputDecoration(
-                    labelText: 'Nom affiché',
-                  ),
+                  decoration: const InputDecoration(labelText: 'Nom affiché'),
                   validator: (value) {
                     if (value == null || value.trim().isEmpty) {
                       return 'Le nom affiché est obligatoire';

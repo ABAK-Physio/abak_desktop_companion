@@ -71,11 +71,7 @@ class EpisodeNoteRepository {
 
     await db.update(
       'episode_notes',
-      {
-        'title': title,
-        'content': content,
-        'updated_at': now,
-      },
+      {'title': title, 'content': content, 'updated_at': now},
       where: 'note_id = ?',
       whereArgs: [noteId],
     );
@@ -87,10 +83,7 @@ class EpisodeNoteRepository {
 
     await db.update(
       'episode_notes',
-      {
-        'archived_at': now,
-        'updated_at': now,
-      },
+      {'archived_at': now, 'updated_at': now},
       where: 'note_id = ?',
       whereArgs: [noteId],
     );

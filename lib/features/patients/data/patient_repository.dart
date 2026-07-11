@@ -17,9 +17,7 @@ class PatientRepository {
 
   // Methodes
 
-  Future<void> deletePatientPermanently(
-      String patientId,
-      ) async {
+  Future<void> deletePatientPermanently(String patientId) async {
     final db = await DatabaseService.database;
 
     await db.delete(
@@ -48,10 +46,7 @@ class PatientRepository {
       updatedAt: now,
     );
 
-    await db.insert(
-      'patients',
-      patient.toMap(),
-    );
+    await db.insert('patients', patient.toMap());
 
     return patient;
   }
@@ -67,7 +62,6 @@ class PatientRepository {
 
     return rows.map(Patient.fromMap).toList();
   }
-
 
   Future<void> archivePatient(String patientId) async {
     final db = await DatabaseService.database;
@@ -86,10 +80,7 @@ class PatientRepository {
   Future<void> insertPatient(Patient patient) async {
     final db = await DatabaseService.database;
 
-    await db.insert(
-      'patients',
-      patient.toMap(),
-    );
+    await db.insert('patients', patient.toMap());
   }
 
   Future<void> updatePatient(Patient patient) async {
@@ -145,5 +136,4 @@ class PatientRepository {
 
     return Patient.fromMap(rows.first);
   }
-
 }

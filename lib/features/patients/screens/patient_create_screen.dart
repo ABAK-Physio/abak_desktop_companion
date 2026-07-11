@@ -56,8 +56,9 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
 
     if (selectedDate == null || !mounted) return;
 
-    _birthDateController.text =
-        _birthDateDisplayFormat(context).format(selectedDate);
+    _birthDateController.text = _birthDateDisplayFormat(
+      context,
+    ).format(selectedDate);
   }
 
   String? _birthDateToIsoOrNull() {
@@ -72,9 +73,7 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
     if (_saving) return;
 
     final identity = await Navigator.of(context).push<VitaleIdentity>(
-      MaterialPageRoute(
-        builder: (_) => const VitaleIdentityScreen(),
-      ),
+      MaterialPageRoute(builder: (_) => const VitaleIdentityScreen()),
     );
 
     if (!mounted || identity == null) return;
@@ -90,8 +89,9 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
 
       final birthDate = identity.birthDate;
       if (birthDate != null) {
-        _birthDateController.text =
-            _birthDateDisplayFormat(context).format(birthDate);
+        _birthDateController.text = _birthDateDisplayFormat(
+          context,
+        ).format(birthDate);
       }
 
       final sexCode = identity.sexCode?.trim().toUpperCase();
@@ -102,7 +102,9 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
 
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
-        content: Text('Informations patient préremplies depuis la Carte Vitale.'),
+        content: Text(
+          'Informations patient préremplies depuis la Carte Vitale.',
+        ),
       ),
     );
   }
@@ -134,9 +136,7 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Erreur lors de la création du patient : $e'),
-        ),
+        SnackBar(content: Text('Erreur lors de la création du patient : $e')),
       );
 
       setState(() {
@@ -148,9 +148,7 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Nouveau patient'),
-      ),
+      appBar: AppBar(title: const Text('Nouveau patient')),
       body: ListView(
         padding: const EdgeInsets.all(24),
         children: [
@@ -249,10 +247,7 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
                               value: 'M',
                               child: Text('Masculin'),
                             ),
-                            DropdownMenuItem(
-                              value: 'X',
-                              child: Text('Autre'),
-                            ),
+                            DropdownMenuItem(value: 'X', child: Text('Autre')),
                           ],
                           onChanged: (value) {
                             if (value == null) return;
@@ -278,12 +273,12 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
                               onPressed: _saving ? null : _save,
                               icon: _saving
                                   ? const SizedBox(
-                                width: 18,
-                                height: 18,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                ),
-                              )
+                                      width: 18,
+                                      height: 18,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                      ),
+                                    )
                                   : const Icon(Icons.check),
                               label: Text(
                                 _saving ? 'Création...' : 'Créer le patient',

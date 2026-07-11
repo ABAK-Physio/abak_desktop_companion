@@ -18,8 +18,10 @@ class S {
   static S? _current;
 
   static S get current {
-    assert(_current != null,
-        'No instance of S was loaded. Try to initialize the S delegate before accessing S.current.');
+    assert(
+      _current != null,
+      'No instance of S was loaded. Try to initialize the S delegate before accessing S.current.',
+    );
     return _current!;
   }
 
@@ -41,8 +43,10 @@ class S {
 
   static S of(BuildContext context) {
     final instance = S.maybeOf(context);
-    assert(instance != null,
-        'No instance of S present in the widget tree. Did you add S.delegate in localizationsDelegates?');
+    assert(
+      instance != null,
+      'No instance of S present in the widget tree. Did you add S.delegate in localizationsDelegates?',
+    );
     return instance!;
   }
 
@@ -62,62 +66,32 @@ class S {
 
   /// `Accueil`
   String get home {
-    return Intl.message(
-      'Accueil',
-      name: 'home',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Accueil', name: 'home', desc: '', args: []);
   }
 
   /// `Patients`
   String get patients {
-    return Intl.message(
-      'Patients',
-      name: 'patients',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Patients', name: 'patients', desc: '', args: []);
   }
 
   /// `Kinés`
   String get practitioners {
-    return Intl.message(
-      'Kinés',
-      name: 'practitioners',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Kinés', name: 'practitioners', desc: '', args: []);
   }
 
   /// `Appareils`
   String get devices {
-    return Intl.message(
-      'Appareils',
-      name: 'devices',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Appareils', name: 'devices', desc: '', args: []);
   }
 
   /// `Archives`
   String get archives {
-    return Intl.message(
-      'Archives',
-      name: 'archives',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Archives', name: 'archives', desc: '', args: []);
   }
 
   /// `Réglages`
   String get settings {
-    return Intl.message(
-      'Réglages',
-      name: 'settings',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Réglages', name: 'settings', desc: '', args: []);
   }
 
   /// `Informations`
@@ -192,42 +166,22 @@ class S {
 
   /// `Fermer`
   String get close {
-    return Intl.message(
-      'Fermer',
-      name: 'close',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Fermer', name: 'close', desc: '', args: []);
   }
 
   /// `OK`
   String get ok {
-    return Intl.message(
-      'OK',
-      name: 'ok',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('OK', name: 'ok', desc: '', args: []);
   }
 
   /// `Adresse`
   String get desktopAddress {
-    return Intl.message(
-      'Adresse',
-      name: 'desktopAddress',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Adresse', name: 'desktopAddress', desc: '', args: []);
   }
 
   /// `Port`
   String get desktopPort {
-    return Intl.message(
-      'Port',
-      name: 'desktopPort',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Port', name: 'desktopPort', desc: '', args: []);
   }
 
   /// `Scannez ce QR code depuis ABAK Mobile pour configurer automatiquement la connexion au Desktop.`
@@ -282,12 +236,7 @@ class S {
 
   /// `Chargement...`
   String get loading {
-    return Intl.message(
-      'Chargement...',
-      name: 'loading',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Chargement...', name: 'loading', desc: '', args: []);
   }
 
   /// `Aucun dossier défini`
@@ -302,32 +251,17 @@ class S {
 
   /// `Ouvrir`
   String get open {
-    return Intl.message(
-      'Ouvrir',
-      name: 'open',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Ouvrir', name: 'open', desc: '', args: []);
   }
 
   /// `Modifier`
   String get modify {
-    return Intl.message(
-      'Modifier',
-      name: 'modify',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Modifier', name: 'modify', desc: '', args: []);
   }
 
   /// `Réinitialiser`
   String get reset {
-    return Intl.message(
-      'Réinitialiser',
-      name: 'reset',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Réinitialiser', name: 'reset', desc: '', args: []);
   }
 
   /// `Dossier d'échange ABAK mis à jour`

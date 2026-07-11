@@ -17,10 +17,7 @@ class PractitionerRepository {
   Future<void> insertPractitioner(Practitioner practitioner) async {
     final db = await DatabaseService.database;
 
-    await db.insert(
-      'practitioners',
-      practitioner.toMap(),
-    );
+    await db.insert('practitioners', practitioner.toMap());
   }
 
   Future<void> updatePractitioner(Practitioner practitioner) async {
@@ -40,10 +37,7 @@ class PractitionerRepository {
 
     await db.update(
       'practitioners',
-      {
-        'archived_at': now,
-        'updated_at': now,
-      },
+      {'archived_at': now, 'updated_at': now},
       where: 'practitioner_id = ?',
       whereArgs: [practitionerId],
     );

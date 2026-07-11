@@ -17,10 +17,7 @@ import '../../results/evolution/episode_evolution_screen.dart';
 class CareEpisodeDetailScreen extends StatefulWidget {
   final CareEpisode episode;
 
-  const CareEpisodeDetailScreen({
-    super.key,
-    required this.episode,
-  });
+  const CareEpisodeDetailScreen({super.key, required this.episode});
 
   @override
   State<CareEpisodeDetailScreen> createState() =>
@@ -29,14 +26,13 @@ class CareEpisodeDetailScreen extends StatefulWidget {
 
 class _CareEpisodeDetailScreenState extends State<CareEpisodeDetailScreen> {
   final CareEpisodeRepository _repository = CareEpisodeRepository();
-  final DesktopResultRepository _resultRepository =
-  DesktopResultRepository();
+  final DesktopResultRepository _resultRepository = DesktopResultRepository();
 
   int _refreshToken = 0;
   bool _hasChanged = false;
   late CareEpisode _episode;
   final InitialReportDocumentService _initialReportDocumentService =
-  const InitialReportDocumentService();
+      const InitialReportDocumentService();
   final PatientRepository _patientRepository = PatientRepository();
 
   Patient? _patient;
@@ -71,7 +67,8 @@ class _CareEpisodeDetailScreenState extends State<CareEpisodeDetailScreen> {
   Résultats de l'examen physique :
 
   Évaluation fonctionnelle :
-  '''.trim();
+  '''
+        .trim();
   }
 
   String _assessmentDataTemplate() {
@@ -81,7 +78,8 @@ class _CareEpisodeDetailScreenState extends State<CareEpisodeDetailScreen> {
   Hypothèses / impression clinique :
 
   Évolution / points de vigilance :
-  '''.trim();
+  '''
+        .trim();
   }
 
   String _treatmentPlanTemplate() {
@@ -94,7 +92,8 @@ class _CareEpisodeDetailScreenState extends State<CareEpisodeDetailScreen> {
   - Fréquence :
   - Durée estimée :
   - Points à réévaluer :
-  '''.trim();
+  '''
+        .trim();
   }
 
   Future<void> _editObjectiveData() async {
@@ -169,7 +168,6 @@ class _CareEpisodeDetailScreenState extends State<CareEpisodeDetailScreen> {
       _episode = updatedEpisode;
     });
   }
-
 
   Future<void> _editAssessmentData() async {
     final controller = TextEditingController(
@@ -431,9 +429,7 @@ class _CareEpisodeDetailScreenState extends State<CareEpisodeDetailScreen> {
 
     if (!exists) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Le fichier associé est introuvable.'),
-        ),
+        const SnackBar(content: Text('Le fichier associé est introuvable.')),
       );
       return;
     }
@@ -530,7 +526,6 @@ class _CareEpisodeDetailScreenState extends State<CareEpisodeDetailScreen> {
     });
 
     if (!mounted) return;
-
   }
 
   Future<void> _addFollowUpNote() async {
@@ -606,7 +601,8 @@ Objectifs du patient :
 Antécédents médicaux :
 
 Observations complémentaires :
-'''.trim();
+'''
+        .trim();
   }
 
   @override
@@ -671,12 +667,16 @@ Observations complémentaires :
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(999),
                                   border: Border.all(
-                                    color: Theme.of(context).colorScheme.outlineVariant,
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.outlineVariant,
                                   ),
                                 ),
                                 child: Text(
                                   'SOAP • Subjectif',
-                                  style: Theme.of(context).textTheme.labelMedium,
+                                  style: Theme.of(
+                                    context,
+                                  ).textTheme.labelMedium,
                                 ),
                               ),
                             ],
@@ -770,12 +770,16 @@ Observations complémentaires :
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(999),
                                   border: Border.all(
-                                    color: Theme.of(context).colorScheme.outlineVariant,
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.outlineVariant,
                                   ),
                                 ),
                                 child: Text(
                                   'SOAP • Objectif',
-                                  style: Theme.of(context).textTheme.labelMedium,
+                                  style: Theme.of(
+                                    context,
+                                  ).textTheme.labelMedium,
                                 ),
                               ),
                             ],
@@ -819,12 +823,16 @@ Observations complémentaires :
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(999),
                                   border: Border.all(
-                                    color: Theme.of(context).colorScheme.outlineVariant,
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.outlineVariant,
                                   ),
                                 ),
                                 child: Text(
                                   'SOAP • Analyse',
-                                  style: Theme.of(context).textTheme.labelMedium,
+                                  style: Theme.of(
+                                    context,
+                                  ).textTheme.labelMedium,
                                 ),
                               ),
                             ],
@@ -868,12 +876,16 @@ Observations complémentaires :
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(999),
                                   border: Border.all(
-                                    color: Theme.of(context).colorScheme.outlineVariant,
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.outlineVariant,
                                   ),
                                 ),
                                 child: Text(
                                   'SOAP • Plan',
-                                  style: Theme.of(context).textTheme.labelMedium,
+                                  style: Theme.of(
+                                    context,
+                                  ).textTheme.labelMedium,
                                 ),
                               ),
                             ],
@@ -936,8 +948,7 @@ Observations complémentaires :
                           ],
                         ),
                         const SizedBox(height: 12),
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting)
+                        if (snapshot.connectionState == ConnectionState.waiting)
                           const Padding(
                             padding: EdgeInsets.all(16),
                             child: CircularProgressIndicator(),
@@ -945,25 +956,24 @@ Observations complémentaires :
                         else if (notes.isEmpty)
                           const Text('Aucune note de suivi.')
                         else
-                          ...notes.map(
-                                (note) {
-                              final date = DateTime.fromMillisecondsSinceEpoch(
-                                note.noteDate,
-                              );
+                          ...notes.map((note) {
+                            final date = DateTime.fromMillisecondsSinceEpoch(
+                              note.noteDate,
+                            );
 
-                              return ListTile(
-                                contentPadding: EdgeInsets.zero,
-                                leading: const Icon(Icons.note_alt_outlined),
-                                title: Text(
-                                  DateFormat.yMd(
-                                    Localizations.localeOf(context)
-                                        .toLanguageTag(),
-                                  ).format(date),
-                                ),
-                                subtitle: Text(note.content),
-                              );
-                            },
-                          ),
+                            return ListTile(
+                              contentPadding: EdgeInsets.zero,
+                              leading: const Icon(Icons.note_alt_outlined),
+                              title: Text(
+                                DateFormat.yMd(
+                                  Localizations.localeOf(
+                                    context,
+                                  ).toLanguageTag(),
+                                ).format(date),
+                              ),
+                              subtitle: Text(note.content),
+                            );
+                          }),
                       ],
                     );
                   },
@@ -1014,9 +1024,7 @@ Observations complémentaires :
                       style: Theme.of(context).textTheme.titleLarge,
                     ),
                     const SizedBox(height: 12),
-                    const Text(
-                      'Aucun rapport généré.',
-                    ),
+                    const Text('Aucun rapport généré.'),
                   ],
                 ),
               ),
@@ -1069,15 +1077,15 @@ class _AbakResultsCard extends StatelessWidget {
                       onPressed: results.isEmpty
                           ? null
                           : () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (_) => EpisodeEvolutionScreen(
-                              careEpisodeId: careEpisodeId,
-                              patientName: patientName,
-                            ),
-                          ),
-                        );
-                      },
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (_) => EpisodeEvolutionScreen(
+                                    careEpisodeId: careEpisodeId,
+                                    patientName: patientName,
+                                  ),
+                                ),
+                              );
+                            },
                       icon: const Icon(Icons.show_chart),
                       label: const Text('Évolution'),
                     ),
@@ -1093,63 +1101,63 @@ class _AbakResultsCard extends StatelessWidget {
                 else if (results.isEmpty)
                   const Text('Aucun résultat rattaché pour le moment.')
                 else
-                  ...results.map(
-                        (result) {
-                      final date = DateTime.fromMillisecondsSinceEpoch(
-                        result.createdAt,
-                      );
+                  ...results.map((result) {
+                    final date = DateTime.fromMillisecondsSinceEpoch(
+                      result.createdAt,
+                    );
 
-                      final formatter = DateFormat.yMd(
-                        Localizations.localeOf(context).toLanguageTag(),
-                      );
+                    final formatter = DateFormat.yMd(
+                      Localizations.localeOf(context).toLanguageTag(),
+                    );
 
-                      final mobileOrigin =
-                          result.mobilePathologyLabel ??
-                              result.mobilePatientLabel;
+                    final mobileOrigin =
+                        result.mobilePathologyLabel ??
+                        result.mobilePatientLabel;
 
-                      return Card(
-                        margin: const EdgeInsets.only(bottom: 8),
-                        child: ListTile(
-                          leading: const Icon(Icons.bar_chart_outlined),
-                          title: Text(
-                            ClinicalActivityCatalog.displayLabel(result.exoId),
-                          ),
-                          subtitle: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                [
-                                  formatter.format(date),
-                                  if (result.scoreTotal != null)
-                                    'Score : ${result.scoreTotal?.toStringAsFixed(2) ?? '-'}',
-                                  if (result.measureUnit != null) result.measureUnit!,
-                                ].join(' · '),
-                              ),
-                              if (mobileOrigin != null && mobileOrigin.trim().isNotEmpty)
-                                Text(
-                                  'Origine ABAK : ${mobileOrigin.trim()}',
-                                  style: Theme.of(context).textTheme.bodySmall,
-                                ),
-                            ],
-                          ),
-                          trailing: const Icon(Icons.chevron_right),
-                          onTap: () async {
-                            final changed = await Navigator.of(context).push<bool>(
-                              MaterialPageRoute(
-                                builder: (_) => ResultDetailScreen(
-                                  result: result,
-                                ),
-                              ),
-                            );
-
-                            if (changed == true) {
-                              onChanged();
-                            }
-                          },
+                    return Card(
+                      margin: const EdgeInsets.only(bottom: 8),
+                      child: ListTile(
+                        leading: const Icon(Icons.bar_chart_outlined),
+                        title: Text(
+                          ClinicalActivityCatalog.displayLabel(result.exoId),
                         ),
-                      );
-                    },
-                  ),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              [
+                                formatter.format(date),
+                                if (result.scoreTotal != null)
+                                  'Score : ${result.scoreTotal?.toStringAsFixed(2) ?? '-'}',
+                                if (result.measureUnit != null)
+                                  result.measureUnit!,
+                              ].join(' · '),
+                            ),
+                            if (mobileOrigin != null &&
+                                mobileOrigin.trim().isNotEmpty)
+                              Text(
+                                'Origine ABAK : ${mobileOrigin.trim()}',
+                                style: Theme.of(context).textTheme.bodySmall,
+                              ),
+                          ],
+                        ),
+                        trailing: const Icon(Icons.chevron_right),
+                        onTap: () async {
+                          final changed = await Navigator.of(context)
+                              .push<bool>(
+                                MaterialPageRoute(
+                                  builder: (_) =>
+                                      ResultDetailScreen(result: result),
+                                ),
+                              );
+
+                          if (changed == true) {
+                            onChanged();
+                          }
+                        },
+                      ),
+                    );
+                  }),
               ],
             );
           },

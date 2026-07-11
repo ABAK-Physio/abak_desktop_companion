@@ -100,8 +100,7 @@ class DesktopResult {
       patientId: map['patient_id'] as String?,
       practitionerId: map['practitioner_id'] as String?,
       sourceDeviceId: map['source_device_id'] as String?,
-      practitionerLabelSnapshot:
-      map['practitioner_label_snapshot'] as String?,
+      practitionerLabelSnapshot: map['practitioner_label_snapshot'] as String?,
       mobileEpisodeId: map['mobile_episode_id'] as String?,
       mobilePathologyCode: map['mobile_pathology_code'] as String?,
       mobilePathologyLabel: map['mobile_pathology_label'] as String?,
@@ -113,8 +112,7 @@ class DesktopResult {
       scoreTotal: (map['scoreTotal'] as num?)?.toDouble(),
       comment: map['comment'] as String?,
       exportSimpleText: map['exportSimpleText'] as String,
-      simpleExportSnapshotJson:
-      map['simpleExportSnapshotJson'] as String?,
+      simpleExportSnapshotJson: map['simpleExportSnapshotJson'] as String?,
       profileJson: map['profileJson'] as String?,
       structuredJson: map['structuredJson'] as String?,
       ageYears: map['ageYears'] as int?,
@@ -131,14 +129,11 @@ class DesktopResult {
       testFamily: map['testFamily'] as String?,
       performerCountryCode: map['performerCountryCode'] as String?,
       performerRegionCode: map['performerRegionCode'] as String?,
-      performerMainActivityCode:
-      map['performerMainActivityCode'] as String?,
-      performerMainSpecialtyCode:
-      map['performerMainSpecialtyCode'] as String?,
+      performerMainActivityCode: map['performerMainActivityCode'] as String?,
+      performerMainSpecialtyCode: map['performerMainSpecialtyCode'] as String?,
       performerYearsExperienceCode:
-      map['performerYearsExperienceCode'] as String?,
-      performerProfileUpdatedAt:
-      map['performerProfileUpdatedAt'] as int?,
+          map['performerYearsExperienceCode'] as String?,
+      performerProfileUpdatedAt: map['performerProfileUpdatedAt'] as int?,
       localSchemaVersion: map['localSchemaVersion'] as int?,
       syncState: map['sync_state'] as String? ?? 'imported',
       lastModifiedAt: map['last_modified_at'] as int?,
@@ -199,12 +194,10 @@ class DesktopResult {
       practitionerId: practitionerId ?? this.practitionerId,
       sourceDeviceId: sourceDeviceId ?? this.sourceDeviceId,
       practitionerLabelSnapshot:
-      practitionerLabelSnapshot ?? this.practitionerLabelSnapshot,
+          practitionerLabelSnapshot ?? this.practitionerLabelSnapshot,
       mobileEpisodeId: mobileEpisodeId ?? this.mobileEpisodeId,
-      mobilePathologyCode:
-      mobilePathologyCode ?? this.mobilePathologyCode,
-      mobilePathologyLabel:
-      mobilePathologyLabel ?? this.mobilePathologyLabel,
+      mobilePathologyCode: mobilePathologyCode ?? this.mobilePathologyCode,
+      mobilePathologyLabel: mobilePathologyLabel ?? this.mobilePathologyLabel,
       mobilePatientRef: mobilePatientRef ?? this.mobilePatientRef,
       mobilePatientLabel: mobilePatientLabel ?? this.mobilePatientLabel,
       createdAt: createdAt ?? this.createdAt,
@@ -214,7 +207,7 @@ class DesktopResult {
       comment: comment ?? this.comment,
       exportSimpleText: exportSimpleText ?? this.exportSimpleText,
       simpleExportSnapshotJson:
-      simpleExportSnapshotJson ?? this.simpleExportSnapshotJson,
+          simpleExportSnapshotJson ?? this.simpleExportSnapshotJson,
       profileJson: profileJson ?? this.profileJson,
       structuredJson: structuredJson ?? this.structuredJson,
       ageYears: ageYears ?? this.ageYears,
@@ -229,18 +222,16 @@ class DesktopResult {
       testCode: testCode ?? this.testCode,
       testVersion: testVersion ?? this.testVersion,
       testFamily: testFamily ?? this.testFamily,
-      performerCountryCode:
-      performerCountryCode ?? this.performerCountryCode,
-      performerRegionCode:
-      performerRegionCode ?? this.performerRegionCode,
+      performerCountryCode: performerCountryCode ?? this.performerCountryCode,
+      performerRegionCode: performerRegionCode ?? this.performerRegionCode,
       performerMainActivityCode:
-      performerMainActivityCode ?? this.performerMainActivityCode,
+          performerMainActivityCode ?? this.performerMainActivityCode,
       performerMainSpecialtyCode:
-      performerMainSpecialtyCode ?? this.performerMainSpecialtyCode,
+          performerMainSpecialtyCode ?? this.performerMainSpecialtyCode,
       performerYearsExperienceCode:
-      performerYearsExperienceCode ?? this.performerYearsExperienceCode,
+          performerYearsExperienceCode ?? this.performerYearsExperienceCode,
       performerProfileUpdatedAt:
-      performerProfileUpdatedAt ?? this.performerProfileUpdatedAt,
+          performerProfileUpdatedAt ?? this.performerProfileUpdatedAt,
       localSchemaVersion: localSchemaVersion ?? this.localSchemaVersion,
       syncState: syncState ?? this.syncState,
       lastModifiedAt: lastModifiedAt ?? this.lastModifiedAt,

@@ -9,10 +9,7 @@ import '../../import_export/import_session_detail_screen.dart';
 class RecentImportsCard extends StatefulWidget {
   final int refreshToken;
 
-  const RecentImportsCard({
-    super.key,
-    this.refreshToken = 0,
-  });
+  const RecentImportsCard({super.key, this.refreshToken = 0});
 
   @override
   State<RecentImportsCard> createState() => _RecentImportsCardState();
@@ -43,8 +40,6 @@ class _RecentImportsCardState extends State<RecentImportsCard> {
     });
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -53,13 +48,15 @@ class _RecentImportsCardState extends State<RecentImportsCard> {
         builder: (context, snapshot) {
           final sessions = snapshot.hasData
               ? snapshot.data!
-              .where((session) =>
-          session.importedResultsCount > 0 ||
-              session.failedFilesCount > 0 ||
-              session.conflictResultsCount > 0 ||
-              session.status == 'needs_resolution')
-              .take(5)
-              .toList()
+                    .where(
+                      (session) =>
+                          session.importedResultsCount > 0 ||
+                          session.failedFilesCount > 0 ||
+                          session.conflictResultsCount > 0 ||
+                          session.status == 'needs_resolution',
+                    )
+                    .take(5)
+                    .toList()
               : <ImportSession>[];
 
           return ExpansionTile(
@@ -107,19 +104,19 @@ class _RecentImportsCardState extends State<RecentImportsCard> {
                   ),
                 )
               else if (sessions.isEmpty)
-                  Text(
-                    'Aucun import enregistré.',
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    ),
-                  )
-                else
-                  ...sessions.map(
-                        (session) => _RecentImportTile(
-                      session: session,
-                      onChanged: _refreshSessions,
-                    ),
+                Text(
+                  'Aucun import enregistré.',
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
+                )
+              else
+                ...sessions.map(
+                  (session) => _RecentImportTile(
+                    session: session,
+                    onChanged: _refreshSessions,
+                  ),
+                ),
             ],
           );
         },
@@ -132,10 +129,7 @@ class _RecentImportTile extends StatelessWidget {
   final ImportSession session;
   final VoidCallback onChanged;
 
-  const _RecentImportTile({
-    required this.session,
-    required this.onChanged,
-  });
+  const _RecentImportTile({required this.session, required this.onChanged});
 
   @override
   Widget build(BuildContext context) {
@@ -190,9 +184,7 @@ class _RecentImportTile extends StatelessWidget {
 class _ImportSummary extends StatelessWidget {
   final ImportSession session;
 
-  const _ImportSummary({
-    required this.session,
-  });
+  const _ImportSummary({required this.session});
 
   @override
   Widget build(BuildContext context) {
@@ -218,9 +210,7 @@ class _ImportSummary extends StatelessWidget {
       lines.add(
         Text(
           session.summaryExercisesLabel!,
-          style: TextStyle(
-            color: Theme.of(context).colorScheme.primary,
-          ),
+          style: TextStyle(color: Theme.of(context).colorScheme.primary),
         ),
       );
     }
@@ -229,20 +219,14 @@ class _ImportSummary extends StatelessWidget {
       lines.add(
         Text(
           'Action requise : associer ce dossier à un patient',
-          style: TextStyle(
-            color: Colors.orange,
-            fontWeight: FontWeight.w600,
-          ),
+          style: TextStyle(color: Colors.orange, fontWeight: FontWeight.w600),
         ),
       );
     } else if (session.conflictResultsCount > 0) {
       lines.add(
         const Text(
           'Conflit détecté',
-          style: TextStyle(
-            color: Colors.orange,
-            fontWeight: FontWeight.w600,
-          ),
+          style: TextStyle(color: Colors.orange, fontWeight: FontWeight.w600),
         ),
       );
     }
@@ -285,18 +269,14 @@ class _ImportSummary extends StatelessWidget {
       parts.add('${session.failedFilesCount} erreur');
     }
 
-    return parts.isEmpty
-        ? 'Aucun résultat importé'
-        : parts.join(' · ');
+    return parts.isEmpty ? 'Aucun résultat importé' : parts.join(' · ');
   }
 }
 
 class _StatusChip extends StatelessWidget {
   final String status;
 
-  const _StatusChip({
-    required this.status,
-  });
+  const _StatusChip({required this.status});
 
   @override
   Widget build(BuildContext context) {
@@ -336,10 +316,7 @@ class _StatusChip extends StatelessWidget {
     }
 
     return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 10,
-        vertical: 4,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(999),
@@ -347,18 +324,11 @@ class _StatusChip extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            icon,
-            size: 16,
-            color: color,
-          ),
+          Icon(icon, size: 16, color: color),
           const SizedBox(width: 6),
           Text(
             label,
-            style: TextStyle(
-              color: color,
-              fontWeight: FontWeight.w600,
-            ),
+            style: TextStyle(color: color, fontWeight: FontWeight.w600),
           ),
         ],
       ),

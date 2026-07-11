@@ -15,7 +15,7 @@ class AbakDesktopApp extends StatefulWidget {
 
 class _AbakDesktopAppState extends State<AbakDesktopApp> {
   final LanguagePreferenceService _languageService =
-  const LanguagePreferenceService();
+      const LanguagePreferenceService();
 
   Locale? _locale;
 
@@ -53,14 +53,9 @@ class _AbakDesktopAppState extends State<AbakDesktopApp> {
 
       supportedLocales: S.delegate.supportedLocales,
 
-      theme: ThemeData(
-        colorSchemeSeed: Colors.teal,
-        useMaterial3: true,
-      ),
+      theme: ThemeData(colorSchemeSeed: Colors.teal, useMaterial3: true),
 
-      home: HomeDashboardScreen(
-        onLocaleChanged: _loadLocale,
-      ),
+      home: HomeDashboardScreen(onLocaleChanged: _loadLocale),
     );
   }
 }

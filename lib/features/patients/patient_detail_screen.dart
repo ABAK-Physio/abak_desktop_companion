@@ -16,10 +16,7 @@ import '../care_episodes/models/care_episode_summary.dart';
 class PatientDetailScreen extends StatefulWidget {
   final Patient patient;
 
-  const PatientDetailScreen({
-    super.key,
-    required this.patient,
-  });
+  const PatientDetailScreen({super.key, required this.patient});
 
   @override
   State<PatientDetailScreen> createState() => _PatientDetailScreenState();
@@ -29,14 +26,12 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
   int _refreshToken = 0;
 
   final PatientIdentityRepository _patientIdentityRepository =
-  PatientIdentityRepository();
+      PatientIdentityRepository();
 
   final PatientAttributeRepository _patientAttributeRepository =
-  PatientAttributeRepository();
+      PatientAttributeRepository();
 
-
-  final CareEpisodeRepository _careEpisodeRepository =
-  CareEpisodeRepository();
+  final CareEpisodeRepository _careEpisodeRepository = CareEpisodeRepository();
 
   String _formatBirthDate(BuildContext context) {
     if (widget.patient.birthDate == null) {
@@ -49,8 +44,7 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
     var age = now.year - birthDate.year;
 
     if (now.month < birthDate.month ||
-        (now.month == birthDate.month &&
-            now.day < birthDate.day)) {
+        (now.month == birthDate.month && now.day < birthDate.day)) {
       age--;
     }
 
@@ -65,7 +59,6 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
   String _formatPatientTitle() {
     return '${widget.patient.lastName.toUpperCase()} ${widget.patient.firstName}';
   }
-
 
   Future<void> _editCareEpisode(CareEpisode episode) async {
     final pathologyController = TextEditingController(
@@ -215,8 +208,7 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
 
     final now = DateTime.now().millisecondsSinceEpoch;
     final date = DateTime.now();
-    final monthYear =
-        '${date.month.toString().padLeft(2, '0')}/${date.year}';
+    final monthYear = '${date.month.toString().padLeft(2, '0')}/${date.year}';
 
     final episode = CareEpisode(
       careEpisodeId: const Uuid().v4(),
@@ -236,15 +228,12 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
     final birthDateText = _formatBirthDate(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(_formatPatientTitle()),
-      ),
+      appBar: AppBar(title: Text(_formatPatientTitle())),
       body: ListView(
         padding: const EdgeInsets.all(24),
         children: [
@@ -256,18 +245,9 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
                 label: 'Nom',
                 value: widget.patient.lastName.toUpperCase(),
               ),
-              _InfoRow(
-                label: 'Prénom',
-                value: widget.patient.firstName,
-              ),
-              _InfoRow(
-                label: 'Né(e) le',
-                value: birthDateText,
-              ),
-              _InfoRow(
-                label: 'Sexe',
-                value: widget.patient.sexCode,
-              ),
+              _InfoRow(label: 'Prénom', value: widget.patient.firstName),
+              _InfoRow(label: 'Né(e) le', value: birthDateText),
+              _InfoRow(label: 'Sexe', value: widget.patient.sexCode),
               const SizedBox(height: 16),
             ],
           ),
@@ -324,10 +304,7 @@ class _SectionCard extends StatelessWidget {
                 children: [
                   Icon(icon),
                   const SizedBox(width: 8),
-                  Text(
-                    title,
-                    style: Theme.of(context).textTheme.titleLarge,
-                  ),
+                  Text(title, style: Theme.of(context).textTheme.titleLarge),
                 ],
               ),
               const Divider(height: 28),
@@ -344,10 +321,7 @@ class _InfoRow extends StatelessWidget {
   final String label;
   final String value;
 
-  const _InfoRow({
-    required this.label,
-    required this.value,
-  });
+  const _InfoRow({required this.label, required this.value});
 
   @override
   Widget build(BuildContext context) {
@@ -373,9 +347,7 @@ class _InfoRow extends StatelessWidget {
 class _EmptySectionMessage extends StatelessWidget {
   final String text;
 
-  const _EmptySectionMessage({
-    required this.text,
-  });
+  const _EmptySectionMessage({required this.text});
 
   @override
   Widget build(BuildContext context) {
@@ -403,10 +375,7 @@ class _PatientClinicalDataSection extends StatelessWidget {
     required this.onRefresh,
   });
 
-  String _attributeValue(
-      List<PatientAttribute> attributes,
-      String key,
-      ) {
+  String _attributeValue(List<PatientAttribute> attributes, String key) {
     final matching = attributes.where((a) => a.attributeKey == key);
 
     if (matching.isEmpty) {
@@ -436,14 +405,14 @@ class _PatientClinicalDataSection extends StatelessWidget {
                 onPressed: () async {
                   final changed = await Navigator.of(context).push<bool>(
                     MaterialPageRoute(
-                      builder: (_) => PatientClinicalDataEditScreen(
-                        patientId: patientId,
-                      ),
+                      builder: (_) =>
+                          PatientClinicalDataEditScreen(patientId: patientId),
                     ),
                   );
 
                   if (changed == true && context.mounted) {
-                    final state = context.findAncestorStateOfType<_PatientDetailScreenState>();
+                    final state = context
+                        .findAncestorStateOfType<_PatientDetailScreenState>();
 
                     state?._refresh();
                   }
@@ -461,86 +430,91 @@ class _PatientClinicalDataSection extends StatelessWidget {
             else if (snapshot.hasError)
               Text('Erreur : ${snapshot.error}')
             else ...[
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: _ClinicalDataColumn(
-                        title: 'Identité administrative',
-                        children: [
-                          _InfoRow(
-                            label: 'Identifiant national',
-                            value: data?.identity?.nationalHealthId ?? 'Non renseigné',
-                          ),
-                          _InfoRow(
-                            label: 'Pays système santé',
-                            value: data?.identity?.healthSystemCountry ?? 'Non renseigné',
-                          ),
-                          _InfoRow(
-                            label: 'Source identité',
-                            value: data?.identity?.identitySource ?? 'Non renseigné',
-                          ),
-                          _InfoRow(
-                            label: 'Téléphone',
-                            value: data?.identity?.phone ?? 'Non renseigné',
-                          ),
-                          _InfoRow(
-                            label: 'Email',
-                            value: data?.identity?.email ?? 'Non renseigné',
-                          ),
-                          _InfoRow(
-                            label: 'Adresse',
-                            value: data?.identity?.address ?? 'Non renseigné',
-                          ),
-                        ],
-                      ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: _ClinicalDataColumn(
+                      title: 'Identité administrative',
+                      children: [
+                        _InfoRow(
+                          label: 'Identifiant national',
+                          value:
+                              data?.identity?.nationalHealthId ??
+                              'Non renseigné',
+                        ),
+                        _InfoRow(
+                          label: 'Pays système santé',
+                          value:
+                              data?.identity?.healthSystemCountry ??
+                              'Non renseigné',
+                        ),
+                        _InfoRow(
+                          label: 'Source identité',
+                          value:
+                              data?.identity?.identitySource ?? 'Non renseigné',
+                        ),
+                        _InfoRow(
+                          label: 'Téléphone',
+                          value: data?.identity?.phone ?? 'Non renseigné',
+                        ),
+                        _InfoRow(
+                          label: 'Email',
+                          value: data?.identity?.email ?? 'Non renseigné',
+                        ),
+                        _InfoRow(
+                          label: 'Adresse',
+                          value: data?.identity?.address ?? 'Non renseigné',
+                        ),
+                      ],
                     ),
-                    const SizedBox(width: 32),
-                    Expanded(
-                      child: _ClinicalDataColumn(
-                        title: 'Profil patient',
-                        children: [
-                          _InfoRow(
-                            label: 'Côté dominant',
-                            value: _attributeValue(
-                              data?.attributes ?? [],
-                              'dominant_side',
-                            ),
+                  ),
+                  const SizedBox(width: 32),
+                  Expanded(
+                    child: _ClinicalDataColumn(
+                      title: 'Profil patient',
+                      children: [
+                        _InfoRow(
+                          label: 'Côté dominant',
+                          value: _attributeValue(
+                            data?.attributes ?? [],
+                            'dominant_side',
                           ),
-                          _InfoRow(
-                            label: 'Profession',
-                            value: _attributeValue(
-                              data?.attributes ?? [],
-                              'profession',
-                            ),
+                        ),
+                        _InfoRow(
+                          label: 'Profession',
+                          value: _attributeValue(
+                            data?.attributes ?? [],
+                            'profession',
                           ),
-                          _InfoRow(
-                            label: 'Activité sportive',
-                            value: _attributeValue(
-                              data?.attributes ?? [],
-                              'sport',
-                            ),
+                        ),
+                        _InfoRow(
+                          label: 'Activité sportive',
+                          value: _attributeValue(
+                            data?.attributes ?? [],
+                            'sport',
                           ),
-                          _InfoRow(
-                            label: 'Taille',
-                            value: _attributeValue(
-                              data?.attributes ?? [],
-                              'height_cm',
-                            ),
+                        ),
+                        _InfoRow(
+                          label: 'Taille',
+                          value: _attributeValue(
+                            data?.attributes ?? [],
+                            'height_cm',
                           ),
-                          _InfoRow(
-                            label: 'Poids',
-                            value: _attributeValue(
-                              data?.attributes ?? [],
-                              'weight_kg',
-                            ),
+                        ),
+                        _InfoRow(
+                          label: 'Poids',
+                          value: _attributeValue(
+                            data?.attributes ?? [],
+                            'weight_kg',
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              ],
+                  ),
+                ],
+              ),
+            ],
           ],
         );
       },
@@ -551,10 +525,7 @@ class _PatientClinicalDataSection extends StatelessWidget {
     final identity = await identityRepository.getByPatientId(patientId);
     final attributes = await attributeRepository.getByPatientId(patientId);
 
-    return _PatientClinicalData(
-      identity: identity,
-      attributes: attributes,
-    );
+    return _PatientClinicalData(identity: identity, attributes: attributes);
   }
 }
 
@@ -562,20 +533,14 @@ class _ClinicalDataColumn extends StatelessWidget {
   final String title;
   final List<Widget> children;
 
-  const _ClinicalDataColumn({
-    required this.title,
-    required this.children,
-  });
+  const _ClinicalDataColumn({required this.title, required this.children});
 
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          title,
-          style: Theme.of(context).textTheme.titleMedium,
-        ),
+        Text(title, style: Theme.of(context).textTheme.titleMedium),
         const SizedBox(height: 8),
         ...children,
       ],
@@ -660,14 +625,14 @@ class _CareEpisodesSection extends StatelessWidget {
                   onTap: () async {
                     final changed = await Navigator.of(context).push<bool>(
                       MaterialPageRoute(
-                        builder: (_) => CareEpisodeDetailScreen(
-                          episode: episode,
-                        ),
+                        builder: (_) =>
+                            CareEpisodeDetailScreen(episode: episode),
                       ),
                     );
 
                     if (changed == true && context.mounted) {
-                      final state = context.findAncestorStateOfType<_PatientDetailScreenState>();
+                      final state = context
+                          .findAncestorStateOfType<_PatientDetailScreenState>();
 
                       state?._refresh();
                     }

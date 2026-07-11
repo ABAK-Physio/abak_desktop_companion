@@ -23,9 +23,7 @@ class EpisodeReportTextBuilder {
         ),
         EpisodeReportSection(
           title: 'Épisode',
-          lines: [
-            if (report.episodeTitle != null) report.episodeTitle!,
-          ],
+          lines: [if (report.episodeTitle != null) report.episodeTitle!],
         ),
         EpisodeReportSection(
           title: 'Profil patient',
@@ -40,8 +38,7 @@ class EpisodeReportTextBuilder {
             for (final form in report.formSections) ...[
               form.title,
               for (final field in form.fields)
-                if (!field.isEmpty)
-                  '${field.label} : ${field.value}',
+                if (!field.isEmpty) '${field.label} : ${field.value}',
               '',
             ],
           ],
@@ -91,12 +88,12 @@ class EpisodeReportTextBuilder {
       ],
     );
   }
-  String _buildExportFileName(
-      EpisodeReportViewModel report,
-      ) {
-    final name = report.patientDisplayName
-        .trim()
-        .replaceAll(RegExp(r'\s+'), '_');
+
+  String _buildExportFileName(EpisodeReportViewModel report) {
+    final name = report.patientDisplayName.trim().replaceAll(
+      RegExp(r'\s+'),
+      '_',
+    );
 
     final date = DateTime.now();
 

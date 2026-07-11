@@ -6,10 +6,7 @@ class ReportArchiveScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Center(
-      child: Text(
-        'Archives des rapports',
-        style: TextStyle(fontSize: 24),
-      ),
+      child: Text('Archives des rapports', style: TextStyle(fontSize: 24)),
     );
   }
 }

@@ -10,7 +10,6 @@ import 'package:shelf_router/shelf_router.dart';
 import '../../../core/database/database_service.dart';
 import '../../../core/settings/exchange_directory_service.dart';
 
-
 class LocalExchangeServer {
   LocalExchangeServer._();
 
@@ -19,7 +18,7 @@ class LocalExchangeServer {
   static const int defaultPort = 8790;
 
   final ExchangeDirectoryService _exchangeDirectoryService =
-  ExchangeDirectoryService();
+      ExchangeDirectoryService();
 
   HttpServer? _server;
 
@@ -27,9 +26,7 @@ class LocalExchangeServer {
 
   int? get port => _server?.port;
 
-  Future<void> start({
-    int port = defaultPort,
-  }) async {
+  Future<void> start({int port = defaultPort}) async {
     if (_server != null) return;
 
     final router = Router();
@@ -43,9 +40,7 @@ class LocalExchangeServer {
           'port': port,
           'timestamp': DateTime.now().toIso8601String(),
         }),
-        headers: {
-          HttpHeaders.contentTypeHeader: ContentType.json.mimeType,
-        },
+        headers: {HttpHeaders.contentTypeHeader: ContentType.json.mimeType},
       );
     });
 
@@ -55,9 +50,7 @@ class LocalExchangeServer {
       if (query.length < 2) {
         return Response.ok(
           jsonEncode([]),
-          headers: {
-            HttpHeaders.contentTypeHeader: ContentType.json.mimeType,
-          },
+          headers: {HttpHeaders.contentTypeHeader: ContentType.json.mimeType},
         );
       }
 
@@ -67,12 +60,7 @@ class LocalExchangeServer {
 
       final rows = await db.query(
         'patients',
-        columns: [
-          'last_name',
-          'first_name',
-          'birth_date',
-          'sex_code',
-        ],
+        columns: ['last_name', 'first_name', 'birth_date', 'sex_code'],
         where: '''
           archived_at IS NULL
           AND (
@@ -81,11 +69,7 @@ class LocalExchangeServer {
             OR birth_date LIKE ?
           )
         ''',
-        whereArgs: [
-          likeQuery,
-          likeQuery,
-          likeQuery,
-        ],
+        whereArgs: [likeQuery, likeQuery, likeQuery],
         orderBy: 'last_name ASC, first_name ASC',
         limit: 20,
       );
@@ -111,16 +95,15 @@ class LocalExchangeServer {
 
       return Response.ok(
         jsonEncode(results),
-        headers: {
-          HttpHeaders.contentTypeHeader: ContentType.json.mimeType,
-        },
+        headers: {HttpHeaders.contentTypeHeader: ContentType.json.mimeType},
       );
     });
 
     router.post('/upload', (Request request) async {
       final contentType = request.headers[HttpHeaders.contentTypeHeader];
 
-      final fileName = request.url.queryParameters['filename'] ??
+      final fileName =
+          request.url.queryParameters['filename'] ??
           'incoming_${DateTime.now().millisecondsSinceEpoch}.abak';
 
       if (!fileName.toLowerCase().endsWith('.abak')) {
@@ -130,14 +113,12 @@ class LocalExchangeServer {
             'status': 'error',
             'message': 'Seuls les fichiers .abak sont acceptés.',
           }),
-          headers: {
-            HttpHeaders.contentTypeHeader: ContentType.json.mimeType,
-          },
+          headers: {HttpHeaders.contentTypeHeader: ContentType.json.mimeType},
         );
       }
 
-      final exchangeDir =
-      await _exchangeDirectoryService.getExchangeDirectory();
+      final exchangeDir = await _exchangeDirectoryService
+          .getExchangeDirectory();
 
       if (!await exchangeDir.exists()) {
         await exchangeDir.create(recursive: true);
@@ -146,14 +127,11 @@ class LocalExchangeServer {
       final safeFileName = p.basename(fileName);
       final uniqueFileName = _uniqueFileName(exchangeDir, safeFileName);
 
-      final destinationPath = p.join(
-        exchangeDir.path,
-        uniqueFileName,
-      );
+      final destinationPath = p.join(exchangeDir.path, uniqueFileName);
 
       final bytes = await request.read().fold<List<int>>(
         <int>[],
-            (previous, element) => previous..addAll(element),
+        (previous, element) => previous..addAll(element),
       );
 
       final file = File(destinationPath);
@@ -175,9 +153,7 @@ class LocalExchangeServer {
           'contentType': contentType,
           'timestamp': DateTime.now().toIso8601String(),
         }),
-        headers: {
-          HttpHeaders.contentTypeHeader: ContentType.json.mimeType,
-        },
+        headers: {HttpHeaders.contentTypeHeader: ContentType.json.mimeType},
       );
     });
 
@@ -185,11 +161,7 @@ class LocalExchangeServer {
         .addMiddleware(logRequests())
         .addHandler(router.call);
 
-    _server = await shelf_io.serve(
-      handler,
-      InternetAddress.anyIPv4,
-      port,
-    );
+    _server = await shelf_io.serve(handler, InternetAddress.anyIPv4, port);
   }
 
   Future<void> stop() async {

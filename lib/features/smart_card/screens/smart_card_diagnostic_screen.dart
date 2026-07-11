@@ -12,8 +12,7 @@ class SmartCardDiagnosticScreen extends StatefulWidget {
       _SmartCardDiagnosticScreenState();
 }
 
-class _SmartCardDiagnosticScreenState
-    extends State<SmartCardDiagnosticScreen> {
+class _SmartCardDiagnosticScreenState extends State<SmartCardDiagnosticScreen> {
   final _service = const SmartCardDiagnosticService();
   VitaleIdentity? _selectedIdentity;
 
@@ -74,9 +73,7 @@ class _SmartCardDiagnosticScreenState
       body: Padding(
         padding: const EdgeInsets.all(24),
         child: _loading
-            ? const Center(
-          child: CircularProgressIndicator(),
-        )
+            ? const Center(child: CircularProgressIndicator())
             : _buildContent(),
       ),
     );
@@ -93,39 +90,28 @@ class _SmartCardDiagnosticScreenState
       children: [
         const Text(
           'État du lecteur et de la carte',
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 8),
 
         Card(
           child: ListTile(
             leading: Icon(
-              result.readerDetected
-                  ? Icons.check_circle
-                  : Icons.error_outline,
+              result.readerDetected ? Icons.check_circle : Icons.error_outline,
             ),
             title: const Text('Lecteur'),
-            subtitle: Text(
-              result.readerName ?? 'Aucun lecteur détecté',
-            ),
+            subtitle: Text(result.readerName ?? 'Aucun lecteur détecté'),
           ),
         ),
 
         Card(
           child: ListTile(
             leading: Icon(
-              result.cardDetected
-                  ? Icons.credit_card
-                  : Icons.credit_card_off,
+              result.cardDetected ? Icons.credit_card : Icons.credit_card_off,
             ),
             title: const Text('Carte'),
             subtitle: Text(
-              result.cardDetected
-                  ? 'Carte détectée'
-                  : 'Aucune carte détectée',
+              result.cardDetected ? 'Carte détectée' : 'Aucune carte détectée',
             ),
           ),
         ),
@@ -133,9 +119,7 @@ class _SmartCardDiagnosticScreenState
         Card(
           child: ListTile(
             title: const Text('ATR'),
-            subtitle: Text(
-              result.atr ?? 'Non disponible',
-            ),
+            subtitle: Text(result.atr ?? 'Non disponible'),
           ),
         ),
 
@@ -153,10 +137,7 @@ class _SmartCardDiagnosticScreenState
 
         const Text(
           'Lecture identité',
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 12),
         const Text(
@@ -168,9 +149,7 @@ class _SmartCardDiagnosticScreenState
         FilledButton.icon(
           onPressed: () async {
             final identity = await Navigator.of(context).push<VitaleIdentity>(
-              MaterialPageRoute(
-                builder: (_) => const VitaleIdentityScreen(),
-              ),
+              MaterialPageRoute(builder: (_) => const VitaleIdentityScreen()),
             );
 
             if (!mounted || identity == null) return;
@@ -208,10 +187,7 @@ class _SmartCardDiagnosticScreenState
 
         const Text(
           'Diagnostic APDU avancé',
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 12),
         const Text(
@@ -222,11 +198,7 @@ class _SmartCardDiagnosticScreenState
         FilledButton.icon(
           onPressed: _testingApdu ? null : _testApdu,
           icon: const Icon(Icons.play_arrow),
-          label: Text(
-            _testingApdu
-                ? 'Test APDU en cours...'
-                : 'Tester APDU',
-          ),
+          label: Text(_testingApdu ? 'Test APDU en cours...' : 'Tester APDU'),
         ),
 
         if (_apduResult != null) ...[
@@ -234,9 +206,7 @@ class _SmartCardDiagnosticScreenState
           Card(
             child: ListTile(
               title: Text(
-                _apduResult!.success
-                    ? 'Réponse APDU reçue'
-                    : 'Erreur APDU',
+                _apduResult!.success ? 'Réponse APDU reçue' : 'Erreur APDU',
               ),
               subtitle: SelectableText(
                 [

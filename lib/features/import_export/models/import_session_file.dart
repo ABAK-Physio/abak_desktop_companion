@@ -9,6 +9,7 @@ class ImportSessionFile {
 
   final int importedResultsCount;
   final int skippedResultsCount;
+  final int duplicateResultsCount;
   final int importedMetricsCount;
 
   final String status;
@@ -24,6 +25,7 @@ class ImportSessionFile {
     required this.processedAt,
     required this.importedResultsCount,
     required this.skippedResultsCount,
+    required this.duplicateResultsCount,
     required this.importedMetricsCount,
     required this.status,
     required this.errorMessage,
@@ -38,12 +40,18 @@ class ImportSessionFile {
       filePath: map['file_path'] as String?,
       fileSize: map['file_size'] as int?,
       processedAt: map['processed_at'] as int,
-      importedResultsCount: map['imported_results_count'] as int,
-      skippedResultsCount: map['skipped_results_count'] as int,
-      importedMetricsCount: map['imported_metrics_count'] as int,
+      importedResultsCount:
+      (map['imported_results_count'] as num?)?.toInt() ?? 0,
+      skippedResultsCount:
+      (map['skipped_results_count'] as num?)?.toInt() ?? 0,
+      duplicateResultsCount:
+      (map['duplicate_results_count'] as num?)?.toInt() ?? 0,
+      importedMetricsCount:
+      (map['imported_metrics_count'] as num?)?.toInt() ?? 0,
       status: map['status'] as String,
       errorMessage: map['error_message'] as String?,
-      conflictResultsCount: map['conflict_results_count'] as int,
+      conflictResultsCount:
+      (map['conflict_results_count'] as num?)?.toInt() ?? 0,
     );
   }
 }

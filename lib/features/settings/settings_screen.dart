@@ -14,7 +14,7 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   final ExchangeDirectoryService _exchangeDirectoryService =
-  ExchangeDirectoryService();
+      ExchangeDirectoryService();
 
   String? _exchangeDirectoryPath;
   bool _isLoading = true;
@@ -26,8 +26,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Future<void> _loadExchangeDirectory() async {
-    final path =
-    await _exchangeDirectoryService.getExchangeDirectoryPathLabel();
+    final path = await _exchangeDirectoryService
+        .getExchangeDirectoryPathLabel();
 
     if (!mounted) return;
 
@@ -38,8 +38,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Future<void> _chooseExchangeDirectory() async {
-    final selectedPath =
-    await _exchangeDirectoryService.chooseDirectory();
+    final selectedPath = await _exchangeDirectoryService.chooseDirectory();
 
     if (!mounted) return;
 
@@ -49,9 +48,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Dossier d’échange ABAK mis à jour'),
-        ),
+        const SnackBar(content: Text('Dossier d’échange ABAK mis à jour')),
       );
     }
   }
@@ -63,15 +60,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
     if (!mounted) return;
 
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Dossier d’échange réinitialisé'),
-      ),
+      const SnackBar(content: Text('Dossier d’échange réinitialisé')),
     );
   }
 
   Future<void> _openExchangeDirectory() async {
-    final path =
-    await _exchangeDirectoryService.getExchangeDirectoryPathLabel();
+    final path = await _exchangeDirectoryService
+        .getExchangeDirectoryPathLabel();
 
     final directory = Directory(path);
 
@@ -90,9 +85,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     if (!mounted) return;
 
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Ouverture du dossier d’échange'),
-      ),
+      const SnackBar(content: Text('Ouverture du dossier d’échange')),
     );
   }
 
@@ -119,8 +112,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     subtitle: Text(
                       _isLoading
                           ? 'Chargement...'
-                          : (_exchangeDirectoryPath ??
-                          'Aucun dossier défini'),
+                          : (_exchangeDirectoryPath ?? 'Aucun dossier défini'),
                     ),
                     trailing: Wrap(
                       spacing: 8,
@@ -150,8 +142,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   onPressed: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (_) =>
-                        const SmartCardDiagnosticScreen(),
+                        builder: (_) => const SmartCardDiagnosticScreen(),
                       ),
                     );
                   },

@@ -17,8 +17,7 @@ class PatientListScreen extends StatefulWidget {
 class _PatientListScreenState extends State<PatientListScreen> {
   final PatientRepository _repository = PatientRepository();
   String _searchQuery = '';
-  Future<List<Patient>> _patientsFuture =
-  PatientRepository().getAllPatients();
+  Future<List<Patient>> _patientsFuture = PatientRepository().getAllPatients();
   bool _showArchived = false;
   int _activePatientsCount = 0;
   int _archivedPatientsCount = 0;
@@ -36,9 +35,7 @@ class _PatientListScreenState extends State<PatientListScreen> {
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(
-          '${patient.displayName} restauré dans la liste active.',
-        ),
+        content: Text('${patient.displayName} restauré dans la liste active.'),
       ),
     );
 
@@ -62,9 +59,7 @@ class _PatientListScreenState extends State<PatientListScreen> {
 
   Future<void> _createPatient() async {
     final created = await Navigator.of(context).push<bool>(
-      MaterialPageRoute(
-        builder: (_) => const PatientCreateScreen(),
-      ),
+      MaterialPageRoute(builder: (_) => const PatientCreateScreen()),
     );
 
     if (created == true) {
@@ -91,7 +86,7 @@ class _PatientListScreenState extends State<PatientListScreen> {
         return AlertDialog(
           title: const Text('Archiver le patient'),
           content: Text(
-              'Voulez-vous vraiment archiver ${patient.displayName} ? Il ne sera plus affiché dans la liste active.'
+            'Voulez-vous vraiment archiver ${patient.displayName} ? Il ne sera plus affiché dans la liste active.',
           ),
           actions: [
             TextButton(
@@ -112,22 +107,16 @@ class _PatientListScreenState extends State<PatientListScreen> {
     await _repository.archivePatient(patient.patientId);
     if (!mounted) return;
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          '${patient.displayName} archivé.',
-        ),
-      ),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text('${patient.displayName} archivé.')));
     await _reloadPatients();
   }
 
   Future<void> _refreshCounters() async {
-    final active =
-    await _repository.getAllPatients();
+    final active = await _repository.getAllPatients();
 
-    final archived =
-    await _repository.getArchivedPatients();
+    final archived = await _repository.getArchivedPatients();
 
     if (!mounted) return;
 
@@ -157,17 +146,15 @@ class _PatientListScreenState extends State<PatientListScreen> {
   }
 
   Widget _buildBody(
-      AsyncSnapshot<List<Patient>> snapshot,
-      List<Patient> patients,
-      ) {
+    AsyncSnapshot<List<Patient>> snapshot,
+    List<Patient> patients,
+  ) {
     if (snapshot.connectionState == ConnectionState.waiting) {
       return const Center(child: CircularProgressIndicator());
     }
 
     if (snapshot.hasError) {
-      return Center(
-        child: Text('Erreur : ${snapshot.error}'),
-      );
+      return Center(child: Text('Erreur : ${snapshot.error}'));
     }
 
     if (patients.isEmpty) {
@@ -204,7 +191,6 @@ class _PatientListScreenState extends State<PatientListScreen> {
           patient.firstName.toLowerCase().contains(query) ||
           patient.displayName.toLowerCase().contains(query);
     }).toList();
-
 
     return Column(
       children: [
@@ -252,65 +238,66 @@ class _PatientListScreenState extends State<PatientListScreen> {
         Expanded(
           child: filteredPatients.isEmpty
               ? const Center(
-            child: Text(
-              'Aucun patient trouvé',
-              style: TextStyle(fontSize: 18),
-            ),
-          )
-              : ListView.separated(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-            itemCount: filteredPatients.length,
-            separatorBuilder: (_, _) => const Divider(height: 1),
-            itemBuilder: (context, index) {
-              final patient = filteredPatients[index];
-
-              return ListTile(
-                leading: CircleAvatar(
                   child: Text(
-                    patient.lastName.isNotEmpty
-                        ? patient.lastName[0].toUpperCase()
-                        : '?',
+                    'Aucun patient trouvé',
+                    style: TextStyle(fontSize: 18),
                   ),
-                ),
-                title: Text(patient.displayName),
-                subtitle: Text(
-                  _showArchived
-                      ? 'Sexe : ${patient.sexCode}'
-                      '${patient.archivedAt == null ? '' : ' · Archivé le ${DateFormatUtils.formatTimestamp(context, patient.archivedAt)}'}'
-                      : 'Sexe : ${patient.sexCode}'
-                      '${patient.birthDate == null ? '' : ' · Né(e) le ${DateFormatUtils.formatIsoDateForDisplay(context, patient.birthDate)}'}',
-                ),
-                trailing: _showArchived
-                    ? IconButton(
-                  tooltip: 'Restaurer',
-                  icon: const Icon(Icons.restore),
-                  onPressed: () => _restorePatient(patient),
                 )
-                    : Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    IconButton(
-                      tooltip: 'Modifier',
-                      icon: const Icon(Icons.edit_outlined),
-                      onPressed: () => _editPatient(patient),
-                    ),
-                    IconButton(
-                      tooltip: 'Archiver',
-                      icon: const Icon(Icons.archive_outlined),
-                      onPressed: () => _deletePatient(patient),
-                    ),
-                  ],
+              : ListView.separated(
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                  itemCount: filteredPatients.length,
+                  separatorBuilder: (_, _) => const Divider(height: 1),
+                  itemBuilder: (context, index) {
+                    final patient = filteredPatients[index];
+
+                    return ListTile(
+                      leading: CircleAvatar(
+                        child: Text(
+                          patient.lastName.isNotEmpty
+                              ? patient.lastName[0].toUpperCase()
+                              : '?',
+                        ),
+                      ),
+                      title: Text(patient.displayName),
+                      subtitle: Text(
+                        _showArchived
+                            ? 'Sexe : ${patient.sexCode}'
+                                  '${patient.archivedAt == null ? '' : ' · Archivé le ${DateFormatUtils.formatTimestamp(context, patient.archivedAt)}'}'
+                            : 'Sexe : ${patient.sexCode}'
+                                  '${patient.birthDate == null ? '' : ' · Né(e) le ${DateFormatUtils.formatIsoDateForDisplay(context, patient.birthDate)}'}',
+                      ),
+                      trailing: _showArchived
+                          ? IconButton(
+                              tooltip: 'Restaurer',
+                              icon: const Icon(Icons.restore),
+                              onPressed: () => _restorePatient(patient),
+                            )
+                          : Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                IconButton(
+                                  tooltip: 'Modifier',
+                                  icon: const Icon(Icons.edit_outlined),
+                                  onPressed: () => _editPatient(patient),
+                                ),
+                                IconButton(
+                                  tooltip: 'Archiver',
+                                  icon: const Icon(Icons.archive_outlined),
+                                  onPressed: () => _deletePatient(patient),
+                                ),
+                              ],
+                            ),
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) =>
+                                PatientDetailScreen(patient: patient),
+                          ),
+                        );
+                      },
+                    );
+                  },
                 ),
-                onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) => PatientDetailScreen(patient: patient),
-                    ),
-                  );
-                },
-              );
-            },
-          ),
         ),
       ],
     );

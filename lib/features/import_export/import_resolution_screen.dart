@@ -13,29 +13,21 @@ class ImportAssignment {
   final Patient patient;
   final CareEpisode careEpisode;
 
-  const ImportAssignment({
-    required this.patient,
-    required this.careEpisode,
-  });
+  const ImportAssignment({required this.patient, required this.careEpisode});
 }
 
 class ImportResolutionScreen extends StatefulWidget {
   final AbakPackage package;
 
-  const ImportResolutionScreen({
-    super.key,
-    required this.package,
-  });
+  const ImportResolutionScreen({super.key, required this.package});
 
   @override
-  State<ImportResolutionScreen> createState() =>
-      _ImportResolutionScreenState();
+  State<ImportResolutionScreen> createState() => _ImportResolutionScreenState();
 }
 
 class _ImportResolutionScreenState extends State<ImportResolutionScreen> {
   final PatientRepository _patientRepository = PatientRepository();
-  final CareEpisodeRepository _careEpisodeRepository =
-  CareEpisodeRepository();
+  final CareEpisodeRepository _careEpisodeRepository = CareEpisodeRepository();
 
   late Future<List<Patient>> _patientsFuture;
 
@@ -51,8 +43,9 @@ class _ImportResolutionScreenState extends State<ImportResolutionScreen> {
   Future<void> _selectPatient(Patient patient) async {
     setState(() {
       _selectedPatient = patient;
-      _careEpisodesFuture =
-          _careEpisodeRepository.getEpisodesForPatient(patient.patientId);
+      _careEpisodesFuture = _careEpisodeRepository.getEpisodesForPatient(
+        patient.patientId,
+      );
     });
   }
 
@@ -60,12 +53,9 @@ class _ImportResolutionScreenState extends State<ImportResolutionScreen> {
     final patient = _selectedPatient;
     if (patient == null) return;
 
-    Navigator.of(context).pop(
-      ImportAssignment(
-        patient: patient,
-        careEpisode: careEpisode,
-      ),
-    );
+    Navigator.of(
+      context,
+    ).pop(ImportAssignment(patient: patient, careEpisode: careEpisode));
   }
 
   Future<void> _createPatient({
@@ -100,15 +90,11 @@ class _ImportResolutionScreenState extends State<ImportResolutionScreen> {
                   children: [
                     TextField(
                       controller: lastNameController,
-                      decoration: const InputDecoration(
-                        labelText: 'Nom',
-                      ),
+                      decoration: const InputDecoration(labelText: 'Nom'),
                     ),
                     TextField(
                       controller: firstNameController,
-                      decoration: const InputDecoration(
-                        labelText: 'Prénom',
-                      ),
+                      decoration: const InputDecoration(labelText: 'Prénom'),
                     ),
                     TextField(
                       controller: birthDateController,
@@ -119,26 +105,15 @@ class _ImportResolutionScreenState extends State<ImportResolutionScreen> {
                     const SizedBox(height: 12),
                     DropdownButtonFormField<String>(
                       initialValue: sexCode,
-                      decoration: const InputDecoration(
-                        labelText: 'Sexe',
-                      ),
+                      decoration: const InputDecoration(labelText: 'Sexe'),
                       items: const [
                         DropdownMenuItem(
                           value: 'U',
                           child: Text('Non renseigné'),
                         ),
-                        DropdownMenuItem(
-                          value: 'F',
-                          child: Text('Féminin'),
-                        ),
-                        DropdownMenuItem(
-                          value: 'M',
-                          child: Text('Masculin'),
-                        ),
-                        DropdownMenuItem(
-                          value: 'X',
-                          child: Text('Autre'),
-                        ),
+                        DropdownMenuItem(value: 'F', child: Text('Féminin')),
+                        DropdownMenuItem(value: 'M', child: Text('Masculin')),
+                        DropdownMenuItem(value: 'X', child: Text('Autre')),
                       ],
                       onChanged: (value) {
                         if (value == null) return;
@@ -193,9 +168,7 @@ class _ImportResolutionScreenState extends State<ImportResolutionScreen> {
 
   Future<void> _createPatientFromVitale() async {
     final identity = await Navigator.of(context).push<VitaleIdentity>(
-      MaterialPageRoute(
-        builder: (_) => const VitaleIdentityScreen(),
-      ),
+      MaterialPageRoute(builder: (_) => const VitaleIdentityScreen()),
     );
 
     if (!mounted || identity == null) return;
@@ -214,8 +187,8 @@ class _ImportResolutionScreenState extends State<ImportResolutionScreen> {
 
     final suggestedTitle =
         widget.package.clinicalEpisode?.pathologyLabel ??
-            widget.package.mobileCase?.caseLabel ??
-            'Nouvelle prise en charge';
+        widget.package.mobileCase?.caseLabel ??
+        'Nouvelle prise en charge';
 
     final titleController = TextEditingController(text: suggestedTitle);
     final pathologyController = TextEditingController(
@@ -234,15 +207,11 @@ class _ImportResolutionScreenState extends State<ImportResolutionScreen> {
               children: [
                 TextField(
                   controller: titleController,
-                  decoration: const InputDecoration(
-                    labelText: 'Titre',
-                  ),
+                  decoration: const InputDecoration(labelText: 'Titre'),
                 ),
                 TextField(
                   controller: pathologyController,
-                  decoration: const InputDecoration(
-                    labelText: 'Pathologie',
-                  ),
+                  decoration: const InputDecoration(labelText: 'Pathologie'),
                 ),
               ],
             ),
@@ -292,8 +261,9 @@ class _ImportResolutionScreenState extends State<ImportResolutionScreen> {
     if (!mounted) return;
 
     setState(() {
-      _careEpisodesFuture =
-          _careEpisodeRepository.getEpisodesForPatient(patient.patientId);
+      _careEpisodesFuture = _careEpisodeRepository.getEpisodesForPatient(
+        patient.patientId,
+      );
     });
 
     await _completeWithEpisode(careEpisode);
@@ -305,9 +275,7 @@ class _ImportResolutionScreenState extends State<ImportResolutionScreen> {
     final mobileCase = widget.package.mobileCase;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Rattacher l’import'),
-      ),
+      appBar: AppBar(title: const Text('Rattacher l’import')),
       body: Padding(
         padding: const EdgeInsets.all(24),
         child: Row(
@@ -383,13 +351,12 @@ class _ImportResolutionScreenState extends State<ImportResolutionScreen> {
 
                         return ListView.separated(
                           itemCount: patients.length,
-                          separatorBuilder: (_, _) =>
-                          const Divider(height: 1),
+                          separatorBuilder: (_, _) => const Divider(height: 1),
                           itemBuilder: (context, index) {
                             final patient = patients[index];
                             final selected =
                                 patient.patientId ==
-                                    _selectedPatient?.patientId;
+                                _selectedPatient?.patientId;
 
                             return ListTile(
                               selected: selected,
@@ -416,82 +383,79 @@ class _ImportResolutionScreenState extends State<ImportResolutionScreen> {
             Expanded(
               child: _selectedPatient == null
                   ? const Center(
-                child: Text(
-                  'Choisis d’abord un patient pour afficher ou créer une prise en charge.',
-                ),
-              )
+                      child: Text(
+                        'Choisis d’abord un patient pour afficher ou créer une prise en charge.',
+                      ),
+                    )
                   : Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    '2. Choisir ou créer une prise en charge',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          '2. Choisir ou créer une prise en charge',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Patient sélectionné : ${_selectedPatient!.displayName}',
+                        ),
+                        const SizedBox(height: 12),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: FilledButton.icon(
+                            onPressed: _createCareEpisode,
+                            icon: const Icon(Icons.add_circle_outline),
+                            label: const Text('Nouvelle prise en charge'),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        Expanded(
+                          child: FutureBuilder<List<CareEpisode>>(
+                            future: _careEpisodesFuture,
+                            builder: (context, snapshot) {
+                              final episodes = snapshot.data ?? [];
+
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return const Center(
+                                  child: CircularProgressIndicator(),
+                                );
+                              }
+
+                              if (episodes.isEmpty) {
+                                return const Center(
+                                  child: Text(
+                                    'Aucune prise en charge pour ce patient.',
+                                  ),
+                                );
+                              }
+
+                              return ListView.separated(
+                                itemCount: episodes.length,
+                                separatorBuilder: (_, _) =>
+                                    const Divider(height: 1),
+                                itemBuilder: (context, index) {
+                                  final episode = episodes[index];
+
+                                  return ListTile(
+                                    leading: const Icon(
+                                      Icons.medical_services_outlined,
+                                    ),
+                                    title: Text(episode.title),
+                                    subtitle: Text(
+                                      [
+                                        'Pathologie : ${episode.pathologyLabel}',
+                                        'ID : ${episode.careEpisodeId}',
+                                      ].join('\n'),
+                                    ),
+                                    onTap: () => _completeWithEpisode(episode),
+                                  );
+                                },
+                              );
+                            },
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Patient sélectionné : ${_selectedPatient!.displayName}',
-                  ),
-                  const SizedBox(height: 12),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: FilledButton.icon(
-                      onPressed: _createCareEpisode,
-                      icon: const Icon(Icons.add_circle_outline),
-                      label: const Text('Nouvelle prise en charge'),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Expanded(
-                    child: FutureBuilder<List<CareEpisode>>(
-                      future: _careEpisodesFuture,
-                      builder: (context, snapshot) {
-                        final episodes = snapshot.data ?? [];
-
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return const Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        }
-
-                        if (episodes.isEmpty) {
-                          return const Center(
-                            child: Text(
-                              'Aucune prise en charge pour ce patient.',
-                            ),
-                          );
-                        }
-
-                        return ListView.separated(
-                          itemCount: episodes.length,
-                          separatorBuilder: (_, _) =>
-                          const Divider(height: 1),
-                          itemBuilder: (context, index) {
-                            final episode = episodes[index];
-
-                            return ListTile(
-                              leading: const Icon(
-                                Icons.medical_services_outlined,
-                              ),
-                              title: Text(episode.title),
-                              subtitle: Text(
-                                [
-                                  'Pathologie : ${episode.pathologyLabel}',
-                                  'ID : ${episode.careEpisodeId}',
-                                ].join('\n'),
-                              ),
-                              onTap: () =>
-                                  _completeWithEpisode(episode),
-                            );
-                          },
-                        );
-                      },
-                    ),
-                  ),
-                ],
-              ),
             ),
           ],
         ),

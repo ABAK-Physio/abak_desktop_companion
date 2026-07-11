@@ -16,7 +16,7 @@ class AboutScreen extends StatefulWidget {
 
 class _AboutScreenState extends State<AboutScreen> {
   final CabinetIdentityService _cabinetIdentityService =
-  const CabinetIdentityService();
+      const CabinetIdentityService();
 
   String _version = '';
   String _platform = '';
@@ -61,8 +61,7 @@ class _AboutScreenState extends State<AboutScreen> {
 
   Future<void> _loadCabinetIdentity() async {
     final cabinetName = await _cabinetIdentityService.getCabinetName();
-    final cabinetLogoPath =
-    await _cabinetIdentityService.getCabinetLogoPath();
+    final cabinetLogoPath = await _cabinetIdentityService.getCabinetLogoPath();
 
     if (!mounted) return;
 
@@ -93,22 +92,16 @@ class _AboutScreenState extends State<AboutScreen> {
       'https://abak.care/gnu-general-public-license-version-3/',
     );
 
-    await launchUrl(
-      uri,
-      mode: LaunchMode.externalApplication,
-    );
+    await launchUrl(uri, mode: LaunchMode.externalApplication);
   }
 
   @override
   Widget build(BuildContext context) {
-    final logoFile =
-    _cabinetLogoPath == null ? null : File(_cabinetLogoPath!);
+    final logoFile = _cabinetLogoPath == null ? null : File(_cabinetLogoPath!);
     final hasLogo = logoFile != null && logoFile.existsSync();
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Informations'),
-      ),
+      appBar: AppBar(title: const Text('Informations')),
       body: Center(
         child: SizedBox(
           width: 700,
@@ -118,23 +111,15 @@ class _AboutScreenState extends State<AboutScreen> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  _LogoPreview(
-                    hasLogo: hasLogo,
-                    logoFile: logoFile,
-                  ),
+                  _LogoPreview(hasLogo: hasLogo, logoFile: logoFile),
                   const SizedBox(height: 16),
                   const Text(
                     'ABAK Desktop Companion',
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    _version.isEmpty
-                        ? 'Version...'
-                        : 'Version $_version',
+                    _version.isEmpty ? 'Version...' : 'Version $_version',
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                   const SizedBox(height: 32),
@@ -186,9 +171,7 @@ class _AboutScreenState extends State<AboutScreen> {
 
                   const Text(
                     '© ABAK Metrics',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                    ),
+                    style: TextStyle(fontWeight: FontWeight.w600),
                   ),
                 ],
               ),
@@ -204,10 +187,7 @@ class _LogoPreview extends StatelessWidget {
   final bool hasLogo;
   final File? logoFile;
 
-  const _LogoPreview({
-    required this.hasLogo,
-    required this.logoFile,
-  });
+  const _LogoPreview({required this.hasLogo, required this.logoFile});
 
   @override
   Widget build(BuildContext context) {
@@ -215,23 +195,15 @@ class _LogoPreview extends StatelessWidget {
       width: 96,
       height: 96,
       decoration: BoxDecoration(
-        border: Border.all(
-          color: Theme.of(context).dividerColor,
-        ),
+        border: Border.all(color: Theme.of(context).dividerColor),
         borderRadius: BorderRadius.circular(16),
       ),
       child: hasLogo
           ? ClipRRect(
-        borderRadius: BorderRadius.circular(16),
-        child: Image.file(
-          logoFile!,
-          fit: BoxFit.contain,
-        ),
-      )
-          : const Icon(
-        Icons.info_outline,
-        size: 48,
-      ),
+              borderRadius: BorderRadius.circular(16),
+              child: Image.file(logoFile!, fit: BoxFit.contain),
+            )
+          : const Icon(Icons.info_outline, size: 48),
     );
   }
 }
@@ -240,10 +212,7 @@ class _InfoLine extends StatelessWidget {
   final String label;
   final String value;
 
-  const _InfoLine({
-    required this.label,
-    required this.value,
-  });
+  const _InfoLine({required this.label, required this.value});
 
   @override
   Widget build(BuildContext context) {
@@ -255,14 +224,10 @@ class _InfoLine extends StatelessWidget {
             width: 140,
             child: Text(
               label,
-              style: const TextStyle(
-                fontWeight: FontWeight.w600,
-              ),
+              style: const TextStyle(fontWeight: FontWeight.w600),
             ),
           ),
-          Expanded(
-            child: Text(value),
-          ),
+          Expanded(child: Text(value)),
         ],
       ),
     );

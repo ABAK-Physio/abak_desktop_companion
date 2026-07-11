@@ -6,9 +6,7 @@ import '../models/care_episode_note.dart';
 import '../models/care_episode_summary.dart';
 
 class CareEpisodeRepository {
-  Future<void> insertCareEpisode(
-      CareEpisode episode,
-      ) async {
+  Future<void> insertCareEpisode(CareEpisode episode) async {
     final db = await DatabaseService.database;
 
     await db.insert(
@@ -18,9 +16,7 @@ class CareEpisodeRepository {
     );
   }
 
-  Future<List<CareEpisodeNote>> getNotesForEpisode(
-      String careEpisodeId,
-      ) async {
+  Future<List<CareEpisodeNote>> getNotesForEpisode(String careEpisodeId) async {
     final db = await DatabaseService.database;
 
     final rows = await db.query(
@@ -33,9 +29,7 @@ class CareEpisodeRepository {
     return rows.map(CareEpisodeNote.fromMap).toList();
   }
 
-  Future<void> insertNote(
-      CareEpisodeNote note,
-      ) async {
+  Future<void> insertNote(CareEpisodeNote note) async {
     final db = await DatabaseService.database;
 
     await db.insert(
@@ -62,9 +56,7 @@ class CareEpisodeRepository {
     );
   }
 
-  Future<void> updateCareEpisode(
-      CareEpisode episode,
-      ) async {
+  Future<void> updateCareEpisode(CareEpisode episode) async {
     final db = await DatabaseService.database;
 
     await db.update(
@@ -75,24 +67,18 @@ class CareEpisodeRepository {
     );
   }
 
-  Future<void> archiveCareEpisode(
-      String careEpisodeId,
-      ) async {
+  Future<void> archiveCareEpisode(String careEpisodeId) async {
     final db = await DatabaseService.database;
 
     await db.update(
       'care_episodes',
-      {
-        'archived_at': DateTime.now().millisecondsSinceEpoch,
-      },
+      {'archived_at': DateTime.now().millisecondsSinceEpoch},
       where: 'care_episode_id = ?',
       whereArgs: [careEpisodeId],
     );
   }
 
-  Future<List<CareEpisode>> getEpisodesForPatient(
-      String patientId,
-      ) async {
+  Future<List<CareEpisode>> getEpisodesForPatient(String patientId) async {
     final db = await DatabaseService.database;
 
     final rows = await db.query(
@@ -102,14 +88,10 @@ class CareEpisodeRepository {
       orderBy: 'created_at DESC',
     );
 
-    return rows
-        .map(CareEpisode.fromMap)
-        .toList();
+    return rows.map(CareEpisode.fromMap).toList();
   }
 
-  Future<CareEpisode?> getEpisodeById(
-      String careEpisodeId,
-      ) async {
+  Future<CareEpisode?> getEpisodeById(String careEpisodeId) async {
     final db = await DatabaseService.database;
 
     final rows = await db.query(
@@ -126,9 +108,7 @@ class CareEpisodeRepository {
     return CareEpisode.fromMap(rows.first);
   }
 
-  Future<int> getNoteCount(
-      String careEpisodeId,
-      ) async {
+  Future<int> getNoteCount(String careEpisodeId) async {
     final db = await DatabaseService.database;
 
     final result = await db.rawQuery(
@@ -145,8 +125,8 @@ class CareEpisodeRepository {
   }
 
   Future<List<CareEpisodeSummary>> getEpisodeSummariesForPatient(
-      String patientId,
-      ) async {
+    String patientId,
+  ) async {
     final db = await DatabaseService.database;
 
     final rows = await db.rawQuery(

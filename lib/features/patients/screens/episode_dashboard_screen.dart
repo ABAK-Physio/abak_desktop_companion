@@ -22,9 +22,7 @@ class EpisodeDashboardScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(caseLabel),
-      ),
+      appBar: AppBar(title: Text(caseLabel)),
       body: ListView(
         padding: const EdgeInsets.all(24),
         children: [
@@ -35,10 +33,8 @@ class EpisodeDashboardScreen extends StatelessWidget {
             onTap: () {
               Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (_) => EpisodeFormsScreen(
-                    caseId: caseId,
-                    caseLabel: caseLabel,
-                  ),
+                  builder: (_) =>
+                      EpisodeFormsScreen(caseId: caseId, caseLabel: caseLabel),
                 ),
               );
             },
@@ -71,10 +67,8 @@ class EpisodeDashboardScreen extends StatelessWidget {
             onTap: () {
               Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (_) => EpisodeNotesScreen(
-                    caseId: caseId,
-                    caseLabel: caseLabel,
-                  ),
+                  builder: (_) =>
+                      EpisodeNotesScreen(caseId: caseId, caseLabel: caseLabel),
                 ),
               );
             },

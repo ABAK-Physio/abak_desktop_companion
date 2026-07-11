@@ -5,9 +5,8 @@ import '../models/contact_form_field.dart';
 import '../models/contact_form_template.dart';
 
 class DefaultContactFormTemplateService {
-  DefaultContactFormTemplateService({
-    ContactFormTemplateRepository? repository,
-  }) : _repository = repository ?? ContactFormTemplateRepository();
+  DefaultContactFormTemplateService({ContactFormTemplateRepository? repository})
+    : _repository = repository ?? ContactFormTemplateRepository();
 
   final ContactFormTemplateRepository _repository;
   final Uuid _uuid = const Uuid();

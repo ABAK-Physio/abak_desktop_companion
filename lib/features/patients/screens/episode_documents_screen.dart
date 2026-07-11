@@ -18,16 +18,14 @@ class EpisodeDocumentsScreen extends StatefulWidget {
   });
 
   @override
-  State<EpisodeDocumentsScreen> createState() =>
-      _EpisodeDocumentsScreenState();
+  State<EpisodeDocumentsScreen> createState() => _EpisodeDocumentsScreenState();
 }
 
 class _EpisodeDocumentsScreenState extends State<EpisodeDocumentsScreen> {
-  final EpisodeDocumentRepository _repository =
-  EpisodeDocumentRepository();
+  final EpisodeDocumentRepository _repository = EpisodeDocumentRepository();
 
   final EpisodeDocumentStorageService _storageService =
-  EpisodeDocumentStorageService();
+      EpisodeDocumentStorageService();
 
   late Future<List<EpisodeDocument>> _futureDocuments;
 
@@ -62,8 +60,7 @@ class _EpisodeDocumentsScreenState extends State<EpisodeDocumentsScreen> {
     }
 
     try {
-      final copiedPath =
-      await _storageService.copyDocumentToEpisodeFolder(
+      final copiedPath = await _storageService.copyDocumentToEpisodeFolder(
         caseId: widget.caseId,
         sourcePath: path,
       );
@@ -80,67 +77,51 @@ class _EpisodeDocumentsScreenState extends State<EpisodeDocumentsScreen> {
     } catch (e) {
       if (!mounted) return;
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Erreur ajout document : $e'),
-        ),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Erreur ajout document : $e')));
     }
   }
 
-  Future<void> _openDocument(
-      EpisodeDocument document,
-      ) async {
+  Future<void> _openDocument(EpisodeDocument document) async {
     final file = File(document.filePath);
 
     if (!await file.exists()) {
       if (!mounted) return;
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Fichier introuvable.'),
-        ),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Fichier introuvable.')));
 
       return;
     }
 
     try {
       if (Platform.isMacOS) {
-        await Process.run(
-          'open',
-          [document.filePath],
-        );
+        await Process.run('open', [document.filePath]);
       } else if (Platform.isWindows) {
-        await Process.run(
-          'cmd',
-          ['/c', 'start', '', document.filePath],
-          runInShell: true,
-        );
+        await Process.run('cmd', [
+          '/c',
+          'start',
+          '',
+          document.filePath,
+        ], runInShell: true);
       } else {
-        throw Exception(
-          'Ouverture non prise en charge sur cette plateforme.',
-        );
+        throw Exception('Ouverture non prise en charge sur cette plateforme.');
       }
     } catch (e) {
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Impossible d’ouvrir le fichier : $e'),
-        ),
+        SnackBar(content: Text('Impossible d’ouvrir le fichier : $e')),
       );
     }
   }
 
-  Widget _buildDocumentTile(
-      EpisodeDocument document,
-      ) {
+  Widget _buildDocumentTile(EpisodeDocument document) {
     return Card(
       child: ListTile(
-        leading: const Icon(
-          Icons.insert_drive_file_outlined,
-        ),
+        leading: const Icon(Icons.insert_drive_file_outlined),
         title: Text(document.title),
         subtitle: Text(
           [
@@ -149,9 +130,7 @@ class _EpisodeDocumentsScreenState extends State<EpisodeDocumentsScreen> {
             document.filePath,
           ].join('\n'),
         ),
-        trailing: const Icon(
-          Icons.open_in_new_outlined,
-        ),
+        trailing: const Icon(Icons.open_in_new_outlined),
         onTap: () => _openDocument(document),
       ),
     );
@@ -161,9 +140,7 @@ class _EpisodeDocumentsScreenState extends State<EpisodeDocumentsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          'Documents — ${widget.caseLabel}',
-        ),
+        title: Text('Documents — ${widget.caseLabel}'),
         actions: [
           IconButton(
             tooltip: 'Actualiser',
@@ -177,19 +154,12 @@ class _EpisodeDocumentsScreenState extends State<EpisodeDocumentsScreen> {
         builder: (context, snapshot) {
           final documents = snapshot.data ?? [];
 
-          if (snapshot.connectionState !=
-              ConnectionState.done) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
+          if (snapshot.connectionState != ConnectionState.done) {
+            return const Center(child: CircularProgressIndicator());
           }
 
           if (snapshot.hasError) {
-            return Center(
-              child: Text(
-                'Erreur : ${snapshot.error}',
-              ),
-            );
+            return Center(child: Text('Erreur : ${snapshot.error}'));
           }
 
           return ListView(
@@ -200,20 +170,14 @@ class _EpisodeDocumentsScreenState extends State<EpisodeDocumentsScreen> {
                 child: OutlinedButton.icon(
                   onPressed: _addDocument,
                   icon: const Icon(Icons.add),
-                  label: const Text(
-                    'Ajouter un document',
-                  ),
+                  label: const Text('Ajouter un document'),
                 ),
               ),
               const SizedBox(height: 16),
               if (documents.isEmpty)
-                const Text(
-                  'Aucun document associé à cet épisode.',
-                )
+                const Text('Aucun document associé à cet épisode.')
               else
-                ...documents.map(
-                  _buildDocumentTile,
-                ),
+                ...documents.map(_buildDocumentTile),
             ],
           );
         },
