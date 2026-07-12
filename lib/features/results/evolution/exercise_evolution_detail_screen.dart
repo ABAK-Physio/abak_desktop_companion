@@ -35,7 +35,7 @@ class ExerciseEvolutionDetailScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Évolution du ${ClinicalActivityCatalog.displayLabel(exoId)}',
+          'Évolution - ${ClinicalActivityCatalog.displayLabel(exoId)}',
         ),
       ),
       body: ListView(
