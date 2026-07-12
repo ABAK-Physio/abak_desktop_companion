@@ -71,10 +71,10 @@ class _RecentImportsCardState extends State<RecentImportsCard> {
               'Imports récents',
               style: Theme.of(context).textTheme.titleMedium,
             ),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextButton.icon(
+            children: [
+              Align(
+                alignment: Alignment.centerRight,
+                child: TextButton.icon(
                   onPressed: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
@@ -82,18 +82,19 @@ class _RecentImportsCardState extends State<RecentImportsCard> {
                       ),
                     );
                   },
-                  icon: const Icon(Icons.open_in_new_outlined, size: 18),
+                  icon: const Icon(
+                    Icons.open_in_new_outlined,
+                    size: 18,
+                  ),
                   label: const Text('Historique'),
                 ),
-                const SizedBox(width: 8),
-                const Icon(Icons.expand_more),
-              ],
-            ),
-            children: [
+              ),
               if (snapshot.connectionState == ConnectionState.waiting)
                 const Padding(
                   padding: EdgeInsets.all(16),
-                  child: Center(child: CircularProgressIndicator()),
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
                 )
               else if (snapshot.hasError)
                 Text(
@@ -104,19 +105,19 @@ class _RecentImportsCardState extends State<RecentImportsCard> {
                   ),
                 )
               else if (sessions.isEmpty)
-                Text(
-                  'Aucun import enregistré.',
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  Text(
+                    'Aucun import enregistré.',
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+                  )
+                else
+                  ...sessions.map(
+                        (session) => _RecentImportTile(
+                      session: session,
+                      onChanged: _refreshSessions,
+                    ),
                   ),
-                )
-              else
-                ...sessions.map(
-                  (session) => _RecentImportTile(
-                    session: session,
-                    onChanged: _refreshSessions,
-                  ),
-                ),
             ],
           );
         },
