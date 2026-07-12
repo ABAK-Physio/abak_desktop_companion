@@ -214,10 +214,10 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
   Widget _buildContent() {
     switch (selectedIndex) {
       case 0:
-        return Align(
-          alignment: Alignment.topLeft,
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.fromLTRB(24, 4, 24, 24),
+        return SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(24, 4, 24, 24),
+          child: Align(
+            alignment: Alignment.topLeft,
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 1700),
               child: Column(
@@ -229,7 +229,9 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
                     onRefresh: _refreshDashboard,
                   ),
                   const SizedBox(height: 8),
-                  SystemOverviewBar(key: ValueKey('overview-$_refreshToken')),
+                  SystemOverviewBar(
+                    key: ValueKey('overview-$_refreshToken'),
+                  ),
                   const SizedBox(height: 24),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -244,9 +246,10 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
                       Expanded(
                         flex: 2,
                         child: Column(
+                          mainAxisSize: MainAxisSize.min,
                           children: [
-                            SystemStatusCard(),
-                            SizedBox(height: 24),
+                            const SystemStatusCard(),
+                            const SizedBox(height: 24),
                             PendingResolutionCard(
                               key: ValueKey('pending-$_refreshToken'),
                               onImportCompleted: _refreshDashboard,
@@ -258,6 +261,7 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
                       Expanded(
                         flex: 2,
                         child: Column(
+                          mainAxisSize: MainAxisSize.min,
                           children: [
                             const SystemAlertsCard(),
                             const SizedBox(height: 24),
