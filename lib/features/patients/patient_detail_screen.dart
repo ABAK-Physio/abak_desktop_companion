@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
+import '../../generated/l10n.dart';
 
 import '../../core/utils/date_format_utils.dart';
 import 'models/patient.dart';
@@ -12,6 +13,7 @@ import '../care_episodes/data/care_episode_repository.dart';
 import '../care_episodes/models/care_episode.dart';
 import '../care_episodes/screens/care_episode_detail_screen.dart';
 import '../care_episodes/models/care_episode_summary.dart';
+import 'package:abak_shared/abak_shared.dart';
 
 class PatientDetailScreen extends StatefulWidget {
   final Patient patient;
@@ -240,6 +242,7 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
           _SectionCard(
             title: 'Informations patient',
             icon: Icons.person_outline,
+            helpContent: S.of(context).help_information_patient,
             children: [
               _InfoRow(
                 label: 'Nom',
@@ -282,11 +285,13 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
 class _SectionCard extends StatelessWidget {
   final String title;
   final IconData icon;
+  final String? helpContent;
   final List<Widget> children;
 
   const _SectionCard({
     required this.title,
     required this.icon,
+    this.helpContent,
     required this.children,
   });
 
@@ -304,7 +309,19 @@ class _SectionCard extends StatelessWidget {
                 children: [
                   Icon(icon),
                   const SizedBox(width: 8),
-                  Text(title, style: Theme.of(context).textTheme.titleLarge),
+                  Expanded(
+                    child: Text(
+                      title,
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                  ),
+                  if (helpContent != null && helpContent!.trim().isNotEmpty) ...[
+                    const SizedBox(width: 8),
+                    ContextHelpButton(
+                      title: title,
+                      content: helpContent!,
+                    ),
+                  ],
                 ],
               ),
               const Divider(height: 28),
@@ -396,8 +413,9 @@ class _PatientClinicalDataSection extends StatelessWidget {
         final data = snapshot.data;
 
         return _SectionCard(
-          title: 'Données cliniques patient',
-          icon: Icons.assignment_ind_outlined,
+          title: 'Informations patient',
+          icon: Icons.person_outline,
+          helpContent: S.of(context).help_information_patient,
           children: [
             Align(
               alignment: Alignment.centerLeft,
@@ -584,6 +602,7 @@ class _CareEpisodesSection extends StatelessWidget {
         return _SectionCard(
           title: 'Prises en charge',
           icon: Icons.folder_special_outlined,
+          helpContent: S.of(context).help_prise_en_charge,
           children: [
             OutlinedButton.icon(
               onPressed: onCreateCareEpisode,

@@ -61,7 +61,7 @@ class DatabaseService {
 
     return openDatabase(
       path,
-      version: 8, ///////////////////// numéro de version
+      version: 10,  //////////////////////
       onCreate: (db, version) async {
         await _createAllTables(db);
       },
@@ -74,6 +74,7 @@ class DatabaseService {
             'TEXT NULL',
           );
         }
+
         if (oldVersion < 3) {
           await _addColumnIfMissing(
             db,
@@ -94,9 +95,11 @@ class DatabaseService {
             'TEXT NULL',
           );
         }
+
         if (oldVersion < 4) {
           await _createApplicationSettingsTable(db);
         }
+
         if (oldVersion < 5) {
           await _addColumnIfMissing(
             db,
@@ -105,6 +108,7 @@ class DatabaseService {
             'TEXT NULL',
           );
         }
+
         if (oldVersion < 6) {
           await _addColumnIfMissing(
             db,
@@ -113,6 +117,7 @@ class DatabaseService {
             'TEXT NULL',
           );
         }
+
         if (oldVersion < 7) {
           await _addColumnIfMissing(
             db,
@@ -121,6 +126,7 @@ class DatabaseService {
             'TEXT NULL',
           );
         }
+
         if (oldVersion < 8) {
           await _addColumnIfMissing(
             db,
@@ -134,6 +140,14 @@ class DatabaseService {
             'desktop_import_session_files',
             'duplicate_results_count',
             'INTEGER NOT NULL DEFAULT 0',
+          );
+        }
+        if (oldVersion < 10) {
+          await _addColumnIfMissing(
+            db,
+            'patients',
+            'nir',
+            'TEXT NULL',
           );
         }
       },
@@ -212,6 +226,7 @@ class DatabaseService {
         first_name TEXT NOT NULL,
         birth_date TEXT NULL,
         sex_code TEXT NOT NULL DEFAULT 'U',
+        nir TEXT NULL,
         created_at INTEGER NOT NULL,
         updated_at INTEGER NULL,
         archived_at INTEGER NULL

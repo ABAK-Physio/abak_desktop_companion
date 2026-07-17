@@ -31,5 +31,11 @@
   "exchangeDirectoryUpdated": "Dossier d'échange ABAK mis à jour",
   "exchangeDirectoryReset": "Dossier d'échange réinitialisé",
   "openingExchangeDirectory": "Ouverture du dossier d'échange",
-  "smartCardDiagnostic": "Diagnostic Carte Vitale"
+  "smartCardDiagnostic": "Diagnostic Carte Vitale",
+  "user_settings": "Paramètres utilisateur",
+  "language_choice": "Langue de l'application",
+  "help_information_patient": "Vous trouvez ici l'identification de votre patient",
+  "help_prise_en_charge": "Vous trouvez ici les différentes prises en charge de votre patient\\Vous pouvez utiliser un épisode existant\\Vous pouvez en créer un nouveau",
+  "help_donnees_cliniques_patient": "Vous trouvez ici les données complémentaires concernant votre patient",
+  "help_parametres_utilisateur": "Sélectionner la langue, le nom de votre cabinet, son logo"
 }

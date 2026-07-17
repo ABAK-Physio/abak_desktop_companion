@@ -6,6 +6,7 @@ class VitaleIdentity {
     this.firstName,
     this.birthDate,
     this.sexCode,
+    this.nir,
     this.source = 'carte_vitale',
   });
 
@@ -13,13 +14,15 @@ class VitaleIdentity {
   final String? firstName;
   final DateTime? birthDate;
   final String? sexCode; // M / F / U
+  final String? nir;
   final String source;
 
   bool get hasUsableIdentity {
     return (lastName?.trim().isNotEmpty ?? false) ||
         (firstName?.trim().isNotEmpty ?? false) ||
         birthDate != null ||
-        (sexCode?.trim().isNotEmpty ?? false);
+        (sexCode?.trim().isNotEmpty ?? false) ||
+        (nir?.trim().isNotEmpty ?? false);
   }
 
   factory VitaleIdentity.fromMap(Map<dynamic, dynamic> map) {
@@ -32,6 +35,7 @@ class VitaleIdentity {
           ? null
           : DateTime.tryParse(birthDateRaw),
       sexCode: map['sexCode']?.toString(),
+      nir: map['nir']?.toString(),
       source: map['source']?.toString() ?? 'carte_vitale',
     );
   }
@@ -42,6 +46,7 @@ class VitaleIdentity {
       'firstName': firstName,
       'birthDate': birthDate?.toIso8601String(),
       'sexCode': sexCode,
+      'nir': nir,
       'source': source,
     };
   }

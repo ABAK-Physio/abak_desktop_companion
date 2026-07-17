@@ -4,6 +4,7 @@ class Patient {
   final String firstName;
   final String? birthDate;
   final String sexCode;
+  final String? nir;
   final int createdAt;
   final int? updatedAt;
   final int? archivedAt;
@@ -14,6 +15,7 @@ class Patient {
     required this.firstName,
     this.birthDate,
     required this.sexCode,
+    this.nir,
     required this.createdAt,
     this.updatedAt,
     this.archivedAt,
@@ -26,6 +28,7 @@ class Patient {
       firstName: map['first_name'] as String,
       birthDate: map['birth_date'] as String?,
       sexCode: map['sex_code'] as String? ?? 'U',
+      nir: map['nir'] as String?,
       createdAt: map['created_at'] as int,
       updatedAt: map['updated_at'] as int?,
       archivedAt: map['archived_at'] as int?,
@@ -39,6 +42,7 @@ class Patient {
       'first_name': firstName,
       'birth_date': birthDate,
       'sex_code': sexCode,
+      'nir': nir,
       'created_at': createdAt,
       'updated_at': updatedAt,
       'archived_at': archivedAt,

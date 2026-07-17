@@ -31,5 +31,11 @@
   "exchangeDirectoryUpdated": "Dossiê de intercâmbio ABAK atualizado",
   "exchangeDirectoryReset": "Pasta de troca reiniciada",
   "openingExchangeDirectory": "Abertura do processo de intercâmbio",
-  "smartCardDiagnostic": "Diagnóstico do Cartão de Saúde"
+  "smartCardDiagnostic": "Diagnóstico do Cartão de Saúde",
+  "user_settings": "Definições do utilizador",
+  "language_choice": "Idioma da aplicação",
+  "help_information_patient": "Aqui encontra os dados de identificação do seu doente",
+  "help_prise_en_charge": "Aqui encontrará os diferentes tratamentos do seu doente. Pode utilizar um episódio já existente ou criar um novo.",
+  "help_donnees_cliniques_patient": "Aqui encontrará informações adicionais sobre o seu doente",
+  "help_parametres_utilisateur": "Selecione o idioma, o nome do seu escritório e o logótipo do mesmo"
 }

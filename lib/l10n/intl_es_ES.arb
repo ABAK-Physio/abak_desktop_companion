@@ -31,5 +31,11 @@
   "exchangeDirectoryUpdated": "Expediente de intercambio de ABAK actualizado",
   "exchangeDirectoryReset": "Carpeta de intercambio restablecida",
   "openingExchangeDirectory": "Apertura del expediente de intercambio",
-  "smartCardDiagnostic": "Diagnóstico de la Tarjeta Sanitaria"
+  "smartCardDiagnostic": "Diagnóstico de la Tarjeta Sanitaria",
+  "user_settings": "Configuración de usuario",
+  "language_choice": "Idioma de la aplicación",
+  "help_information_patient": "Aquí encontrarás los datos de identificación de tu paciente",
+  "help_prise_en_charge": "Aquí encontrará los distintos tratamientos de su paciente. Puede utilizar un episodio ya existente o crear uno nuevo.",
+  "help_donnees_cliniques_patient": "Aquí encontrarás información adicional sobre tu paciente",
+  "help_parametres_utilisateur": "Selecciona el idioma, el nombre de tu despacho y su logotipo"
 }

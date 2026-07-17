@@ -1,4 +1,5 @@
 import 'dart:io';
+import '../../generated/l10n.dart';
 
 import 'package:abak_shared/abak_shared.dart';
 import 'package:file_picker/file_picker.dart';
@@ -132,6 +133,7 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final s = S.of(context);
     final languageCode = _languageCode ?? AbakSupportedLanguages.defaultCode;
 
     return Center(
@@ -143,9 +145,19 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
             child: ListView(
               shrinkWrap: true,
               children: [
-                const Text(
-                  'Paramètres utilisateur',
-                  style: TextStyle(fontSize: 24),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        S.of(context).user_settings,
+                        style: const TextStyle(fontSize: 24),
+                      ),
+                    ),
+                    ContextHelpButton(
+                      title: S.of(context).user_settings,
+                      content: S.of(context).help_parametres_utilisateur,
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 24),
 
@@ -154,8 +166,8 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
                     padding: const EdgeInsets.all(16),
                     child: DropdownButtonFormField<String>(
                       initialValue: languageCode,
-                      decoration: const InputDecoration(
-                        labelText: 'Langue de l’application',
+                      decoration: InputDecoration(
+                        labelText: s.language_choice,
                         border: OutlineInputBorder(),
                       ),
                       items: AbakSupportedLanguages.codes.map((code) {

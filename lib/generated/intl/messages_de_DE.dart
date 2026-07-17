@@ -22,67 +22,67 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-    "appTitle": MessageLookupByLibrary.simpleMessage("ABAK Desktop Companion"),
-    "applicationLanguage": MessageLookupByLibrary.simpleMessage(
-      "Sprache der Anwendung",
-    ),
-    "archives": MessageLookupByLibrary.simpleMessage("Archiv"),
-    "close": MessageLookupByLibrary.simpleMessage("Schließen"),
-    "dashboardTitle": MessageLookupByLibrary.simpleMessage(
-      "Lokale ABAK-Klinikstation",
-    ),
-    "desktopAddress": MessageLookupByLibrary.simpleMessage("Adresse"),
-    "desktopPort": MessageLookupByLibrary.simpleMessage("Hafen"),
-    "devices": MessageLookupByLibrary.simpleMessage("Geräte"),
-    "exchangeDirectory": MessageLookupByLibrary.simpleMessage(
-      "ABAK-Austauschunterlagen",
-    ),
-    "exchangeDirectoryReset": MessageLookupByLibrary.simpleMessage(
-      "Austauschordner zurückgesetzt",
-    ),
-    "exchangeDirectoryUpdated": MessageLookupByLibrary.simpleMessage(
-      "Aktualisierte ABAK-Austauschdatei",
-    ),
-    "home": MessageLookupByLibrary.simpleMessage("Startseite"),
-    "information": MessageLookupByLibrary.simpleMessage("Informationen"),
-    "ipAddressNotFound": MessageLookupByLibrary.simpleMessage(
-      "IP-Adresse nicht gefunden",
-    ),
-    "ipAddressNotFoundMessage": MessageLookupByLibrary.simpleMessage(
-      "Die lokale IP-Adresse des Desktops kann nicht ermittelt werden.\n\nStellen Sie sicher, dass der Computer mit dem lokalen Netzwerk verbunden ist.",
-    ),
-    "languageSaved": MessageLookupByLibrary.simpleMessage(
-      "Gespeicherte Sprache.",
-    ),
-    "loading": MessageLookupByLibrary.simpleMessage("Wird geladen..."),
-    "modify": MessageLookupByLibrary.simpleMessage("Bearbeiten"),
-    "noDirectoryDefined": MessageLookupByLibrary.simpleMessage(
-      "Es wurde kein Ordner festgelegt",
-    ),
-    "ok": MessageLookupByLibrary.simpleMessage("Na gut"),
-    "open": MessageLookupByLibrary.simpleMessage("Öffnen"),
-    "openingExchangeDirectory": MessageLookupByLibrary.simpleMessage(
-      "Eröffnung des Austauschverfahrens",
-    ),
-    "pairPhone": MessageLookupByLibrary.simpleMessage("Ein Telefon koppeln"),
-    "pairPhoneDialogTitle": MessageLookupByLibrary.simpleMessage(
-      "Ein Telefon koppeln",
-    ),
-    "pairPhoneInstructions": MessageLookupByLibrary.simpleMessage(
-      "Scannen Sie diesen QR-Code mit ABAK Mobile, um die Verbindung zum Desktop automatisch einzurichten.",
-    ),
-    "patients": MessageLookupByLibrary.simpleMessage("Patienten"),
-    "practitioners": MessageLookupByLibrary.simpleMessage("Physiotherapeuten"),
-    "refreshDashboard": MessageLookupByLibrary.simpleMessage(
-      "Dashboard aktualisieren",
-    ),
-    "reset": MessageLookupByLibrary.simpleMessage("Zurücksetzen"),
-    "settings": MessageLookupByLibrary.simpleMessage("Einstellungen"),
-    "smartCardDiagnostic": MessageLookupByLibrary.simpleMessage(
-      "Diagnose „Carte Vitale“",
-    ),
-    "userPreferences": MessageLookupByLibrary.simpleMessage(
-      "Benutzereinstellungen",
-    ),
-  };
+        "appTitle":
+            MessageLookupByLibrary.simpleMessage("ABAK Desktop Companion"),
+        "applicationLanguage":
+            MessageLookupByLibrary.simpleMessage("Sprache der Anwendung"),
+        "archives": MessageLookupByLibrary.simpleMessage("Archiv"),
+        "close": MessageLookupByLibrary.simpleMessage("Schließen"),
+        "dashboardTitle":
+            MessageLookupByLibrary.simpleMessage("Lokale ABAK-Klinikstation"),
+        "desktopAddress": MessageLookupByLibrary.simpleMessage("Adresse"),
+        "desktopPort": MessageLookupByLibrary.simpleMessage("Hafen"),
+        "devices": MessageLookupByLibrary.simpleMessage("Geräte"),
+        "exchangeDirectory":
+            MessageLookupByLibrary.simpleMessage("ABAK-Austauschunterlagen"),
+        "exchangeDirectoryReset": MessageLookupByLibrary.simpleMessage(
+            "Austauschordner zurückgesetzt"),
+        "exchangeDirectoryUpdated": MessageLookupByLibrary.simpleMessage(
+            "Aktualisierte ABAK-Austauschdatei"),
+        "help_donnees_cliniques_patient": MessageLookupByLibrary.simpleMessage(
+            "Hier finden Sie weitere Informationen zu Ihrem Patienten"),
+        "help_information_patient": MessageLookupByLibrary.simpleMessage(
+            "Hier finden Sie die Identifikationsdaten Ihres Patienten"),
+        "help_parametres_utilisateur": MessageLookupByLibrary.simpleMessage(
+            "Wählen Sie die Sprache, den Namen Ihrer Praxis und deren Logo aus"),
+        "help_prise_en_charge": MessageLookupByLibrary.simpleMessage(
+            "Hier finden Sie die verschiedenen Behandlungen Ihres Patienten. Sie können eine bereits vorhandene Behandlung verwenden oder eine neue anlegen."),
+        "home": MessageLookupByLibrary.simpleMessage("Startseite"),
+        "information": MessageLookupByLibrary.simpleMessage("Informationen"),
+        "ipAddressNotFound":
+            MessageLookupByLibrary.simpleMessage("IP-Adresse nicht gefunden"),
+        "ipAddressNotFoundMessage": MessageLookupByLibrary.simpleMessage(
+            "Die lokale IP-Adresse des Desktops kann nicht ermittelt werden.\n\nStellen Sie sicher, dass der Computer mit dem lokalen Netzwerk verbunden ist."),
+        "languageSaved":
+            MessageLookupByLibrary.simpleMessage("Gespeicherte Sprache."),
+        "language_choice":
+            MessageLookupByLibrary.simpleMessage("Sprache der Anwendung"),
+        "loading": MessageLookupByLibrary.simpleMessage("Wird geladen..."),
+        "modify": MessageLookupByLibrary.simpleMessage("Bearbeiten"),
+        "noDirectoryDefined": MessageLookupByLibrary.simpleMessage(
+            "Es wurde kein Ordner festgelegt"),
+        "ok": MessageLookupByLibrary.simpleMessage("Na gut"),
+        "open": MessageLookupByLibrary.simpleMessage("Öffnen"),
+        "openingExchangeDirectory": MessageLookupByLibrary.simpleMessage(
+            "Eröffnung des Austauschverfahrens"),
+        "pairPhone":
+            MessageLookupByLibrary.simpleMessage("Ein Telefon koppeln"),
+        "pairPhoneDialogTitle":
+            MessageLookupByLibrary.simpleMessage("Ein Telefon koppeln"),
+        "pairPhoneInstructions": MessageLookupByLibrary.simpleMessage(
+            "Scannen Sie diesen QR-Code mit ABAK Mobile, um die Verbindung zum Desktop automatisch einzurichten."),
+        "patients": MessageLookupByLibrary.simpleMessage("Patienten"),
+        "practitioners":
+            MessageLookupByLibrary.simpleMessage("Physiotherapeuten"),
+        "refreshDashboard":
+            MessageLookupByLibrary.simpleMessage("Dashboard aktualisieren"),
+        "reset": MessageLookupByLibrary.simpleMessage("Zurücksetzen"),
+        "settings": MessageLookupByLibrary.simpleMessage("Einstellungen"),
+        "smartCardDiagnostic":
+            MessageLookupByLibrary.simpleMessage("Diagnose „Carte Vitale“"),
+        "userPreferences":
+            MessageLookupByLibrary.simpleMessage("Benutzereinstellungen"),
+        "user_settings":
+            MessageLookupByLibrary.simpleMessage("Benutzereinstellungen")
+      };
 }

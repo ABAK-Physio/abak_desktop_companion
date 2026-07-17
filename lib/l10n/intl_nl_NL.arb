@@ -31,5 +31,11 @@
   "exchangeDirectoryUpdated": "Bijgewerkt ABAK-uitwisselingsdossier",
   "exchangeDirectoryReset": "Uitwisselingsdossier gereset",
   "openingExchangeDirectory": "Het uitwisselingsdossier openen",
-  "smartCardDiagnostic": "Diagnose van de Carte Vitale"
+  "smartCardDiagnostic": "Diagnose van de Carte Vitale",
+  "user_settings": "Gebruikersinstellingen",
+  "language_choice": "Taal van de applicatie",
+  "help_information_patient": "Hier vindt u de identificatiegegevens van uw patiënt",
+  "help_prise_en_charge": "Hier vindt u de verschillende behandelingen van uw patiënt. U kunt een bestaande behandelingsperiode gebruiken of een nieuwe aanmaken.",
+  "help_donnees_cliniques_patient": "Hier vindt u aanvullende gegevens over uw patiënt",
+  "help_parametres_utilisateur": "Selecteer de taal, de naam van uw praktijk en het logo"
 }

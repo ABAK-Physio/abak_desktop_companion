@@ -31,5 +31,11 @@
   "exchangeDirectoryUpdated": "Updated ABAK Exchange File",
   "exchangeDirectoryReset": "Exchange Folder Reset",
   "openingExchangeDirectory": "Opening the exchange file",
-  "smartCardDiagnostic": "Vitale Card Diagnosis"
+  "smartCardDiagnostic": "Vitale Card Diagnosis",
+  "user_settings": "User Settings",
+  "language_choice": "Application Language",
+  "help_information_patient": "Here you will find your patient's identification information",
+  "help_prise_en_charge": "Here you'll find the various care plans for your patient. You can use an existing care plan, or you can create a new one.",
+  "help_donnees_cliniques_patient": "Here you will find additional information about your patient",
+  "help_parametres_utilisateur": "Select the language, your firm's name, and its logo"
 }

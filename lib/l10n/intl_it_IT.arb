@@ -31,5 +31,11 @@
   "exchangeDirectoryUpdated": "Documentazione di scambio ABAK aggiornata",
   "exchangeDirectoryReset": "Cartella di scambio ripristinata",
   "openingExchangeDirectory": "Apertura della pratica di scambio",
-  "smartCardDiagnostic": "Diagnosi della Carta Vitale"
+  "smartCardDiagnostic": "Diagnosi della Carta Vitale",
+  "user_settings": "Impostazioni utente",
+  "language_choice": "Lingua dell'applicazione",
+  "help_information_patient": "Qui trovate i dati identificativi del vostro paziente",
+  "help_prise_en_charge": "Qui troverete le diverse cure del vostro paziente\\Potete utilizzare un episodio esistente\\Potete crearne uno nuovo",
+  "help_donnees_cliniques_patient": "Qui troverete ulteriori informazioni relative al vostro paziente",
+  "help_parametres_utilisateur": "Seleziona la lingua, il nome del tuo studio e il relativo logo"
 }

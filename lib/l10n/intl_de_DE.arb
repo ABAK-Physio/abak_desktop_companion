@@ -31,5 +31,11 @@
   "exchangeDirectoryUpdated": "Aktualisierte ABAK-Austauschdatei",
   "exchangeDirectoryReset": "Austauschordner zurückgesetzt",
   "openingExchangeDirectory": "Eröffnung des Austauschverfahrens",
-  "smartCardDiagnostic": "Diagnose „Carte Vitale“"
+  "smartCardDiagnostic": "Diagnose „Carte Vitale“",
+  "user_settings": "Benutzereinstellungen",
+  "language_choice": "Sprache der Anwendung",
+  "help_information_patient": "Hier finden Sie die Identifikationsdaten Ihres Patienten",
+  "help_prise_en_charge": "Hier finden Sie die verschiedenen Behandlungen Ihres Patienten. Sie können eine bereits vorhandene Behandlung verwenden oder eine neue anlegen.",
+  "help_donnees_cliniques_patient": "Hier finden Sie weitere Informationen zu Ihrem Patienten",
+  "help_parametres_utilisateur": "Wählen Sie die Sprache, den Namen Ihrer Praxis und deren Logo aus"
 }
