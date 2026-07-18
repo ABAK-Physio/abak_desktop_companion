@@ -21,6 +21,9 @@ class _SmartCardDiagnosticScreenState extends State<SmartCardDiagnosticScreen> {
   SmartCardApduResult? _apduResult;
   bool _testingApdu = false;
 
+  SmartCardVitaleApiResult? _vitaleApiResult;
+  bool _checkingVitaleApi = false;
+
   Future<void> _refresh() async {
     setState(() {
       _loading = true;
@@ -55,6 +58,22 @@ class _SmartCardDiagnosticScreenState extends State<SmartCardDiagnosticScreen> {
     setState(() {
       _apduResult = result;
       _testingApdu = false;
+    });
+  }
+
+  Future<void> _checkVitaleApi() async {
+    setState(() {
+      _checkingVitaleApi = true;
+      _vitaleApiResult = null;
+    });
+
+    final result = await _service.checkVitaleApi();
+
+    if (!mounted) return;
+
+    setState(() {
+      _vitaleApiResult = result;
+      _checkingVitaleApi = false;
     });
   }
 
@@ -179,6 +198,90 @@ class _SmartCardDiagnosticScreenState extends State<SmartCardDiagnosticScreen> {
               ),
             ),
           ),
+        ],
+
+        const SizedBox(height: 24),
+
+        const Divider(),
+
+        const Text(
+          'API officielle de lecture',
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 12),
+        const Text(
+          'Vérifie le chargement de la DLL SESAM-Vitale et la présence des fonctions nécessaires.',
+        ),
+        const SizedBox(height: 12),
+
+        FilledButton.icon(
+          onPressed: _checkingVitaleApi ? null : _checkVitaleApi,
+          icon: const Icon(Icons.extension_outlined),
+          label: Text(
+            _checkingVitaleApi
+                ? 'Vérification en cours...'
+                : 'Vérifier API de lecture',
+          ),
+        ),
+
+        if (_vitaleApiResult != null) ...[
+          const SizedBox(height: 12),
+
+          Card(
+            child: ListTile(
+              leading: Icon(
+                _vitaleApiResult!.success
+                    ? Icons.check_circle
+                    : Icons.error_outline,
+              ),
+              title: Text(
+                _vitaleApiResult!.success
+                    ? 'API disponible'
+                    : 'API indisponible ou incomplète',
+              ),
+              subtitle: SelectableText(
+                [
+                  'DLL chargée : ${_vitaleApiResult!.dllLoaded ? 'Oui' : 'Non'}',
+                  'Hn_Init : ${_vitaleApiResult!.hnInitFound ? 'Trouvée' : 'Absente'}',
+                  'Hn_Init retour : ${_vitaleApiResult!.hnInitReturn ?? '-'}',
+                  'Hn_Init mode : ${_vitaleApiResult!.hnInitMode ?? '-'}',
+                  'Hn_Init code erreur : ${_vitaleApiResult!.hnInitError ?? '-'}',
+                  'Hn_LectureVitaleDonneesIdentification : '
+                      '${_vitaleApiResult!.hnReadIdentityFound ? 'Trouvée' : 'Absente'}',
+                  'Hn_Lecture retour : '
+                      '${_vitaleApiResult!.hnReadReturn}',
+                  'Hn_Lecture longueur : '
+                      '${_vitaleApiResult!.hnReadLength}',
+                  'Taille du buffer C++ : '
+                      '${_vitaleApiResult!.hnReadBufferSize}',
+                  'État carte : '
+                      '${_vitaleApiResult!.hnCardState}',
+                  'Hn_Lecture code erreur : '
+                      '${_vitaleApiResult!.hnReadError}',
+                  'Hn_Finir : '
+                      '${_vitaleApiResult!.hnFinishFound ? 'Trouvée' : 'Absente'}',
+                  if (_vitaleApiResult!.message != null)
+                    'Message : ${_vitaleApiResult!.message}',
+                  if (_vitaleApiResult!.windowsError != null)
+                    'Erreur Windows : ${_vitaleApiResult!.windowsError}',
+                ].join('\n'),
+              ),
+            ),
+          ),
+
+          if (_vitaleApiResult!.xml != null) ...[
+            const SizedBox(height: 12),
+            ExpansionTile(
+              leading: const Icon(Icons.description_outlined),
+              title: const Text('XML retourné par l’API'),
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: SelectableText(_vitaleApiResult!.xml!),
+                ),
+              ],
+            ),
+          ],
         ],
 
         const SizedBox(height: 24),
