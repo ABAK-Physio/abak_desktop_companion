@@ -548,6 +548,10 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
       final identities =
       await _vitaleIdentityService.readVitaleIdentities();
 
+      debugPrint(
+        'macOS : ${identities.length} bénéficiaire(s)',
+      );
+
       if (!mounted) {
         return;
       }

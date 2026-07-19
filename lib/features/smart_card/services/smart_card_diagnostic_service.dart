@@ -65,6 +65,7 @@ class SmartCardDiagnosticService {
     try {
       final raw = await _channel.invokeMethod<Map<dynamic, dynamic>>(
         'getStatus',
+
       );
 
       final data = raw ?? const <dynamic, dynamic>{};
@@ -99,6 +100,7 @@ $stackTrace
       );
     }
   }
+
 
   Future<SmartCardApduResult> testApdu() async {
     try {

@@ -7,7 +7,8 @@ class AppDelegate: FlutterAppDelegate {
 
   override func applicationDidFinishLaunching(_ notification: Notification) {
     guard
-        let controller = mainFlutterWindow?.contentViewController as? FlutterViewController
+        let controller =
+        mainFlutterWindow?.contentViewController as? FlutterViewController
     else {
       super.applicationDidFinishLaunching(notification)
       return
@@ -20,7 +21,6 @@ class AppDelegate: FlutterAppDelegate {
 
     smartCardChannel.setMethodCallHandler { call, result in
       switch call.method {
-
       case "getStatus":
         result(SmartCardPcscBridge.getStatus())
 
@@ -30,22 +30,26 @@ class AppDelegate: FlutterAppDelegate {
       case "readVitaleIdentity":
         result(SmartCardPcscBridge.readVitaleIdentity())
 
+      case "getAvailableReaders":
+        result(SmartCardPcscBridge.getAvailableReaders())
+
       default:
         result(FlutterMethodNotImplemented)
-
       }
     }
-
-
 
     super.applicationDidFinishLaunching(notification)
   }
 
-  override func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
+  override func applicationShouldTerminateAfterLastWindowClosed(
+      _ sender: NSApplication
+  ) -> Bool {
     return true
   }
 
-  override func applicationSupportsSecureRestorableState(_ app: NSApplication) -> Bool {
+  override func applicationSupportsSecureRestorableState(
+      _ app: NSApplication
+  ) -> Bool {
     return true
   }
 }

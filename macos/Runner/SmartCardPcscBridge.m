@@ -5,7 +5,6 @@
 //  Created by Jean claude Brucher on 08/06/2026.
 //
 
-
 #import "SmartCardPcscBridge.h"
 #import <PCSC/winscard.h>
 #import <PCSC/wintypes.h>
@@ -13,39 +12,132 @@
 
 @implementation SmartCardPcscBridge
 
++ (NSArray<NSString *> *)getAvailableReaders {
+    SCARDCONTEXT context;
+    LONG status = SCardEstablishContext(
+            SCARD_SCOPE_SYSTEM,
+            NULL,
+            NULL,
+            &context
+    );
+
+    if (status != SCARD_S_SUCCESS) {
+        NSLog(
+                @"SCardEstablishContext failed while listing readers: %d (0x%08X)",
+                (int)status,
+                (unsigned int)status
+        );
+        return @[];
+    }
+
+    DWORD readersLength = 0;
+
+    status = SCardListReaders(
+            context,
+            NULL,
+            NULL,
+            &readersLength
+    );
+
+    if (status == SCARD_E_NO_READERS_AVAILABLE || readersLength == 0) {
+        SCardReleaseContext(context);
+        return @[];
+    }
+
+    if (status != SCARD_S_SUCCESS) {
+        NSLog(
+                @"SCardListReaders size query failed: %d (0x%08X)",
+                (int)status,
+                (unsigned int)status
+        );
+        SCardReleaseContext(context);
+        return @[];
+    }
+
+    char *readersBuffer = malloc(readersLength);
+
+    if (readersBuffer == NULL) {
+        NSLog(@"Unable to allocate memory for PC/SC reader list");
+        SCardReleaseContext(context);
+        return @[];
+    }
+
+    status = SCardListReaders(
+            context,
+            NULL,
+            readersBuffer,
+            &readersLength
+    );
+
+    if (status != SCARD_S_SUCCESS) {
+        NSLog(
+                @"SCardListReaders failed: %d (0x%08X)",
+                (int)status,
+                (unsigned int)status
+        );
+        free(readersBuffer);
+        SCardReleaseContext(context);
+        return @[];
+    }
+
+    NSMutableArray<NSString *> *readers = [NSMutableArray array];
+
+    const char *currentReader = readersBuffer;
+    const char *bufferEnd = readersBuffer + readersLength;
+
+    while (
+            currentReader < bufferEnd &&
+                    currentReader[0] != '\0'
+            ) {
+        NSString *readerName =
+                [NSString stringWithUTF8String:currentReader];
+
+        if (readerName != nil && readerName.length > 0) {
+            [readers addObject:readerName];
+        }
+
+        currentReader += strlen(currentReader) + 1;
+    }
+
+    free(readersBuffer);
+    SCardReleaseContext(context);
+
+    return [readers copy];
+}
+
 + (NSDictionary *)getStatus {
     SCARDCONTEXT context;
     LONG status = SCardEstablishContext(
-        SCARD_SCOPE_SYSTEM,
-        NULL,
-        NULL,
-        &context
+            SCARD_SCOPE_SYSTEM,
+            NULL,
+            NULL,
+            &context
     );
 
     if (status != SCARD_S_SUCCESS) {
         return @{
-            @"readerDetected": @NO,
-            @"cardDetected": @NO,
-            @"error": [NSString stringWithFormat:@"SCardEstablishContext failed: %d", status]
+                @"readerDetected": @NO,
+                @"cardDetected": @NO,
+                @"error": [NSString stringWithFormat:@"SCardEstablishContext failed: %d", status]
         };
     }
 
     DWORD readersLength = 0;
 
     status = SCardListReaders(
-        context,
-        NULL,
-        NULL,
-        &readersLength
+            context,
+            NULL,
+            NULL,
+            &readersLength
     );
 
     if (status != SCARD_S_SUCCESS || readersLength == 0) {
         SCardReleaseContext(context);
 
         return @{
-            @"readerDetected": @NO,
-            @"cardDetected": @NO,
-            @"error": @"Aucun lecteur PC/SC détecté"
+                @"readerDetected": @NO,
+                @"cardDetected": @NO,
+                @"error": @"Aucun lecteur PC/SC détecté"
         };
     }
 
@@ -55,17 +147,17 @@
         SCardReleaseContext(context);
 
         return @{
-            @"readerDetected": @NO,
-            @"cardDetected": @NO,
-            @"error": @"Allocation mémoire impossible"
+                @"readerDetected": @NO,
+                @"cardDetected": @NO,
+                @"error": @"Allocation mémoire impossible"
         };
     }
 
     status = SCardListReaders(
-        context,
-        NULL,
-        readersBuffer,
-        &readersLength
+            context,
+            NULL,
+            readersBuffer,
+            &readersLength
     );
 
     if (status != SCARD_S_SUCCESS) {
@@ -73,9 +165,9 @@
         SCardReleaseContext(context);
 
         return @{
-            @"readerDetected": @NO,
-            @"cardDetected": @NO,
-            @"error": [NSString stringWithFormat:@"SCardListReaders failed: %d", status]
+                @"readerDetected": @NO,
+                @"cardDetected": @NO,
+                @"error": [NSString stringWithFormat:@"SCardListReaders failed: %d", status]
         };
     }
 
@@ -87,9 +179,9 @@
         SCardReleaseContext(context);
 
         return @{
-            @"readerDetected": @NO,
-            @"cardDetected": @NO,
-            @"error": @"Nom de lecteur vide"
+                @"readerDetected": @NO,
+                @"cardDetected": @NO,
+                @"error": @"Nom de lecteur vide"
         };
     }
 
@@ -97,22 +189,22 @@
     DWORD activeProtocol = 0;
 
     status = SCardConnect(
-        context,
-        [readerName UTF8String],
-        SCARD_SHARE_SHARED,
-        SCARD_PROTOCOL_T0 | SCARD_PROTOCOL_T1,
-        &card,
-        &activeProtocol
+            context,
+            [readerName UTF8String],
+            SCARD_SHARE_SHARED,
+            SCARD_PROTOCOL_T0 | SCARD_PROTOCOL_T1,
+            &card,
+            &activeProtocol
     );
 
     if (status != SCARD_S_SUCCESS) {
         SCardReleaseContext(context);
 
         return @{
-            @"readerDetected": @YES,
-            @"cardDetected": @NO,
-            @"readerName": readerName,
-            @"error": [NSString stringWithFormat:@"Lecteur détecté, carte absente ou inaccessible: %d", status]
+                @"readerDetected": @YES,
+                @"cardDetected": @NO,
+                @"readerName": readerName,
+                @"error": [NSString stringWithFormat:@"Lecteur détecté, carte absente ou inaccessible: %d", status]
         };
     }
 
@@ -126,13 +218,13 @@
     DWORD atrLength = sizeof(atr);
 
     status = SCardStatus(
-        card,
-        readerBuffer,
-        &readerBufferLength,
-        &state,
-        &protocol,
-        atr,
-        &atrLength
+            card,
+            readerBuffer,
+            &readerBufferLength,
+            &state,
+            &protocol,
+            atr,
+            &atrLength
     );
 
     if (status != SCARD_S_SUCCESS) {
@@ -140,10 +232,10 @@
         SCardReleaseContext(context);
 
         return @{
-            @"readerDetected": @YES,
-            @"cardDetected": @YES,
-            @"readerName": readerName,
-            @"error": [NSString stringWithFormat:@"SCardStatus failed: %d", status]
+                @"readerDetected": @YES,
+                @"cardDetected": @YES,
+                @"readerName": readerName,
+                @"error": [NSString stringWithFormat:@"SCardStatus failed: %d", status]
         };
     }
 
@@ -157,26 +249,27 @@
     SCardReleaseContext(context);
 
     return @{
-        @"readerDetected": @YES,
-        @"cardDetected": @YES,
-        @"readerName": readerName,
-        @"atr": atrHex,
-        @"protocol": @(activeProtocol)
+            @"readerDetected": @YES,
+            @"cardDetected": @YES,
+            @"readerName": readerName,
+            @"atr": atrHex,
+            @"protocol": @(activeProtocol)
     };
 }
+
 + (NSDictionary *)testApdu {
     SCARDCONTEXT context;
     LONG status = SCardEstablishContext(
-        SCARD_SCOPE_SYSTEM,
-        NULL,
-        NULL,
-        &context
+            SCARD_SCOPE_SYSTEM,
+            NULL,
+            NULL,
+            &context
     );
 
     if (status != SCARD_S_SUCCESS) {
         return @{
-            @"success": @NO,
-            @"error": [NSString stringWithFormat:@"SCardEstablishContext failed: %d (0x%08X)", status, status]
+                @"success": @NO,
+                @"error": [NSString stringWithFormat:@"SCardEstablishContext failed: %d (0x%08X)", status, status]
         };
     }
 
@@ -186,8 +279,8 @@
     if (status != SCARD_S_SUCCESS || readersLength == 0) {
         SCardReleaseContext(context);
         return @{
-            @"success": @NO,
-            @"error": @"Aucun lecteur PC/SC détecté"
+                @"success": @NO,
+                @"error": @"Aucun lecteur PC/SC détecté"
         };
     }
 
@@ -195,8 +288,8 @@
     if (readersBuffer == NULL) {
         SCardReleaseContext(context);
         return @{
-            @"success": @NO,
-            @"error": @"Allocation mémoire impossible"
+                @"success": @NO,
+                @"error": @"Allocation mémoire impossible"
         };
     }
 
@@ -206,8 +299,8 @@
         free(readersBuffer);
         SCardReleaseContext(context);
         return @{
-            @"success": @NO,
-            @"error": [NSString stringWithFormat:@"SCardListReaders failed: %d (0x%08X)", status, status]
+                @"success": @NO,
+                @"error": [NSString stringWithFormat:@"SCardListReaders failed: %d (0x%08X)", status, status]
         };
     }
 
@@ -217,8 +310,8 @@
     if (readerName == nil || readerName.length == 0) {
         SCardReleaseContext(context);
         return @{
-            @"success": @NO,
-            @"error": @"Nom de lecteur vide"
+                @"success": @NO,
+                @"error": @"Nom de lecteur vide"
         };
     }
 
@@ -226,29 +319,29 @@
     DWORD activeProtocol = 0;
 
     status = SCardConnect(
-        context,
-        [readerName UTF8String],
-        SCARD_SHARE_EXCLUSIVE,
-        SCARD_PROTOCOL_T0,
-        &card,
-        &activeProtocol
+            context,
+            [readerName UTF8String],
+            SCARD_SHARE_EXCLUSIVE,
+            SCARD_PROTOCOL_T0,
+            &card,
+            &activeProtocol
     );
 
     if (status != SCARD_S_SUCCESS) {
         SCardReleaseContext(context);
         return @{
-            @"success": @NO,
-            @"readerName": readerName,
-            @"error": [NSString stringWithFormat:@"Carte absente ou inaccessible: %d (0x%08X)", status, status]
+                @"success": @NO,
+                @"readerName": readerName,
+                @"error": [NSString stringWithFormat:@"Carte absente ou inaccessible: %d (0x%08X)", status, status]
         };
     }
-    
+
     status = SCardReconnect(
-        card,
-        SCARD_SHARE_EXCLUSIVE,
-        SCARD_PROTOCOL_T0,
-        SCARD_RESET_CARD,
-        &activeProtocol
+            card,
+            SCARD_SHARE_EXCLUSIVE,
+            SCARD_PROTOCOL_T0,
+            SCARD_RESET_CARD,
+            &activeProtocol
     );
 
     if (status != SCARD_S_SUCCESS) {
@@ -256,13 +349,13 @@
         SCardReleaseContext(context);
 
         return @{
-            @"success": @NO,
-            @"readerName": readerName,
-            @"protocol": @(activeProtocol),
-            @"error": [NSString stringWithFormat:
-                @"SCardReconnect failed: %d (0x%08X)",
-                status,
-                (unsigned int)status]
+                @"success": @NO,
+                @"readerName": readerName,
+                @"protocol": @(activeProtocol),
+                @"error": [NSString stringWithFormat:
+                        @"SCardReconnect failed: %d (0x%08X)",
+                        status,
+                        (unsigned int)status]
         };
     }
 
@@ -273,38 +366,37 @@
         SCardReleaseContext(context);
 
         return @{
-            @"success": @NO,
-            @"readerName": readerName,
-            @"protocol": @(activeProtocol),
-            @"error": [NSString stringWithFormat:
-                @"SCardBeginTransaction failed: %d (0x%08X)",
-                status,
-                (unsigned int)status]
+                @"success": @NO,
+                @"readerName": readerName,
+                @"protocol": @(activeProtocol),
+                @"error": [NSString stringWithFormat:
+                        @"SCardBeginTransaction failed: %d (0x%08X)",
+                        status,
+                        (unsigned int)status]
         };
     }
 
     const SCARD_IO_REQUEST *sendPci = SCARD_PCI_T0;
 
     BYTE command[] = {
-        0xBC, 0xA4, 0x00, 0x00, 0x02, 0x3F, 0x00
+            0xBC, 0xA4, 0x00, 0x00, 0x02, 0x3F, 0x00
     };
-    
+
     BYTE response[258];
     DWORD responseLength = sizeof(response);
-
 
     SCARD_IO_REQUEST recvPci;
     recvPci.dwProtocol = activeProtocol;
     recvPci.cbPciLength = sizeof(SCARD_IO_REQUEST);
 
     status = SCardTransmit(
-        card,
-        sendPci,
-        command,
-        sizeof(command),
-        &recvPci,
-        response,
-        &responseLength
+            card,
+            sendPci,
+            command,
+            sizeof(command),
+            &recvPci,
+            response,
+            &responseLength
     );
 
     NSMutableString *commandHex = [NSMutableString string];
@@ -325,27 +417,23 @@
 
     if (status != SCARD_S_SUCCESS) {
         return @{
-            @"success": @NO,
-            @"readerName": readerName,
-            @"protocol": @(activeProtocol),
-            @"command": commandHex,
-            @"error": [NSString stringWithFormat:@"SCardTransmit failed: %d (0x%08X)", status, status]
+                @"success": @NO,
+                @"readerName": readerName,
+                @"protocol": @(activeProtocol),
+                @"command": commandHex,
+                @"error": [NSString stringWithFormat:@"SCardTransmit failed: %d (0x%08X)", status, status]
         };
     }
 
     return @{
-        @"success": @YES,
-        @"readerName": readerName,
-        @"protocol": @(activeProtocol),
-        @"command": commandHex,
-        @"response": responseHex,
-        @"responseLength": @(responseLength)
+            @"success": @YES,
+            @"readerName": readerName,
+            @"protocol": @(activeProtocol),
+            @"command": commandHex,
+            @"response": responseHex,
+            @"responseLength": @(responseLength)
     };
 }
-
-// TODO Carte Vitale réelle : remplacer ce stub par l'appel à l'API officielle Lecture Vitale.
-// Données attendues : lastName, firstName, birthDate, sexCode.
-// Le workflow Flutter est déjà validé avec le stub_test.
 
 + (NSDictionary *)readVitaleIdentity {
     return [VitaleIdentityProvider readIdentity];
@@ -354,26 +442,26 @@
 // TODO suppression après migration vers VitaleIdentityProvider
 + (NSDictionary *)_readVitaleIdentityStub {
     return @{
-        @"success": @YES,
-        @"implemented": @NO,
-        @"source": @"stub_test",
-        @"identity": @{
-            @"lastName": @"TEST",
-            @"firstName": @"Carte Vitale",
-            @"birthDate": @"1980-01-15",
-            @"sexCode": @"U",
-            @"source": @"stub_test"
-        }
+            @"success": @YES,
+            @"implemented": @NO,
+            @"source": @"stub_test",
+            @"identity": @{
+                    @"lastName": @"TEST",
+                    @"firstName": @"Carte Vitale",
+                    @"birthDate": @"1980-01-15",
+                    @"sexCode": @"U",
+                    @"source": @"stub_test"
+            }
     };
 }
 
 // TODO suppression après migration vers VitaleIdentityProvider
 + (NSDictionary *)_readVitaleIdentityOfficialApi {
     return @{
-        @"success": @NO,
-        @"implemented": @NO,
-        @"source": @"official_api",
-        @"error": @"API Lecture Vitale non encore intégrée"
+            @"success": @NO,
+            @"implemented": @NO,
+            @"source": @"official_api",
+            @"error": @"API Lecture Vitale non encore intégrée"
     };
 }
 

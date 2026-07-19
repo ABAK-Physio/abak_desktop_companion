@@ -7,6 +7,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (NSDictionary *)getStatus;
 + (NSDictionary *)testApdu;
 + (NSDictionary *)readVitaleIdentity;
++ (NSArray<NSString *> *)getAvailableReaders;
 
 @end
 
