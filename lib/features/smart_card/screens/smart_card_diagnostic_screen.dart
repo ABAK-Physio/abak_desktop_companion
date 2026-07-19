@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import '../services/smart_card_diagnostic_service.dart';
 import 'vitale_identity_screen.dart';
 import '../models/vitale_identity.dart';
+import '../services/vitale_xml_parser.dart';
+import '../../../core/config/developer_features.dart';
 
 class SmartCardDiagnosticScreen extends StatefulWidget {
   const SmartCardDiagnosticScreen({super.key});
@@ -15,6 +17,7 @@ class SmartCardDiagnosticScreen extends StatefulWidget {
 class _SmartCardDiagnosticScreenState extends State<SmartCardDiagnosticScreen> {
   final _service = const SmartCardDiagnosticService();
   VitaleIdentity? _selectedIdentity;
+  VitaleIdentity? _parsedIdentity;
 
   SmartCardDiagnosticResult? _result;
   bool _loading = false;
@@ -69,10 +72,17 @@ class _SmartCardDiagnosticScreenState extends State<SmartCardDiagnosticScreen> {
 
     final result = await _service.checkVitaleApi();
 
+    VitaleIdentity? parsed;
+
+    if (result.xml != null && result.xml!.isNotEmpty) {
+      parsed = VitaleXmlParser.parse(result.xml!);
+    }
+
     if (!mounted) return;
 
     setState(() {
       _vitaleApiResult = result;
+      _parsedIdentity = parsed;
       _checkingVitaleApi = false;
     });
   }
@@ -189,11 +199,12 @@ class _SmartCardDiagnosticScreenState extends State<SmartCardDiagnosticScreen> {
               title: const Text('Identité sélectionnée'),
               subtitle: SelectableText(
                 [
-                  'Nom : ${_selectedIdentity!.lastName ?? ''}',
-                  'Prénom : ${_selectedIdentity!.firstName ?? ''}',
-                  'Date de naissance : '
-                      '${_selectedIdentity!.birthDate?.toIso8601String().split('T').first ?? ''}',
-                  'Sexe : ${_selectedIdentity!.sexCode ?? ''}',
+                  'Nom : ${_parsedIdentity!.lastName ?? ''}',
+                  'Prénom : ${_parsedIdentity!.firstName ?? ''}',
+                  'Naissance : ${_parsedIdentity!.birthDate?.toIso8601String().split('T').first ?? ''}',
+                  'Sexe : ${_parsedIdentity!.sexCode ?? ''}',
+                  if (DeveloperFeatures.showSensitiveData)
+                    'NIR : ${_parsedIdentity!.nir ?? ''}',
                 ].join('\n'),
               ),
             ),
@@ -271,16 +282,36 @@ class _SmartCardDiagnosticScreenState extends State<SmartCardDiagnosticScreen> {
 
           if (_vitaleApiResult!.xml != null) ...[
             const SizedBox(height: 12),
-            ExpansionTile(
-              leading: const Icon(Icons.description_outlined),
-              title: const Text('XML retourné par l’API'),
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: SelectableText(_vitaleApiResult!.xml!),
+            if (DeveloperFeatures.showSensitiveData)
+              ExpansionTile(
+                leading: const Icon(Icons.description_outlined),
+                title: const Text('XML retourné par l’API'),
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: SelectableText(_vitaleApiResult!.xml!),
+                  ),
+                ],
+              ),
+            if (_parsedIdentity != null) ...[
+              const SizedBox(height: 12),
+              Card(
+                child: ListTile(
+                  leading: const Icon(Icons.person_outline),
+                  title: const Text('Identité décodée (parseur Dart)'),
+                  subtitle: SelectableText(
+                    [
+                      'Nom : ${_parsedIdentity!.lastName ?? ''}',
+                      'Prénom : ${_parsedIdentity!.firstName ?? ''}',
+                      'Naissance : ${_parsedIdentity!.birthDate?.toIso8601String().split('T').first ?? ''}',
+                      'Sexe : ${_parsedIdentity!.sexCode ?? ''}',
+                      if (DeveloperFeatures.showSensitiveData)
+                        'NIR : ${_parsedIdentity!.nir ?? ''}',
+                    ].join('\n'),
+                  ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ],
         ],
 

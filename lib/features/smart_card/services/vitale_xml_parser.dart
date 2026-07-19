@@ -6,30 +6,45 @@ class VitaleXmlParser {
   const VitaleXmlParser._();
 
   static VitaleIdentity parse(String xml) {
-    final document = XmlDocument.parse(xml);
+    try {
+      final document = XmlDocument.parse(xml);
 
-    final beneficiary = document
-        .findAllElements('T_AsnBeneficiaire')
-        .cast<XmlElement>()
-        .first;
+      final beneficiary = document
+          .findAllElements('T_AsnBeneficiaire')
+          .firstOrNull;
 
-    final ident = beneficiary.getElement('ident');
-    final amo = beneficiary.getElement('amo');
+      if (beneficiary == null) {
+        return const VitaleIdentity();
+      }
 
-    return VitaleIdentity(
-      lastName: _text(ident, 'nomUsuel'),
-      firstName: _text(ident, 'prenomUsuel'),
-      birthDate: _parseDate(_text(ident, 'dateNaissance')),
-      sexCode: null, // sera ajouté ultérieurement
-      nir: _normalizeNir(_text(amo, 'nir')),
-    );
+      final ident = beneficiary.getElement('ident');
+      final amo = beneficiary.getElement('amo');
+
+      return VitaleIdentity(
+        lastName: _readText(ident, 'nomUsuel'),
+        firstName: _readText(ident, 'prenomUsuel'),
+        birthDate: _readBirthDate(ident),
+        sexCode: null,
+        nir: _normalizeNir(_readText(amo, 'nir')),
+      );
+    } catch (_) {
+      return const VitaleIdentity();
+    }
   }
 
-  static String? _text(XmlElement? parent, String name) {
-    return parent?.getElement(name)?.innerText.trim();
+  static String? _readText(XmlElement? parent, String tag) {
+    final value = parent?.getElement(tag)?.innerText.trim();
+
+    if (value == null || value.isEmpty) {
+      return null;
+    }
+
+    return value;
   }
 
-  static DateTime? _parseDate(String? value) {
+  static DateTime? _readBirthDate(XmlElement? ident) {
+    final value = _readText(ident, 'dateNaissance');
+
     if (value == null || value.length != 8) {
       return null;
     }

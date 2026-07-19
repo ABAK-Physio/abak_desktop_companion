@@ -1,6 +1,7 @@
 import 'package:flutter/services.dart';
 
 import '../models/vitale_identity.dart';
+import 'vitale_xml_parser.dart';
 
 class VitaleIdentityService {
   const VitaleIdentityService();
@@ -42,7 +43,32 @@ class VitaleIdentityService {
     }
 
     /*
-     * Format actuellement renvoyé par le code natif :
+     * Deuxième format :
+     *
+     * {
+     *   "success": true,
+     *   "xml": "<?xml ... ?>"
+     * }
+     *
+     * Le XML est décodé par le parseur Dart commun.
+     */
+    final xml = result['xml']?.toString();
+
+    if (xml != null && xml.trim().isNotEmpty) {
+      final identity = VitaleXmlParser.parse(xml);
+
+      if (!identity.hasUsableIdentity) {
+        return null;
+      }
+
+      return {
+        ...identity.toMap(),
+        'source': result['source']?.toString() ?? 'api_lec',
+      };
+    }
+
+    /*
+     * Troisième format, actuellement renvoyé par le code natif macOS :
      *
      * {
      *   "success": true,
