@@ -2,7 +2,7 @@ import 'package:flutter/services.dart';
 
 import '../models/vitale_identity.dart';
 import 'vitale_xml_parser.dart';
-import 'package:flutter/foundation.dart';
+
 
 class VitaleIdentityService {
   const VitaleIdentityService();
@@ -115,8 +115,6 @@ class VitaleIdentityService {
         final identities = VitaleXmlParser.parseAll(xml);
 
         for (var index = 0; index < identities.length; index++) {
-          final identity = identities[index];
-
         }
 
         return identities
