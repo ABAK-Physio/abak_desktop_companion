@@ -2,6 +2,7 @@ import 'package:flutter/services.dart';
 
 import '../models/vitale_identity.dart';
 import 'vitale_xml_parser.dart';
+import 'package:flutter/foundation.dart';
 
 class VitaleIdentityService {
   const VitaleIdentityService();
@@ -100,26 +101,62 @@ class VitaleIdentityService {
     };
   }
 
-  Future<VitaleIdentity?> readVitaleIdentity() async {
+  Future<List<VitaleIdentity>> readVitaleIdentities() async {
     try {
       final result = await _invokeNativeRead();
 
       if (result == null || result['success'] != true) {
-        return null;
+        return const [];
+      }
+
+      final xml = result['xml']?.toString();
+
+      if (xml != null && xml.trim().isNotEmpty) {
+        final identities = VitaleXmlParser.parseAll(xml);
+
+        for (var index = 0; index < identities.length; index++) {
+          final identity = identities[index];
+
+        }
+
+        return identities
+            .map(
+              (identity) => VitaleIdentity(
+            lastName: identity.lastName,
+            firstName: identity.firstName,
+            birthDate: identity.birthDate,
+            sexCode: identity.sexCode,
+            nir: identity.nir,
+            source: result['source']?.toString() ?? 'api_lec',
+          ),
+        )
+            .toList();
       }
 
       final identityMap = _extractIdentityMap(result);
 
       if (identityMap == null) {
-        return null;
+        return const [];
       }
 
-      return VitaleIdentity.fromMap(identityMap);
+      return [
+        VitaleIdentity.fromMap(identityMap),
+      ];
     } on PlatformException {
-      return null;
+      return const [];
     } catch (_) {
+      return const [];
+    }
+  }
+
+  Future<VitaleIdentity?> readVitaleIdentity() async {
+    final identities = await readVitaleIdentities();
+
+    if (identities.isEmpty) {
       return null;
     }
+
+    return identities.first;
   }
 
   Future<Map<String, dynamic>> readVitaleIdentityDiagnostic() async {
@@ -134,6 +171,14 @@ class VitaleIdentityService {
       }
 
       final identityMap = _extractIdentityMap(result);
+
+      final xml = result['xml']?.toString();
+
+      if (xml != null && xml.trim().isNotEmpty) {
+        final identities = VitaleXmlParser.parseAll(xml);
+
+        result['beneficiaryCount'] = identities.length;
+      }
 
       if (identityMap != null) {
         /*

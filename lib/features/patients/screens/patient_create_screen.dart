@@ -6,6 +6,7 @@ import '../data/patient_repository.dart';
 import '../../smart_card/models/vitale_identity.dart';
 import '../../smart_card/services/vitale_identity_service.dart';
 import '../models/patient.dart';
+import '../../smart_card/widgets/vitale_beneficiary_selector.dart';
 
 class PatientCreateScreen extends StatefulWidget {
   const PatientCreateScreen({super.key});
@@ -544,7 +545,23 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
     VitaleIdentity? identity;
 
     try {
-      identity = await _vitaleIdentityService.readVitaleIdentity();
+      final identities =
+      await _vitaleIdentityService.readVitaleIdentities();
+
+      if (!mounted) {
+        return;
+      }
+
+      if (identities.isEmpty) {
+        identity = null;
+      } else if (identities.length == 1) {
+        identity = identities.first;
+      } else {
+        identity = await VitaleBeneficiarySelector.show(
+          context,
+          identities,
+        );
+      }
     } finally {
       if (mounted) {
         setState(() {

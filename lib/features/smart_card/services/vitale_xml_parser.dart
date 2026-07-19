@@ -5,31 +5,43 @@ import '../models/vitale_identity.dart';
 class VitaleXmlParser {
   const VitaleXmlParser._();
 
-  static VitaleIdentity parse(String xml) {
+  static List<VitaleIdentity> parseAll(String xml) {
     try {
       final document = XmlDocument.parse(xml);
 
-      final beneficiary = document
+      return document
           .findAllElements('T_AsnBeneficiaire')
-          .firstOrNull;
-
-      if (beneficiary == null) {
-        return const VitaleIdentity();
-      }
-
-      final ident = beneficiary.getElement('ident');
-      final amo = beneficiary.getElement('amo');
-
-      return VitaleIdentity(
-        lastName: _readText(ident, 'nomUsuel'),
-        firstName: _readText(ident, 'prenomUsuel'),
-        birthDate: _readBirthDate(ident),
-        sexCode: null,
-        nir: _normalizeNir(_readText(amo, 'nir')),
-      );
+          .map(_parseBeneficiary)
+          .where((identity) => identity.hasUsableIdentity)
+          .toList();
     } catch (_) {
+      return const [];
+    }
+  }
+
+  static VitaleIdentity parse(String xml) {
+    final identities = parseAll(xml);
+
+    if (identities.isEmpty) {
       return const VitaleIdentity();
     }
+
+    return identities.first;
+  }
+
+  static VitaleIdentity _parseBeneficiary(
+      XmlElement beneficiary,
+      ) {
+    final ident = beneficiary.getElement('ident');
+    final amo = beneficiary.getElement('amo');
+
+    return VitaleIdentity(
+      lastName: _readText(ident, 'nomUsuel'),
+      firstName: _readText(ident, 'prenomUsuel'),
+      birthDate: _readBirthDate(ident),
+      sexCode: null,
+      nir: _normalizeNir(_readText(amo, 'nir')),
+    );
   }
 
   static String? _readText(XmlElement? parent, String tag) {

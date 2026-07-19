@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../models/vitale_identity.dart';
 import '../services/vitale_identity_service.dart';
+import '../widgets/vitale_beneficiary_selector.dart';
 
 class VitaleIdentityScreen extends StatefulWidget {
   const VitaleIdentityScreen({super.key});
@@ -34,22 +35,37 @@ class _VitaleIdentityScreenState extends State<VitaleIdentityScreen> {
       _diagnostic = null;
     });
 
-    final diagnostic = await _service.readVitaleIdentityDiagnostic();
+    final identities = await _service.readVitaleIdentities();
+
 
     if (!mounted) return;
 
     VitaleIdentity? identity;
 
-    final identityRaw = diagnostic['identity'];
-
-    if (diagnostic['success'] == true && identityRaw is Map) {
-      identity = VitaleIdentity.fromMap(identityRaw);
+    if (identities.length == 1) {
+      identity = identities.first;
+    } else if (identities.length > 1) {
+      identity = await VitaleBeneficiarySelector.show(
+        context,
+        identities,
+      );
     }
+
+    if (!mounted) return;
 
     setState(() {
       _loading = false;
       _identity = identity;
-      _diagnostic = diagnostic;
+      _diagnostic = identities.isEmpty
+          ? {
+        'success': false,
+        'message': 'Aucune identité Carte Vitale disponible',
+        'beneficiaryCount': 0,
+      }
+          : {
+        'success': true,
+        'beneficiaryCount': identities.length,
+      };
     });
   }
 

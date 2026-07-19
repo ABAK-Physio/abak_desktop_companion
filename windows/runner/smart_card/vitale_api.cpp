@@ -17,6 +17,9 @@ using HnReadVitaleIdentityFunction = unsigned short (*)(
         short* psEtatCarte,
         unsigned short* pusCodeErreur);
 
+using HnFinishFunction = unsigned short (*)(
+        unsigned short* pusCodeErreur);
+
 flutter::EncodableMap ReadVitaleXml() {
     flutter::EncodableMap response;
 
@@ -99,13 +102,27 @@ flutter::EncodableMap ReadVitaleXml() {
         }
     }
 
-    hn_finish_found =
-            GetProcAddress(module, "Hn_Finir") != nullptr;
+    const auto hn_finish =
+            reinterpret_cast<HnFinishFunction>(
+                    GetProcAddress(module, "Hn_Finir"));
+
+    hn_finish_found = hn_finish != nullptr;
+
+    unsigned short hn_finish_return = 0;
+    unsigned short hn_finish_error = 0;
+
+    if (hn_init_return == 0 && hn_finish != nullptr) {
+        hn_finish_return = hn_finish(
+                &hn_finish_error);
+    }
 
     success =
             hn_init_found &&
             hn_read_identity_found &&
-            hn_finish_found;
+            hn_finish_found &&
+            hn_init_return == 0 &&
+            hn_read_return == 0 &&
+            hn_finish_return == 0;
 
     response[flutter::EncodableValue("success")] =
             flutter::EncodableValue(success);
@@ -154,8 +171,15 @@ flutter::EncodableMap ReadVitaleXml() {
     response[flutter::EncodableValue("hnFinishFound")] =
             flutter::EncodableValue(hn_finish_found);
 
-    // Conservé comme dans l’implémentation validée.
-    // FreeLibrary(module);
+    response[flutter::EncodableValue("hnFinishReturn")] =
+            flutter::EncodableValue(
+                    static_cast<int>(hn_finish_return));
+
+    response[flutter::EncodableValue("hnFinishError")] =
+            flutter::EncodableValue(
+                    static_cast<int>(hn_finish_error));
+
+    FreeLibrary(module);
 
     return response;
 }
