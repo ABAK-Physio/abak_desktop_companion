@@ -59,9 +59,7 @@ class _SmartCardDiagnosticScreenState extends State<SmartCardDiagnosticScreen> {
   void initState() {
     super.initState();
 
-    _refresh();
-    _loadAvailableReaders();
-    _loadSmartCardConfiguration();
+    _refreshAll();
   }
 
   Future<void> _testApdu() async {
@@ -130,6 +128,14 @@ class _SmartCardDiagnosticScreenState extends State<SmartCardDiagnosticScreen> {
     }
   }
 
+  Future<void> _refreshAll() async {
+    await Future.wait([
+      _refresh(),
+      _loadAvailableReaders(),
+      _loadSmartCardConfiguration(),
+    ]);
+  }
+
   Future<void> _loadSmartCardConfiguration() async {
     setState(() {
       _loadingConfiguration = true;
@@ -194,7 +200,10 @@ class _SmartCardDiagnosticScreenState extends State<SmartCardDiagnosticScreen> {
         title: const Text('Diagnostic Carte Vitale'),
         actions: [
           IconButton(
-            onPressed: _loading ? null : _refresh,
+            onPressed:
+            _loading || _loadingReaders || _loadingConfiguration
+                ? null
+                : _refreshAll,
             icon: const Icon(Icons.refresh),
           ),
         ],
@@ -587,30 +596,18 @@ class _SmartCardDiagnosticScreenState extends State<SmartCardDiagnosticScreen> {
                 ),
               ),
             ],
+            const SizedBox(height: 24),
 
-          ],
-        ),
+            const Divider(),
 
-        const SizedBox(height: 24),
-
-        const Divider(),
-
-
-
-        const SizedBox(height: 24),
-
-        const Divider(),
-
-        const SizedBox(height: 24),
-
-        const Divider(),
-
-        ExpansionTile(
-          title: const Text('Sortie brute'),
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: SelectableText(result.rawOutput),
+            ExpansionTile(
+              title: const Text('Sortie brute'),
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: SelectableText(result.rawOutput),
+                ),
+              ],
             ),
           ],
         ),

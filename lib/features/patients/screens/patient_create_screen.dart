@@ -256,79 +256,20 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
   Future<bool> _resolveExistingPatient(
       VitaleIdentity identity,
       ) async {
-    final nir = identity.nir?.trim();
-
-    if (nir == null || nir.isEmpty) {
-      return false;
-    }
-
-    /*
-   * Niveau 1 : recherche d’un patient actif par NIR.
-   */
-    final patientByNir =
-    await _patientRepository.getPatientByNir(nir);
-
-    if (!mounted) {
-      return true;
-    }
-
-    if (patientByNir != null) {
-      await showDialog<void>(
-        context: context,
-        barrierDismissible: false,
-        builder: (dialogContext) {
-          return AlertDialog(
-            title: const Text('Patient déjà enregistré'),
-            content: Text(
-              'Cette Carte Vitale est déjà rattachée au patient :\n\n'
-                  '${patientByNir.displayName}\n'
-                  'Date de naissance : '
-                  '${patientByNir.birthDate ?? 'non renseignée'}\n\n'
-                  'Aucun nouveau patient ne sera créé.',
-            ),
-            actions: [
-              FilledButton(
-                onPressed: () {
-                  Navigator.of(dialogContext).pop();
-                },
-                child: const Text('Retour à la liste'),
-              ),
-            ],
-          );
-        },
-      );
-
-      if (mounted) {
-        Navigator.of(context).pop(true);
-      }
-
-      return true;
-    }
-
-    /*
-   * Niveau 2 : recherche d’un patient archivé par NIR.
-   */
-    final archivedPatientByNir =
-    await _patientRepository.getArchivedPatientByNir(nir);
-
-    if (!mounted) {
-      return true;
-    }
-
-    if (archivedPatientByNir != null) {
-      return _confirmRestoreArchivedPatient(
-        archivedPatientByNir,
-        attachNir: false,
-      );
-    }
-
-    /*
-   * Préparation de la recherche par identité.
-   */
     final lastName = identity.lastName?.trim();
     final firstName = identity.firstName?.trim();
     final birthDate = identity.birthDate;
+    final nir = identity.nir?.trim();
 
+    /*
+   * Une comparaison fiable nécessite au minimum :
+   * - le nom ;
+   * - le prénom ;
+   * - la date de naissance.
+   *
+   * Le NIR seul ne permet pas d’identifier un bénéficiaire,
+   * car plusieurs bénéficiaires d’une même carte peuvent le partager.
+   */
     if (lastName == null ||
         lastName.isEmpty ||
         firstName == null ||
@@ -338,9 +279,10 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
     }
 
     final birthDateIso = _toIsoDate(birthDate);
+    final hasNir = nir != null && nir.isNotEmpty;
 
     /*
-   * Niveau 3 : recherche d’un patient actif par identité.
+   * Niveau 1 : recherche d’un patient actif par identité.
    */
     final identityMatches =
     await _patientRepository.findPatientsByIdentity(
@@ -355,56 +297,88 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
 
     if (identityMatches.isNotEmpty) {
       /*
-     * On ne propose le rattachement qu’aux patients actifs
-     * ne possédant pas encore de NIR.
+     * L’identité et le NIR correspondent déjà.
      */
-      final attachablePatients = identityMatches.where((patient) {
-        return patient.nir?.trim().isEmpty != false;
-      }).toList();
+      final patientsWithSameNir = hasNir
+          ? identityMatches.where((patient) {
+        return patient.nir?.trim() == nir;
+      }).toList()
+          : <Patient>[];
 
-      if (attachablePatients.isEmpty) {
+      if (patientsWithSameNir.isNotEmpty) {
+        final patient = patientsWithSameNir.first;
+
         await showDialog<void>(
           context: context,
           barrierDismissible: false,
           builder: (dialogContext) {
             return AlertDialog(
-              title: const Text('Correspondance à vérifier'),
-              content: const Text(
-                'Un patient ayant les mêmes nom, prénom et date de naissance '
-                    'existe déjà, mais il possède un autre NIR.\n\n'
-                    'Aucun rattachement automatique ne sera effectué. '
-                    'Vérifiez les dossiers avant de poursuivre.',
+              title: const Text('Patient déjà enregistré'),
+              content: Text(
+                'Cette Carte Vitale correspond au patient :\n\n'
+                    '${patient.displayName}\n'
+                    'Date de naissance : '
+                    '${patient.birthDate ?? 'non renseignée'}\n\n'
+                    'Aucun nouveau patient ne sera créé.',
               ),
               actions: [
                 FilledButton(
                   onPressed: () {
                     Navigator.of(dialogContext).pop();
                   },
-                  child: const Text('Fermer'),
+                  child: const Text('Retour à la liste'),
                 ),
               ],
             );
           },
         );
 
+        if (mounted) {
+          Navigator.of(context).pop(true);
+        }
+
         return true;
       }
 
-      final selectedPatient = await _selectMatchingPatient(
-        attachablePatients,
-      );
+      /*
+     * L’identité correspond à un patient qui ne possède pas encore de NIR.
+     * On peut proposer de lui rattacher celui qui vient d’être lu.
+     */
+      final patientsWithoutNir = identityMatches.where((patient) {
+        return patient.nir?.trim().isEmpty != false;
+      }).toList();
 
-      if (!mounted) {
-        return true;
-      }
+      if (hasNir && patientsWithoutNir.isNotEmpty) {
+        final selectedPatient = await _selectMatchingPatient(
+          patientsWithoutNir,
+        );
 
-      if (selectedPatient != null) {
-        try {
-          await _patientRepository.attachNirToPatient(
-            patientId: selectedPatient.patientId,
-            nir: nir,
-          );
-        } catch (error) {
+        if (!mounted) {
+          return true;
+        }
+
+        if (selectedPatient != null) {
+          try {
+            await _patientRepository.attachNirToPatient(
+              patientId: selectedPatient.patientId,
+              nir: nir,
+            );
+          } catch (error) {
+            if (!mounted) {
+              return true;
+            }
+
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  'Impossible de rattacher la Carte Vitale : $error',
+                ),
+              ),
+            );
+
+            return true;
+          }
+
           if (!mounted) {
             return true;
           }
@@ -412,42 +386,57 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(
-                'Impossible de rattacher la Carte Vitale : $error',
+                'Carte Vitale rattachée au patient '
+                    '${selectedPatient.displayName}.',
               ),
             ),
           );
 
+          Navigator.of(context).pop(true);
+
           return true;
         }
 
-        if (!mounted) {
-          return true;
-        }
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              'Carte Vitale rattachée au patient '
-                  '${selectedPatient.displayName}.',
-            ),
-          ),
-        );
-
-        Navigator.of(context).pop(true);
-
-        return true;
+        /*
+       * L’utilisateur refuse le rattachement :
+       * la création d’un nouveau patient reste possible.
+       */
+        return false;
       }
 
       /*
-     * L’utilisateur refuse le rattachement au patient actif.
-     * On ne recherche pas alors un patient archivé ayant la même identité :
-     * la correspondance active doit être vérifiée en priorité.
+     * L’identité correspond, mais le patient enregistré possède
+     * un autre NIR, ou la carte n’en fournit pas.
      */
-      return false;
+      await showDialog<void>(
+        context: context,
+        barrierDismissible: false,
+        builder: (dialogContext) {
+          return AlertDialog(
+            title: const Text('Correspondance à vérifier'),
+            content: const Text(
+              'Un patient ayant les mêmes nom, prénom et date de naissance '
+                  'existe déjà.\n\n'
+                  'Les informations administratives ne correspondent pas '
+                  'complètement. Vérifiez le dossier avant de poursuivre.',
+            ),
+            actions: [
+              FilledButton(
+                onPressed: () {
+                  Navigator.of(dialogContext).pop();
+                },
+                child: const Text('Fermer'),
+              ),
+            ],
+          );
+        },
+      );
+
+      return true;
     }
 
     /*
-   * Niveau 4 : aucun patient actif trouvé.
+   * Niveau 2 : aucun patient actif trouvé.
    * Recherche d’un patient archivé par identité.
    */
     final archivedIdentityMatches =
@@ -462,16 +451,27 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
     }
 
     if (archivedIdentityMatches.isEmpty) {
+      /*
+     * Aucun patient ne possède cette identité.
+     *
+     * Un NIR identique éventuellement présent sur un autre dossier
+     * ne doit pas empêcher la création de ce bénéficiaire.
+     */
       return false;
     }
 
     /*
    * Sont restaurables :
    * - les patients sans NIR ;
-   * - les patients possédant déjà le NIR lu.
+   * - les patients possédant déjà le NIR lu ;
+   * - tous les patients lorsque la carte ne fournit pas de NIR.
    */
-    final archivedAttachablePatients =
+    final archivedRestorablePatients =
     archivedIdentityMatches.where((patient) {
+      if (!hasNir) {
+        return true;
+      }
+
       final patientNir = patient.nir?.trim();
 
       return patientNir == null ||
@@ -479,7 +479,7 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
           patientNir == nir;
     }).toList();
 
-    if (archivedAttachablePatients.isEmpty) {
+    if (archivedRestorablePatients.isEmpty) {
       await showDialog<void>(
         context: context,
         barrierDismissible: false,
@@ -490,8 +490,8 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
             ),
             content: const Text(
               'Un patient archivé ayant les mêmes nom, prénom et '
-                  'date de naissance existe déjà, mais il possède un '
-                  'autre NIR.\n\n'
+                  'date de naissance existe déjà, mais ses informations '
+                  'administratives sont différentes.\n\n'
                   'Aucune restauration automatique ne sera effectuée. '
                   'Vérifiez les dossiers avant de poursuivre.',
             ),
@@ -511,7 +511,7 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
     }
 
     final archivedPatient = await _selectMatchingPatient(
-      archivedAttachablePatients,
+      archivedRestorablePatients,
     );
 
     if (!mounted) {
@@ -528,7 +528,8 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
 
     return _confirmRestoreArchivedPatient(
       archivedPatient,
-      attachNir: archivedPatient.nir?.trim().isEmpty != false,
+      attachNir: hasNir &&
+          archivedPatient.nir?.trim().isEmpty != false,
       nir: nir,
     );
   }

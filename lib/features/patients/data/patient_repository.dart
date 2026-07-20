@@ -287,37 +287,15 @@ class PatientRepository {
 
     final db = await DatabaseService.database;
 
-    await db.transaction((transaction) async {
-      final existingRows = await transaction.query(
-        'patients',
-        columns: ['patient_id'],
-        where: '''
-        nir = ?
-        AND patient_id <> ?
-      ''',
-        whereArgs: [
-          normalizedNir,
-          patientId,
-        ],
-        limit: 1,
-      );
-
-      if (existingRows.isNotEmpty) {
-        throw StateError(
-          'Ce NIR est déjà associé à un autre patient.',
-        );
-      }
-
-      await transaction.update(
-        'patients',
-        {
-          'nir': normalizedNir,
-          'updated_at': DateTime.now().millisecondsSinceEpoch,
-        },
-        where: 'patient_id = ?',
-        whereArgs: [patientId],
-      );
-    });
+    await db.update(
+      'patients',
+      {
+        'nir': normalizedNir,
+        'updated_at': DateTime.now().millisecondsSinceEpoch,
+      },
+      where: 'patient_id = ?',
+      whereArgs: [patientId],
+    );
   }
 
 }
