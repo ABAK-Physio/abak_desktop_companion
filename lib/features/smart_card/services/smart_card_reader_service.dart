@@ -1,4 +1,5 @@
 import 'package:flutter/services.dart';
+import 'package:flutter/foundation.dart';
 
 class SmartCardReaderService {
   const SmartCardReaderService();
@@ -11,10 +12,35 @@ class SmartCardReaderService {
         'getAvailableReaders',
       );
 
-      return (readers ?? const <dynamic>[])
+      debugPrint(
+        'getAvailableReaders : retour brut = $readers',
+      );
+
+      final result = (readers ?? const <dynamic>[])
           .map((reader) => reader.toString())
           .toList();
-    } catch (_) {
+
+      debugPrint(
+        'getAvailableReaders : lecteurs = $result',
+      );
+
+      return result;
+    } on PlatformException catch (error, stackTrace) {
+      debugPrint(
+        'getAvailableReaders : PlatformException '
+            'code=${error.code}, '
+            'message=${error.message}, '
+            'details=${error.details}',
+      );
+      debugPrintStack(stackTrace: stackTrace);
+
+      return const <String>[];
+    } catch (error, stackTrace) {
+      debugPrint(
+        'getAvailableReaders : erreur inattendue = $error',
+      );
+      debugPrintStack(stackTrace: stackTrace);
+
       return const <String>[];
     }
   }

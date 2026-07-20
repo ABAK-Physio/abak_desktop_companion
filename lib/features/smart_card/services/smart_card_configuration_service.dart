@@ -11,9 +11,22 @@ class SmartCardConfigurationService {
     }
 
     if (Platform.isWindows) {
-      return File(
+      const candidates = <String>[
+        r'C:\ProgramData\santesocial\api_lec64\api_lec.ini',
         r'C:\ProgramData\SESAM-Vitale\APILEC\api_lec.ini',
-      );
+      ];
+
+      for (final path in candidates) {
+        final file = File(path);
+
+        if (file.existsSync()) {
+          return file;
+        }
+      }
+
+      // Aucun fichier trouvé : on retourne le chemin le plus récent,
+      // qui sera affiché dans les messages d'erreur.
+      return File(candidates.first);
     }
 
     throw UnsupportedError(

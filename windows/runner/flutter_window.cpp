@@ -174,6 +174,63 @@ static flutter::EncodableMap GetSmartCardStatus() {
     return response;
 }
 
+static flutter::EncodableList GetAvailableReaders() {
+
+    flutter::EncodableList readers_list;
+
+    SCARDCONTEXT context = 0;
+
+    LONG status = SCardEstablishContext(
+            SCARD_SCOPE_USER,
+            nullptr,
+            nullptr,
+            &context);
+
+    if (status != SCARD_S_SUCCESS) {
+        return readers_list;
+    }
+
+    DWORD readers_length = 0;
+
+    status = SCardListReadersA(
+            context,
+            nullptr,
+            nullptr,
+            &readers_length);
+
+    if (status != SCARD_S_SUCCESS ||
+        readers_length == 0) {
+
+        SCardReleaseContext(context);
+        return readers_list;
+    }
+
+    std::vector<char> readers(readers_length);
+
+    status = SCardListReadersA(
+            context,
+            nullptr,
+            readers.data(),
+            &readers_length);
+
+    if (status == SCARD_S_SUCCESS) {
+
+        const char* current = readers.data();
+
+        while (*current != '\0') {
+
+            readers_list.emplace_back(
+                    std::string(current));
+
+            current += strlen(current) + 1;
+        }
+    }
+
+    SCardReleaseContext(context);
+
+    return readers_list;
+}
+
 static bool TransmitApdu(
         SCARDHANDLE card,
         const SCARD_IO_REQUEST* pci,
@@ -401,6 +458,15 @@ bool FlutterWindow::OnCreate() {
             [](const flutter::MethodCall<flutter::EncodableValue>& call,
                std::unique_ptr<
                flutter::MethodResult<flutter::EncodableValue>> result) {
+
+                if (call.method_name() == "getAvailableReaders") {
+
+                    result->Success(
+                            flutter::EncodableValue(
+                                    GetAvailableReaders()));
+
+                    return;
+                }
 
                 if (call.method_name() == "getStatus") {
                     result->Success(
