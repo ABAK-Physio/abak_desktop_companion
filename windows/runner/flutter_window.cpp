@@ -8,6 +8,14 @@
 #include <flutter/standard_method_codec.h>
 #include <winscard.h>
 
+#include <iomanip>
+#include <sstream>
+#include <string>
+#include <vector>
+
+#pragma comment(lib, "Winscard.lib")
+#include <winscard.h>
+
 #include <vector>
 
 #pragma comment(lib, "Winscard.lib")
