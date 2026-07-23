@@ -16,6 +16,13 @@ packages:
       relative: true
     source: path
     version: "1.0.0"
+  abak_vitale:
+    dependency: "direct main"
+    description:
+      path: "../abak_vitale"
+      relative: true
+    source: path
+    version: "0.0.1"
   analyzer:
     dependency: transitive
     description:

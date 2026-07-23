@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../services/smart_card_diagnostic_service.dart';
-import '../models/vitale_identity.dart';
-import '../services/vitale_xml_parser.dart';
+import 'package:abak_vitale/abak_vitale.dart';
+
 import '../../../core/config/developer_features.dart';
-import '../services/smart_card_reader_service.dart';
 import '../services/smart_card_configuration_service.dart';
 
 class SmartCardDiagnosticScreen extends StatefulWidget {

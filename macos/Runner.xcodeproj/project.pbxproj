@@ -22,8 +22,6 @@
 
 /* Begin PBXBuildFile section */
 		23D6569D2FD6B96A00EF0329 /* File.txt in Resources */ = {isa = PBXBuildFile; fileRef = 23D6569C2FD6B96A00EF0329 /* File.txt */; };
-		23D656A02FD6BAEE00EF0329 /* SmartCardPcscBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = 23D6569F2FD6BAEE00EF0329 /* SmartCardPcscBridge.m */; };
-		23E682062FD840CA00E2BCBA /* VitaleIdentityProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 23E682052FD840CA00E2BCBA /* VitaleIdentityProvider.m */; };
 		331C80D8294CF71000263BE5 /* RunnerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331C80D7294CF71000263BE5 /* RunnerTests.swift */; };
 		335BBD1B22A9A15E00E9071D /* GeneratedPluginRegistrant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 335BBD1A22A9A15E00E9071D /* GeneratedPluginRegistrant.swift */; };
 		33CC10F12044A3C60003C045 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33CC10F02044A3C60003C045 /* AppDelegate.swift */; };
@@ -68,10 +66,6 @@
 /* Begin PBXFileReference section */
 		23D6569C2FD6B96A00EF0329 /* File.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = File.txt; sourceTree = "<group>"; };
 		23D6569E2FD6BAEE00EF0329 /* Runner-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Runner-Bridging-Header.h"; sourceTree = "<group>"; };
-		23D6569F2FD6BAEE00EF0329 /* SmartCardPcscBridge.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SmartCardPcscBridge.m; sourceTree = "<group>"; };
-		23D656A32FD6FEEA00EF0329 /* SmartCardPcscBridge.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SmartCardPcscBridge.h; sourceTree = "<group>"; };
-		23E682042FD8407900E2BCBA /* VitaleIdentityProvider.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VitaleIdentityProvider.h; sourceTree = "<group>"; };
-		23E682052FD840CA00E2BCBA /* VitaleIdentityProvider.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VitaleIdentityProvider.m; sourceTree = "<group>"; };
 		331C80D5294CF71000263BE5 /* RunnerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RunnerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		331C80D7294CF71000263BE5 /* RunnerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RunnerTests.swift; sourceTree = "<group>"; };
 		333000ED22D3DE5D00554162 /* Warnings.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Warnings.xcconfig; sourceTree = "<group>"; };
@@ -208,11 +202,7 @@
 				33E51914231749380026EE4D /* Release.entitlements */,
 				33CC11242044D66E0003C045 /* Resources */,
 				33BA886A226E78AF003329D5 /* Configs */,
-				23D6569F2FD6BAEE00EF0329 /* SmartCardPcscBridge.m */,
 				23D6569E2FD6BAEE00EF0329 /* Runner-Bridging-Header.h */,
-				23D656A32FD6FEEA00EF0329 /* SmartCardPcscBridge.h */,
-				23E682042FD8407900E2BCBA /* VitaleIdentityProvider.h */,
-				23E682052FD840CA00E2BCBA /* VitaleIdentityProvider.m */,
 			);
 			path = Runner;
 			sourceTree = "<group>";
@@ -465,8 +455,6 @@
 				33CC11132044BFA00003C045 /* MainFlutterWindow.swift in Sources */,
 				33CC10F12044A3C60003C045 /* AppDelegate.swift in Sources */,
 				335BBD1B22A9A15E00E9071D /* GeneratedPluginRegistrant.swift in Sources */,
-				23D656A02FD6BAEE00EF0329 /* SmartCardPcscBridge.m in Sources */,
-				23E682062FD840CA00E2BCBA /* VitaleIdentityProvider.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

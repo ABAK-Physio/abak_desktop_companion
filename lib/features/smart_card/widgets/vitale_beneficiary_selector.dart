@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../models/vitale_identity.dart';
+import 'package:abak_vitale/abak_vitale.dart';
 
 class VitaleBeneficiarySelector {
   static Future<VitaleIdentity?> show(

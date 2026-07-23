@@ -5,6 +5,7 @@
 import FlutterMacOS
 import Foundation
 
+import abak_vitale
 import file_picker
 import package_info_plus
 import screen_retriever_macos
@@ -13,6 +14,7 @@ import url_launcher_macos
 import window_manager
 
 func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
+  AbakVitalePlugin.register(with: registry.registrar(forPlugin: "AbakVitalePlugin"))
   FilePickerPlugin.register(with: registry.registrar(forPlugin: "FilePickerPlugin"))
   FPPPackageInfoPlusPlugin.register(with: registry.registrar(forPlugin: "FPPPackageInfoPlusPlugin"))
   ScreenRetrieverMacosPlugin.register(with: registry.registrar(forPlugin: "ScreenRetrieverMacosPlugin"))

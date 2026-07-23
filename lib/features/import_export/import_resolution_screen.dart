@@ -5,7 +5,7 @@ import '../care_episodes/data/care_episode_repository.dart';
 import '../care_episodes/models/care_episode.dart';
 import '../patients/data/patient_repository.dart';
 import '../patients/models/patient.dart';
-import '../smart_card/models/vitale_identity.dart';
+import 'package:abak_vitale/abak_vitale.dart';
 import '../smart_card/screens/vitale_identity_screen.dart';
 import 'abak_package.dart';
 

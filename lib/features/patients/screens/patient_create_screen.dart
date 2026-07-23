@@ -1,10 +1,9 @@
 // Gestion du flux métier patient - épisode
+import 'package:abak_vitale/abak_vitale.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../data/patient_repository.dart';
-import '../../smart_card/models/vitale_identity.dart';
-import '../../smart_card/services/vitale_identity_service.dart';
 import '../models/patient.dart';
 import '../../smart_card/widgets/vitale_beneficiary_selector.dart';
 
@@ -18,7 +17,7 @@ class PatientCreateScreen extends StatefulWidget {
 class _PatientCreateScreenState extends State<PatientCreateScreen> {
   final PatientRepository _patientRepository = PatientRepository();
   final VitaleIdentityService _vitaleIdentityService =
-  const VitaleIdentityService();
+  VitaleIdentityService();
 
 
   final _formKey = GlobalKey<FormState>();

@@ -35,6 +35,9 @@ dependencies:
   abak_shared:
     path: ../abak_shared
 
+  abak_vitale:
+    path: ../abak_vitale
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../models/vitale_identity.dart';
-import '../services/vitale_identity_service.dart';
+import 'package:abak_vitale/abak_vitale.dart';
+
 import '../widgets/vitale_beneficiary_selector.dart';
 
 class VitaleIdentityScreen extends StatefulWidget {
@@ -13,7 +13,7 @@ class VitaleIdentityScreen extends StatefulWidget {
 }
 
 class _VitaleIdentityScreenState extends State<VitaleIdentityScreen> {
-  final VitaleIdentityService _service = const VitaleIdentityService();
+  final VitaleIdentityService _service = VitaleIdentityService();
 
   bool _loading = false;
   VitaleIdentity? _identity;
