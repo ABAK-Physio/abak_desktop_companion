@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 import '../../core/settings/exchange_directory_service.dart';
-import '../smart_card/screens/smart_card_diagnostic_screen.dart';
+import 'package:abak_vitale/abak_vitale.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -141,8 +141,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   label: const Text('Diagnostic Carte Vitale'),
                   onPressed: () {
                     Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => const SmartCardDiagnosticScreen(),
+                      MaterialPageRoute(builder: (_) => const VitaleDiagnosticScreen(),
                       ),
                     );
                   },
