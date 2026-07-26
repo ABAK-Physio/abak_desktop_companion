@@ -6,6 +6,8 @@ import 'package:intl/intl.dart';
 import '../data/patient_repository.dart';
 import '../models/patient.dart';
 import '../../smart_card/widgets/vitale_beneficiary_selector.dart';
+import 'package:url_launcher/url_launcher.dart';
+
 
 class PatientCreateScreen extends StatefulWidget {
   const PatientCreateScreen({super.key});
@@ -18,6 +20,8 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
   final PatientRepository _patientRepository = PatientRepository();
   final VitaleIdentityService _vitaleIdentityService =
   VitaleIdentityService();
+
+  final ApiLecService _apiLecService = ApiLecService();
 
 
   final _formKey = GlobalKey<FormState>();
@@ -533,6 +537,45 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
     );
   }
 
+  Future<void> _showModuleNotInstalledDialog() async {
+    await showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: const Text('Module Carte Vitale non installé'),
+          content: const Text(
+            'Le module ABAK Carte Vitale n’est pas installé sur cet ordinateur.\n\n'
+                'Vous pouvez le télécharger gratuitement depuis le site ABAK.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(dialogContext).pop();
+              },
+              child: const Text('Fermer'),
+            ),
+            FilledButton(
+              onPressed: () async {
+                Navigator.of(dialogContext).pop();
+
+                final uri = Uri.parse(
+                  'https://abak.care/demande-de-telechargement-du-module-abak-carte-vitale/',
+                );
+
+                await launchUrl(
+                  uri,
+                  mode: LaunchMode.externalApplication,
+                );
+              },
+              child: const Text('Télécharger'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   Future<void> _readVitaleIdentity() async {
     if (_saving || _loadingVitale) {
       return;
@@ -545,6 +588,17 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
     VitaleIdentity? identity;
 
     try {
+      final moduleStatus = await _apiLecService.getModuleStatus();
+
+      if (!mounted) {
+        return;
+      }
+
+      if (!moduleStatus.installed) {
+        await _showModuleNotInstalledDialog();
+        return;
+      }
+
       final identities =
       await _vitaleIdentityService.readVitaleIdentities();
 
