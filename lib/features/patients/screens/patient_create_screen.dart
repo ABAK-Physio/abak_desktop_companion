@@ -6,6 +6,8 @@ import 'package:intl/intl.dart';
 import '../data/patient_repository.dart';
 import '../models/patient.dart';
 import '../../smart_card/widgets/vitale_beneficiary_selector.dart';
+import 'package:url_launcher/url_launcher.dart';
+
 
 class PatientCreateScreen extends StatefulWidget {
   const PatientCreateScreen({super.key});
@@ -18,6 +20,7 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
   final PatientRepository _patientRepository = PatientRepository();
   final VitaleIdentityService _vitaleIdentityService =
   VitaleIdentityService();
+
   final ApiLecService _apiLecService = ApiLecService();
 
 
@@ -534,63 +537,43 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
     );
   }
 
-  Future<void> _showModuleInstallationDialog() async {
+  Future<void> _showModuleNotInstalledDialog() async {
     await showDialog<void>(
       context: context,
+      barrierDismissible: false,
       builder: (dialogContext) {
         return AlertDialog(
-          title: const Text(
-            'Module Carte Vitale ABAK',
-          ),
-          content: const SizedBox(
-            width: 520,
-            child: Text(
-              'La lecture de la Carte Vitale nécessite l’installation '
-                  'du Module Carte Vitale ABAK.\n\n'
-                  'Pour des raisons liées aux conditions de distribution '
-                  'des composants SESAM-Vitale, ce module est distribué '
-                  'séparément d’ABAK Desktop Companion.\n\n'
-                  'Après avoir complété un court formulaire d’identification, '
-                  'vous pourrez télécharger immédiatement le module.',
-            ),
+          title: const Text('Module Carte Vitale non installé'),
+          content: const Text(
+            'Le module ABAK Carte Vitale n’est pas installé sur cet ordinateur.\n\n'
+                'Vous pouvez le télécharger gratuitement depuis le site ABAK.',
           ),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(dialogContext).pop();
               },
-              child: const Text('Annuler'),
+              child: const Text('Fermer'),
             ),
-            FilledButton.icon(
-              onPressed: () {
+            FilledButton(
+              onPressed: () async {
                 Navigator.of(dialogContext).pop();
+
+                final uri = Uri.parse(
+                  'https://abak.care/demande-de-telechargement-du-module-abak-carte-vitale/',
+                );
+
+                await launchUrl(
+                  uri,
+                  mode: LaunchMode.externalApplication,
+                );
               },
-              icon: const Icon(Icons.open_in_new),
-              label: const Text(
-                'Obtenir le Module Carte Vitale',
-              ),
+              child: const Text('Télécharger'),
             ),
           ],
         );
       },
     );
-  }
-
-  Future<void> _onReadVitalePressed() async {
-    final moduleStatus =
-    await _apiLecService.getModuleStatus();
-
-    if (!moduleStatus.installed) {
-      if (!mounted) {
-        return;
-      }
-
-      await _showModuleInstallationDialog();
-
-      return;
-    }
-
-    await _readVitaleIdentity();
   }
 
   Future<void> _readVitaleIdentity() async {
@@ -605,6 +588,17 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
     VitaleIdentity? identity;
 
     try {
+      final moduleStatus = await _apiLecService.getModuleStatus();
+
+      if (!mounted) {
+        return;
+      }
+
+      if (!moduleStatus.installed) {
+        await _showModuleNotInstalledDialog();
+        return;
+      }
+
       final identities =
       await _vitaleIdentityService.readVitaleIdentities();
 
@@ -886,9 +880,7 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
                             ),
                             OutlinedButton.icon(
                               onPressed:
-                              _saving || _loadingVitale
-                                  ? null
-                                  : _onReadVitalePressed,
+                              _saving || _loadingVitale ? null : _readVitaleIdentity,
                               icon: _loadingVitale
                                   ? const SizedBox(
                                 width: 18,
