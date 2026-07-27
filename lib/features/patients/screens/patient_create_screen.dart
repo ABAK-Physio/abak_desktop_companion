@@ -18,6 +18,7 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
   final PatientRepository _patientRepository = PatientRepository();
   final VitaleIdentityService _vitaleIdentityService =
   VitaleIdentityService();
+  final ApiLecService _apiLecService = ApiLecService();
 
 
   final _formKey = GlobalKey<FormState>();
@@ -533,6 +534,65 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
     );
   }
 
+  Future<void> _showModuleInstallationDialog() async {
+    await showDialog<void>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: const Text(
+            'Module Carte Vitale ABAK',
+          ),
+          content: const SizedBox(
+            width: 520,
+            child: Text(
+              'La lecture de la Carte Vitale nécessite l’installation '
+                  'du Module Carte Vitale ABAK.\n\n'
+                  'Pour des raisons liées aux conditions de distribution '
+                  'des composants SESAM-Vitale, ce module est distribué '
+                  'séparément d’ABAK Desktop Companion.\n\n'
+                  'Après avoir complété un court formulaire d’identification, '
+                  'vous pourrez télécharger immédiatement le module.',
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(dialogContext).pop();
+              },
+              child: const Text('Annuler'),
+            ),
+            FilledButton.icon(
+              onPressed: () {
+                Navigator.of(dialogContext).pop();
+              },
+              icon: const Icon(Icons.open_in_new),
+              label: const Text(
+                'Obtenir le Module Carte Vitale',
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _onReadVitalePressed() async {
+    final moduleStatus =
+    await _apiLecService.getModuleStatus();
+
+    if (!moduleStatus.installed) {
+      if (!mounted) {
+        return;
+      }
+
+      await _showModuleInstallationDialog();
+
+      return;
+    }
+
+    await _readVitaleIdentity();
+  }
+
   Future<void> _readVitaleIdentity() async {
     if (_saving || _loadingVitale) {
       return;
@@ -826,7 +886,9 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
                             ),
                             OutlinedButton.icon(
                               onPressed:
-                              _saving || _loadingVitale ? null : _readVitaleIdentity,
+                              _saving || _loadingVitale
+                                  ? null
+                                  : _onReadVitalePressed,
                               icon: _loadingVitale
                                   ? const SizedBox(
                                 width: 18,
