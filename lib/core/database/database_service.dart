@@ -61,7 +61,7 @@ class DatabaseService {
 
     return openDatabase(
       path,
-      version: 10,  //////////////////////
+      version: 12,  //////////////////////
       onCreate: (db, version) async {
         await _createAllTables(db);
       },
@@ -150,16 +150,30 @@ class DatabaseService {
             'TEXT NULL',
           );
         }
+
+        if (oldVersion < 11) {
+          await _createCareEpisodeAssessmentTables(db);
+          await _createCareEpisodeReportTables(db);
+        }
+
+        if (oldVersion < 12) {
+          await _addColumnIfMissing(
+            db,
+            'care_episode_reports',
+            'status',
+            "TEXT NOT NULL DEFAULT 'draft'",
+          );
+        }
       },
     );
   }
 
   static Future<void> _addColumnIfMissing(
-    Database db,
-    String tableName,
-    String columnName,
-    String columnDefinition,
-  ) async {
+      Database db,
+      String tableName,
+      String columnName,
+      String columnDefinition,
+      ) async {
     final columns = await db.rawQuery('PRAGMA table_info($tableName)');
 
     final exists = columns.any((column) => column['name'] == columnName);
@@ -177,6 +191,8 @@ class DatabaseService {
     await _createPatientClinicalTables(db);
     await _createCareEpisodeTables(db);
     await _createCareEpisodeNoteTables(db);
+    await _createCareEpisodeAssessmentTables(db);
+    await _createCareEpisodeReportTables(db);
     await _createResultTables(db);
     await _createImportHistoryTables(db);
     await _createBackupTables(db);
@@ -189,6 +205,10 @@ class DatabaseService {
     await db.execute('DROP TABLE IF EXISTS desktop_result_metrics');
     await db.execute('DROP TABLE IF EXISTS desktop_results');
 
+    await db.execute('DROP TABLE IF EXISTS care_episode_assessment_notes');
+    await db.execute('DROP TABLE IF EXISTS care_episode_assessment_tests');
+    await db.execute('DROP TABLE IF EXISTS care_episode_reports');
+    await db.execute('DROP TABLE IF EXISTS care_episode_assessments');
     await db.execute('DROP TABLE IF EXISTS care_episode_notes');
     await db.execute('DROP TABLE IF EXISTS care_episodes');
 
@@ -323,6 +343,98 @@ class DatabaseService {
     await db.execute('''
       CREATE INDEX idx_care_episode_notes_episode_id
       ON care_episode_notes(care_episode_id)
+    ''');
+  }
+
+  static Future<void> _createCareEpisodeAssessmentTables(
+      Database db,
+      ) async {
+    await db.execute('''
+      CREATE TABLE care_episode_assessments (
+        assessment_id TEXT PRIMARY KEY,
+        care_episode_id TEXT NOT NULL,
+
+        title TEXT NOT NULL,
+        content_json TEXT NOT NULL,
+
+        status TEXT NOT NULL DEFAULT 'draft',
+
+        assessment_date INTEGER NOT NULL,
+        created_at INTEGER NOT NULL,
+        updated_at INTEGER NULL,
+        archived_at INTEGER NULL,
+
+        FOREIGN KEY(care_episode_id)
+          REFERENCES care_episodes(care_episode_id)
+      )
+    ''');
+
+    await db.execute('''
+      CREATE INDEX idx_care_episode_assessments_episode_id
+      ON care_episode_assessments(care_episode_id)
+    ''');
+
+    await db.execute('''
+      CREATE INDEX idx_care_episode_assessments_status
+      ON care_episode_assessments(care_episode_id, status)
+    ''');
+
+    await db.execute('''
+      CREATE TABLE care_episode_assessment_tests (
+        assessment_id TEXT NOT NULL,
+        exo_id TEXT NOT NULL,
+
+        PRIMARY KEY(assessment_id, exo_id),
+
+        FOREIGN KEY(assessment_id)
+          REFERENCES care_episode_assessments(assessment_id)
+      )
+    ''');
+
+    await db.execute('''
+      CREATE TABLE care_episode_assessment_notes (
+        assessment_id TEXT NOT NULL,
+        note_id TEXT NOT NULL,
+
+        PRIMARY KEY(assessment_id, note_id),
+
+        FOREIGN KEY(assessment_id)
+          REFERENCES care_episode_assessments(assessment_id),
+
+        FOREIGN KEY(note_id)
+          REFERENCES care_episode_notes(note_id)
+      )
+    ''');
+  }
+
+  static Future<void> _createCareEpisodeReportTables(Database db) async {
+    await db.execute('''
+      CREATE TABLE care_episode_reports (
+        report_id TEXT PRIMARY KEY,
+        care_episode_id TEXT NOT NULL,
+        source_assessment_id TEXT NULL,
+
+        title TEXT NOT NULL,
+        content_json TEXT NOT NULL,
+
+        status TEXT NOT NULL DEFAULT 'draft',
+
+        report_date INTEGER NOT NULL,
+        created_at INTEGER NOT NULL,
+        updated_at INTEGER NULL,
+        archived_at INTEGER NULL,
+
+        FOREIGN KEY(care_episode_id)
+          REFERENCES care_episodes(care_episode_id),
+
+        FOREIGN KEY(source_assessment_id)
+          REFERENCES care_episode_assessments(assessment_id)
+      )
+    ''');
+
+    await db.execute('''
+      CREATE INDEX idx_care_episode_reports_episode_id
+      ON care_episode_reports(care_episode_id)
     ''');
   }
 

@@ -13,6 +13,7 @@ import '../../documents/services/initial_report_document_service.dart';
 import '../../patients/data/patient_repository.dart';
 import '../../patients/models/patient.dart';
 import '../../results/evolution/episode_evolution_screen.dart';
+import 'care_episode_reports_workspace_screen.dart';
 
 class CareEpisodeDetailScreen extends StatefulWidget {
   final CareEpisode episode;
@@ -621,6 +622,26 @@ Observations complémentaires :
                 ? _episode.displayTitle
                 : '${_patient!.lastName.toUpperCase()} ${_patient!.firstName}',
           ),
+          actions: [
+            IconButton(
+              tooltip: 'Nouvelle interface bilans et rapports',
+              icon: const Icon(Icons.dashboard_customize_outlined),
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => CareEpisodeReportsWorkspaceScreen(
+                      episode: _episode,
+                      patientName: _patient == null
+                          ? _episode.displayTitle
+                          : '${_patient!.lastName.toUpperCase()} '
+                          '${_patient!.firstName}',
+                      resultRepository: _resultRepository,
+                    ),
+                  ),
+                );
+              },
+            ),
+          ],
         ),
         body: ListView(
           key: ValueKey(_refreshToken),
