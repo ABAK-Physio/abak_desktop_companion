@@ -125,6 +125,16 @@ class CareEpisodeReportRepository {
     );
   }
 
+  Future<void> deleteReport(String reportId) async {
+    final db = await DatabaseService.database;
+
+    await db.delete(
+      'care_episode_reports',
+      where: 'report_id = ? AND archived_at IS NOT NULL',
+      whereArgs: [reportId],
+    );
+  }
+
   Future<void> archiveReport(String reportId) async {
     final db = await DatabaseService.database;
     final now = DateTime.now().millisecondsSinceEpoch;

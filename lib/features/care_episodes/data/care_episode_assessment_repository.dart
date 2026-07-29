@@ -267,6 +267,30 @@ class CareEpisodeAssessmentRepository {
     );
   }
 
+  Future<void> deleteAssessment(String assessmentId) async {
+    final db = await DatabaseService.database;
+
+    await db.transaction((transaction) async {
+      await transaction.delete(
+        'care_episode_assessment_tests',
+        where: 'assessment_id = ?',
+        whereArgs: [assessmentId],
+      );
+
+      await transaction.delete(
+        'care_episode_assessment_notes',
+        where: 'assessment_id = ?',
+        whereArgs: [assessmentId],
+      );
+
+      await transaction.delete(
+        'care_episode_assessments',
+        where: 'assessment_id = ? AND archived_at IS NOT NULL',
+        whereArgs: [assessmentId],
+      );
+    });
+  }
+
   Future<void> archiveAssessment(String assessmentId) async {
     final db = await DatabaseService.database;
 

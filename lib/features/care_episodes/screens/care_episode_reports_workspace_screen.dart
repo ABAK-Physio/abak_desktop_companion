@@ -931,6 +931,118 @@ class _CareEpisodeReportsWorkspaceScreenState
     }
   }
 
+  Future<void> _deleteAssessmentPermanently(
+      CareEpisodeAssessment assessment,
+      ) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: const Text('Supprimer définitivement le bilan ?'),
+          content: Text(
+            'Le bilan « ${assessment.title} » sera définitivement supprimé. '
+                'Cette action est irréversible.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(false),
+              child: const Text('Annuler'),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.of(dialogContext).pop(true),
+              child: const Text('Supprimer définitivement'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (confirmed != true) {
+      return;
+    }
+
+    try {
+      await _assessmentRepository.deleteAssessment(
+        assessment.assessmentId,
+      );
+
+      if (!mounted) return;
+
+      setState(() {
+        _archivedAssessmentsFuture =
+            _assessmentRepository.getArchivedForEpisode(
+              widget.episode.careEpisodeId,
+            );
+      });
+    } catch (_) {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Impossible de supprimer définitivement le bilan.',
+          ),
+        ),
+      );
+    }
+  }
+
+  Future<void> _deleteReportPermanently(
+      CareEpisodeReport report,
+      ) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: const Text('Supprimer définitivement le rapport ?'),
+          content: Text(
+            'Le rapport « ${report.title} » sera définitivement supprimé. '
+                'Cette action est irréversible.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(false),
+              child: const Text('Annuler'),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.of(dialogContext).pop(true),
+              child: const Text('Supprimer définitivement'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (confirmed != true) {
+      return;
+    }
+
+    try {
+      await _reportRepository.deleteReport(
+        report.reportId,
+      );
+
+      if (!mounted) return;
+
+      setState(() {
+        _archivedReportsFuture =
+            _reportRepository.getArchivedForEpisode(
+              widget.episode.careEpisodeId,
+            );
+      });
+    } catch (_) {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Impossible de supprimer définitivement le rapport.',
+          ),
+        ),
+      );
+    }
+  }
+
   Future<String?> _showDocumentTitleDialog({
     required String dialogTitle,
     required String fieldLabel,
@@ -1359,6 +1471,9 @@ class _CareEpisodeReportsWorkspaceScreenState
                             _archivedReportsFuture,
                             onRestoreAssessment: _restoreAssessment,
                             onRestoreReport: _restoreReport,
+                            onDeleteAssessment:
+                            _deleteAssessmentPermanently,
+                            onDeleteReport: _deleteReportPermanently,
                           ),
                         ),
                         const SizedBox(width: 16),
@@ -2061,50 +2176,6 @@ class _ReportHistoryCard extends StatelessWidget {
   }
 }
 
-class _HistoryCard extends StatelessWidget {
-  final String title;
-  final String emptyLabel;
-  final String actionLabel;
-  final IconData actionIcon;
-
-  const _HistoryCard({
-    required this.title,
-    required this.emptyLabel,
-    required this.actionLabel,
-    required this.actionIcon,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return _ScrollableWorkspaceCard(
-      title: title,
-      trailing: FilledButton.icon(
-        onPressed: null,
-        icon: Icon(actionIcon),
-        label: Text(actionLabel),
-      ),
-      child: Column(
-        children: [
-          const _TableHeader(
-            columns: [
-              Expanded(flex: 5, child: Text('Nom')),
-              Expanded(flex: 2, child: Text('Date')),
-              SizedBox(width: 42),
-              SizedBox(width: 42),
-            ],
-          ),
-          const Divider(height: 1),
-          Expanded(
-            child: Center(
-              child: Text(emptyLabel),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 typedef _NoteIncludedChanged = void Function({
 required String noteId,
 required bool included,
@@ -2275,12 +2346,16 @@ class _DocumentsCard extends StatelessWidget {
   final Future<List<CareEpisodeReport>> archivedReportsFuture;
   final ValueChanged<CareEpisodeAssessment> onRestoreAssessment;
   final ValueChanged<CareEpisodeReport> onRestoreReport;
+  final ValueChanged<CareEpisodeAssessment> onDeleteAssessment;
+  final ValueChanged<CareEpisodeReport> onDeleteReport;
 
   const _DocumentsCard({
     required this.archivedAssessmentsFuture,
     required this.archivedReportsFuture,
     required this.onRestoreAssessment,
     required this.onRestoreReport,
+    required this.onDeleteAssessment,
+    required this.onDeleteReport,
   });
 
   @override
@@ -2428,6 +2503,25 @@ class _DocumentsCard extends StatelessWidget {
                                 tooltip: 'Restaurer',
                                 icon: const Icon(
                                   Icons.restore_from_trash_outlined,
+                                ),
+                              ),
+                              IconButton(
+                                onPressed: () {
+                                  final assessment = item.assessment;
+                                  final report = item.report;
+
+                                  if (assessment != null) {
+                                    onDeleteAssessment(assessment);
+                                    return;
+                                  }
+
+                                  if (report != null) {
+                                    onDeleteReport(report);
+                                  }
+                                },
+                                tooltip: 'Supprimer définitivement',
+                                icon: const Icon(
+                                  Icons.delete_forever_outlined,
                                 ),
                               ),
                             ],

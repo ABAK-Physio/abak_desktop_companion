@@ -7,7 +7,7 @@ import '../data/patient_repository.dart';
 import '../models/patient.dart';
 import '../../smart_card/widgets/vitale_beneficiary_selector.dart';
 import 'package:url_launcher/url_launcher.dart';
-
+import 'package:flutter/services.dart';
 
 class PatientCreateScreen extends StatefulWidget {
   const PatientCreateScreen({super.key});
@@ -599,12 +599,33 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
         return;
       }
 
-      final identities =
-      await _vitaleIdentityService.readVitaleIdentities();
+      List<VitaleIdentity> identities;
 
-      debugPrint(
-        'macOS : ${identities.length} bénéficiaire(s)',
-      );
+      try {
+        identities = await _vitaleIdentityService.readVitaleIdentities();
+      } on PlatformException catch (error) {
+        if (!mounted) {
+          return;
+        }
+
+        final message = error.code == 'API_INIT_ERROR' &&
+            (error.message?.contains('retour=13') ?? false)
+            ? 'Aucun lecteur de Carte Vitale n’a été détecté. '
+            'Vérifiez qu’il est connecté puis réessayez.'
+            : error.code == 'API_INIT_ERROR' &&
+            (error.message?.contains('retour=32') ?? false)
+            ? 'La configuration du module Carte Vitale est absente ou incorrecte. '
+            'Réinstallez le module puis réessayez.'
+            : 'La lecture de la Carte Vitale a échoué.';
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(message),
+          ),
+        );
+
+        return;
+      }
 
       if (!mounted) {
         return;
@@ -643,47 +664,8 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
       return;
     }
 
-    final vitaleIdentity = identity;
-
     final existingPatientResolved =
-    await _resolveExistingPatient(vitaleIdentity);
-
-    if (!mounted || existingPatientResolved) {
-      return;
-    }
-
-    setState(() {
-      final lastName = vitaleIdentity.lastName?.trim();
-      if (lastName?.isNotEmpty == true) {
-        _lastNameController.text = lastName!;
-      }
-
-      final firstName = vitaleIdentity.firstName?.trim();
-      if (firstName?.isNotEmpty == true) {
-        _firstNameController.text = firstName!;
-      }
-
-      final birthDate = vitaleIdentity.birthDate;
-      if (birthDate != null) {
-        _birthDateController.text = _birthDateDisplayFormat(
-          context,
-        ).format(birthDate);
-      }
-
-      final sexCode = vitaleIdentity.sexCode?.trim().toUpperCase();
-      if (sexCode == 'M' || sexCode == 'F' || sexCode == 'X') {
-        _sexCode = sexCode!;
-      } else {
-        _sexCode = 'U';
-      }
-
-      final nir = vitaleIdentity.nir?.trim();
-      _nir = nir?.isNotEmpty == true ? nir : null;
-
-      _identityReadFromVitale = true;
-      _vitaleReadAt = DateTime.now();
-    });
-
+    await _resolveExistingPatient(identity);
 
     if (!mounted || existingPatientResolved) {
       return;
