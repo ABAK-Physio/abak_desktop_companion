@@ -4,6 +4,7 @@ import 'data/practitioner_repository.dart';
 import 'models/practitioner.dart';
 import 'widgets/practitioner_form_dialog.dart';
 import '../../core/utils/date_format_utils.dart';
+import 'widgets/practitioner_qr_dialog.dart';
 
 class PractitionerListScreen extends StatefulWidget {
   const PractitionerListScreen({super.key});
@@ -93,6 +94,15 @@ class _PractitionerListScreenState extends State<PractitionerListScreen> {
       _showArchived = false;
       _practitionersFuture = _repository.getActivePractitioners();
     });
+  }
+
+  Future<void> _showPractitionerQrCode(Practitioner practitioner) async {
+    await showDialog<void>(
+      context: context,
+      builder: (_) => PractitionerQrDialog(
+        practitioner: practitioner,
+      ),
+    );
   }
 
   @override
@@ -217,20 +227,23 @@ class _PractitionerListScreenState extends State<PractitionerListScreen> {
                             )
                           : Row(
                               mainAxisSize: MainAxisSize.min,
-                              children: [
-                                IconButton(
-                                  tooltip: 'Modifier',
-                                  icon: const Icon(Icons.edit_outlined),
-                                  onPressed: () =>
-                                      _editPractitioner(practitioner),
-                                ),
-                                IconButton(
-                                  tooltip: 'Archiver',
-                                  icon: const Icon(Icons.archive_outlined),
-                                  onPressed: () =>
-                                      _archivePractitioner(practitioner),
-                                ),
-                              ],
+                        children: [
+                          IconButton(
+                            tooltip: 'Afficher le QR Code',
+                            icon: const Icon(Icons.qr_code_2_outlined),
+                            onPressed: () => _showPractitionerQrCode(practitioner),
+                          ),
+                          IconButton(
+                            tooltip: 'Modifier',
+                            icon: const Icon(Icons.edit_outlined),
+                            onPressed: () => _editPractitioner(practitioner),
+                          ),
+                          IconButton(
+                            tooltip: 'Archiver',
+                            icon: const Icon(Icons.archive_outlined),
+                            onPressed: () => _archivePractitioner(practitioner),
+                          ),
+                        ],
                             ),
                     );
                   },

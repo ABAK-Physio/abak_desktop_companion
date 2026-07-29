@@ -1,11 +1,13 @@
 import '../database/database_service.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:uuid/uuid.dart';
 
 class CabinetIdentityService {
   const CabinetIdentityService();
 
   static const _cabinetNameKey = 'cabinet_name';
   static const _cabinetLogoPathKey = 'cabinet_logo_path';
+  static const _organizationIdKey = 'organization_id';
 
   Future<String?> getCabinetName() async {
     return _getValue(_cabinetNameKey);
@@ -67,5 +69,19 @@ class CabinetIdentityService {
       where: 'setting_key = ?',
       whereArgs: [key],
     );
+  }
+
+  Future<String> getOrganizationId() async {
+    final existing = await _getValue(_organizationIdKey);
+
+    if (existing != null && existing.isNotEmpty) {
+      return existing;
+    }
+
+    final organizationId = const Uuid().v4();
+
+    await _setValue(_organizationIdKey, organizationId);
+
+    return organizationId;
   }
 }
