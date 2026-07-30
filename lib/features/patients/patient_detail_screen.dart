@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 import '../../generated/l10n.dart';
+import '../care_episodes/data/care_episode_referring_practitioner_repository.dart';
+import '../practitioners/widgets/practitioner_selector.dart';
 
 import '../../core/utils/date_format_utils.dart';
 import 'models/patient.dart';
@@ -11,9 +13,11 @@ import 'models/patient_identity.dart';
 import 'screens/patient_clinical_data_edit_screen.dart';
 import '../care_episodes/data/care_episode_repository.dart';
 import '../care_episodes/models/care_episode.dart';
-import '../care_episodes/screens/care_episode_detail_screen.dart';
+
 import '../care_episodes/models/care_episode_summary.dart';
 import 'package:abak_shared/abak_shared.dart';
+import '../care_episodes/screens/care_episode_reports_workspace_screen.dart';
+import '../results/data/desktop_result_repository.dart';
 
 class PatientDetailScreen extends StatefulWidget {
   final Patient patient;
@@ -34,6 +38,10 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
       PatientAttributeRepository();
 
   final CareEpisodeRepository _careEpisodeRepository = CareEpisodeRepository();
+
+  final CareEpisodeReferringPractitionerRepository
+  _referringPractitionerRepository =
+  CareEpisodeReferringPractitionerRepository();
 
   String _formatBirthDate(BuildContext context) {
     if (widget.patient.birthDate == null) {
@@ -63,6 +71,13 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
   }
 
   Future<void> _editCareEpisode(CareEpisode episode) async {
+    final currentAssignment = await _referringPractitionerRepository
+        .getCurrentReferringPractitioner(episode.careEpisodeId);
+
+    if (!mounted) return;
+
+    String? selectedPractitionerId = currentAssignment?.practitionerId;
+
     final pathologyController = TextEditingController(
       text: episode.pathologyLabel,
     );
@@ -97,6 +112,15 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
                   ),
                   minLines: 5,
                   maxLines: 10,
+                ),
+                const SizedBox(height: 16),
+                PractitionerSelector(
+                  label: 'Kiné référent',
+                  selectedPractitionerId: selectedPractitionerId,
+                  allowEmpty: true,
+                  onChanged: (practitionerId) {
+                    selectedPractitionerId = practitionerId;
+                  },
                 ),
               ],
             ),
@@ -138,6 +162,20 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
 
     await _careEpisodeRepository.updateCareEpisode(updatedEpisode);
 
+    final previousPractitionerId = currentAssignment?.practitionerId;
+
+    if (selectedPractitionerId == null) {
+      if (previousPractitionerId != null) {
+        await _referringPractitionerRepository
+            .clearCurrentReferringPractitioner(episode.careEpisodeId);
+      }
+    } else if (selectedPractitionerId != previousPractitionerId) {
+      await _referringPractitionerRepository.changeReferringPractitioner(
+        careEpisodeId: episode.careEpisodeId,
+        practitionerId: selectedPractitionerId!,
+      );
+    }
+
     if (!mounted) return;
 
     setState(() {
@@ -154,6 +192,8 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
   Future<void> _createCareEpisode() async {
     final pathologyController = TextEditingController();
     final initialReportController = TextEditingController();
+
+    String? selectedPractitionerId;
 
     final created = await showDialog<bool>(
       context: context,
@@ -182,6 +222,15 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
                   ),
                   minLines: 5,
                   maxLines: 10,
+                ),
+                const SizedBox(height: 16),
+                PractitionerSelector(
+                  label: 'Kiné référent',
+                  selectedPractitionerId: selectedPractitionerId,
+                  allowEmpty: true,
+                  onChanged: (practitionerId) {
+                    selectedPractitionerId = practitionerId;
+                  },
                 ),
               ],
             ),
@@ -223,6 +272,13 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
 
     await _careEpisodeRepository.insertCareEpisode(episode);
 
+    if (selectedPractitionerId != null) {
+      await _referringPractitionerRepository.changeReferringPractitioner(
+        careEpisodeId: episode.careEpisodeId,
+        practitionerId: selectedPractitionerId!,
+      );
+    }
+
     if (!mounted) return;
 
     setState(() {
@@ -259,6 +315,7 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
           _CareEpisodesSection(
             repository: _careEpisodeRepository,
             patientId: widget.patient.patientId,
+            patientName: _formatPatientTitle(),
             refreshToken: _refreshToken,
             onCreateCareEpisode: _createCareEpisode,
             onEditCareEpisode: _editCareEpisode,
@@ -582,6 +639,7 @@ class _CareEpisodesSection extends StatelessWidget {
   final int refreshToken;
   final VoidCallback onCreateCareEpisode;
   final ValueChanged<CareEpisode> onEditCareEpisode;
+  final String patientName;
 
   const _CareEpisodesSection({
     required this.repository,
@@ -589,7 +647,22 @@ class _CareEpisodesSection extends StatelessWidget {
     required this.refreshToken,
     required this.onCreateCareEpisode,
     required this.onEditCareEpisode,
+    required this.patientName,
   });
+
+  String _referringPractitionerLabel(CareEpisodeSummary summary) {
+    final name = summary.referringPractitionerDisplayName?.trim();
+
+    if (name == null || name.isEmpty) {
+      return 'Non renseigné';
+    }
+
+    if (summary.referringPractitionerArchived) {
+      return '$name — archivé';
+    }
+
+    return name;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -630,6 +703,7 @@ class _CareEpisodesSection extends StatelessWidget {
                   subtitle: Text(
                     [
                       'Pathologie : ${episode.pathologyLabel}',
+                      'Kiné référent : ${_referringPractitionerLabel(summary)}',
                       '${summary.notesCount} note${summary.notesCount > 1 ? 's' : ''} de suivi',
                       summary.hasConclusion
                           ? 'Conclusion rédigée'
@@ -642,14 +716,17 @@ class _CareEpisodesSection extends StatelessWidget {
                     onPressed: () => onEditCareEpisode(episode),
                   ),
                   onTap: () async {
-                    final changed = await Navigator.of(context).push<bool>(
+                    await Navigator.of(context).push<void>(
                       MaterialPageRoute(
-                        builder: (_) =>
-                            CareEpisodeDetailScreen(episode: episode),
+                        builder: (_) => CareEpisodeReportsWorkspaceScreen(
+                          episode: episode,
+                          patientName: patientName,
+                          resultRepository: DesktopResultRepository(),
+                        ),
                       ),
                     );
 
-                    if (changed == true && context.mounted) {
+                    if (context.mounted) {
                       final state = context
                           .findAncestorStateOfType<_PatientDetailScreenState>();
 

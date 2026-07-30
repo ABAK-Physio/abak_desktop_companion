@@ -125,22 +125,38 @@ class CareEpisodeRepository {
   }
 
   Future<List<CareEpisodeSummary>> getEpisodeSummariesForPatient(
-    String patientId,
-  ) async {
+      String patientId,
+      ) async {
     final db = await DatabaseService.database;
 
     final rows = await db.rawQuery(
       '''
     SELECT
       ce.*,
-      COUNT(cen.note_id) AS notes_count
+      COUNT(DISTINCT cen.note_id) AS notes_count,
+      p.display_name AS referring_practitioner_display_name,
+      CASE
+        WHEN p.archived_at IS NOT NULL THEN 1
+        ELSE 0
+      END AS referring_practitioner_archived
     FROM care_episodes ce
+
     LEFT JOIN care_episode_notes cen
       ON cen.care_episode_id = ce.care_episode_id
       AND cen.archived_at IS NULL
+
+    LEFT JOIN care_episode_referring_practitioners cerp
+      ON cerp.care_episode_id = ce.care_episode_id
+      AND cerp.ended_at IS NULL
+
+    LEFT JOIN practitioners p
+      ON p.practitioner_id = cerp.practitioner_id
+
     WHERE ce.patient_id = ?
       AND ce.archived_at IS NULL
+
     GROUP BY ce.care_episode_id
+
     ORDER BY ce.created_at DESC
     ''',
       [patientId],

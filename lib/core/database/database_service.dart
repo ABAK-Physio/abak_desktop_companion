@@ -61,7 +61,7 @@ class DatabaseService {
 
     return openDatabase(
       path,
-      version: 12,  //////////////////////
+      version: 13,  //////////////////////
       onCreate: (db, version) async {
         await _createAllTables(db);
       },
@@ -164,6 +164,9 @@ class DatabaseService {
             "TEXT NOT NULL DEFAULT 'draft'",
           );
         }
+        if (oldVersion < 13) {
+          await _createCareEpisodeReferringPractitionerTables(db);
+        }
       },
     );
   }
@@ -190,6 +193,7 @@ class DatabaseService {
     await _createApplicationSettingsTable(db);
     await _createPatientClinicalTables(db);
     await _createCareEpisodeTables(db);
+    await _createCareEpisodeReferringPractitionerTables(db);
     await _createCareEpisodeNoteTables(db);
     await _createCareEpisodeAssessmentTables(db);
     await _createCareEpisodeReportTables(db);
@@ -322,6 +326,38 @@ class DatabaseService {
       CREATE INDEX idx_care_episodes_patient_id
       ON care_episodes(patient_id)
     ''');
+  }
+
+  static Future<void> _createCareEpisodeReferringPractitionerTables(
+      Database db,
+      ) async {
+    await db.execute('''
+    CREATE TABLE care_episode_referring_practitioners (
+      assignment_id TEXT PRIMARY KEY,
+
+      care_episode_id TEXT NOT NULL,
+      practitioner_id TEXT NOT NULL,
+
+      started_at INTEGER NOT NULL,
+      ended_at INTEGER NULL,
+
+      FOREIGN KEY(care_episode_id)
+        REFERENCES care_episodes(care_episode_id),
+
+      FOREIGN KEY(practitioner_id)
+        REFERENCES practitioners(practitioner_id)
+    )
+  ''');
+
+    await db.execute('''
+    CREATE INDEX idx_care_episode_referring_practitioners_episode_id
+    ON care_episode_referring_practitioners(care_episode_id)
+  ''');
+
+    await db.execute('''
+    CREATE INDEX idx_care_episode_referring_practitioners_practitioner_id
+    ON care_episode_referring_practitioners(practitioner_id)
+  ''');
   }
 
   static Future<void> _createCareEpisodeNoteTables(Database db) async {

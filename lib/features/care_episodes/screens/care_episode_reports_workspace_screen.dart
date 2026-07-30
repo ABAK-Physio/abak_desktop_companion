@@ -16,6 +16,11 @@ import '../models/care_episode_assessment.dart';
 import '../models/care_episode_note.dart';
 import '../models/care_episode_report.dart';
 import '../models/clinical_document_type.dart';
+import '../../practitioners/data/practitioner_repository.dart';
+import '../../practitioners/models/practitioner.dart';
+import '../../practitioners/widgets/practitioner_selector.dart';
+import '../data/care_episode_referring_practitioner_repository.dart';
+import '../widgets/referring_practitioner_history_dialog.dart';
 
 class CareEpisodeReportsWorkspaceScreen extends StatefulWidget {
   final CareEpisode episode;
@@ -46,6 +51,15 @@ class _CareEpisodeReportsWorkspaceScreenState
   final TextEditingController _draftController = TextEditingController();
   final FocusNode _draftFocusNode = FocusNode();
 
+  final CareEpisodeReferringPractitionerRepository
+  _referringPractitionerRepository =
+  CareEpisodeReferringPractitionerRepository();
+
+  final PractitionerRepository _practitionerRepository =
+  PractitionerRepository();
+
+  late Future<Practitioner?> _currentReferringPractitionerFuture;
+
   Timer? _draftSaveTimer;
   bool _updatingDraftController = false;
 
@@ -71,6 +85,9 @@ class _CareEpisodeReportsWorkspaceScreenState
   @override
   void initState() {
     super.initState();
+
+    _currentReferringPractitionerFuture =
+        _loadCurrentReferringPractitioner();
 
     _resultsFuture = widget.resultRepository.getResultsForCareEpisode(
       widget.episode.careEpisodeId,
@@ -100,6 +117,7 @@ class _CareEpisodeReportsWorkspaceScreenState
     _draftController.addListener(_scheduleDraftSave);
     _loadOrCreateDraft();
   }
+
 
   Future<void> _loadOrCreateDraft() async {
     try {
@@ -1272,6 +1290,202 @@ class _CareEpisodeReportsWorkspaceScreenState
     }
   }
 
+  Future<void> _addFollowUpNote() async {
+    final controller = TextEditingController();
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: const Text('Nouvelle note de suivi'),
+          content: SizedBox(
+            width: 520,
+            child: TextField(
+              controller: controller,
+              decoration: const InputDecoration(
+                labelText: 'Note',
+                border: OutlineInputBorder(),
+                alignLabelWithHint: true,
+              ),
+              minLines: 5,
+              maxLines: 10,
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(false),
+              child: const Text('Annuler'),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.of(dialogContext).pop(true),
+              child: const Text('Ajouter'),
+            ),
+          ],
+        );
+      },
+    );
+
+    final content = controller.text.trim();
+    controller.dispose();
+
+    if (confirmed != true || content.isEmpty) {
+      return;
+    }
+
+    final now = DateTime.now().millisecondsSinceEpoch;
+
+    final note = CareEpisodeNote(
+      noteId: const Uuid().v4(),
+      careEpisodeId: widget.episode.careEpisodeId,
+      noteDate: now,
+      content: content,
+      createdAt: now,
+    );
+
+    await _careEpisodeRepository.insertNote(note);
+
+    if (!mounted) return;
+
+    setState(() {
+      _notesFuture = _careEpisodeRepository.getNotesForEpisode(
+        widget.episode.careEpisodeId,
+      );
+    });
+  }
+
+  Future<void> _openExpandedSoapEditor() async {
+    final expandedController = TextEditingController(
+      text: _draftController.text,
+    );
+
+    void synchronizeContent() {
+      if (_draftController.text == expandedController.text) {
+        return;
+      }
+
+      _draftController.value = TextEditingValue(
+        text: expandedController.text,
+        selection: TextSelection.collapsed(
+          offset: expandedController.text.length,
+        ),
+      );
+    }
+
+    expandedController.addListener(synchronizeContent);
+
+    await showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogContext) {
+        return Dialog(
+          insetPadding: const EdgeInsets.all(32),
+          child: SizedBox(
+            width: MediaQuery.of(dialogContext).size.width * 0.90,
+            height: MediaQuery.of(dialogContext).size.height * 0.85,
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          _documentType.editorTitle,
+                          style: Theme.of(
+                            dialogContext,
+                          ).textTheme.titleLarge,
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () => Navigator.of(dialogContext).pop(),
+                        tooltip: 'Fermer',
+                        icon: const Icon(Icons.close),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  Expanded(
+                    child: TextField(
+                      controller: expandedController,
+                      autofocus: true,
+                      enabled:
+                      _documentType == ClinicalDocumentType.assessment
+                          ? _draft != null
+                          : _reportDraft != null,
+                      decoration: const InputDecoration(
+                        hintText:
+                        'Zone de rédaction du bilan SOAP.\n\n'
+                            'S — Subjectif\n\n'
+                            'O — Objectif\n\n'
+                            'A — Analyse\n\n'
+                            'P — Plan',
+                        border: OutlineInputBorder(),
+                        alignLabelWithHint: true,
+                      ),
+                      expands: true,
+                      minLines: null,
+                      maxLines: null,
+                      textAlignVertical: TextAlignVertical.top,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+
+    expandedController.removeListener(synchronizeContent);
+    expandedController.dispose();
+  }
+
+  Future<void> _showExpandedWorkspaceContent({
+    required String title,
+    required Widget child,
+  }) {
+    return showDialog<void>(
+      context: context,
+      builder: (dialogContext) {
+        return Dialog(
+          insetPadding: const EdgeInsets.all(32),
+          child: SizedBox(
+            width: MediaQuery.of(dialogContext).size.width * 0.90,
+            height: MediaQuery.of(dialogContext).size.height * 0.85,
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          title,
+                          style: Theme.of(
+                            dialogContext,
+                          ).textTheme.titleLarge,
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () => Navigator.of(dialogContext).pop(),
+                        tooltip: 'Fermer',
+                        icon: const Icon(Icons.close),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  Expanded(child: child),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   void dispose() {
     _draftSaveTimer?.cancel();
@@ -1281,6 +1495,88 @@ class _CareEpisodeReportsWorkspaceScreenState
     super.dispose();
   }
 
+  Future<Practitioner?> _loadCurrentReferringPractitioner() async {
+    final assignment = await _referringPractitionerRepository
+        .getCurrentReferringPractitioner(
+      widget.episode.careEpisodeId,
+    );
+
+    if (assignment == null) {
+      return null;
+    }
+
+    return _practitionerRepository.getPractitionerById(
+      assignment.practitionerId,
+    );
+  }
+
+  Future<void> _editReferringPractitioner() async {
+    final currentAssignment = await _referringPractitionerRepository
+        .getCurrentReferringPractitioner(
+      widget.episode.careEpisodeId,
+    );
+
+    if (!mounted) return;
+
+    final previousPractitionerId = currentAssignment?.practitionerId;
+    String? selectedPractitionerId = previousPractitionerId;
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: const Text('Modifier le kiné référent'),
+          content: SizedBox(
+            width: 480,
+            child: PractitionerSelector(
+              label: 'Kiné référent',
+              selectedPractitionerId: selectedPractitionerId,
+              allowEmpty: true,
+              onChanged: (practitionerId) {
+                selectedPractitionerId = practitionerId;
+              },
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(false),
+              child: const Text('Annuler'),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.of(dialogContext).pop(true),
+              child: const Text('Enregistrer'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (confirmed != true) return;
+
+    if (selectedPractitionerId == null) {
+      if (previousPractitionerId != null) {
+        await _referringPractitionerRepository
+            .clearCurrentReferringPractitioner(
+          widget.episode.careEpisodeId,
+        );
+      }
+    } else if (selectedPractitionerId != previousPractitionerId) {
+      await _referringPractitionerRepository
+          .changeReferringPractitioner(
+        careEpisodeId: widget.episode.careEpisodeId,
+        practitionerId: selectedPractitionerId!,
+      );
+    }
+
+    if (!mounted) return;
+
+    setState(() {
+      _currentReferringPractitionerFuture =
+          _loadCurrentReferringPractitioner();
+    });
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -1288,26 +1584,25 @@ class _CareEpisodeReportsWorkspaceScreenState
         title: Text('${widget.patientName} — Bilans et rapports'),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(
-                horizontal: 16,
-                vertical: 10,
-              ),
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.secondaryContainer,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: const Text(
-                'Le brouillon, les tests et les notes sélectionnés sont '
-                    'sauvegardés automatiquement. Les changements d’un '
-                    'bilan historique restent provisoires jusqu’à validation.',
-              ),
+            _EpisodeHeader(
+              episode: widget.episode,
+              practitionerFuture: _currentReferringPractitionerFuture,
+              onEditPractitioner: _editReferringPractitioner,
+              onShowHistory: () {
+                showDialog<void>(
+                  context: context,
+                  builder: (_) => ReferringPractitionerHistoryDialog(
+                    careEpisodeId: widget.episode.careEpisodeId,
+                  ),
+                );
+              },
             ),
-            const SizedBox(height: 16),
+
+            const SizedBox(height: 12),
+
             Expanded(
               child: Column(
                 children: [
@@ -1328,6 +1623,7 @@ class _CareEpisodeReportsWorkspaceScreenState
                                 ClinicalDocumentType.assessment
                                 ? _draft != null
                                 : _reportDraft != null,
+                            onExpand: _openExpandedSoapEditor,
                             isEditing:
                             _documentType ==
                                 ClinicalDocumentType.assessment
@@ -1343,15 +1639,35 @@ class _CareEpisodeReportsWorkspaceScreenState
                               Expanded(
                                 child: _LatestTestsCard(
                                   resultsFuture: _resultsFuture,
-                                  selectedTestExoIds:
-                                  _selectedTestExoIds,
+                                  selectedTestExoIds: _selectedTestExoIds,
                                   selectionEnabled:
-                                  _documentType ==
-                                      ClinicalDocumentType.assessment &&
+                                  _documentType == ClinicalDocumentType.assessment &&
                                       _draft != null &&
                                       !_testSelectionLoading,
-                                  onTestIncludedChanged:
-                                      ({
+                                  onExpand: () {
+                                    _showExpandedWorkspaceContent(
+                                      title: 'Tests réalisés',
+                                      child: _LatestTestsCard(
+                                        resultsFuture: _resultsFuture,
+                                        selectedTestExoIds: _selectedTestExoIds,
+                                        selectionEnabled:
+                                        _documentType == ClinicalDocumentType.assessment &&
+                                            _draft != null &&
+                                            !_testSelectionLoading,
+                                        onExpand: null,
+                                        onTestIncludedChanged: ({
+                                          required exoId,
+                                          required included,
+                                        }) {
+                                          _setTestIncluded(
+                                            exoId: exoId,
+                                            included: included,
+                                          );
+                                        },
+                                      ),
+                                    );
+                                  },
+                                  onTestIncludedChanged: ({
                                     required exoId,
                                     required included,
                                   }) {
@@ -1362,70 +1678,137 @@ class _CareEpisodeReportsWorkspaceScreenState
                                   },
                                 ),
                               ),
-                              const SizedBox(height: 16),
+                              const SizedBox(height: 12),
                               Expanded(
                                 child: _AssessmentHistoryCard(
                                   assessmentsFuture: _assessmentsFuture,
                                   isEditing:
-                                  _documentType ==
-                                      ClinicalDocumentType.assessment &&
+                                  _documentType == ClinicalDocumentType.assessment &&
                                       _draft?.isSaved == true,
                                   showOpenAssessmentAction:
-                                  _documentType ==
-                                      ClinicalDocumentType.report,
-                                  onOpenAssessmentPressed:
-                                  _returnToDraft,
+                                  _documentType == ClinicalDocumentType.report,
+                                  onOpenAssessmentPressed: _returnToDraft,
                                   onSaveOrUpdatePressed:
-                                  _documentType ==
-                                      ClinicalDocumentType.assessment &&
+                                  _documentType == ClinicalDocumentType.assessment &&
                                       _draft != null
                                       ? _saveOrUpdateAssessment
                                       : null,
                                   onCancelChangesPressed:
-                                  _documentType ==
-                                      ClinicalDocumentType.assessment &&
+                                  _documentType == ClinicalDocumentType.assessment &&
                                       _draft?.isSaved == true
                                       ? _cancelAssessmentChanges
                                       : null,
                                   onReturnToDraftPressed:
-                                  _documentType ==
-                                      ClinicalDocumentType.assessment &&
+                                  _documentType == ClinicalDocumentType.assessment &&
                                       _draft?.isSaved == true
                                       ? _returnToDraft
                                       : null,
                                   onEditAssessment: _editAssessment,
                                   onArchiveAssessment: _archiveAssessment,
+                                  onExpand: () {
+                                    _showExpandedWorkspaceContent(
+                                      title: 'Historique des bilans',
+                                      child: _AssessmentHistoryCard(
+                                        assessmentsFuture: _assessmentsFuture,
+                                        isEditing:
+                                        _documentType == ClinicalDocumentType.assessment &&
+                                            _draft?.isSaved == true,
+                                        showOpenAssessmentAction:
+                                        _documentType == ClinicalDocumentType.report,
+                                        onOpenAssessmentPressed: _returnToDraft,
+                                        onSaveOrUpdatePressed:
+                                        _documentType == ClinicalDocumentType.assessment &&
+                                            _draft != null
+                                            ? _saveOrUpdateAssessment
+                                            : null,
+                                        onCancelChangesPressed:
+                                        _documentType == ClinicalDocumentType.assessment &&
+                                            _draft?.isSaved == true
+                                            ? _cancelAssessmentChanges
+                                            : null,
+                                        onReturnToDraftPressed:
+                                        _documentType == ClinicalDocumentType.assessment &&
+                                            _draft?.isSaved == true
+                                            ? _returnToDraft
+                                            : null,
+                                        onEditAssessment: _editAssessment,
+                                        onArchiveAssessment: (assessment) async {
+                                          final navigator = Navigator.of(context);
+
+                                          await _archiveAssessment(assessment);
+
+                                          if (!mounted) return;
+
+                                          navigator.pop();
+                                        },
+                                        onExpand: null,
+                                      ),
+                                    );
+                                  },
                                 ),
                               ),
-                              const SizedBox(height: 16),
+                              const SizedBox(height: 12),
                               Expanded(
-                                child: _ReportHistoryCard(
-                                  reportsFuture: _reportsFuture,
-                                  isEditingReport:
-                                  _documentType ==
-                                      ClinicalDocumentType.report &&
-                                      _reportDraft?.isSaved == true,
-                                  onCreateReportPressed:
-                                  _documentType ==
-                                      ClinicalDocumentType.report &&
-                                      _reportDraft?.isSaved == true
-                                      ? _returnToReportDraft
-                                      : _createOrOpenReportDraft,
-                                  onSaveReportPressed:
-                                  _documentType ==
-                                      ClinicalDocumentType.report &&
-                                      _reportDraft != null
-                                      ? _saveReport
-                                      : null,
-                                  onCancelReportChangesPressed:
-                                  _documentType ==
-                                      ClinicalDocumentType.report &&
-                                      _reportDraft?.isSaved == true
-                                      ? _cancelReportChanges
-                                      : null,
-                                  onEditReport: _editReport,
-                                  onArchiveReport: _archiveReport,
-                                ),
+                                  child: _ReportHistoryCard(
+                                    reportsFuture: _reportsFuture,
+                                    isEditingReport:
+                                    _documentType == ClinicalDocumentType.report &&
+                                        _reportDraft?.isSaved == true,
+                                    onCreateReportPressed:
+                                    _documentType == ClinicalDocumentType.report &&
+                                        _reportDraft?.isSaved == true
+                                        ? _returnToReportDraft
+                                        : _createOrOpenReportDraft,
+                                    onSaveReportPressed:
+                                    _documentType == ClinicalDocumentType.report &&
+                                        _reportDraft != null
+                                        ? _saveReport
+                                        : null,
+                                    onCancelReportChangesPressed:
+                                    _documentType == ClinicalDocumentType.report &&
+                                        _reportDraft?.isSaved == true
+                                        ? _cancelReportChanges
+                                        : null,
+                                    onEditReport: _editReport,
+                                    onArchiveReport: _archiveReport,
+                                    onExpand: () {
+                                      _showExpandedWorkspaceContent(
+                                        title: 'Historique des rapports',
+                                        child: _ReportHistoryCard(
+                                          reportsFuture: _reportsFuture,
+                                          isEditingReport:
+                                          _documentType == ClinicalDocumentType.report &&
+                                              _reportDraft?.isSaved == true,
+                                          onCreateReportPressed:
+                                          _documentType == ClinicalDocumentType.report &&
+                                              _reportDraft?.isSaved == true
+                                              ? _returnToReportDraft
+                                              : _createOrOpenReportDraft,
+                                          onSaveReportPressed:
+                                          _documentType == ClinicalDocumentType.report &&
+                                              _reportDraft != null
+                                              ? _saveReport
+                                              : null,
+                                          onCancelReportChangesPressed:
+                                          _documentType == ClinicalDocumentType.report &&
+                                              _reportDraft?.isSaved == true
+                                              ? _cancelReportChanges
+                                              : null,
+                                          onEditReport: _editReport,
+                                          onArchiveReport: (report) async {
+                                            final navigator = Navigator.of(context);
+
+                                            await _archiveReport(report);
+
+                                            if (!mounted) return;
+
+                                            navigator.pop();
+                                          },
+                                          onExpand: null,
+                                        ),
+                                      );
+                                    },
+                                  ),
                               ),
                             ],
                           ),
@@ -1433,7 +1816,7 @@ class _CareEpisodeReportsWorkspaceScreenState
                       ],
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 12),
                   Expanded(
                     flex: 3,
                     child: Row(
@@ -1445,12 +1828,43 @@ class _CareEpisodeReportsWorkspaceScreenState
                             notesFuture: _notesFuture,
                             selectedNoteIds: _selectedNoteIds,
                             selectionEnabled:
-                            _documentType ==
-                                ClinicalDocumentType.assessment &&
+                            _documentType == ClinicalDocumentType.assessment &&
                                 _draft != null &&
                                 !_noteSelectionLoading,
-                            onNoteIncludedChanged:
-                                ({
+                            onAddNote: _addFollowUpNote,
+                            onExpand: () {
+                              _showExpandedWorkspaceContent(
+                                title: 'Notes de suivi',
+                                child: _FollowUpNotesCard(
+                                  notesFuture: _notesFuture,
+                                  selectedNoteIds: _selectedNoteIds,
+                                  selectionEnabled:
+                                  _documentType == ClinicalDocumentType.assessment &&
+                                      _draft != null &&
+                                      !_noteSelectionLoading,
+                                  onAddNote: () async {
+                                    final navigator = Navigator.of(context);
+
+                                    await _addFollowUpNote();
+
+                                    if (!mounted) return;
+
+                                    navigator.pop();
+                                  },
+                                  onExpand: null,
+                                  onNoteIncludedChanged: ({
+                                    required noteId,
+                                    required included,
+                                  }) {
+                                    _setNoteIncluded(
+                                      noteId: noteId,
+                                      included: included,
+                                    );
+                                  },
+                                ),
+                              );
+                            },
+                            onNoteIncludedChanged: ({
                               required noteId,
                               required included,
                             }) {
@@ -1465,15 +1879,58 @@ class _CareEpisodeReportsWorkspaceScreenState
                         Expanded(
                           flex: 2,
                           child: _DocumentsCard(
-                            archivedAssessmentsFuture:
-                            _archivedAssessmentsFuture,
-                            archivedReportsFuture:
-                            _archivedReportsFuture,
+                            archivedAssessmentsFuture: _archivedAssessmentsFuture,
+                            archivedReportsFuture: _archivedReportsFuture,
                             onRestoreAssessment: _restoreAssessment,
                             onRestoreReport: _restoreReport,
-                            onDeleteAssessment:
-                            _deleteAssessmentPermanently,
+                            onDeleteAssessment: _deleteAssessmentPermanently,
                             onDeleteReport: _deleteReportPermanently,
+                            onExpand: () {
+                              _showExpandedWorkspaceContent(
+                                title: 'Documents archivés',
+                                child: _DocumentsCard(
+                                  archivedAssessmentsFuture: _archivedAssessmentsFuture,
+                                  archivedReportsFuture: _archivedReportsFuture,
+                                  onRestoreAssessment: (assessment) async {
+                                    final navigator = Navigator.of(context);
+
+                                    await _restoreAssessment(assessment);
+
+                                    if (!mounted) return;
+
+                                    navigator.pop();
+                                  },
+                                  onRestoreReport: (report) async {
+                                    final navigator = Navigator.of(context);
+
+                                    await _restoreReport(report);
+
+                                    if (!mounted) return;
+
+                                    navigator.pop();
+                                  },
+                                  onDeleteAssessment: (assessment) async {
+                                    final navigator = Navigator.of(context);
+
+                                    await _deleteAssessmentPermanently(assessment);
+
+                                    if (!mounted) return;
+
+                                    navigator.pop();
+                                  },
+                                  onDeleteReport: (report) async {
+                                    final navigator = Navigator.of(context);
+
+                                    await _deleteReportPermanently(report);
+
+                                    if (!mounted) return;
+
+                                    navigator.pop();
+                                  },
+                                  onExpand: null,
+                                ),
+                              );
+                            },
                           ),
                         ),
                         const SizedBox(width: 16),
@@ -1539,6 +1996,8 @@ class _DocumentTitleDialogState extends State<_DocumentTitleDialog> {
     );
   }
 
+
+
   @override
   void dispose() {
     _controller.dispose();
@@ -1587,6 +2046,7 @@ class _SoapDraftCard extends StatelessWidget {
   final bool draftReady;
   final bool isEditing;
   final ClinicalDocumentType documentType;
+  final VoidCallback onExpand;
 
   const _SoapDraftCard({
     required this.controller,
@@ -1596,6 +2056,7 @@ class _SoapDraftCard extends StatelessWidget {
     required this.draftReady,
     required this.isEditing,
     required this.documentType,
+    required this.onExpand,
   });
 
   @override
@@ -1621,6 +2082,14 @@ class _SoapDraftCard extends StatelessWidget {
                     ),
                   ),
                 ),
+
+                IconButton(
+                  onPressed: draftReady ? onExpand : null,
+                  tooltip: 'Agrandir la zone de rédaction',
+                  icon: const Icon(Icons.zoom_out_map),
+                ),
+
+                const SizedBox(width: 8),
                 SizedBox(
                   width: 240,
                   child: DropdownButtonFormField<String>(
@@ -1683,12 +2152,14 @@ class _LatestTestsCard extends StatelessWidget {
   final Set<String> selectedTestExoIds;
   final bool selectionEnabled;
   final _TestIncludedChanged onTestIncludedChanged;
+  final VoidCallback? onExpand;
 
   const _LatestTestsCard({
     required this.resultsFuture,
     required this.selectedTestExoIds,
     required this.selectionEnabled,
     required this.onTestIncludedChanged,
+    required this.onExpand,
   });
 
   List<DesktopResult> _latestResultsByTest(List<DesktopResult> results) {
@@ -1730,6 +2201,13 @@ class _LatestTestsCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return _ScrollableWorkspaceCard(
       title: 'Tests réalisés (dernier résultat)',
+      trailing: onExpand == null
+          ? null
+          : IconButton(
+        onPressed: onExpand,
+        tooltip: 'Agrandir',
+        icon: const Icon(Icons.zoom_out_map),
+      ),
       child: FutureBuilder<List<DesktopResult>>(
         future: resultsFuture,
         builder: (context, snapshot) {
@@ -1859,6 +2337,7 @@ class _AssessmentHistoryCard extends StatelessWidget {
   final VoidCallback? onReturnToDraftPressed;
   final ValueChanged<CareEpisodeAssessment> onEditAssessment;
   final ValueChanged<CareEpisodeAssessment> onArchiveAssessment;
+  final VoidCallback? onExpand;
 
   const _AssessmentHistoryCard({
     required this.assessmentsFuture,
@@ -1870,6 +2349,7 @@ class _AssessmentHistoryCard extends StatelessWidget {
     required this.onReturnToDraftPressed,
     required this.onEditAssessment,
     required this.onArchiveAssessment,
+    required this.onExpand,
   });
 
   @override
@@ -1891,6 +2371,12 @@ class _AssessmentHistoryCard extends StatelessWidget {
                     ),
                   ),
                 ),
+                if (onExpand != null)
+                  IconButton(
+                    onPressed: onExpand,
+                    tooltip: 'Agrandir',
+                    icon: const Icon(Icons.zoom_out_map),
+                  ),
                 if (showOpenAssessmentAction)
                   IconButton(
                     onPressed: onOpenAssessmentPressed,
@@ -2038,6 +2524,7 @@ class _ReportHistoryCard extends StatelessWidget {
   final VoidCallback? onCancelReportChangesPressed;
   final ValueChanged<CareEpisodeReport> onEditReport;
   final ValueChanged<CareEpisodeReport> onArchiveReport;
+  final VoidCallback? onExpand;
 
   const _ReportHistoryCard({
     required this.reportsFuture,
@@ -2047,6 +2534,7 @@ class _ReportHistoryCard extends StatelessWidget {
     required this.onCancelReportChangesPressed,
     required this.onEditReport,
     required this.onArchiveReport,
+    required this.onExpand,
   });
 
   @override
@@ -2056,6 +2544,12 @@ class _ReportHistoryCard extends StatelessWidget {
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
+          if (onExpand != null)
+            IconButton(
+              onPressed: onExpand,
+              tooltip: 'Agrandir',
+              icon: const Icon(Icons.zoom_out_map),
+            ),
           IconButton(
             onPressed: onCreateReportPressed,
             tooltip: isEditingReport
@@ -2185,14 +2679,19 @@ class _FollowUpNotesCard extends StatelessWidget {
   final Future<List<CareEpisodeNote>> notesFuture;
   final Set<String> selectedNoteIds;
   final bool selectionEnabled;
+  final VoidCallback onAddNote;
+  final VoidCallback? onExpand;
   final _NoteIncludedChanged onNoteIncludedChanged;
 
   const _FollowUpNotesCard({
     required this.notesFuture,
     required this.selectedNoteIds,
     required this.selectionEnabled,
+    required this.onAddNote,
+    required this.onExpand,
     required this.onNoteIncludedChanged,
   });
+
 
   String _noteTitle(String content) {
     final normalized = content.replaceAll(RegExp(r'\s+'), ' ').trim();
@@ -2226,10 +2725,21 @@ class _FollowUpNotesCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return _ScrollableWorkspaceCard(
       title: 'Notes de suivi',
-      trailing: OutlinedButton.icon(
-        onPressed: null,
-        icon: const Icon(Icons.add),
-        label: const Text('Ajouter'),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (onExpand != null)
+            IconButton(
+              onPressed: onExpand,
+              tooltip: 'Agrandir',
+              icon: const Icon(Icons.zoom_out_map),
+            ),
+          IconButton(
+            onPressed: onAddNote,
+            tooltip: 'Ajouter une note de suivi',
+            icon: const Icon(Icons.add),
+          ),
+        ],
       ),
       child: FutureBuilder<List<CareEpisodeNote>>(
         future: notesFuture,
@@ -2348,6 +2858,7 @@ class _DocumentsCard extends StatelessWidget {
   final ValueChanged<CareEpisodeReport> onRestoreReport;
   final ValueChanged<CareEpisodeAssessment> onDeleteAssessment;
   final ValueChanged<CareEpisodeReport> onDeleteReport;
+  final VoidCallback? onExpand;
 
   const _DocumentsCard({
     required this.archivedAssessmentsFuture,
@@ -2356,12 +2867,20 @@ class _DocumentsCard extends StatelessWidget {
     required this.onRestoreReport,
     required this.onDeleteAssessment,
     required this.onDeleteReport,
+    required this.onExpand,
   });
 
   @override
   Widget build(BuildContext context) {
     return _ScrollableWorkspaceCard(
-      title: 'Documents',
+      title: 'Documents archivés',
+      trailing: onExpand == null
+          ? null
+          : IconButton(
+        onPressed: onExpand,
+        tooltip: 'Agrandir',
+        icon: const Icon(Icons.zoom_out_map),
+      ),
       child: FutureBuilder<List<CareEpisodeAssessment>>(
         future: archivedAssessmentsFuture,
         builder: (context, assessmentsSnapshot) {
@@ -2611,7 +3130,7 @@ class _EpisodeSummaryCard extends StatelessWidget {
                             fontWeight: FontWeight.w600,
                           ),
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 12),
                         Expanded(
                           child: SingleChildScrollView(
                             child: Column(
@@ -2721,6 +3240,116 @@ class _ScrollableWorkspaceCard extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _EpisodeHeader extends StatelessWidget {
+  final CareEpisode episode;
+  final Future<Practitioner?> practitionerFuture;
+  final VoidCallback onEditPractitioner;
+  final VoidCallback onShowHistory;
+
+  const _EpisodeHeader({
+    required this.episode,
+    required this.practitionerFuture,
+    required this.onEditPractitioner,
+    required this.onShowHistory,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surfaceContainerLow,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: Theme.of(context).colorScheme.outlineVariant,
+        ),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Icon(Icons.medical_information_outlined),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: _EpisodeHeaderInformation(
+                    label: 'Pathologie',
+                    value: episode.pathologyLabel,
+                  ),
+                ),
+                const SizedBox(width: 32),
+                Expanded(
+                  child: FutureBuilder<Practitioner?>(
+                    future: practitionerFuture,
+                    builder: (context, snapshot) {
+                      final practitioner = snapshot.data;
+
+                      final value = snapshot.connectionState ==
+                          ConnectionState.waiting
+                          ? 'Chargement…'
+                          : practitioner == null
+                          ? 'Non renseigné'
+                          : practitioner.isArchived
+                          ? '${practitioner.displayName} — archivé'
+                          : practitioner.displayName;
+
+                      return _EpisodeHeaderInformation(
+                        label: 'Kiné référent',
+                        value: value,
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+          IconButton(
+            onPressed: onEditPractitioner,
+            tooltip: 'Modifier le kiné référent',
+            icon: const Icon(Icons.edit_outlined),
+          ),
+          IconButton(
+            onPressed: onShowHistory,
+            tooltip: 'Historique des kinés référents',
+            icon: const Icon(Icons.history),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _EpisodeHeaderInformation extends StatelessWidget {
+  final String label;
+  final String value;
+
+  const _EpisodeHeaderInformation({
+    required this.label,
+    required this.value,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: Theme.of(context).textTheme.labelMedium,
+        ),
+        const SizedBox(height: 4),
+        Text(
+          value,
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
+      ],
     );
   }
 }

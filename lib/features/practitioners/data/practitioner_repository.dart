@@ -68,4 +68,24 @@ class PractitionerRepository {
       whereArgs: [practitionerId],
     );
   }
+
+  Future<Practitioner?> getPractitionerById(
+      String practitionerId,
+      ) async {
+    final db = await DatabaseService.database;
+
+    final rows = await db.query(
+      'practitioners',
+      where: 'practitioner_id = ?',
+      whereArgs: [practitionerId],
+      limit: 1,
+    );
+
+    if (rows.isEmpty) {
+      return null;
+    }
+
+    return Practitioner.fromMap(rows.first);
+  }
+
 }
