@@ -4,6 +4,7 @@ import '../../core/utils/date_format_utils.dart';
 import 'data/device_repository.dart';
 import 'models/paired_device.dart';
 import 'widgets/device_form_dialog.dart';
+import 'widgets/device_qr_dialog.dart';
 
 class DeviceListScreen extends StatefulWidget {
   const DeviceListScreen({super.key});
@@ -192,15 +193,32 @@ class _DeviceListScreenState extends State<DeviceListScreen> {
                       ),
                       trailing: _showArchived
                           ? IconButton(
-                              tooltip: 'Restaurer',
-                              icon: const Icon(Icons.restore),
-                              onPressed: () => _restoreDevice(device),
-                            )
-                          : IconButton(
-                              tooltip: 'Archiver',
-                              icon: const Icon(Icons.archive_outlined),
-                              onPressed: () => _archiveDevice(device),
-                            ),
+                        tooltip: 'Restaurer',
+                        icon: const Icon(Icons.restore),
+                        onPressed: () => _restoreDevice(device),
+                      )
+                          : Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            tooltip: 'Afficher le QR Code',
+                            icon: const Icon(Icons.qr_code),
+                            onPressed: () {
+                              showDialog<void>(
+                                context: context,
+                                builder: (_) => DeviceQrDialog(
+                                  device: device,
+                                ),
+                              );
+                            },
+                          ),
+                          IconButton(
+                            tooltip: 'Archiver',
+                            icon: const Icon(Icons.archive_outlined),
+                            onPressed: () => _archiveDevice(device),
+                          ),
+                        ],
+                      ),
                     );
                   },
                 ),
