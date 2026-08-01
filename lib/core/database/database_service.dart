@@ -61,7 +61,7 @@ class DatabaseService {
 
     return openDatabase(
       path,
-      version: 13,  //////////////////////
+      version: 15,  //////////////////////
       onCreate: (db, version) async {
         await _createAllTables(db);
       },
@@ -167,6 +167,17 @@ class DatabaseService {
         if (oldVersion < 13) {
           await _createCareEpisodeReferringPractitionerTables(db);
         }
+        if (oldVersion < 14) {
+          await _addColumnIfMissing(
+            db,
+            'desktop_results',
+            'practitioner_verification_status',
+            'TEXT NULL',
+          );
+        }
+        if (oldVersion < 15) {
+          await _migrateResultTablesToVersion15(db);
+        }
       },
     );
   }
@@ -186,6 +197,213 @@ class DatabaseService {
         'ALTER TABLE $tableName ADD COLUMN $columnName $columnDefinition',
       );
     }
+  }
+
+  static Future<void> _migrateResultTablesToVersion15(Database db) async {
+    // Sauvegarde temporaire des données utiles.
+    await db.execute('''
+    CREATE TEMP TABLE migration_v15_results AS
+    SELECT
+      result_id,
+      care_episode_id,
+      patient_id,
+      practitioner_id,
+      source_device_id,
+      practitioner_label_snapshot,
+      practitioner_verification_status,
+      mobile_episode_id,
+      mobile_pathology_code,
+      mobile_pathology_label,
+      mobile_patient_ref,
+      mobile_patient_label,
+      createdAt,
+      imported_at,
+      exoId,
+      scoreTotal,
+      comment,
+      exportSimpleText,
+      simpleExportSnapshotJson,
+      structuredJson,
+      ageYears,
+      sexCode,
+      testedSideCode,
+      measureUnit,
+      heightCm,
+      weightKg,
+      bmi,
+      sportLevelCode,
+      contextCode,
+      testCode,
+      testVersion,
+      testFamily,
+      localSchemaVersion,
+      archived_at,
+      sync_state,
+      last_modified_at,
+      content_hash
+    FROM desktop_results
+  ''');
+
+    await db.execute('''
+    CREATE TEMP TABLE migration_v15_metrics AS
+    SELECT *
+    FROM desktop_result_metrics
+  ''');
+
+    await db.execute('''
+    CREATE TEMP TABLE migration_v15_conflicts AS
+    SELECT *
+    FROM desktop_result_conflicts
+  ''');
+
+    // Suppression dans l’ordre imposé par les clés étrangères.
+    await db.execute('DROP TABLE desktop_result_conflicts');
+    await db.execute('DROP TABLE desktop_result_metrics');
+    await db.execute('DROP TABLE desktop_results');
+
+    // Recréation avec le schéma épuré.
+    await _createResultTables(db);
+    await _createResultConflictTables(db);
+
+    // Restauration des résultats.
+    await db.execute('''
+  INSERT INTO desktop_results (
+    result_id,
+    care_episode_id,
+    patient_id,
+    practitioner_id,
+    source_device_id,
+    practitioner_label_snapshot,
+    practitioner_verification_status,
+    mobile_episode_id,
+    mobile_pathology_code,
+    mobile_pathology_label,
+    mobile_patient_ref,
+    mobile_patient_label,
+    createdAt,
+    imported_at,
+    exoId,
+    scoreTotal,
+    comment,
+    exportSimpleText,
+    simpleExportSnapshotJson,
+    structuredJson,
+    ageYears,
+    sexCode,
+    testedSideCode,
+    measureUnit,
+    heightCm,
+    weightKg,
+    bmi,
+    sportLevelCode,
+    contextCode,
+    testCode,
+    testVersion,
+    testFamily,
+    localSchemaVersion,
+    archived_at,
+    sync_state,
+    last_modified_at,
+    content_hash
+  )
+  SELECT
+    r.result_id,
+    r.care_episode_id,
+    r.patient_id,
+    r.practitioner_id,
+    CASE
+      WHEN r.source_device_id IS NULL THEN NULL
+      WHEN EXISTS (
+        SELECT 1
+        FROM paired_devices AS p
+        WHERE p.device_id = r.source_device_id
+      )
+      THEN r.source_device_id
+      ELSE NULL
+    END,
+    r.practitioner_label_snapshot,
+    r.practitioner_verification_status,
+    r.mobile_episode_id,
+    r.mobile_pathology_code,
+    r.mobile_pathology_label,
+    r.mobile_patient_ref,
+    r.mobile_patient_label,
+    r.createdAt,
+    r.imported_at,
+    r.exoId,
+    r.scoreTotal,
+    r.comment,
+    r.exportSimpleText,
+    r.simpleExportSnapshotJson,
+    r.structuredJson,
+    r.ageYears,
+    r.sexCode,
+    r.testedSideCode,
+    r.measureUnit,
+    r.heightCm,
+    r.weightKg,
+    r.bmi,
+    r.sportLevelCode,
+    r.contextCode,
+    r.testCode,
+    r.testVersion,
+    r.testFamily,
+    r.localSchemaVersion,
+    r.archived_at,
+    r.sync_state,
+    r.last_modified_at,
+    r.content_hash
+  FROM migration_v15_results AS r
+''');
+    await db.execute('''
+    INSERT INTO desktop_result_metrics (
+      metric_id,
+      result_id,
+      metric_key,
+      value,
+      unit,
+      label
+    )
+    SELECT
+      metric_id,
+      result_id,
+      metric_key,
+      value,
+      unit,
+      label
+    FROM migration_v15_metrics
+  ''');
+
+    await db.execute('''
+    INSERT INTO desktop_result_conflicts (
+      conflict_id,
+      result_id,
+      existing_hash,
+      incoming_hash,
+      existing_json,
+      incoming_json,
+      detected_at,
+      resolution_status,
+      resolved_at,
+      resolution_note
+    )
+    SELECT
+      conflict_id,
+      result_id,
+      existing_hash,
+      incoming_hash,
+      existing_json,
+      incoming_json,
+      detected_at,
+      resolution_status,
+      resolved_at,
+      resolution_note
+    FROM migration_v15_conflicts
+  ''');
+
+    await db.execute('DROP TABLE migration_v15_conflicts');
+    await db.execute('DROP TABLE migration_v15_metrics');
+    await db.execute('DROP TABLE migration_v15_results');
   }
 
   static Future<void> _createAllTables(Database db) async {
@@ -486,6 +704,7 @@ class DatabaseService {
         source_device_id TEXT NULL,
 
         practitioner_label_snapshot TEXT NULL,
+        practitioner_verification_status TEXT NULL,
 
         mobile_episode_id TEXT NULL,
         mobile_pathology_code TEXT NULL,
@@ -504,7 +723,6 @@ class DatabaseService {
         exportSimpleText TEXT NOT NULL,
         simpleExportSnapshotJson TEXT NULL,
 
-        profileJson TEXT NULL,
         structuredJson TEXT NULL,
 
         ageYears INTEGER NULL,
@@ -522,13 +740,6 @@ class DatabaseService {
         testCode TEXT NULL,
         testVersion INTEGER NULL,
         testFamily TEXT NULL,
-
-        performerCountryCode TEXT NULL,
-        performerRegionCode TEXT NULL,
-        performerMainActivityCode TEXT NULL,
-        performerMainSpecialtyCode TEXT NULL,
-        performerYearsExperienceCode TEXT NULL,
-        performerProfileUpdatedAt INTEGER NULL,
 
         localSchemaVersion INTEGER NULL,
 

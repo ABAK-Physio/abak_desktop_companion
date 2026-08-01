@@ -123,9 +123,18 @@ class AbakImportService {
         resultId: resultId,
         careEpisodeId: careEpisodeId,
         patientId: patient.patientId,
-        practitionerId: package.practitioner?.practitionerId,
-        sourceDeviceId: package.sourceDevice?.deviceId,
-        practitionerLabelSnapshot: package.practitioner?.displayName,
+        practitionerId:
+        resultMap['practitionerId']?.toString() ??
+            package.practitioner?.practitionerId,
+
+        sourceDeviceId:
+        resultMap['deviceId']?.toString(),
+
+        practitionerLabelSnapshot:
+        package.practitioner?.displayName,
+
+        practitionerVerificationStatus:
+        resultMap['practitionerVerificationStatus']?.toString(),
         mobileEpisodeId:
             resultMap['episode_id']?.toString() ?? clinicalEpisode?.episodeId,
         mobilePathologyCode: clinicalEpisode?.pathologyCode,
@@ -142,7 +151,6 @@ class AbakImportService {
         exportSimpleText: resultMap['exportSimpleText']?.toString() ?? '',
         simpleExportSnapshotJson: resultMap['simpleExportSnapshotJson']
             ?.toString(),
-        profileJson: resultMap['profileJson']?.toString(),
         structuredJson: resultMap['structuredJson']?.toString(),
         ageYears: (resultMap['ageYears'] as num?)?.toInt(),
         sexCode: resultMap['sexCode']?.toString(),
@@ -156,16 +164,6 @@ class AbakImportService {
         testCode: resultMap['testCode']?.toString(),
         testVersion: (resultMap['testVersion'] as num?)?.toInt(),
         testFamily: resultMap['testFamily']?.toString(),
-        performerCountryCode: resultMap['performerCountryCode']?.toString(),
-        performerRegionCode: resultMap['performerRegionCode']?.toString(),
-        performerMainActivityCode: resultMap['performerMainActivityCode']
-            ?.toString(),
-        performerMainSpecialtyCode: resultMap['performerMainSpecialtyCode']
-            ?.toString(),
-        performerYearsExperienceCode: resultMap['performerYearsExperienceCode']
-            ?.toString(),
-        performerProfileUpdatedAt:
-            (resultMap['performerProfileUpdatedAt'] as num?)?.toInt(),
         syncState: 'imported',
         lastModifiedAt:
             (resultMap['last_modified_at'] as num?)?.toInt() ??

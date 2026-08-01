@@ -6,6 +6,7 @@ class DesktopResult {
   final String? practitionerId;
   final String? sourceDeviceId;
   final String? practitionerLabelSnapshot;
+  final String? practitionerVerificationStatus;
 
   final String? mobileEpisodeId;
   final String? mobilePathologyCode;
@@ -20,7 +21,7 @@ class DesktopResult {
   final String? comment;
   final String exportSimpleText;
   final String? simpleExportSnapshotJson;
-  final String? profileJson;
+
   final String? structuredJson;
   final int? ageYears;
   final String? sexCode;
@@ -34,12 +35,6 @@ class DesktopResult {
   final String? testCode;
   final int? testVersion;
   final String? testFamily;
-  final String? performerCountryCode;
-  final String? performerRegionCode;
-  final String? performerMainActivityCode;
-  final String? performerMainSpecialtyCode;
-  final String? performerYearsExperienceCode;
-  final int? performerProfileUpdatedAt;
   final int? localSchemaVersion;
 
   final String syncState;
@@ -54,6 +49,7 @@ class DesktopResult {
     this.practitionerId,
     this.sourceDeviceId,
     this.practitionerLabelSnapshot,
+    this.practitionerVerificationStatus,
     this.mobileEpisodeId,
     this.mobilePathologyCode,
     this.mobilePathologyLabel,
@@ -66,7 +62,6 @@ class DesktopResult {
     this.comment,
     required this.exportSimpleText,
     this.simpleExportSnapshotJson,
-    this.profileJson,
     this.structuredJson,
     this.ageYears,
     this.sexCode,
@@ -80,12 +75,6 @@ class DesktopResult {
     this.testCode,
     this.testVersion,
     this.testFamily,
-    this.performerCountryCode,
-    this.performerRegionCode,
-    this.performerMainActivityCode,
-    this.performerMainSpecialtyCode,
-    this.performerYearsExperienceCode,
-    this.performerProfileUpdatedAt,
     this.localSchemaVersion,
     this.syncState = 'imported',
     this.lastModifiedAt,
@@ -101,6 +90,8 @@ class DesktopResult {
       practitionerId: map['practitioner_id'] as String?,
       sourceDeviceId: map['source_device_id'] as String?,
       practitionerLabelSnapshot: map['practitioner_label_snapshot'] as String?,
+      practitionerVerificationStatus:
+          map['practitioner_verification_status'] as String?,
       mobileEpisodeId: map['mobile_episode_id'] as String?,
       mobilePathologyCode: map['mobile_pathology_code'] as String?,
       mobilePathologyLabel: map['mobile_pathology_label'] as String?,
@@ -113,7 +104,6 @@ class DesktopResult {
       comment: map['comment'] as String?,
       exportSimpleText: map['exportSimpleText'] as String,
       simpleExportSnapshotJson: map['simpleExportSnapshotJson'] as String?,
-      profileJson: map['profileJson'] as String?,
       structuredJson: map['structuredJson'] as String?,
       ageYears: map['ageYears'] as int?,
       sexCode: map['sexCode'] as String?,
@@ -127,13 +117,6 @@ class DesktopResult {
       testCode: map['testCode'] as String?,
       testVersion: map['testVersion'] as int?,
       testFamily: map['testFamily'] as String?,
-      performerCountryCode: map['performerCountryCode'] as String?,
-      performerRegionCode: map['performerRegionCode'] as String?,
-      performerMainActivityCode: map['performerMainActivityCode'] as String?,
-      performerMainSpecialtyCode: map['performerMainSpecialtyCode'] as String?,
-      performerYearsExperienceCode:
-          map['performerYearsExperienceCode'] as String?,
-      performerProfileUpdatedAt: map['performerProfileUpdatedAt'] as int?,
       localSchemaVersion: map['localSchemaVersion'] as int?,
       syncState: map['sync_state'] as String? ?? 'imported',
       lastModifiedAt: map['last_modified_at'] as int?,
@@ -149,6 +132,7 @@ class DesktopResult {
     String? practitionerId,
     String? sourceDeviceId,
     String? practitionerLabelSnapshot,
+    String? practitionerVerificationStatus,
     String? mobileEpisodeId,
     String? mobilePathologyCode,
     String? mobilePathologyLabel,
@@ -161,7 +145,6 @@ class DesktopResult {
     String? comment,
     String? exportSimpleText,
     String? simpleExportSnapshotJson,
-    String? profileJson,
     String? structuredJson,
     int? ageYears,
     String? sexCode,
@@ -175,12 +158,6 @@ class DesktopResult {
     String? testCode,
     int? testVersion,
     String? testFamily,
-    String? performerCountryCode,
-    String? performerRegionCode,
-    String? performerMainActivityCode,
-    String? performerMainSpecialtyCode,
-    String? performerYearsExperienceCode,
-    int? performerProfileUpdatedAt,
     int? localSchemaVersion,
     String? syncState,
     int? lastModifiedAt,
@@ -195,6 +172,9 @@ class DesktopResult {
       sourceDeviceId: sourceDeviceId ?? this.sourceDeviceId,
       practitionerLabelSnapshot:
           practitionerLabelSnapshot ?? this.practitionerLabelSnapshot,
+      practitionerVerificationStatus:
+      practitionerVerificationStatus ??
+          this.practitionerVerificationStatus,
       mobileEpisodeId: mobileEpisodeId ?? this.mobileEpisodeId,
       mobilePathologyCode: mobilePathologyCode ?? this.mobilePathologyCode,
       mobilePathologyLabel: mobilePathologyLabel ?? this.mobilePathologyLabel,
@@ -208,7 +188,6 @@ class DesktopResult {
       exportSimpleText: exportSimpleText ?? this.exportSimpleText,
       simpleExportSnapshotJson:
           simpleExportSnapshotJson ?? this.simpleExportSnapshotJson,
-      profileJson: profileJson ?? this.profileJson,
       structuredJson: structuredJson ?? this.structuredJson,
       ageYears: ageYears ?? this.ageYears,
       sexCode: sexCode ?? this.sexCode,
@@ -222,16 +201,6 @@ class DesktopResult {
       testCode: testCode ?? this.testCode,
       testVersion: testVersion ?? this.testVersion,
       testFamily: testFamily ?? this.testFamily,
-      performerCountryCode: performerCountryCode ?? this.performerCountryCode,
-      performerRegionCode: performerRegionCode ?? this.performerRegionCode,
-      performerMainActivityCode:
-          performerMainActivityCode ?? this.performerMainActivityCode,
-      performerMainSpecialtyCode:
-          performerMainSpecialtyCode ?? this.performerMainSpecialtyCode,
-      performerYearsExperienceCode:
-          performerYearsExperienceCode ?? this.performerYearsExperienceCode,
-      performerProfileUpdatedAt:
-          performerProfileUpdatedAt ?? this.performerProfileUpdatedAt,
       localSchemaVersion: localSchemaVersion ?? this.localSchemaVersion,
       syncState: syncState ?? this.syncState,
       lastModifiedAt: lastModifiedAt ?? this.lastModifiedAt,
@@ -248,6 +217,8 @@ class DesktopResult {
       'practitioner_id': practitionerId,
       'source_device_id': sourceDeviceId,
       'practitioner_label_snapshot': practitionerLabelSnapshot,
+      'practitioner_verification_status':
+          practitionerVerificationStatus,
       'mobile_episode_id': mobileEpisodeId,
       'mobile_pathology_code': mobilePathologyCode,
       'mobile_pathology_label': mobilePathologyLabel,
@@ -260,7 +231,6 @@ class DesktopResult {
       'comment': comment,
       'exportSimpleText': exportSimpleText,
       'simpleExportSnapshotJson': simpleExportSnapshotJson,
-      'profileJson': profileJson,
       'structuredJson': structuredJson,
       'ageYears': ageYears,
       'sexCode': sexCode,
@@ -274,12 +244,6 @@ class DesktopResult {
       'testCode': testCode,
       'testVersion': testVersion,
       'testFamily': testFamily,
-      'performerCountryCode': performerCountryCode,
-      'performerRegionCode': performerRegionCode,
-      'performerMainActivityCode': performerMainActivityCode,
-      'performerMainSpecialtyCode': performerMainSpecialtyCode,
-      'performerYearsExperienceCode': performerYearsExperienceCode,
-      'performerProfileUpdatedAt': performerProfileUpdatedAt,
       'localSchemaVersion': localSchemaVersion,
       'sync_state': syncState,
       'last_modified_at': lastModifiedAt ?? importedAt,
