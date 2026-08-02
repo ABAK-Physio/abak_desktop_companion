@@ -5,6 +5,7 @@ import 'data/desktop_result_repository.dart';
 import 'models/desktop_result.dart';
 import 'models/desktop_result_metric.dart';
 import 'package:abak_shared/abak_shared.dart';
+import 'models/result_traceability.dart';
 
 class ResultDetailScreen extends StatefulWidget {
   final DesktopResult result;
@@ -18,22 +19,44 @@ class ResultDetailScreen extends StatefulWidget {
 class _ResultDetailScreenState extends State<ResultDetailScreen> {
   final DesktopResultRepository _repository = DesktopResultRepository();
   late DesktopResult _result;
-
   late final TextEditingController _commentController;
+  ResultTraceability? _traceability;
 
   @override
   void initState() {
     super.initState();
-
     _result = widget.result;
-
     _commentController = TextEditingController(text: _result.comment ?? '');
+    _loadTraceability();
+  }
+
+  Future<void> _loadTraceability() async {
+    final traceability = await _repository.getTraceabilityForResult(
+      _result.resultId,
+    );
+
+    if (!mounted) return;
+
+    setState(() {
+      _traceability = traceability;
+    });
   }
 
   @override
   void dispose() {
     _commentController.dispose();
     super.dispose();
+  }
+
+  String _formatVerificationStatus(String? status) {
+    switch (status) {
+      case 'verified':
+        return 'Identité vérifiée';
+      case 'unverified':
+        return 'Identité non vérifiée';
+      default:
+        return '-';
+    }
   }
 
   Future<void> _saveComment() async {
@@ -125,10 +148,111 @@ class _ResultDetailScreenState extends State<ResultDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final createdAt = DateTime.fromMillisecondsSinceEpoch(_result.createdAt);
-
     final locale = Localizations.localeOf(context);
-
     final formatter = DateFormat.yMd(locale.toLanguageTag());
+
+    final traceabilityInfo = [
+      _traceability?.practitionerDisplayName,
+      _formatVerificationStatus(
+        _traceability?.practitionerVerificationStatus,
+      ),
+      if (_traceability?.deviceLabel?.trim().isNotEmpty == true)
+        'Appareil : ${_traceability!.deviceLabel!.trim()}',
+    ].whereType<String>().where((value) {
+      final trimmed = value.trim();
+      return trimmed.isNotEmpty && trimmed != '-';
+    }).join(' · ');
+
+    final generalInformationCard = _SectionCard(
+      title: 'Informations générales',
+      icon: Icons.info_outline,
+      children: [
+        _InfoRow(
+          label: 'Patient',
+          value: _result.mobilePatientLabel ?? '-',
+        ),
+        _InfoRow(
+          label: 'Naissance',
+          value: _result.patientBirthDate ?? '-',
+        ),
+        _InfoRow(
+          label: "Date de l'exercice",
+          value: formatter.format(createdAt),
+        ),
+        _InfoRow(
+          label: 'Score',
+          value: _result.scoreTotal == null
+              ? '-'
+              : '${_result.scoreTotal!.toStringAsFixed(2)}'
+              '${_result.measureUnit == null ? '' : ' ${_result.measureUnit}'}',
+        ),
+        _InfoRow(
+          label: 'Réalisé par',
+          value: traceabilityInfo.isEmpty ? '-' : traceabilityInfo,
+        ),
+      ],
+    );
+
+    final commentCard = _SectionCard(
+      title: 'Commentaire clinique',
+      icon: Icons.edit_note_outlined,
+      children: [
+        TextField(
+          controller: _commentController,
+          minLines: 3,
+          maxLines: 5,
+          decoration: const InputDecoration(
+            border: OutlineInputBorder(),
+            hintText: 'Ajouter un commentaire...',
+            isDense: true,
+            contentPadding: EdgeInsets.all(12),
+          ),
+        ),
+        const SizedBox(height: 8),
+        Align(
+          alignment: Alignment.centerRight,
+          child: FilledButton.icon(
+            onPressed: _saveComment,
+            icon: const Icon(Icons.save_outlined),
+            label: const Text('Enregistrer'),
+          ),
+        ),
+      ],
+    );
+
+    final detailedResultCard = _SectionCard(
+      title: 'Résultat détaillé',
+      icon: Icons.description_outlined,
+      children: [
+        SelectableText(_result.exportSimpleText),
+      ],
+    );
+
+    final metricsCard = _MetricsSection(
+      repository: _repository,
+      resultId: _result.resultId,
+    );
+
+    final synchronizationCard = _SectionCard(
+      title: 'Import',
+      icon: Icons.sync_outlined,
+      children: [
+        _InfoRow(label: 'État sync', value: _result.syncState),
+        _InfoRow(
+          label: 'Dernière modification',
+          value: _result.lastModifiedAt == null
+              ? '-'
+              : DateFormat(
+            'dd/MM/yyyy HH:mm',
+            locale.toLanguageTag(),
+          ).format(
+            DateTime.fromMillisecondsSinceEpoch(
+              _result.lastModifiedAt!,
+            ),
+          ),
+        ),
+      ],
+    );
 
     return Scaffold(
       appBar: AppBar(
@@ -141,117 +265,62 @@ class _ResultDetailScreenState extends State<ResultDetailScreen> {
           ),
         ],
       ),
-      body: ListView(
-        padding: const EdgeInsets.all(24),
-        children: [
-          _SectionCard(
-            title: 'Informations générales',
-            icon: Icons.info_outline,
-            children: [
-              _InfoRow(label: 'Exercice', value: _result.exoId),
-              _InfoRow(label: 'Date', value: formatter.format(createdAt)),
-              _InfoRow(
-                label: 'Score',
-                value: _result.scoreTotal?.toString() ?? '-',
-              ),
-              _InfoRow(label: 'Unité', value: _result.measureUnit ?? '-'),
-              _InfoRow(
-                label: 'Kiné',
-                value: widget.result.practitionerLabelSnapshot ?? '-',
-              ),
-              if ((_result.mobilePathologyLabel ?? _result.mobilePatientLabel)
-                      ?.trim()
-                      .isNotEmpty ==
-                  true)
-                _InfoRow(
-                  label: 'Origine ABAK',
-                  value:
-                      (_result.mobilePathologyLabel ??
-                              _result.mobilePatientLabel)!
-                          .trim(),
-                ),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final isWideScreen = constraints.maxWidth >= 1100;
 
-              if (_result.mobileEpisodeId?.trim().isNotEmpty == true)
-                _InfoRow(
-                  label: 'Épisode ABAK mobile',
-                  value: _result.mobileEpisodeId!.trim(),
-                ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          _SectionCard(
-            title: 'Commentaire clinique',
-            icon: Icons.edit_note_outlined,
+          return ListView(
+            padding: const EdgeInsets.all(24),
             children: [
-              TextField(
-                controller: _commentController,
-                minLines: 3,
-                maxLines: 6,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  hintText: 'Ajouter un commentaire...',
-                ),
-              ),
-              const SizedBox(height: 12),
-              Align(
-                alignment: Alignment.centerRight,
-                child: FilledButton.icon(
-                  onPressed: _saveComment,
-                  icon: const Icon(Icons.save_outlined),
-                  label: const Text('Enregistrer'),
-                ),
-              ),
+              if (isWideScreen)
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      flex: 4,
+                      child: generalInformationCard,
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      flex: 6,
+                      child: commentCard,
+                    ),
+                  ],
+                )
+              else ...[
+                generalInformationCard,
+                const SizedBox(height: 16),
+                commentCard,
+              ],
+
+              const SizedBox(height: 16),
+
+              if (isWideScreen)
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      flex: 3,
+                      child: detailedResultCard,
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      flex: 2,
+                      child: metricsCard,
+                    ),
+                  ],
+                )
+              else ...[
+                detailedResultCard,
+                const SizedBox(height: 16),
+                metricsCard,
+              ],
+
+              const SizedBox(height: 16),
+              synchronizationCard,
             ],
-          ),
-          const SizedBox(height: 16),
-          _SectionCard(
-            title: 'Export simple',
-            icon: Icons.description_outlined,
-            children: [SelectableText(_result.exportSimpleText)],
-          ),
-          const SizedBox(height: 16),
-          _SectionCard(
-            title: 'Synchronisation',
-            icon: Icons.sync_outlined,
-            children: [
-              _InfoRow(label: 'État sync', value: _result.syncState),
-              _InfoRow(
-                label: 'Dernière modification',
-                value: widget.result.lastModifiedAt == null
-                    ? '-'
-                    : formatter.format(
-                        DateTime.fromMillisecondsSinceEpoch(
-                          widget.result.lastModifiedAt!,
-                        ),
-                      ),
-              ),
-              _InfoRow(
-                label: 'Hash contenu',
-                value: widget.result.contentHash ?? '-',
-              ),
-              const SizedBox(height: 8),
-              Align(
-                alignment: Alignment.centerRight,
-                child: OutlinedButton.icon(
-                  onPressed: _markAsConflict,
-                  icon: const Icon(Icons.report_problem_outlined),
-                  label: const Text('Marquer comme conflit'),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Align(
-            alignment: Alignment.centerRight,
-            child: OutlinedButton.icon(
-              onPressed: _markAsSynced,
-              icon: const Icon(Icons.cloud_done_outlined),
-              label: const Text('Marquer comme synchronisé'),
-            ),
-          ),
-          const SizedBox(height: 16),
-          _MetricsSection(repository: _repository, resultId: _result.resultId),
-        ],
+          );
+        },
       ),
     );
   }
@@ -286,8 +355,8 @@ class _MetricsSection extends StatelessWidget {
                 (metric) => _InfoRow(
                   label: metric.label ?? metric.metricKey,
                   value:
-                      '${metric.value}'
-                      '${metric.unit == null ? '' : ' ${metric.unit}'}',
+                  '${metric.value.toStringAsFixed(2)}'
+                      '${metric.unit == null ? '' : ' ${metric.unit}'}'
                 ),
               ),
           ],
@@ -312,23 +381,23 @@ class _SectionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 900),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Icon(icon),
-                  const SizedBox(width: 8),
-                  Text(title, style: Theme.of(context).textTheme.titleLarge),
-                ],
-              ),
-              const Divider(height: 28),
-              ...children,
-            ],
-          ),
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(icon),
+                const SizedBox(width: 8),
+                Text(
+                  title,
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+              ],
+            ),
+            const Divider(height: 22),
+            ...children,
+          ],
         ),
       ),
     );
@@ -344,7 +413,7 @@ class _InfoRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.only(bottom: 8),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -352,10 +421,14 @@ class _InfoRow extends StatelessWidget {
             width: 180,
             child: Text(
               label,
-              style: const TextStyle(fontWeight: FontWeight.bold),
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
-          Expanded(child: SelectableText(value)),
+          Expanded(
+            child: SelectableText(value),
+          ),
         ],
       ),
     );

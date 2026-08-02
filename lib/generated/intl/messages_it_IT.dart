@@ -77,7 +77,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "refreshDashboard":
             MessageLookupByLibrary.simpleMessage("Aggiornare il cruscotto"),
         "reset": MessageLookupByLibrary.simpleMessage("Reimposta"),
-        "settings": MessageLookupByLibrary.simpleMessage("Impostazioni"),
+        "settings": MessageLookupByLibrary.simpleMessage("Assistenza"),
         "smartCardDiagnostic":
             MessageLookupByLibrary.simpleMessage("Diagnosi della Carta Vitale"),
         "userPreferences":

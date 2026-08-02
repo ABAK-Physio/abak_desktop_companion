@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../import_export/abak_import_launcher.dart';
 import '../../import_export/import_history_screen.dart';
-import '../../maintenance/backup_history_screen.dart';
 import '../../maintenance/services/local_database_backup_service.dart';
-import '../../maintenance/services/local_database_reset_service.dart';
+
 
 class QuickActionsCard extends StatelessWidget {
   final ValueChanged<AbakImportLauncherResult>? onImportCompleted;
@@ -65,21 +64,6 @@ class QuickActionsCard extends StatelessWidget {
               runSpacing: 12,
               children: [
                 _actionButton(
-                  primary: true,
-                  onPressed: () async {
-                    final result =
-                        await AbakImportLauncher.importArchiveFromPicker(
-                          context,
-                        );
-
-                    if (result != null) {
-                      onImportCompleted?.call(result);
-                    }
-                  },
-                  icon: Icons.file_upload_outlined,
-                  label: 'Importer',
-                ),
-                _actionButton(
                   onPressed: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
@@ -113,130 +97,6 @@ class QuickActionsCard extends StatelessWidget {
                   },
                   icon: Icons.save_outlined,
                   label: 'Créer une sauvegarde',
-                ),
-                _actionButton(
-                  onPressed: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => const BackupHistoryScreen(),
-                      ),
-                    );
-                  },
-                  icon: Icons.folder_copy_outlined,
-                  label: 'Gérer les sauvegardes',
-                ),
-                _actionButton(
-                  foregroundColor: Colors.red,
-                  onPressed: () async {
-                    final messenger = ScaffoldMessenger.of(context);
-
-                    final firstConfirm = await showDialog<bool>(
-                      context: context,
-                      builder: (dialogContext) {
-                        return AlertDialog(
-                          title: const Text('Réinitialiser la base locale ?'),
-                          content: const Text(
-                            'Cette action supprimera toutes les données locales '
-                            '(patients, résultats, imports, historiques).\n\n'
-                            'Une sauvegarde automatique sera créée avant la réinitialisation.',
-                          ),
-                          actions: [
-                            TextButton(
-                              onPressed: () =>
-                                  Navigator.of(dialogContext).pop(false),
-                              child: const Text('Annuler'),
-                            ),
-                            FilledButton(
-                              onPressed: () =>
-                                  Navigator.of(dialogContext).pop(true),
-                              child: const Text('Continuer'),
-                            ),
-                          ],
-                        );
-                      },
-                    );
-
-                    if (firstConfirm != true) return;
-
-                    final controller = TextEditingController();
-
-                    if (!context.mounted) return;
-
-                    final secondConfirm = await showDialog<bool>(
-                      context: context,
-                      builder: (dialogContext) {
-                        return AlertDialog(
-                          title: const Text('Confirmation obligatoire'),
-                          content: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const Text(
-                                'Tapez RESET pour confirmer définitivement.',
-                              ),
-                              const SizedBox(height: 16),
-                              TextField(
-                                controller: controller,
-                                autofocus: true,
-                                decoration: const InputDecoration(
-                                  border: OutlineInputBorder(),
-                                  hintText: 'RESET',
-                                ),
-                              ),
-                            ],
-                          ),
-                          actions: [
-                            TextButton(
-                              onPressed: () =>
-                                  Navigator.of(dialogContext).pop(false),
-                              child: const Text('Annuler'),
-                            ),
-                            FilledButton(
-                              onPressed: () {
-                                final valid =
-                                    controller.text.trim().toUpperCase() ==
-                                    'RESET';
-                                Navigator.of(dialogContext).pop(valid);
-                              },
-                              child: const Text('Réinitialiser'),
-                            ),
-                          ],
-                        );
-                      },
-                    );
-
-                    controller.dispose();
-
-                    if (secondConfirm != true) {
-                      if (!context.mounted) return;
-
-                      messenger.showSnackBar(
-                        const SnackBar(content: Text('Confirmation invalide.')),
-                      );
-
-                      return;
-                    }
-
-                    final result = await LocalDatabaseResetService()
-                        .resetDatabase();
-
-                    if (!context.mounted) return;
-
-                    messenger.showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          result.success
-                              ? 'Base réinitialisée. Sauvegarde automatique créée.'
-                              : 'Erreur lors de la réinitialisation : ${result.error}',
-                        ),
-                      ),
-                    );
-
-                    if (result.success) {
-                      onMaintenanceCompleted?.call();
-                    }
-                  },
-                  icon: Icons.restart_alt_outlined,
-                  label: 'Réinitialiser la base',
                 ),
               ],
             ),

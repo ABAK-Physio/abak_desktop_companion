@@ -76,7 +76,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "refreshDashboard": MessageLookupByLibrary.simpleMessage(
             "Actualiser le tableau de bord"),
         "reset": MessageLookupByLibrary.simpleMessage("Réinitialiser"),
-        "settings": MessageLookupByLibrary.simpleMessage("Réglages"),
+        "settings": MessageLookupByLibrary.simpleMessage("Assistance"),
         "smartCardDiagnostic":
             MessageLookupByLibrary.simpleMessage("Diagnostic Carte Vitale"),
         "userPreferences":

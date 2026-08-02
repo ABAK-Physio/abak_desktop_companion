@@ -77,7 +77,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "refreshDashboard":
             MessageLookupByLibrary.simpleMessage("Dashboard aktualisieren"),
         "reset": MessageLookupByLibrary.simpleMessage("Zurücksetzen"),
-        "settings": MessageLookupByLibrary.simpleMessage("Einstellungen"),
+        "settings": MessageLookupByLibrary.simpleMessage("Hilfe"),
         "smartCardDiagnostic":
             MessageLookupByLibrary.simpleMessage("Diagnose „Carte Vitale“"),
         "userPreferences":

@@ -110,10 +110,10 @@ class S {
     );
   }
 
-  /// `Réglages`
+  /// `Assistance`
   String get settings {
     return Intl.message(
-      'Réglages',
+      'Assistance',
       name: 'settings',
       desc: '',
       args: [],

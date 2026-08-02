@@ -264,7 +264,7 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
     final episode = CareEpisode(
       careEpisodeId: const Uuid().v4(),
       patientId: widget.patient.patientId,
-      title: 'Prise en charge $monthYear - $pathology',
+      title: 'Prise en charge ouverte en $monthYear',
       pathologyLabel: pathology,
       initialReport: initialReport.isEmpty ? null : initialReport,
       createdAt: now,
@@ -300,14 +300,20 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
             icon: Icons.person_outline,
             helpContent: S.of(context).help_information_patient,
             children: [
-              _InfoRow(
-                label: 'Nom',
-                value: widget.patient.lastName.toUpperCase(),
+              Wrap(
+                spacing: 24,
+                runSpacing: 8,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: [
+                  Text(
+                    '${widget.patient.lastName.toUpperCase()} '
+                        '${widget.patient.firstName}',
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  Text('Né(e) le $birthDateText'),
+                  Text('Sexe : ${widget.patient.sexCode}'),
+                ],
               ),
-              _InfoRow(label: 'Prénom', value: widget.patient.firstName),
-              _InfoRow(label: 'Né(e) le', value: birthDateText),
-              _InfoRow(label: 'Sexe', value: widget.patient.sexCode),
-              const SizedBox(height: 16),
             ],
           ),
 
@@ -696,18 +702,21 @@ class _CareEpisodesSection extends StatelessWidget {
               ...summaries.map((summary) {
                 final episode = summary.episode;
 
+                final createdAt = DateTime.fromMillisecondsSinceEpoch(
+                  episode.createdAt,
+                );
+
+                final monthYear =
+                    '${createdAt.month.toString().padLeft(2, '0')}/${createdAt.year}';
+
                 return ListTile(
                   contentPadding: EdgeInsets.zero,
                   leading: const Icon(Icons.folder_open_outlined),
-                  title: Text(episode.displayTitle),
+                  title: Text('Prise en charge ouverte en $monthYear'),
                   subtitle: Text(
                     [
                       'Pathologie : ${episode.pathologyLabel}',
                       'Kiné référent : ${_referringPractitionerLabel(summary)}',
-                      '${summary.notesCount} note${summary.notesCount > 1 ? 's' : ''} de suivi',
-                      summary.hasConclusion
-                          ? 'Conclusion rédigée'
-                          : 'Conclusion absente',
                     ].join('\n'),
                   ),
                   trailing: IconButton(

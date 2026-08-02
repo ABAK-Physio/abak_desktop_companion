@@ -77,7 +77,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "refreshDashboard": MessageLookupByLibrary.simpleMessage(
             "Atualizar o painel de controlo"),
         "reset": MessageLookupByLibrary.simpleMessage("Reiniciar"),
-        "settings": MessageLookupByLibrary.simpleMessage("Definições"),
+        "settings": MessageLookupByLibrary.simpleMessage("Assistência"),
         "smartCardDiagnostic": MessageLookupByLibrary.simpleMessage(
             "Diagnóstico do Cartão de Saúde"),
         "userPreferences":

@@ -2,29 +2,38 @@ import '../../../core/database/database_service.dart';
 import '../models/desktop_result.dart';
 import '../models/desktop_result_metric.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import '../models/result_traceability.dart';
 
 class DesktopResultRepository {
   Future<List<DesktopResult>> getResultsForPatient(
-    String patientId, {
-    List<String>? syncStates,
-  }) async {
+      String patientId, {
+        List<String>? syncStates,
+      }) async {
     final db = await DatabaseService.database;
 
-    final whereParts = <String>['patient_id = ?'];
-
+    final whereParts = <String>['r.patient_id = ?'];
     final whereArgs = <Object?>[patientId];
 
     if (syncStates != null && syncStates.isNotEmpty) {
       final placeholders = List.filled(syncStates.length, '?').join(', ');
-      whereParts.add('sync_state IN ($placeholders)');
+      whereParts.add('r.sync_state IN ($placeholders)');
       whereArgs.addAll(syncStates);
     }
 
-    final rows = await db.query(
-      'desktop_results',
-      where: whereParts.join(' AND '),
-      whereArgs: whereArgs,
-      orderBy: 'createdAt DESC',
+    final rows = await db.rawQuery(
+      '''
+    SELECT
+      r.*,
+      p.last_name,
+      p.first_name,
+      p.birth_date
+    FROM desktop_results r
+    LEFT JOIN patients p
+      ON p.patient_id = r.patient_id
+    WHERE ${whereParts.join(' AND ')}
+    ORDER BY r.createdAt DESC
+    ''',
+      whereArgs,
     );
 
     return rows.map(DesktopResult.fromMap).toList();
@@ -73,6 +82,43 @@ class DesktopResultRepository {
     );
 
     return rows.map(DesktopResultMetric.fromMap).toList();
+  }
+
+  Future<ResultTraceability> getTraceabilityForResult(
+      String resultId,
+      ) async {
+    final db = await DatabaseService.database;
+
+    final rows = await db.rawQuery(
+      '''
+    SELECT
+      p.display_name AS practitioner_display_name,
+      d.device_label AS device_label,
+      r.practitioner_verification_status
+    FROM desktop_results AS r
+    LEFT JOIN practitioners AS p
+      ON p.practitioner_id = r.practitioner_id
+    LEFT JOIN paired_devices AS d
+      ON d.device_id = r.source_device_id
+    WHERE r.result_id = ?
+    LIMIT 1
+    ''',
+      [resultId],
+    );
+
+    if (rows.isEmpty) {
+      return const ResultTraceability();
+    }
+
+    final row = rows.first;
+
+    return ResultTraceability(
+      practitionerDisplayName:
+      row['practitioner_display_name']?.toString(),
+      deviceLabel: row['device_label']?.toString(),
+      practitionerVerificationStatus:
+      row['practitioner_verification_status']?.toString(),
+    );
   }
 
   Future<List<DesktopResultMetric>> getMetricsForResultIds(

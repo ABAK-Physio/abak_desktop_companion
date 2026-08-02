@@ -42,6 +42,10 @@ class DesktopResult {
   final String? contentHash;
   final int? archivedAt;
 
+  final String? patientLastName;
+  final String? patientFirstName;
+  final String? patientBirthDate;
+
   const DesktopResult({
     required this.resultId,
     required this.careEpisodeId,
@@ -80,6 +84,9 @@ class DesktopResult {
     this.lastModifiedAt,
     this.contentHash,
     this.archivedAt,
+    this.patientLastName,
+    this.patientFirstName,
+    this.patientBirthDate,
   });
 
   factory DesktopResult.fromMap(Map<String, dynamic> map) {
@@ -87,6 +94,9 @@ class DesktopResult {
       resultId: map['result_id'] as String,
       careEpisodeId: map['care_episode_id'] as String,
       patientId: map['patient_id'] as String?,
+      patientLastName: map['last_name'] as String?,
+      patientFirstName: map['first_name'] as String?,
+      patientBirthDate: map['birth_date'] as String?,
       practitionerId: map['practitioner_id'] as String?,
       sourceDeviceId: map['source_device_id'] as String?,
       practitionerLabelSnapshot: map['practitioner_label_snapshot'] as String?,
@@ -163,6 +173,9 @@ class DesktopResult {
     int? lastModifiedAt,
     String? contentHash,
     int? archivedAt,
+    String? patientLastName,
+    String? patientFirstName,
+    String? patientBirthDate,
   }) {
     return DesktopResult(
       resultId: resultId ?? this.resultId,
@@ -206,6 +219,9 @@ class DesktopResult {
       lastModifiedAt: lastModifiedAt ?? this.lastModifiedAt,
       contentHash: contentHash ?? this.contentHash,
       archivedAt: archivedAt ?? this.archivedAt,
+      patientLastName: patientLastName ?? this.patientLastName,
+      patientFirstName: patientFirstName ?? this.patientFirstName,
+      patientBirthDate: patientBirthDate ?? this.patientBirthDate,
     );
   }
 
@@ -249,6 +265,9 @@ class DesktopResult {
       'last_modified_at': lastModifiedAt ?? importedAt,
       'content_hash': contentHash,
       'archived_at': archivedAt,
+      'last_name': patientLastName,
+      'first_name': patientFirstName,
+      'birth_date': patientBirthDate,
     };
   }
 }
