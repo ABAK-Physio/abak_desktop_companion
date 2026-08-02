@@ -83,38 +83,6 @@ class _ResultDetailScreenState extends State<ResultDetailScreen> {
     ).showSnackBar(const SnackBar(content: Text('Commentaire enregistré')));
   }
 
-  Future<void> _markAsSynced() async {
-    final now = DateTime.now().millisecondsSinceEpoch;
-
-    await _repository.markResultAsSynced(_result.resultId);
-
-    if (!mounted) return;
-
-    setState(() {
-      _result = _result.copyWith(syncState: 'synced', lastModifiedAt: now);
-    });
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Résultat marqué comme synchronisé')),
-    );
-  }
-
-  Future<void> _markAsConflict() async {
-    final now = DateTime.now().millisecondsSinceEpoch;
-
-    await _repository.markResultAsConflict(_result.resultId);
-
-    if (!mounted) return;
-
-    setState(() {
-      _result = _result.copyWith(syncState: 'conflict', lastModifiedAt: now);
-    });
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Résultat marqué comme conflit')),
-    );
-  }
-
   Future<void> _archiveResult(BuildContext context) async {
     final confirmed = await showDialog<bool>(
       context: context,
