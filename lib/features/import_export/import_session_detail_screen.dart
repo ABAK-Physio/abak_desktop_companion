@@ -51,7 +51,8 @@ class ImportActionInfoService {
       return ImportActionInfo(
         title: 'Import impossible',
         message:
-            'L’import n’a pas pu être terminé. Consultez le détail des fichiers, puis supprimez cet import s’il ne peut pas être corrigé.',
+        'Le fichier reçu est incomplet ou endommagé.\n\n'
+            'Demandez un nouvel envoi depuis ABAK Mobile.',
         icon: Icons.error_outline,
         color: Theme.of(context).colorScheme.error,
         actions: const [ImportActionKind.deleteImport],
@@ -118,96 +119,202 @@ class ImportSessionDetailScreen extends StatelessWidget {
       session,
     );
 
+    final isFailedImport =
+        session.status == 'failed' || session.failedFilesCount > 0;
+
     return Scaffold(
       appBar: AppBar(title: const Text("Suivi de l'import")),
-      body: ListView(
-        padding: const EdgeInsets.all(24),
-        children: [
-          _BusinessSummaryCard(
-            session: session,
-            actionInfo: actionInfo,
-            dateLabel: completedDate == null
-                ? formatter.format(startedDate)
-                : formatter.format(completedDate),
-          ),
-          const SizedBox(height: 16),
-          FutureBuilder<List<ImportSessionFile>>(
-            future: repository.getFilesForSession(session.importSessionId),
-            builder: (context, snapshot) {
-              final files = snapshot.data ?? [];
-
-              ImportSessionFile? fileToResolve;
-
-              for (final file in files) {
-                if (file.status == 'needs_resolution') {
-                  fileToResolve = file;
-                  break;
-                }
-              }
-
-              if (actionInfo.actions.isEmpty) {
-                return const SizedBox.shrink();
-              }
-
-              return _ImportActionsBar(
+        body: ListView(
+          padding: const EdgeInsets.all(24),
+          children: [
+            if (isFailedImport) ...[
+              _FailedImportCard(
                 session: session,
                 repository: repository,
+              ),
+            ] else ...[
+              _BusinessSummaryCard(
+                session: session,
                 actionInfo: actionInfo,
-                fileToResolve: fileToResolve,
-              );
-            },
-          ),
-          const SizedBox(height: 16),
-          _ImportReportCard(
-            session: session,
-            startedLabel: formatter.format(startedDate),
-            completedLabel: completedDate == null
-                ? 'Non terminé'
-                : formatter.format(completedDate),
-          ),
-          const SizedBox(height: 16),
-          FutureBuilder<List<ImportSessionFile>>(
-            future: repository.getFilesForSession(session.importSessionId),
-            builder: (context, snapshot) {
-              final files = snapshot.data ?? [];
+                dateLabel: completedDate == null
+                    ? formatter.format(startedDate)
+                    : formatter.format(completedDate),
+              ),
+              const SizedBox(height: 16),
+              FutureBuilder<List<ImportSessionFile>>(
+                future: repository.getFilesForSession(session.importSessionId),
+                builder: (context, snapshot) {
+                  final files = snapshot.data ?? [];
 
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(
-                  child: Padding(
-                    padding: EdgeInsets.all(24),
-                    child: CircularProgressIndicator(),
-                  ),
-                );
-              }
+                  ImportSessionFile? fileToResolve;
 
-              if (files.isEmpty) {
-                return const Card(
-                  child: Padding(
-                    padding: EdgeInsets.all(20),
-                    child: Text('Aucun fichier associé.'),
-                  ),
-                );
-              }
+                  for (final file in files) {
+                    if (file.status == 'needs_resolution') {
+                      fileToResolve = file;
+                      break;
+                    }
+                  }
 
-              return Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Fichiers',
-                        style: Theme.of(context).textTheme.titleLarge,
+                  if (actionInfo.actions.isEmpty) {
+                    return const SizedBox.shrink();
+                  }
+
+                  return _ImportActionsBar(
+                    session: session,
+                    repository: repository,
+                    actionInfo: actionInfo,
+                    fileToResolve: fileToResolve,
+                  );
+                },
+              ),
+              const SizedBox(height: 16),
+              _ImportReportCard(
+                session: session,
+                startedLabel: formatter.format(startedDate),
+                completedLabel: completedDate == null
+                    ? 'Non terminé'
+                    : formatter.format(completedDate),
+              ),
+              const SizedBox(height: 16),
+              FutureBuilder<List<ImportSessionFile>>(
+                future: repository.getFilesForSession(session.importSessionId),
+                builder: (context, snapshot) {
+                  final files = snapshot.data ?? [];
+
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(24),
+                        child: CircularProgressIndicator(),
                       ),
-                      const Divider(height: 28),
-                      ...files.map((file) => _ImportFileTile(file: file)),
-                    ],
+                    );
+                  }
+
+                  if (files.isEmpty) {
+                    return const Card(
+                      child: Padding(
+                        padding: EdgeInsets.all(20),
+                        child: Text('Aucun fichier associé.'),
+                      ),
+                    );
+                  }
+
+                  return Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Fichiers',
+                            style: Theme.of(context).textTheme.titleLarge,
+                          ),
+                          const Divider(height: 28),
+                          ...files.map((file) => _ImportFileTile(file: file)),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ],
+          ],
+        ),
+    );
+  }
+}
+
+class _FailedImportCard extends StatelessWidget {
+  final ImportSession session;
+  final ImportSessionRepository repository;
+
+  const _FailedImportCard({
+    required this.session,
+    required this.repository,
+  });
+
+  Future<void> _confirmDelete(BuildContext context) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: const Text('Supprimer cet import ?'),
+          content: const Text(
+            'Le fichier endommagé sera supprimé de Companion.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(false),
+              child: const Text('Annuler'),
+            ),
+            FilledButton.icon(
+              onPressed: () => Navigator.of(dialogContext).pop(true),
+              icon: const Icon(Icons.delete_outline),
+              label: const Text('Supprimer'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (confirmed != true) return;
+
+    await repository.deleteSession(session.importSessionId);
+
+    if (!context.mounted) return;
+
+    Navigator.of(context).pop(true);
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Import supprimé.'),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final errorColor = Theme.of(context).colorScheme.error;
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(
+                  Icons.error_outline,
+                  color: errorColor,
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  'Fichier endommagé',
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    color: errorColor,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
-              );
-            },
-          ),
-        ],
+              ],
+            ),
+            const SizedBox(height: 20),
+            const Text(
+              'Supprimez cet import, puis demandez un nouvel envoi '
+                  'depuis ABAK Mobile.',
+              style: TextStyle(
+                fontSize: 16,
+                height: 1.4,
+              ),
+            ),
+            const SizedBox(height: 24),
+            FilledButton.icon(
+              onPressed: () => _confirmDelete(context),
+              icon: const Icon(Icons.delete_outline),
+              label: const Text('Supprimer cet import'),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -262,11 +369,16 @@ class _BusinessSummaryCard extends StatelessWidget {
     );
   }
 
-  static String _valueOrUnknown(String? value) {
-    if (value == null || value.trim().isEmpty) {
-      return 'En attente';
+  String _valueOrUnknown(String? value) {
+    if (value != null && value.trim().isNotEmpty) {
+      return value;
     }
-    return value;
+
+    if (session.status == 'failed') {
+      return 'Impossible à déterminer';
+    }
+
+    return 'En attente';
   }
 }
 
@@ -290,7 +402,9 @@ class _ImportReportCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "État de l'import",
+              session.status == 'failed'
+                  ? 'Diagnostic'
+                  : "État de l'import",
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const Divider(height: 28),

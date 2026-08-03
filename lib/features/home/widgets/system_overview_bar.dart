@@ -27,16 +27,6 @@ class _SystemOverviewBarState extends State<SystemOverviewBar> {
   String? _cabinetName;
   String? _cabinetLogoPath;
 
-  String _formatFileSize(int bytes) {
-    if (bytes < 1024) return '$bytes o';
-
-    final kb = bytes / 1024;
-    if (kb < 1024) return '${kb.toStringAsFixed(1)} Ko';
-
-    final mb = kb / 1024;
-    return '${mb.toStringAsFixed(1)} Mo';
-  }
-
   @override
   void initState() {
     super.initState();
@@ -176,11 +166,6 @@ class _SystemOverviewBarState extends State<SystemOverviewBar> {
                 runSpacing: 14,
                 children: [
                   _OverviewItem(
-                    icon: Icons.storage_outlined,
-                    label: 'Base locale',
-                    value: _formatFileSize(health.databaseSizeBytes),
-                  ),
-                  _OverviewItem(
                     icon: Icons.people_outline,
                     label: 'Patients actifs',
                     value: health.activePatientsCount.toString(),
@@ -189,12 +174,6 @@ class _SystemOverviewBarState extends State<SystemOverviewBar> {
                     icon: Icons.archive_outlined,
                     label: 'Patients archivés',
                     value: health.archivedPatientsCount.toString(),
-                  ),
-                  _OverviewItem(
-                    icon: Icons.backup_outlined,
-                    label: 'Sauvegardes',
-                    value:
-                        '${health.backupsCount} · ${_formatFileSize(health.backupsTotalSizeBytes)}',
                   ),
                   _OverviewItem(
                     icon: Icons.warning_amber_outlined,

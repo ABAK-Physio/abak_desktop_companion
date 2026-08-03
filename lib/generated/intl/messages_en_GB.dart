@@ -48,7 +48,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "help_prise_en_charge": MessageLookupByLibrary.simpleMessage(
             "Here you\'ll find the various care plans for your patient. You can use an existing care plan, or you can create a new one."),
         "home": MessageLookupByLibrary.simpleMessage("Home"),
-        "information": MessageLookupByLibrary.simpleMessage("Information"),
+        "information": MessageLookupByLibrary.simpleMessage("About"),
         "ipAddressNotFound":
             MessageLookupByLibrary.simpleMessage("IP address not found"),
         "ipAddressNotFoundMessage": MessageLookupByLibrary.simpleMessage(

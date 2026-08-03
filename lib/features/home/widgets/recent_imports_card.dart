@@ -48,13 +48,15 @@ class _RecentImportsCardState extends State<RecentImportsCard> {
         builder: (context, snapshot) {
           final sessions = snapshot.hasData
               ? snapshot.data!
-                    .where(
-                      (session) =>
-                          session.importedResultsCount > 0 ||
-                          session.failedFilesCount > 0 ||
-                          session.conflictResultsCount > 0 ||
-                          session.status == 'needs_resolution',
-                    )
+              .where(
+                (session) =>
+            session.importedResultsCount > 0 ||
+                session.duplicateResultsCount > 0 ||
+                session.failedFilesCount > 0 ||
+                session.conflictResultsCount > 0 ||
+                session.status == 'needs_resolution' ||
+                session.status == 'duplicate',
+          )
                     .take(5)
                     .toList()
               : <ImportSession>[];
@@ -144,18 +146,24 @@ class _RecentImportTile extends StatelessWidget {
     final hasErrors =
         session.failedFilesCount > 0 || session.status == 'failed';
     final hasConflicts = session.conflictResultsCount > 0;
+    final isDuplicate = session.status == 'duplicate';
 
     final icon = hasErrors
         ? Icons.error_outline
         : (needsResolution || hasConflicts)
         ? Icons.warning_amber_outlined
+        : isDuplicate
+        ? Icons.info_outline
         : Icons.check_circle_outline;
 
     final color = hasErrors
         ? Theme.of(context).colorScheme.error
         : (needsResolution || hasConflicts)
         ? Colors.orange
+        : isDuplicate
+        ? Colors.blue
         : Colors.green;
+
 
     return ListTile(
       contentPadding: EdgeInsets.zero,
@@ -216,18 +224,35 @@ class _ImportSummary extends StatelessWidget {
       );
     }
 
-    if (session.status == 'needs_resolution') {
+    if (session.status == 'duplicate') {
       lines.add(
-        Text(
+        const Text(
+          'Ce fichier avait déjà été importé. '
+              'Aucune donnée n’a été ajoutée.',
+          style: TextStyle(
+            color: Colors.blue,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      );
+    } else if (session.status == 'needs_resolution') {
+      lines.add(
+        const Text(
           'Action requise : associer ce dossier à un patient',
-          style: TextStyle(color: Colors.orange, fontWeight: FontWeight.w600),
+          style: TextStyle(
+            color: Colors.orange,
+            fontWeight: FontWeight.w600,
+          ),
         ),
       );
     } else if (session.conflictResultsCount > 0) {
       lines.add(
         const Text(
           'Conflit détecté',
-          style: TextStyle(color: Colors.orange, fontWeight: FontWeight.w600),
+          style: TextStyle(
+            color: Colors.orange,
+            fontWeight: FontWeight.w600,
+          ),
         ),
       );
     }
@@ -286,12 +311,16 @@ class _StatusChip extends StatelessWidget {
     late final IconData icon;
 
     switch (status) {
+      case 'duplicate':
+        label = 'Déjà importé';
+        color = Colors.blue;
+        icon = Icons.info_outline;
+        break;
       case 'completed':
         label = 'Succès';
         color = Colors.green;
         icon = Icons.check_circle_outline;
         break;
-
       case 'completed_with_errors':
         label = 'Attention';
         color = Colors.orange;

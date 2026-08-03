@@ -48,7 +48,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "help_prise_en_charge": MessageLookupByLibrary.simpleMessage(
             "Hier vindt u de verschillende behandelingen van uw patiënt. U kunt een bestaande behandelingsperiode gebruiken of een nieuwe aanmaken."),
         "home": MessageLookupByLibrary.simpleMessage("Start"),
-        "information": MessageLookupByLibrary.simpleMessage("Informatie"),
+        "information": MessageLookupByLibrary.simpleMessage("Over ons"),
         "ipAddressNotFound":
             MessageLookupByLibrary.simpleMessage("IP-adres niet gevonden"),
         "ipAddressNotFoundMessage": MessageLookupByLibrary.simpleMessage(

@@ -169,6 +169,7 @@ class AbakImportLauncher {
             : importedExerciseLabels.join(', '),
       );
 
+
       final launcherResult = AbakImportLauncherResult(
         processedFiles: processedFiles,
         failedFiles: failedFiles,
@@ -237,9 +238,9 @@ class AbakImportLauncher {
   }
 
   static Future<Map<String, dynamic>> importArchiveFromPath(
-    String filePath, {
-    String sourceLabel = 'local_network_upload',
-  }) async {
+      String filePath, {
+        String sourceLabel = 'local_network_upload',
+      }) async {
     final importSessionRepository = ImportSessionRepository();
 
     final file = File(filePath);
@@ -258,12 +259,27 @@ class AbakImportLauncher {
       sourceLabel: sourceLabel,
     );
 
+    final fileSize = await file.length();
+
     try {
+      // Validation technique avant de proposer le rattachement.
+      final jsonString = await file.readAsString();
+      final decoded = jsonDecode(jsonString);
+
+      if (decoded is! Map<String, dynamic>) {
+        throw const FormatException(
+          'Le contenu du fichier ABAK n’est pas un objet JSON.',
+        );
+      }
+
+      AbakPackage.fromJson(decoded);
+
+      // Le fichier est exploitable : il peut être proposé au rattachement.
       await importSessionRepository.addFileLog(
         importSessionId: importSessionId,
         fileName: fileName,
         filePath: filePath,
-        fileSize: await file.length(),
+        fileSize: fileSize,
         status: 'needs_resolution',
         importedResultsCount: 0,
         skippedResultsCount: 0,
@@ -291,21 +307,25 @@ class AbakImportLauncher {
         'filePath': filePath,
       };
     } catch (e, stack) {
-      debugPrint('❌ Erreur import réseau $fileName : $e');
+      debugPrint('❌ Fichier ABAK invalide $fileName : $e');
       debugPrint('$stack');
+
+      const userMessage =
+          'Le fichier reçu est incomplet ou endommagé. '
+          'Demandez un nouvel envoi depuis ABAK Mobile.';
 
       await importSessionRepository.addFileLog(
         importSessionId: importSessionId,
         fileName: fileName,
         filePath: filePath,
-        fileSize: await file.length(),
+        fileSize: fileSize,
         status: 'error',
         importedResultsCount: 0,
         skippedResultsCount: 0,
         duplicateResultsCount: 0,
         conflictResultsCount: 0,
         importedMetricsCount: 0,
-        errorMessage: e.toString(),
+        errorMessage: userMessage,
       );
 
       await importSessionRepository.completeSession(
@@ -317,11 +337,12 @@ class AbakImportLauncher {
         duplicateResultsCount: 0,
         conflictResultsCount: 0,
         importedMetricsCount: 0,
+        status: 'failed',
       );
 
       return {
         'status': 'error',
-        'message': 'Erreur import : $e',
+        'message': userMessage,
         'fileName': fileName,
         'filePath': filePath,
       };
@@ -411,7 +432,21 @@ class AbakImportLauncher {
         importedMetricsCount: summary.importedMetrics,
       );
 
+      if (await file.exists()) {
+        await file.delete();
+
+        debugPrint(
+          '🧹 Fichier de travail supprimé après import réussi : $filePath',
+        );
+      }
+
       await importSessionRepository.markFilesResolvedByPath(filePath);
+
+      final isDuplicateOnly =
+          summary.importedResults == 0 &&
+              summary.duplicateResults > 0 &&
+              summary.skippedResults == 0 &&
+              summary.conflictResults == 0;
 
       await importSessionRepository.completeSession(
         importSessionId: importSessionId,
@@ -422,6 +457,7 @@ class AbakImportLauncher {
         duplicateResultsCount: summary.duplicateResults,
         conflictResultsCount: summary.conflictResults,
         importedMetricsCount: summary.importedMetrics,
+        status: isDuplicateOnly ? 'duplicate' : null,
         summaryPatientLabel: summary.summaryPatientLabel,
         summaryEpisodeLabel: summary.summaryEpisodeLabel,
         summaryExercisesLabel: summary.summaryExercisesLabel,

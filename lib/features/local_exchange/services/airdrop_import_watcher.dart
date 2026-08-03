@@ -134,6 +134,14 @@ class AirDropImportWatcher {
       onImportMessage?.call(message);
 
       final status = result['status'] as String?;
+      if ((status == 'needs_resolution' || status == 'error') &&
+          await file.exists()) {
+        await file.delete();
+
+        debugPrint(
+          '🧹 Fichier source supprimé du dossier d’échange : $originalPath',
+        );
+      }
 
       final importedResults = result['importedResults'] as int? ?? 0;
       final skippedResults = result['skippedResults'] as int? ?? 0;

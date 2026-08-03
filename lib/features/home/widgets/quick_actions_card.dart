@@ -72,7 +72,7 @@ class QuickActionsCard extends StatelessWidget {
                     );
                   },
                   icon: Icons.history_outlined,
-                  label: 'Historique',
+                  label: 'Historique des imports',
                 ),
                 _actionButton(
                   onPressed: () async {

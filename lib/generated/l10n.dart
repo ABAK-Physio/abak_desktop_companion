@@ -120,10 +120,10 @@ class S {
     );
   }
 
-  /// `Informations`
+  /// `A propos`
   String get information {
     return Intl.message(
-      'Informations',
+      'A propos',
       name: 'information',
       desc: '',
       args: [],

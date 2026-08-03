@@ -265,9 +265,6 @@ class DesktopResult {
       'last_modified_at': lastModifiedAt ?? importedAt,
       'content_hash': contentHash,
       'archived_at': archivedAt,
-      'last_name': patientLastName,
-      'first_name': patientFirstName,
-      'birth_date': patientBirthDate,
     };
   }
 }

@@ -6,6 +6,8 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/settings/cabinet_identity_service.dart';
 import 'avertissement.dart';
+import '../maintenance/models/system_health_snapshot.dart';
+import '../maintenance/services/system_health_service.dart';
 
 class AboutScreen extends StatefulWidget {
   const AboutScreen({super.key});
@@ -23,18 +25,40 @@ class _AboutScreenState extends State<AboutScreen> {
   String _language = '';
   String? _cabinetName;
   String? _cabinetLogoPath;
+  SystemHealthSnapshot? _health;
 
   @override
   void initState() {
     super.initState();
     _loadVersion();
     _loadCabinetIdentity();
+    _loadSystemHealth();
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     _loadLanguage();
+  }
+
+  String _formatFileSize(int bytes) {
+    if (bytes < 1024) return '$bytes o';
+
+    final kb = bytes / 1024;
+    if (kb < 1024) return '${kb.toStringAsFixed(1)} Ko';
+
+    final mb = kb / 1024;
+    return '${mb.toStringAsFixed(1)} Mo';
+  }
+
+  Future<void> _loadSystemHealth() async {
+    final snapshot = await const SystemHealthService().loadSnapshot();
+
+    if (!mounted) return;
+
+    setState(() {
+      _health = snapshot;
+    });
   }
 
   Future<void> _loadVersion() async {
@@ -142,6 +166,31 @@ class _AboutScreenState extends State<AboutScreen> {
                     label: 'Langue',
                     value: _language.isEmpty ? 'Chargement...' : _language,
                   ),
+
+                  const SizedBox(height: 20),
+                  const Divider(),
+                  const SizedBox(height: 20),
+
+                  Text(
+                    'Stockage local',
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+
+                  const SizedBox(height: 12),
+
+                  if (_health != null) ...[
+                    _InfoLine(
+                      label: 'Base de données',
+                      value: 'Taille : ${_formatFileSize(_health!.databaseSizeBytes)}',
+                    ),
+                    _InfoLine(
+                      label: 'Sauvegardes',
+                      value:
+                      '${_health!.backupsCount} sauvegardes\n'
+                          'Taille totale : '
+                          '${_formatFileSize(_health!.backupsTotalSizeBytes)}',
+                    ),
+                  ],
 
                   const SizedBox(height: 24),
                   const Divider(),

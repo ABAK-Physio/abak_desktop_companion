@@ -7,6 +7,7 @@ import 'package:abak_vitale/abak_vitale.dart';
 import '../import_export/abak_import_launcher.dart';
 import '../maintenance/backup_history_screen.dart';
 import '../maintenance/services/local_database_reset_service.dart';
+import '../import_export/import_resolution_assistant_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -207,6 +208,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
+  void _openImportResolutionAssistant() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => const ImportResolutionAssistantScreen(),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -320,6 +329,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   spacing: 12,
                   runSpacing: 12,
                   children: [
+                    OutlinedButton.icon(
+                      onPressed: _openImportResolutionAssistant,
+                      icon: const Icon(Icons.assistant_outlined),
+                      label: const Text('Résoudre un problème d’import'),
+                    ),
                     OutlinedButton.icon(
                       onPressed: _importAbakFile,
                       icon: const Icon(Icons.file_upload_outlined),
