@@ -37,5 +37,6 @@
   "help_information_patient": "Hier finden Sie die Identifikationsdaten Ihres Patienten",
   "help_prise_en_charge": "Hier finden Sie die verschiedenen Behandlungen Ihres Patienten. Sie können eine bereits vorhandene Behandlung verwenden oder eine neue anlegen.",
   "help_donnees_cliniques_patient": "Hier finden Sie weitere Informationen zu Ihrem Patienten",
-  "help_parametres_utilisateur": "Wählen Sie die Sprache, den Namen Ihrer Praxis und deren Logo aus"
+  "help_parametres_utilisateur": "Wählen Sie die Sprache, den Namen Ihrer Praxis und deren Logo aus",
+  "help_archived_patient": "Archivierte Patienten können bis zu dem angegebenen Datum wiederhergestellt werden.\nNach diesem Datum werden sie automatisch gelöscht, damit nicht ungenutzte Datensätze auf unbestimmte Zeit gespeichert bleiben.\nDie Aufbewahrungsdauer kann in den Einstellungen von Companion geändert werden."
 }

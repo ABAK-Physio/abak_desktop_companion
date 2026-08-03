@@ -39,6 +39,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "Dossier d\'échange réinitialisé"),
         "exchangeDirectoryUpdated": MessageLookupByLibrary.simpleMessage(
             "Dossier d\'échange ABAK mis à jour"),
+        "help_archived_patient": MessageLookupByLibrary.simpleMessage(
+            "Les patients archivés peuvent être restaurés jusqu\'à la date indiquée.\nAprès cette date, ils sont supprimés automatiquement afin de ne pas conserver indéfiniment des dossiers inutilisés.\nLa durée de conservation peut être modifiée dans les paramètres de Companion."),
         "help_donnees_cliniques_patient": MessageLookupByLibrary.simpleMessage(
             "Vous trouvez ici les données complémentaires concernant votre patient"),
         "help_information_patient": MessageLookupByLibrary.simpleMessage(

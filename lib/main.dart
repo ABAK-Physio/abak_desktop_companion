@@ -43,7 +43,18 @@ Future<void> main() async {
 
   await DatabaseService.database;
 
-  await LocalExchangeServer.instance.start();
+  try {
+    await LocalExchangeServer.instance.start();
+  } on LocalExchangeServerAlreadyRunningException {
+    runApp(const _AlreadyRunningApp());
+
+    windowManager.waitUntilReadyToShow(windowOptions, () async {
+      await windowManager.show();
+      await windowManager.focus();
+    });
+
+    return;
+  }
 
   AirDropImportWatcher.instance.onImportMessage = (message) {
     rootScaffoldMessengerKey.currentState?.showSnackBar(
@@ -83,4 +94,75 @@ Future<void> main() async {
   });
 
   runApp(const AbakDesktopApp());
+}
+
+class _AlreadyRunningApp extends StatelessWidget {
+  const _AlreadyRunningApp();
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'ABAK Desktop Companion',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.blue,
+        ),
+        useMaterial3: true,
+      ),
+      home: const _AlreadyRunningScreen(),
+    );
+  }
+}
+
+class _AlreadyRunningScreen extends StatelessWidget {
+  const _AlreadyRunningScreen();
+
+  Future<void> _closeApplication() async {
+    await windowManager.close();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 520),
+          child: Card(
+            margin: const EdgeInsets.all(32),
+            child: Padding(
+              padding: const EdgeInsets.all(32),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.info_outline,
+                    size: 48,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                  const SizedBox(height: 20),
+                  Text(
+                    'ABAK Desktop Companion est déjà ouvert',
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.headlineSmall,
+                  ),
+                  const SizedBox(height: 16),
+                  const Text(
+                    'Une seule instance peut être ouverte à la fois.\n\n'
+                        'Utilisez la fenêtre Companion déjà ouverte.',
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 24),
+                  FilledButton(
+                    onPressed: _closeApplication,
+                    child: const Text('Fermer'),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }

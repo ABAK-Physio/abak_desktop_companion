@@ -10,6 +10,10 @@ import 'package:shelf_router/shelf_router.dart';
 import '../../../core/database/database_service.dart';
 import '../../../core/settings/exchange_directory_service.dart';
 
+class LocalExchangeServerAlreadyRunningException implements Exception {
+  const LocalExchangeServerAlreadyRunningException();
+}
+
 class LocalExchangeServer {
   LocalExchangeServer._();
 
@@ -161,7 +165,21 @@ class LocalExchangeServer {
         .addMiddleware(logRequests())
         .addHandler(router.call);
 
-    _server = await shelf_io.serve(handler, InternetAddress.anyIPv4, port);
+    try {
+      _server = await shelf_io.serve(
+        handler,
+        InternetAddress.anyIPv4,
+        port,
+      );
+    } on SocketException catch (error) {
+      final errorCode = error.osError?.errorCode;
+
+      if (errorCode == 48 || errorCode == 10048) {
+        throw const LocalExchangeServerAlreadyRunningException();
+      }
+
+      rethrow;
+    }
   }
 
   Future<void> stop() async {

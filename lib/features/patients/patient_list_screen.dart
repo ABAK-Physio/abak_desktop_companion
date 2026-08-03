@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 
+import '../../generated/l10n.dart';
+
 import 'data/patient_repository.dart';
 import 'models/patient.dart';
 import 'patient_detail_screen.dart';
 import 'widgets/patient_form_dialog.dart';
 import '../../core/utils/date_format_utils.dart';
 import 'screens/patient_create_screen.dart';
+import 'services/patient_purge_service.dart';
+import 'package:abak_shared/abak_shared.dart';
 
 class PatientListScreen extends StatefulWidget {
   const PatientListScreen({super.key});
@@ -250,6 +254,18 @@ class _PatientListScreenState extends State<PatientListScreen> {
                   itemBuilder: (context, index) {
                     final patient = filteredPatients[index];
 
+                    final archivedAt = patient.archivedAt;
+
+                    final restorableUntil = archivedAt == null
+                        ? null
+                        : DateTime.fromMillisecondsSinceEpoch(
+                      archivedAt,
+                    ).add(
+                      const Duration(
+                        days: PatientPurgeService.retentionDays,
+                      ),
+                    ).millisecondsSinceEpoch;
+
                     return ListTile(
                       leading: CircleAvatar(
                         child: Text(
@@ -259,12 +275,32 @@ class _PatientListScreenState extends State<PatientListScreen> {
                         ),
                       ),
                       title: Text(patient.displayName),
-                      subtitle: Text(
-                        _showArchived
-                            ? 'Sexe : ${patient.sexCode}'
-                                  '${patient.archivedAt == null ? '' : ' · Archivé le ${DateFormatUtils.formatTimestamp(context, patient.archivedAt)}'}'
-                            : 'Sexe : ${patient.sexCode}'
-                                  '${patient.birthDate == null ? '' : ' · Né(e) le ${DateFormatUtils.formatIsoDateForDisplay(context, patient.birthDate)}'}',
+                      subtitle: _showArchived
+                          ? Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('Sexe : ${patient.sexCode}'),
+                          if (archivedAt != null)
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    'Archivé le '
+                                        '${DateFormatUtils.formatTimestampForDisplay(context, archivedAt)}'
+                                        '${restorableUntil == null ? '' : ' · Restaurable jusqu’au ${DateFormatUtils.formatTimestampForDisplay(context, restorableUntil)}'}',
+                                  ),
+                                ),
+                                ContextHelpButton(
+                                  title: 'Patient archivé',
+                                  content: S.of(context).help_archived_patient,
+                                ),
+                              ],
+                            ),
+                        ],
+                      )
+                          : Text(
+                        'Sexe : ${patient.sexCode}'
+                            '${patient.birthDate == null ? '' : ' · Né(e) le ${DateFormatUtils.formatIsoDateForDisplay(context, patient.birthDate)}'}',
                       ),
                       trailing: _showArchived
                           ? IconButton(

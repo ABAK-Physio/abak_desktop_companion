@@ -39,6 +39,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "Austauschordner zurückgesetzt"),
         "exchangeDirectoryUpdated": MessageLookupByLibrary.simpleMessage(
             "Aktualisierte ABAK-Austauschdatei"),
+        "help_archived_patient": MessageLookupByLibrary.simpleMessage(
+            "Archivierte Patienten können bis zu dem angegebenen Datum wiederhergestellt werden.\nNach diesem Datum werden sie automatisch gelöscht, damit nicht ungenutzte Datensätze auf unbestimmte Zeit gespeichert bleiben.\nDie Aufbewahrungsdauer kann in den Einstellungen von Companion geändert werden."),
         "help_donnees_cliniques_patient": MessageLookupByLibrary.simpleMessage(
             "Hier finden Sie weitere Informationen zu Ihrem Patienten"),
         "help_information_patient": MessageLookupByLibrary.simpleMessage(

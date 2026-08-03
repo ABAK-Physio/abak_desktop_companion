@@ -39,6 +39,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Pasta de troca reiniciada"),
         "exchangeDirectoryUpdated": MessageLookupByLibrary.simpleMessage(
             "Dossiê de intercâmbio ABAK atualizado"),
+        "help_archived_patient": MessageLookupByLibrary.simpleMessage(
+            "Os doentes arquivados podem ser recuperados até à data indicada.\nApós essa data, são eliminados automaticamente, para que os registos não utilizados não sejam conservados indefinidamente.\nO período de conservação pode ser alterado nas definições do Companion."),
         "help_donnees_cliniques_patient": MessageLookupByLibrary.simpleMessage(
             "Aqui encontrará informações adicionais sobre o seu doente"),
         "help_information_patient": MessageLookupByLibrary.simpleMessage(

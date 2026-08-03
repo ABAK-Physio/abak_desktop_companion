@@ -39,6 +39,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "Cartella di scambio ripristinata"),
         "exchangeDirectoryUpdated": MessageLookupByLibrary.simpleMessage(
             "Documentazione di scambio ABAK aggiornata"),
+        "help_archived_patient": MessageLookupByLibrary.simpleMessage(
+            "I pazienti archiviati possono essere ripristinati fino alla data indicata.\nDopo tale data, vengono eliminati automaticamente per evitare di conservare indefinitamente cartelle cliniche inutilizzate.\nIl periodo di conservazione può essere modificato nelle impostazioni di Companion."),
         "help_donnees_cliniques_patient": MessageLookupByLibrary.simpleMessage(
             "Qui troverete ulteriori informazioni relative al vostro paziente"),
         "help_information_patient": MessageLookupByLibrary.simpleMessage(

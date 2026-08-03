@@ -39,6 +39,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Exchange Folder Reset"),
         "exchangeDirectoryUpdated":
             MessageLookupByLibrary.simpleMessage("Updated ABAK Exchange File"),
+        "help_archived_patient": MessageLookupByLibrary.simpleMessage(
+            "Archived patients can be restored up to the specified date.\nAfter that date, they are automatically deleted to prevent unused records from being stored indefinitely.\nThe retention period can be changed in the Companion settings."),
         "help_donnees_cliniques_patient": MessageLookupByLibrary.simpleMessage(
             "Here you will find additional information about your patient"),
         "help_information_patient": MessageLookupByLibrary.simpleMessage(

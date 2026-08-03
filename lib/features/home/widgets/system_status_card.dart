@@ -8,7 +8,6 @@ import '../../import_export/import_resolution_assistant_screen.dart';
 import '../../import_export/models/import_session.dart';
 import '../../maintenance/data/database_backup_repository.dart';
 import '../../maintenance/models/database_backup.dart';
-import '../../patients/services/patient_purge_service.dart';
 
 class SystemStatusCard extends StatefulWidget {
   const SystemStatusCard({super.key});
@@ -35,12 +34,10 @@ class _SystemStatusCardState extends State<SystemStatusCard> {
 
   Future<List<dynamic>> _loadStatus() {
     final importRepository = ImportSessionRepository();
-    final patientPurgeService = PatientPurgeService();
     final backupRepository = DatabaseBackupRepository();
 
     return Future.wait([
       importRepository.getSessions(),
-      patientPurgeService.previewArchivedPatientsPurge(),
       backupRepository.getLastBackup(),
     ]);
   }
@@ -73,13 +70,9 @@ class _SystemStatusCardState extends State<SystemStatusCard> {
                 ? <ImportSession>[]
                 : data[0] as List<ImportSession>;
 
-            final purgePreview = data == null
-                ? null
-                : data[1] as PatientPurgePreview;
-
             final lastBackup = data == null
                 ? null
-                : data[2] as DatabaseBackup?;
+                : data[1] as DatabaseBackup?;
 
             final failedImports = sessions.where((session) {
               return session.status == 'failed' ||
@@ -97,7 +90,6 @@ class _SystemStatusCardState extends State<SystemStatusCard> {
 
             final hasWarning =
                 hasImportProblem ||
-                    (purgePreview?.hasPurgeablePatients ?? false) ||
                     lastBackup == null;
 
             return Column(
@@ -130,20 +122,6 @@ class _SystemStatusCardState extends State<SystemStatusCard> {
                       failedImports: failedImports,
                       importsWithWarnings: importsWithWarnings,
                       onResolutionCompleted: _refreshStatus,
-                    ),
-                  ],
-                  if (purgePreview != null) ...[
-                    const Divider(height: 28),
-                    _StatusLine(
-                      label: 'Patients archivés',
-                      value: purgePreview.archivedPatients.toString(),
-                      icon: Icons.archive_outlined,
-                    ),
-                    _StatusLine(
-                      label: 'Dossiers supprimables',
-                      value: purgePreview.purgeablePatients.toString(),
-                      icon: Icons.delete_sweep_outlined,
-                      isWarning: purgePreview.hasPurgeablePatients,
                     ),
                   ],
                   const Divider(height: 28),

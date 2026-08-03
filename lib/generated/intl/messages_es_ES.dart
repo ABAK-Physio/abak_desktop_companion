@@ -39,6 +39,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "Carpeta de intercambio restablecida"),
         "exchangeDirectoryUpdated": MessageLookupByLibrary.simpleMessage(
             "Expediente de intercambio de ABAK actualizado"),
+        "help_archived_patient": MessageLookupByLibrary.simpleMessage(
+            "Los pacientes archivados pueden recuperarse hasta la fecha indicada.\nPasada esa fecha, se eliminan automáticamente para no conservar indefinidamente los expedientes que ya no se utilizan.\nEl periodo de conservación puede modificarse en la configuración de Companion."),
         "help_donnees_cliniques_patient": MessageLookupByLibrary.simpleMessage(
             "Aquí encontrarás información adicional sobre tu paciente"),
         "help_information_patient": MessageLookupByLibrary.simpleMessage(
