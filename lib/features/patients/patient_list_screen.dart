@@ -8,8 +8,8 @@ import 'patient_detail_screen.dart';
 import 'widgets/patient_form_dialog.dart';
 import '../../core/utils/date_format_utils.dart';
 import 'screens/patient_create_screen.dart';
-import 'services/patient_purge_service.dart';
 import 'package:abak_shared/abak_shared.dart';
+import 'services/patient_archive_settings_service.dart';
 
 class PatientListScreen extends StatefulWidget {
   const PatientListScreen({super.key});
@@ -20,16 +20,38 @@ class PatientListScreen extends StatefulWidget {
 
 class _PatientListScreenState extends State<PatientListScreen> {
   final PatientRepository _repository = PatientRepository();
+
+  final PatientArchiveSettingsService _archiveSettingsService =
+  PatientArchiveSettingsService();
+
   String _searchQuery = '';
-  Future<List<Patient>> _patientsFuture = PatientRepository().getAllPatients();
+
+  Future<List<Patient>> _patientsFuture =
+  PatientRepository().getAllPatients();
+
   bool _showArchived = false;
+
   int _activePatientsCount = 0;
   int _archivedPatientsCount = 0;
 
+  int _retentionDays =
+      PatientArchiveSettingsService.defaultRetentionDays;
   @override
   void initState() {
     super.initState();
+    _loadSettings();
     _refreshCounters();
+  }
+
+  Future<void> _loadSettings() async {
+    final retentionDays =
+    await _archiveSettingsService.getRetentionDays();
+
+    if (!mounted) return;
+
+    setState(() {
+      _retentionDays = retentionDays;
+    });
   }
 
   Future<void> _restorePatient(Patient patient) async {
@@ -261,8 +283,8 @@ class _PatientListScreenState extends State<PatientListScreen> {
                         : DateTime.fromMillisecondsSinceEpoch(
                       archivedAt,
                     ).add(
-                      const Duration(
-                        days: PatientPurgeService.retentionDays,
+                      Duration(
+                        days: _retentionDays,
                       ),
                     ).millisecondsSinceEpoch;
 

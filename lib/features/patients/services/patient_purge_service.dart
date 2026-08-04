@@ -1,5 +1,6 @@
 import '../data/patient_repository.dart';
 import '../models/patient.dart';
+import 'patient_archive_settings_service.dart';
 
 class PatientPurgeResult {
   final int scannedPatients;
@@ -13,13 +14,12 @@ class PatientPurgeResult {
 
 class PatientPurgeService {
   final PatientRepository _repository = PatientRepository();
-
-  /// Durée avant suppression définitive
-  /// des patients archivés.
-  static const int retentionDays = 30;
+  final PatientArchiveSettingsService _settingsService =
+  PatientArchiveSettingsService();
 
   Future<PatientPurgeResult> purgeArchivedPatients() async {
     final archivedPatients = await _repository.getArchivedPatients();
+    final selectedRetentionDays = await _settingsService.getRetentionDays();
 
     final now = DateTime.now();
 
@@ -31,10 +31,9 @@ class PatientPurgeService {
       if (archivedAt == null) continue;
 
       final archivedDate = DateTime.fromMillisecondsSinceEpoch(archivedAt);
-
       final difference = now.difference(archivedDate).inDays;
 
-      if (difference >= retentionDays) {
+      if (difference >= selectedRetentionDays) {
         await _deletePatientPermanently(patient);
         deleted++;
       }
@@ -52,6 +51,7 @@ class PatientPurgeService {
 
   Future<PatientPurgePreview> previewArchivedPatientsPurge() async {
     final archivedPatients = await _repository.getArchivedPatients();
+    final selectedRetentionDays = await _settingsService.getRetentionDays();
 
     final now = DateTime.now();
 
@@ -63,10 +63,9 @@ class PatientPurgeService {
       if (archivedAt == null) continue;
 
       final archivedDate = DateTime.fromMillisecondsSinceEpoch(archivedAt);
-
       final difference = now.difference(archivedDate).inDays;
 
-      if (difference >= retentionDays) {
+      if (difference >= selectedRetentionDays) {
         purgeable++;
       }
     }
@@ -74,7 +73,7 @@ class PatientPurgeService {
     return PatientPurgePreview(
       archivedPatients: archivedPatients.length,
       purgeablePatients: purgeable,
-      retentionDays: retentionDays,
+      retentionDays: selectedRetentionDays,
     );
   }
 }

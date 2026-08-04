@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 
 import '../../core/settings/cabinet_identity_service.dart';
 import '../../core/settings/language_preference_service.dart';
+import '../patients/services/patient_archive_settings_service.dart';
 
 class PreferencesScreen extends StatefulWidget {
   final VoidCallback onLanguageChanged;
@@ -24,10 +25,16 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
   final CabinetIdentityService _cabinetIdentityService =
       const CabinetIdentityService();
 
+  final PatientArchiveSettingsService _archiveSettingsService =
+  PatientArchiveSettingsService();
+
   final TextEditingController _cabinetNameController = TextEditingController();
 
   String? _languageCode;
   String? _cabinetLogoPath;
+  int _retentionDays =
+      PatientArchiveSettingsService.defaultRetentionDays;
+
   bool _loading = true;
 
   static const Map<String, String> _languageLabels = {
@@ -56,6 +63,8 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
     final languageCode = await _languageService.getLanguageCode();
     final cabinetName = await _cabinetIdentityService.getCabinetName();
     final cabinetLogoPath = await _cabinetIdentityService.getCabinetLogoPath();
+    final retentionDays =
+        await _archiveSettingsService.getRetentionDays();
 
     if (!mounted) return;
 
@@ -63,6 +72,7 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
       _languageCode = languageCode;
       _cabinetNameController.text = cabinetName ?? '';
       _cabinetLogoPath = cabinetLogoPath;
+      _retentionDays = retentionDays;
       _loading = false;
     });
   }
@@ -83,6 +93,24 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
     ScaffoldMessenger.of(
       context,
     ).showSnackBar(const SnackBar(content: Text('Langue enregistrée.')));
+  }
+
+  Future<void> _changeRetentionDays(int? days) async {
+    if (days == null) return;
+
+    await _archiveSettingsService.setRetentionDays(days);
+
+    if (!mounted) return;
+
+    setState(() {
+      _retentionDays = days;
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Durée de conservation enregistrée.'),
+      ),
+    );
   }
 
   Future<void> _saveCabinetName() async {
@@ -181,6 +209,49 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
                   ),
                 ),
 
+                const SizedBox(height: 16),
+
+                Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            const Icon(Icons.archive_outlined),
+                            const SizedBox(width: 8),
+                            Text(
+                              'Patients archivés',
+                              style: Theme.of(context).textTheme.titleMedium,
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 16),
+                        DropdownButtonFormField<int>(
+                          initialValue: _retentionDays,
+                          decoration: const InputDecoration(
+                            labelText: 'Durée de conservation',
+                            border: OutlineInputBorder(),
+                          ),
+                          items: PatientArchiveSettingsService.retentionOptions.map((days) {
+                            return DropdownMenuItem<int>(
+                              value: days,
+                              child: Text('$days jours'),
+                            );
+                          }).toList(),
+                          onChanged: _loading ? null : _changeRetentionDays,
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Les patients archivés peuvent être restaurés pendant cette durée '
+                              'Ils seront ensuite supprimés automatiquement.',
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
                 const SizedBox(height: 16),
 
                 Card(
