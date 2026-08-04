@@ -576,6 +576,37 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
     );
   }
 
+  Future<void> _showReaderNotDetectedDialog() async {
+    await showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: const Text(
+            'Lecteur de Carte Vitale non détecté',
+          ),
+          content: const Text(
+            'ABAK Desktop Companion n’a détecté aucun lecteur '
+                'de Carte Vitale.\n\n'
+                'Pour utiliser cette fonction, vous devez disposer :\n\n'
+                '• d’un lecteur de Carte Vitale compatible PC/SC, généralement connecté en USB ;\n'
+                '• du module ABAK Carte Vitale, fourni gratuitement. Voir le site abak.care.\n\n'
+                'Une fois le lecteur connecté, cliquez de nouveau sur '
+                '« Lire Carte Vitale ».',
+          ),
+          actions: [
+            FilledButton(
+              onPressed: () {
+                Navigator.of(dialogContext).pop();
+              },
+              child: const Text('Fermer'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   Future<void> _readVitaleIdentity() async {
     if (_saving || _loadingVitale) {
       return;
@@ -608,11 +639,17 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
           return;
         }
 
-        final message = error.code == 'API_INIT_ERROR' &&
-            (error.message?.contains('retour=13') ?? false)
-            ? 'Aucun lecteur de Carte Vitale n’a été détecté. '
-            'Vérifiez qu’il est connecté puis réessayez.'
-            : error.code == 'API_INIT_ERROR' &&
+        final isReaderNotDetected =
+            error.code == 'API_INIT_ERROR' &&
+                (error.message?.contains('retour=13') ?? false);
+
+        if (isReaderNotDetected) {
+          await _showReaderNotDetectedDialog();
+          return;
+        }
+
+        final message =
+        error.code == 'API_INIT_ERROR' &&
             (error.message?.contains('retour=32') ?? false)
             ? 'La configuration du module Carte Vitale est absente ou incorrecte. '
             'Réinstallez le module puis réessayez.'
