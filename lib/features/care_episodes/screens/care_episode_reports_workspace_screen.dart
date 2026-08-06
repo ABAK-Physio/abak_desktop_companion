@@ -21,6 +21,7 @@ import '../../practitioners/models/practitioner.dart';
 import '../../practitioners/widgets/practitioner_selector.dart';
 import '../data/care_episode_referring_practitioner_repository.dart';
 import '../widgets/referring_practitioner_history_dialog.dart';
+import '../../patients/screens/episode_documents_screen.dart';
 
 class CareEpisodeReportsWorkspaceScreen extends StatefulWidget {
   final CareEpisode episode;
@@ -1576,6 +1577,17 @@ class _CareEpisodeReportsWorkspaceScreenState
     });
   }
 
+  void _openEpisodeDocuments() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => EpisodeDocumentsScreen(
+          caseId: widget.episode.careEpisodeId,
+          caseLabel:
+          '${widget.patientName} — ${widget.episode.pathologyLabel}',
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -1599,6 +1611,7 @@ class _CareEpisodeReportsWorkspaceScreenState
                   ),
                 );
               },
+              onOpenDocuments: _openEpisodeDocuments,
             ),
 
             const SizedBox(height: 12),
@@ -3249,12 +3262,14 @@ class _EpisodeHeader extends StatelessWidget {
   final Future<Practitioner?> practitionerFuture;
   final VoidCallback onEditPractitioner;
   final VoidCallback onShowHistory;
+  final VoidCallback onOpenDocuments;
 
   const _EpisodeHeader({
     required this.episode,
     required this.practitionerFuture,
     required this.onEditPractitioner,
     required this.onShowHistory,
+    required this.onOpenDocuments,
   });
 
   @override
@@ -3309,6 +3324,11 @@ class _EpisodeHeader extends StatelessWidget {
                 ),
               ],
             ),
+          ),
+          IconButton(
+            onPressed: onOpenDocuments,
+            tooltip: 'Documents de la prise en charge',
+            icon: const Icon(Icons.attach_file),
           ),
           IconButton(
             onPressed: onEditPractitioner,

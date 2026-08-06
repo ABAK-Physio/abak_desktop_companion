@@ -61,7 +61,7 @@ class DatabaseService {
 
     return openDatabase(
       path,
-      version: 15,  //////////////////////
+      version: 16,  //////////////////////
       onCreate: (db, version) async {
         await _createAllTables(db);
       },
@@ -177,6 +177,29 @@ class DatabaseService {
         }
         if (oldVersion < 15) {
           await _migrateResultTablesToVersion15(db);
+        }
+        if (oldVersion < 16) {
+          await db.execute('''
+    CREATE TABLE IF NOT EXISTS episode_documents (
+      document_id TEXT PRIMARY KEY,
+      case_id TEXT NOT NULL,
+      title TEXT NOT NULL,
+      file_path TEXT NOT NULL,
+      mime_type TEXT NULL,
+      source TEXT NULL,
+      created_at INTEGER NOT NULL,
+      updated_at INTEGER NULL,
+      archived_at INTEGER NULL,
+      FOREIGN KEY(case_id)
+        REFERENCES care_episodes(care_episode_id)
+        ON DELETE CASCADE
+    )
+  ''');
+
+          await db.execute('''
+    CREATE INDEX IF NOT EXISTS idx_episode_documents_case_id
+    ON episode_documents(case_id)
+  ''');
         }
       },
     );
@@ -762,6 +785,28 @@ class DatabaseService {
           REFERENCES paired_devices(device_id)
       )
     ''');
+
+    await db.execute('''
+  CREATE TABLE episode_documents (
+    document_id TEXT PRIMARY KEY,
+    case_id TEXT NOT NULL,
+    title TEXT NOT NULL,
+    file_path TEXT NOT NULL,
+    mime_type TEXT NULL,
+    source TEXT NULL,
+    created_at INTEGER NOT NULL,
+    updated_at INTEGER NULL,
+    archived_at INTEGER NULL,
+    FOREIGN KEY(case_id)
+      REFERENCES care_episodes(care_episode_id)
+      ON DELETE CASCADE
+  )
+''');
+
+    await db.execute('''
+  CREATE INDEX idx_episode_documents_case_id
+  ON episode_documents(case_id)
+''');
 
     await db.execute('''
       CREATE INDEX idx_desktop_results_care_episode_id
