@@ -3,6 +3,7 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import '../database/database_service.dart';
 
+
 class ApplicationSettingsService {
   const ApplicationSettingsService();
 

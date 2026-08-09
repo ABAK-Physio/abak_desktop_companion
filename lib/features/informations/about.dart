@@ -8,6 +8,9 @@ import '../../core/settings/cabinet_identity_service.dart';
 import 'avertissement.dart';
 import '../maintenance/models/system_health_snapshot.dart';
 import '../maintenance/services/system_health_service.dart';
+import '../../core/expert/expert_context_info.dart';
+import '../../core/expert/expert_info_button.dart';
+import '../../core/settings/application_settings_service.dart';
 
 class AboutScreen extends StatefulWidget {
   const AboutScreen({super.key});
@@ -17,6 +20,20 @@ class AboutScreen extends StatefulWidget {
 }
 
 class _AboutScreenState extends State<AboutScreen> {
+  static const ExpertContextInfo _expertInfo = ExpertContextInfo(
+    contextName: 'Informations',
+    sourceFile: 'lib/features/informations/about.dart',
+    arbPrefix: 'information',
+    comment:
+    'Cet écran affiche les informations générales, techniques '
+        'et légales de Companion.',
+  );
+
+  final ApplicationSettingsService _applicationSettingsService =
+  const ApplicationSettingsService();
+
+  bool _expertModeEnabled = false;
+
   final CabinetIdentityService _cabinetIdentityService =
       const CabinetIdentityService();
 
@@ -30,9 +47,21 @@ class _AboutScreenState extends State<AboutScreen> {
   @override
   void initState() {
     super.initState();
+    _loadExpertMode();
     _loadVersion();
     _loadCabinetIdentity();
     _loadSystemHealth();
+  }
+
+  Future<void> _loadExpertMode() async {
+    final expertModeEnabled =
+    await _applicationSettingsService.isExpertModeEnabled();
+
+    if (!mounted) return;
+
+    setState(() {
+      _expertModeEnabled = expertModeEnabled;
+    });
   }
 
   @override
@@ -125,7 +154,15 @@ class _AboutScreenState extends State<AboutScreen> {
     final hasLogo = logoFile != null && logoFile.existsSync();
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Informations')),
+      appBar: AppBar(
+        title: const Text('Informations'),
+        actions: [
+          if (_expertModeEnabled)
+            const ExpertInfoButton(
+              info: _expertInfo,
+            ),
+        ],
+      ),
       body: Center(
         child: SizedBox(
           width: 700,

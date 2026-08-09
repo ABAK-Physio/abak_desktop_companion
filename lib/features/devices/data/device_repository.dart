@@ -53,4 +53,15 @@ class DeviceRepository {
       whereArgs: [deviceId],
     );
   }
+
+  Future<void> updateDevice(PairedDevice device) async {
+    final db = await DatabaseService.database;
+
+    await db.update(
+      'paired_devices',
+      device.toMap(),
+      where: 'device_id = ?',
+      whereArgs: [device.deviceId],
+    );
+  }
 }

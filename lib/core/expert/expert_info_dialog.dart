@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../generated/l10n.dart';
 import 'expert_context_info.dart';
 
 class ExpertInfoDialog extends StatelessWidget {
@@ -12,18 +13,20 @@ class ExpertInfoDialog extends StatelessWidget {
   });
 
   Future<void> _copyInfo(BuildContext context) async {
+    final s = S.of(context);
+
     final buffer = StringBuffer()
-      ..writeln('Contexte : ${info.contextName}')
-      ..writeln('Fichier : ${info.sourceFile}');
+      ..writeln('${s.g_context} : ${info.contextName}')
+      ..writeln('${s.g_file} : ${info.sourceFile}');
 
     final arbPrefix = info.arbPrefix?.trim();
     if (arbPrefix != null && arbPrefix.isNotEmpty) {
-      buffer.writeln('Préfixe ARB : $arbPrefix');
+      buffer.writeln('${s.g_arb_prefix} : $arbPrefix');
     }
 
     final comment = info.comment?.trim();
     if (comment != null && comment.isNotEmpty) {
-      buffer.writeln('Commentaire : $comment');
+      buffer.writeln('${s.g_comment} : $comment');
     }
 
     await Clipboard.setData(
@@ -33,52 +36,53 @@ class ExpertInfoDialog extends StatelessWidget {
     if (!context.mounted) return;
 
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Informations techniques copiées.'),
+      SnackBar(
+        content: Text(s.g_technical_informations_copied),
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final s = S.of(context);
     final arbPrefix = info.arbPrefix?.trim();
     final comment = info.comment?.trim();
 
     return AlertDialog(
-      title: const Text('Informations techniques'),
+      title: Text(s.g_technical_informations),
       content: SizedBox(
         width: 520,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Contexte',
-              style: TextStyle(fontWeight: FontWeight.bold),
+            Text(
+              s.g_context,
+              style: const TextStyle(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 4),
             SelectableText(info.contextName),
             const SizedBox(height: 16),
-            const Text(
-              'Fichier',
-              style: TextStyle(fontWeight: FontWeight.bold),
+            Text(
+              s.g_file,
+              style: const TextStyle(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 4),
             SelectableText(info.sourceFile),
             if (arbPrefix != null && arbPrefix.isNotEmpty) ...[
               const SizedBox(height: 16),
-              const Text(
-                'Préfixe ARB',
-                style: TextStyle(fontWeight: FontWeight.bold),
+              Text(
+                s.g_arb_prefix,
+                style: const TextStyle(fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 4),
               SelectableText(arbPrefix),
             ],
             if (comment != null && comment.isNotEmpty) ...[
               const SizedBox(height: 16),
-              const Text(
-                'Commentaire',
-                style: TextStyle(fontWeight: FontWeight.bold),
+              Text(
+                s.g_comment,
+                style: const TextStyle(fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 4),
               SelectableText(comment),
@@ -90,11 +94,11 @@ class ExpertInfoDialog extends StatelessWidget {
         TextButton.icon(
           onPressed: () => _copyInfo(context),
           icon: const Icon(Icons.copy_outlined),
-          label: const Text('Copier'),
+          label: Text(s.g_copy),
         ),
         FilledButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Fermer'),
+          child: Text(s.g_close),
         ),
       ],
     );

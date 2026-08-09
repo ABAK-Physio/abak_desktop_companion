@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
 import '../models/practitioner.dart';
+import '../../../core/expert/expert_context_info.dart';
+import '../../../core/expert/expert_info_button.dart';
+import '../../../core/settings/application_settings_service.dart';
 
 class PractitionerFormDialog extends StatefulWidget {
   final Practitioner? initialPractitioner;
@@ -13,6 +16,19 @@ class PractitionerFormDialog extends StatefulWidget {
 }
 
 class _PractitionerFormDialogState extends State<PractitionerFormDialog> {
+  static const ExpertContextInfo _expertInfo = ExpertContextInfo(
+    contextName: 'Nouveau praticien',
+    sourceFile: 'lib/features/practitioners/widgets/practitioner_form_dialog.dart',
+    arbPrefix: 'practitionerNew',
+    comment:
+    'Cet écran permet de créer un praticien',
+  );
+
+  final ApplicationSettingsService _applicationSettingsService =
+  const ApplicationSettingsService();
+
+  bool _expertModeEnabled = false;
+
   final _formKey = GlobalKey<FormState>();
 
   late final TextEditingController _displayNameController;
@@ -24,9 +40,12 @@ class _PractitionerFormDialogState extends State<PractitionerFormDialog> {
 
   bool get _isEditing => widget.initialPractitioner != null;
 
+
+
   @override
   void initState() {
     super.initState();
+    _loadExpertMode();
 
     final p = widget.initialPractitioner;
 
@@ -38,6 +57,17 @@ class _PractitionerFormDialogState extends State<PractitionerFormDialog> {
     );
     _emailController = TextEditingController(text: p?.email ?? '');
     _phoneController = TextEditingController(text: p?.phone ?? '');
+  }
+
+  Future<void> _loadExpertMode() async {
+    final expertModeEnabled =
+    await _applicationSettingsService.isExpertModeEnabled();
+
+    if (!mounted) return;
+
+    setState(() {
+      _expertModeEnabled = expertModeEnabled;
+    });
   }
 
   @override
@@ -82,7 +112,21 @@ class _PractitionerFormDialogState extends State<PractitionerFormDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text(_isEditing ? 'Modifier le kiné' : 'Nouveau kiné'),
+      title: Row(
+        children: [
+          Expanded(
+            child: Text(
+              _isEditing
+                  ? 'Modifier le praticien'
+                  : 'Nouveau praticien',
+            ),
+          ),
+          if (_expertModeEnabled)
+            const ExpertInfoButton(
+              info: _expertInfo,
+            ),
+        ],
+      ),
       content: SizedBox(
         width: 480,
         child: Form(

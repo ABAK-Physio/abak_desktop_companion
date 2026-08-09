@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../../../generated/l10n.dart';
+
 import '../../import_export/data/import_session_repository.dart';
 import '../../import_export/import_resolution_assistant_screen.dart';
 import '../../import_export/models/import_session.dart';
@@ -99,8 +101,7 @@ class _SystemStatusCardState extends State<SystemStatusCard> {
                   children: [
                     const Icon(Icons.monitor_heart_outlined),
                     const SizedBox(width: 8),
-                    Text(
-                      'État système',
+                    Text(S.of(context).home_system_status,
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
                   ],
@@ -126,7 +127,7 @@ class _SystemStatusCardState extends State<SystemStatusCard> {
                   ],
                   const Divider(height: 28),
                   _StatusLine(
-                    label: 'Dernière sauvegarde',
+                    label: S.of(context).home_last_backup,
                     value: _formatLastBackup(lastBackup),
                     icon: Icons.save_outlined,
                     isWarning: lastBackup == null,
@@ -177,8 +178,8 @@ class _GeneralStatusLine extends StatelessWidget {
         Expanded(
           child: Text(
             hasWarning
-                ? 'Une intervention est nécessaire'
-                : 'Tout fonctionne normalement',
+                ? S.of(context).home_an_intervention_is_necessary
+                : S.of(context).home_everything_is_working_normally,
             style: TextStyle(
               fontWeight: FontWeight.w600,
               color: color,
@@ -220,9 +221,9 @@ class _ImportStatusSection extends StatelessWidget {
             icon: Icons.error_outline,
             label:
             '$failedImports import'
-                '${failedImports > 1 ? 's' : ''} en échec',
+                '${failedImports > 1 ? 's' : ''} ${S.of(context).home_unsuccessful}',
             color: Theme.of(context).colorScheme.error,
-            buttonLabel: 'Résoudre',
+            buttonLabel: S.of(context).home_solve,
             onPressed: () => _openAssistant(context),
           ),
         if (importsWithWarnings > 0)
@@ -230,9 +231,9 @@ class _ImportStatusSection extends StatelessWidget {
             icon: Icons.warning_amber_outlined,
             label:
             '$importsWithWarnings import'
-                '${importsWithWarnings > 1 ? 's' : ''} à vérifier',
+                '${importsWithWarnings > 1 ? 's' : ''} ${S.of(context).home_to_be_verified}',
             color: Colors.orange,
-            buttonLabel: 'Vérifier',
+            buttonLabel: S.of(context).home_verify,
             onPressed: () => _openAssistant(context),
           ),
       ],

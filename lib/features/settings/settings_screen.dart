@@ -9,6 +9,10 @@ import '../maintenance/backup_history_screen.dart';
 import '../maintenance/services/local_database_reset_service.dart';
 import '../import_export/import_resolution_assistant_screen.dart';
 
+import '../../core/expert/expert_context_info.dart';
+import '../../core/expert/expert_info_button.dart';
+import '../../core/settings/application_settings_service.dart';
+
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
 
@@ -17,6 +21,20 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
+  static const ExpertContextInfo _expertInfo = ExpertContextInfo(
+    contextName: 'Assistance',
+    sourceFile: 'lib/features/settings/settings_screen.dart',
+    arbPrefix: 'settings',
+    comment:
+    'Cet écran regroupe les fonctions d’installation, de diagnostic '
+        'et de maintenance de Companion.',
+  );
+
+  final ApplicationSettingsService _applicationSettingsService =
+  const ApplicationSettingsService();
+
+  bool _expertModeEnabled = false;
+
   final ExchangeDirectoryService _exchangeDirectoryService =
       ExchangeDirectoryService();
 
@@ -26,7 +44,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   void initState() {
     super.initState();
+    _loadExpertMode();
     _loadExchangeDirectory();
+  }
+
+  Future<void> _loadExpertMode() async {
+    final expertModeEnabled =
+    await _applicationSettingsService.isExpertModeEnabled();
+
+    if (!mounted) return;
+
+    setState(() {
+      _expertModeEnabled = expertModeEnabled;
+    });
   }
 
   Future<void> _loadExchangeDirectory() async {
@@ -227,9 +257,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Text(
-                  'Assistance',
-                  style: TextStyle(fontSize: 24),
+                Row(
+                  children: [
+                    const Expanded(
+                      child: Text(
+                        'Assistance',
+                        style: TextStyle(fontSize: 24),
+                      ),
+                    ),
+                    if (_expertModeEnabled)
+                      const ExpertInfoButton(
+                        info: _expertInfo,
+                      ),
+                  ],
                 ),
                 const SizedBox(height: 16),
 

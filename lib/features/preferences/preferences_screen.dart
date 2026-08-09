@@ -28,7 +28,7 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
   PatientArchiveSettingsService();
 
   static const ExpertContextInfo _expertInfo = ExpertContextInfo(
-    contextName: 'Paramètres',
+    contextName: 'Paramètres utilisateur',
     sourceFile: 'lib/features/preferences/preferences_screen.dart',
     arbPrefix: 'preferences',
     comment:

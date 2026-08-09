@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
+import '../../generated/l10n.dart';
 
 import '../../core/utils/date_format_utils.dart';
 import 'data/device_repository.dart';
 import 'models/paired_device.dart';
 import 'widgets/device_form_dialog.dart';
 import 'widgets/device_qr_dialog.dart';
+import '../../core/expert/expert_context_info.dart';
+import '../../core/expert/expert_info_button.dart';
+import '../../core/settings/application_settings_service.dart';
+import 'package:abak_shared/abak_shared.dart';
+
 
 class DeviceListScreen extends StatefulWidget {
   const DeviceListScreen({super.key});
@@ -14,6 +20,18 @@ class DeviceListScreen extends StatefulWidget {
 }
 
 class _DeviceListScreenState extends State<DeviceListScreen> {
+  static const ExpertContextInfo _expertInfo = ExpertContextInfo(
+    contextName: 'Liste des appareils',
+    sourceFile: 'lib/features/devices/device_list_screen.dart',
+    arbPrefix: 'deviceList',
+    comment: 'Cet écran montre la liste des appareils connectés à l’établissement',
+  );
+
+  final ApplicationSettingsService _applicationSettingsService =
+  const ApplicationSettingsService();
+
+  bool _expertModeEnabled = false;
+
   final DeviceRepository _repository = DeviceRepository();
 
   late Future<List<PairedDevice>> _devicesFuture;
@@ -24,6 +42,18 @@ class _DeviceListScreenState extends State<DeviceListScreen> {
   void initState() {
     super.initState();
     _reloadDevices();
+    _loadExpertMode();
+  }
+
+  Future<void> _loadExpertMode() async {
+    final expertModeEnabled =
+    await _applicationSettingsService.isExpertModeEnabled();
+
+    if (!mounted) return;
+
+    setState(() {
+      _expertModeEnabled = expertModeEnabled;
+    });
   }
 
   Future<void> _reloadDevices() async {
@@ -43,6 +73,20 @@ class _DeviceListScreenState extends State<DeviceListScreen> {
     if (device == null) return;
 
     await _repository.insertDevice(device);
+    await _reloadDevices();
+  }
+
+  Future<void> _editDevice(PairedDevice device) async {
+    final updatedDevice = await showDialog<PairedDevice>(
+      context: context,
+      builder: (_) => DeviceFormDialog(
+        initialDevice: device,
+      ),
+    );
+
+    if (updatedDevice == null) return;
+
+    await _repository.updateDevice(updatedDevice);
     await _reloadDevices();
   }
 
@@ -118,7 +162,30 @@ class _DeviceListScreenState extends State<DeviceListScreen> {
     }
 
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  'Liste des appareils',
+                  style: Theme.of(context).textTheme.headlineSmall,
+                ),
+              ),
+              ContextHelpButton(
+                title: S.of(context).help_device_list_title,
+                content: S.of(context).help_device_list_content,
+              ),
+
+              if (_expertModeEnabled)
+                const ExpertInfoButton(
+                  info: _expertInfo,
+                ),
+            ],
+          ),
+        ),
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
           child: SegmentedButton<bool>(
@@ -163,7 +230,7 @@ class _DeviceListScreenState extends State<DeviceListScreen> {
                       Text(
                         _showArchived
                             ? 'La corbeille des appareils est vide pour le moment.'
-                            : 'Les téléphones ABAK associés au cabinet apparaîtront ici.',
+                            : "'Les appareils ABAK associés à l'établissement apparaîtront ici.",
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
                     ],
@@ -188,7 +255,7 @@ class _DeviceListScreenState extends State<DeviceListScreen> {
                                 if (device.platform != null)
                                   'Plateforme : ${device.platform}',
                                 if (device.practitionerId != null)
-                                  'Kiné associé : ${device.practitionerId}',
+                                  'Praticien associé : ${device.practitionerId}',
                               ].join(' · '),
                       ),
                       trailing: _showArchived
@@ -211,6 +278,11 @@ class _DeviceListScreenState extends State<DeviceListScreen> {
                                 ),
                               );
                             },
+                          ),
+                          IconButton(
+                            tooltip: 'Modifier',
+                            icon: const Icon(Icons.edit_outlined),
+                            onPressed: () => _editDevice(device),
                           ),
                           IconButton(
                             tooltip: 'Archiver',

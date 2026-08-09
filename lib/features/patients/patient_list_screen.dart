@@ -11,6 +11,10 @@ import 'screens/patient_create_screen.dart';
 import 'package:abak_shared/abak_shared.dart';
 import 'services/patient_archive_settings_service.dart';
 
+import '../../core/expert/expert_context_info.dart';
+import '../../core/expert/expert_info_button.dart';
+import '../../core/settings/application_settings_service.dart';
+
 class PatientListScreen extends StatefulWidget {
   const PatientListScreen({super.key});
 
@@ -19,6 +23,17 @@ class PatientListScreen extends StatefulWidget {
 }
 
 class _PatientListScreenState extends State<PatientListScreen> {
+  static const ExpertContextInfo _expertInfo = ExpertContextInfo(
+    contextName: 'Liste des patients',
+    sourceFile: 'lib/features/patients/patient_list_screen.dart',
+    arbPrefix: 'patientList',
+    comment:
+    'Cet écran permet de voir la liste des patients actifs et archivés. ',
+  );
+
+  final ApplicationSettingsService _applicationSettingsService =
+  const ApplicationSettingsService();
+
   final PatientRepository _repository = PatientRepository();
 
   final PatientArchiveSettingsService _archiveSettingsService =
@@ -30,17 +45,31 @@ class _PatientListScreenState extends State<PatientListScreen> {
   PatientRepository().getAllPatients();
 
   bool _showArchived = false;
+  bool _expertModeEnabled = false;
 
   int _activePatientsCount = 0;
   int _archivedPatientsCount = 0;
 
   int _retentionDays =
       PatientArchiveSettingsService.defaultRetentionDays;
+
   @override
   void initState() {
     super.initState();
     _loadSettings();
+    _loadExpertMode();
     _refreshCounters();
+  }
+
+  Future<void> _loadExpertMode() async {
+    final expertModeEnabled =
+    await _applicationSettingsService.isExpertModeEnabled();
+
+    if (!mounted) return;
+
+    setState(() {
+      _expertModeEnabled = expertModeEnabled;
+    });
   }
 
   Future<void> _loadSettings() async {
@@ -219,7 +248,25 @@ class _PatientListScreenState extends State<PatientListScreen> {
     }).toList();
 
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  'Liste des patients',
+                  style: Theme.of(context).textTheme.headlineSmall,
+                ),
+              ),
+              if (_expertModeEnabled)
+                const ExpertInfoButton(
+                  info: _expertInfo,
+                ),
+            ],
+          ),
+        ),
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
           child: SegmentedButton<bool>(

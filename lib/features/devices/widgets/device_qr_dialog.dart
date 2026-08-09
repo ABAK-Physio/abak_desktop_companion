@@ -5,7 +5,20 @@ import '../../../core/settings/cabinet_identity_service.dart';
 import '../../../core/settings/device_qr_data.dart';
 import '../models/paired_device.dart';
 
+import '../../../core/expert/expert_context_info.dart';
+import '../../../core/expert/expert_info_button.dart';
+import '../../../core/settings/application_settings_service.dart';
+
 class DeviceQrDialog extends StatelessWidget {
+  static const ExpertContextInfo _expertInfo = ExpertContextInfo(
+    contextName: 'Appareil ABAK',
+    sourceFile: 'lib/features/devices/widgets/device_qr_dialog.dart',
+    arbPrefix: 'deviceQr',
+    comment:
+    'Cette fenêtre affiche les informations et le QR code '
+        'd’identification de l’appareil.',
+  );
+
   final PairedDevice device;
 
   const DeviceQrDialog({
@@ -32,7 +45,17 @@ class DeviceQrDialog extends StatelessWidget {
         final data = snapshot.data!;
 
         return AlertDialog(
-          title: const Text('Appareil ABAK'),
+          title: Row(
+            children: [
+              const Expanded(
+                child: Text('Appareil ABAK'),
+              ),
+              if (data.expertModeEnabled)
+                const ExpertInfoButton(
+                  info: _expertInfo,
+                ),
+            ],
+          ),
           content: SizedBox(
             width: 360,
             child: Column(
@@ -85,6 +108,10 @@ class DeviceQrDialog extends StatelessWidget {
 
   Future<_QrViewModel> _loadData() async {
     const cabinetService = CabinetIdentityService();
+    const applicationSettingsService = ApplicationSettingsService();
+
+    final expertModeEnabled =
+    await applicationSettingsService.isExpertModeEnabled();
 
     final organizationId = await cabinetService.getOrganizationId();
     final organizationName =
@@ -101,6 +128,7 @@ class DeviceQrDialog extends StatelessWidget {
     return _QrViewModel(
       organizationName: organizationName,
       qrValue: qrData.toQrValue(),
+      expertModeEnabled: expertModeEnabled,
     );
   }
 
@@ -116,12 +144,15 @@ class DeviceQrDialog extends StatelessWidget {
   }
 }
 
-class _QrViewModel {
-  final String organizationName;
-  final String qrValue;
 
-  const _QrViewModel({
-    required this.organizationName,
-    required this.qrValue,
-  });
+class _QrViewModel {
+final String organizationName;
+final String qrValue;
+final bool expertModeEnabled;
+
+const _QrViewModel({
+required this.organizationName,
+required this.qrValue,
+required this.expertModeEnabled,
+});
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import '../../../generated/l10n.dart';
 
 import '../../import_export/data/import_session_repository.dart';
 import '../../import_export/import_history_screen.dart';
@@ -70,7 +71,7 @@ class _RecentImportsCardState extends State<RecentImportsCard> {
             childrenPadding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
             leading: const Icon(Icons.history_outlined),
             title: Text(
-              'Imports récents',
+              S.of(context).home_receents_imports,
               style: Theme.of(context).textTheme.titleMedium,
             ),
             children: [
@@ -88,7 +89,7 @@ class _RecentImportsCardState extends State<RecentImportsCard> {
                     Icons.open_in_new_outlined,
                     size: 18,
                   ),
-                  label: const Text('Historique'),
+                  label: Text(S.of(context).home_historique),
                 ),
               ),
               if (snapshot.connectionState == ConnectionState.waiting)
@@ -99,8 +100,7 @@ class _RecentImportsCardState extends State<RecentImportsCard> {
                   ),
                 )
               else if (snapshot.hasError)
-                Text(
-                  'Impossible de charger les imports récents.',
+                Text(S.of(context).home_unable_to_load_recent_imports,
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.error,
                     fontWeight: FontWeight.w600,
@@ -108,7 +108,7 @@ class _RecentImportsCardState extends State<RecentImportsCard> {
                 )
               else if (sessions.isEmpty)
                   Text(
-                    'Aucun import enregistré.',
+                    S.of(context).home_no_imports_recorded,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
@@ -226,9 +226,7 @@ class _ImportSummary extends StatelessWidget {
 
     if (session.status == 'duplicate') {
       lines.add(
-        const Text(
-          'Ce fichier avait déjà été importé. '
-              'Aucune donnée n’a été ajoutée.',
+        Text(S.of(context).home_this_file_had_already_been_imported,
           style: TextStyle(
             color: Colors.blue,
             fontWeight: FontWeight.w600,
@@ -237,8 +235,7 @@ class _ImportSummary extends StatelessWidget {
       );
     } else if (session.status == 'needs_resolution') {
       lines.add(
-        const Text(
-          'Action requise : associer ce dossier à un patient',
+        Text(S.of(context).home_action_required,
           style: TextStyle(
             color: Colors.orange,
             fontWeight: FontWeight.w600,
@@ -247,8 +244,7 @@ class _ImportSummary extends StatelessWidget {
       );
     } else if (session.conflictResultsCount > 0) {
       lines.add(
-        const Text(
-          'Conflit détecté',
+        Text(S.of(context).home_conflict_detected,
           style: TextStyle(
             color: Colors.orange,
             fontWeight: FontWeight.w600,
@@ -312,29 +308,29 @@ class _StatusChip extends StatelessWidget {
 
     switch (status) {
       case 'duplicate':
-        label = 'Déjà importé';
+        label = S.of(context).home_already_imported;
         color = Colors.blue;
         icon = Icons.info_outline;
         break;
       case 'completed':
-        label = 'Succès';
+        label = S.of(context).home_success;
         color = Colors.green;
         icon = Icons.check_circle_outline;
         break;
       case 'completed_with_errors':
-        label = 'Attention';
+        label = S.of(context).home_attention;
         color = Colors.orange;
         icon = Icons.warning_amber_outlined;
         break;
 
       case 'failed':
-        label = 'Échec';
+        label = S.of(context).home_failure;
         color = Theme.of(context).colorScheme.error;
         icon = Icons.error_outline;
         break;
 
       case 'needs_resolution':
-        label = 'Action requise';
+        label = S.of(context).home_action_required;
         color = Colors.orange;
         icon = Icons.warning_amber_outlined;
         break;

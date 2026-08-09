@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../../../generated/l10n.dart';
 import '../../import_export/abak_import_launcher.dart';
 import '../../import_export/abak_package.dart';
 import '../../import_export/data/import_session_repository.dart';
@@ -61,9 +62,12 @@ class _PendingResolutionCardState extends State<PendingResolutionCard> {
   }
 
   Future<PendingImportViewModel> _buildViewModel(
-    Map<String, dynamic> fileRow,
-  ) async {
-    final fileName = fileRow['file_name']?.toString() ?? 'Fichier ABAK';
+      Map<String, dynamic> fileRow,
+      ) async {
+    final s = S.of(context);
+
+    final fileName =
+        fileRow['file_name']?.toString() ?? s.home_abak_file;
     final filePath = fileRow['file_path']?.toString() ?? '';
 
     final file = File(filePath);
@@ -81,13 +85,14 @@ class _PendingResolutionCardState extends State<PendingResolutionCard> {
 
       final exerciseLabels = results
           .map((result) {
-            final raw = result.raw;
-            return raw['title']?.toString() ??
-                raw['testName']?.toString() ??
-                raw['exoTitle']?.toString() ??
-                raw['exoId']?.toString() ??
-                'Exercice ABAK';
-          })
+        final raw = result.raw;
+
+        return raw['title']?.toString() ??
+            raw['testName']?.toString() ??
+            raw['exoTitle']?.toString() ??
+            raw['exoId']?.toString() ??
+            s.home_abak_exercice;
+      })
           .where((label) => label.trim().isNotEmpty)
           .toList();
 
@@ -96,11 +101,11 @@ class _PendingResolutionCardState extends State<PendingResolutionCard> {
         filePath: filePath,
         fileSize: fileSize,
         pathologyLabel:
-            package.clinicalEpisode?.pathologyLabel ??
+        package.clinicalEpisode?.pathologyLabel ??
             package.mobileCase?.pathologyCode ??
             '',
         patientLabel:
-            package.clinicalEpisode?.patientLabel ??
+        package.clinicalEpisode?.patientLabel ??
             package.clinicalEpisode?.patientRef ??
             '',
         examinationDate: createdAt == null
@@ -137,7 +142,7 @@ class _PendingResolutionCardState extends State<PendingResolutionCard> {
       if (!context.mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Chemin du fichier invalide : $filePath')),
+        SnackBar(content: Text('${S.of(context).home_invalid_file_path} $filePath')),
       );
       return;
     }
@@ -175,21 +180,21 @@ class _PendingResolutionCardState extends State<PendingResolutionCard> {
           color: accentColor,
         ),
         title: Text(
-          'Nouveaux résultats ABAK à associer à un patient',
+          S.of(context).home_new_abak_results_to_be_linked,
           style: Theme.of(
             context,
           ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
         ),
         subtitle: Text(
           files.isEmpty
-              ? 'Aucun import en attente'
-              : '${files.length} import${files.length > 1 ? 's' : ''} en attente d’association',
+              ? S.of(context).home_no_pending_imports
+              : S.of(context).home_pending_association(files.length),
           style: TextStyle(fontWeight: FontWeight.w600, color: accentColor),
         ),
         childrenPadding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
         children: [
           if (files.isEmpty)
-            const Text('Aucun résultat ABAK à associer.')
+            Text(S.of(context).home_no_abak_result_to_associate)
           else
             ...files.map((fileRow) {
               final filePath = fileRow['file_path']?.toString() ?? '';
@@ -208,7 +213,7 @@ class _PendingResolutionCardState extends State<PendingResolutionCard> {
                   }
 
                   if (vm == null) {
-                    return const Text('Import ABAK illisible.');
+                    return Text(S.of(context).home_unreadable_abak_import);
                   }
 
                   return _PendingImportTile(
@@ -237,7 +242,7 @@ class _PendingImportTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final dateText = viewModel.examinationDate == null
-        ? 'Date non renseignée'
+        ? S.of(context).home_date_not_specified
         : DateFormat.yMMMMd(
             Localizations.localeOf(context).toLanguageTag(),
           ).format(viewModel.examinationDate!);
@@ -256,17 +261,17 @@ class _PendingImportTile extends StatelessWidget {
             const SizedBox(height: 12),
             _ImportInfoRow(
               icon: Icons.person_outline,
-              label: 'Patient ABAK',
+              label: S.of(context).home_patient_abak,
               value: viewModel.displayPatient,
             ),
             _ImportInfoRow(
               icon: Icons.event_outlined,
-              label: 'Date du bilan',
+              label: S.of(context).home_balance_sheet_date,
               value: dateText,
             ),
             _ImportInfoRow(
               icon: Icons.bar_chart_outlined,
-              label: 'Résultats',
+              label: S.of(context).home_results,
               value: viewModel.resultsSummary,
             ),
             if (viewModel.visibleExerciseLabels.isNotEmpty) ...[
@@ -281,7 +286,7 @@ class _PendingImportTile extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.only(left: 32),
                   child: Text(
-                    '+ ${viewModel.hiddenExerciseCount} autre(s) exercice(s)',
+                    S.of(context).home_other_exercises(viewModel.hiddenExerciseCount),
                   ),
                 ),
             ],
@@ -291,7 +296,7 @@ class _PendingImportTile extends StatelessWidget {
               child: FilledButton.icon(
                 onPressed: onAssociate,
                 icon: const Icon(Icons.link_outlined),
-                label: const Text('Associer à une prise en charge'),
+                label: Text(S.of(context).home_link_to_a_care_plan),
               ),
             ),
             const SizedBox(height: 8),
@@ -300,15 +305,15 @@ class _PendingImportTile extends StatelessWidget {
                 'technical-info-${viewModel.filePath}',
               ),
               tilePadding: EdgeInsets.zero,
-              title: const Text('Informations techniques'),
+              title: Text(S.of(context).home_technical_information),
               children: [
-                _TechnicalInfoRow(label: 'Fichier', value: viewModel.fileName),
-                _TechnicalInfoRow(label: 'Chemin', value: viewModel.filePath),
+                _TechnicalInfoRow(label: S.of(context).home_file, value: viewModel.fileName),
+                _TechnicalInfoRow(label: S.of(context).home_pathway, value: viewModel.filePath),
                 _TechnicalInfoRow(
-                  label: 'Taille',
+                  label: S.of(context).home_size,
                   value: viewModel.fileSize == null
-                      ? 'Non renseignée'
-                      : '${viewModel.fileSize} octets',
+                      ? S.of(context).home_not_specified
+                      : '${viewModel.fileSize} ${S.of(context).home_octets}',
                 ),
               ],
             ),

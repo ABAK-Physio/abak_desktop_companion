@@ -3,6 +3,10 @@ import 'dart:convert';
 import 'dart:io';
 import '../../generated/l10n.dart';
 
+import '../../core/expert/expert_context_info.dart';
+import '../../core/expert/expert_info_button.dart';
+import '../../core/settings/application_settings_service.dart';
+
 import 'package:qr_flutter/qr_flutter.dart';
 import '../local_exchange/services/local_exchange_server.dart';
 
@@ -21,6 +25,9 @@ import 'package:abak_desktop_companion/features/home/widgets/system_overview_bar
 import 'package:abak_desktop_companion/features/home/widgets/pending_resolution_card.dart';
 import '../preferences/preferences_screen.dart';
 
+import 'package:abak_shared/abak_shared.dart';
+
+
 class HomeDashboardScreen extends StatefulWidget {
   final VoidCallback onLocaleChanged;
 
@@ -33,10 +40,14 @@ class HomeDashboardScreen extends StatefulWidget {
 class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
   int selectedIndex = 0;
   int _refreshToken = 0;
+  final ApplicationSettingsService _applicationSettingsService =
+  const ApplicationSettingsService();
+
+  bool _expertModeEnabled = false;
   List<String> _titles(BuildContext context) {
     return [
-      S.of(context).home,
-      S.of(context).patients,
+      S.of(context).home_home,
+      S.of(context).home_patients,
       'Kinés',
       'Appareils',
       'Archives',
@@ -55,6 +66,23 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    _loadExpertMode();
+  }
+
+  Future<void> _loadExpertMode() async {
+    final expertModeEnabled =
+    await _applicationSettingsService.isExpertModeEnabled();
+
+    if (!mounted) return;
+
+    setState(() {
+      _expertModeEnabled = expertModeEnabled;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Row(
@@ -65,48 +93,52 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
               setState(() {
                 selectedIndex = index;
               });
+
+              if (index == 0) {
+                _loadExpertMode();
+              }
             },
             labelType: NavigationRailLabelType.all,
             destinations: [
               NavigationRailDestination(
                 icon: Icon(Icons.dashboard_outlined),
                 selectedIcon: Icon(Icons.dashboard),
-                label: Text(S.of(context).home),
+                label: Text(S.of(context).home_home),
               ),
               NavigationRailDestination(
                 icon: Icon(Icons.people_outline),
                 selectedIcon: Icon(Icons.people),
-                label: Text(S.of(context).patients),
+                label: Text(S.of(context).home_patients),
               ),
               NavigationRailDestination(
                 icon: Icon(Icons.medical_services_outlined),
                 selectedIcon: Icon(Icons.medical_services),
-                label: Text(S.of(context).practitioners),
+                label: Text(S.of(context).home_practitioners),
               ),
               NavigationRailDestination(
                 icon: Icon(Icons.devices_other_outlined),
                 selectedIcon: Icon(Icons.devices_other),
-                label: Text(S.of(context).devices),
+                label: Text(S.of(context).home_devices),
               ),
               NavigationRailDestination(
                 icon: Icon(Icons.folder_outlined),
                 selectedIcon: Icon(Icons.folder),
-                label: Text(S.of(context).archives),
+                label: Text(S.of(context).home_archives),
               ),
               NavigationRailDestination(
                 icon: Icon(Icons.tune_outlined),
                 selectedIcon: Icon(Icons.tune),
-                label: Text('Paramètres'),
+                label: Text(S.of(context).home_parameters),
               ),
               NavigationRailDestination(
                 icon: Icon(Icons.settings_outlined),
                 selectedIcon: Icon(Icons.settings),
-                label: Text(S.of(context).settings),
+                label: Text(S.of(context).home_settings),
               ),
               NavigationRailDestination(
                 icon: Icon(Icons.info_outline),
                 selectedIcon: Icon(Icons.info),
-                label: Text(S.of(context).information),
+                label: Text(S.of(context).home_information),
               ),
             ],
           ),
@@ -128,8 +160,9 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
         context: context,
         builder: (dialogContext) {
           return AlertDialog(
-            title: Text(S.of(context).ipAddressNotFound),
-            content: Text(S.of(context).ipAddressNotFoundMessage),
+            title: Text(S.of(context).home_ipAddressNotFound),
+            content: Text(S.of(context).home_ipAddressNotFoundMessage
+            ),
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(dialogContext).pop(),
@@ -172,9 +205,7 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 12),
-                const Text(
-                  'Scannez ce QR code depuis ABAK Mobile pour configurer '
-                  'automatiquement la connexion au Desktop.',
+                Text(S.of(context).home_select_qr_code,
                   textAlign: TextAlign.center,
                 ),
               ],
@@ -183,7 +214,7 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
           actions: [
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(),
-              child: const Text('Fermer'),
+              child: Text(S.of(context).home_fermer),
             ),
           ],
         );
@@ -227,6 +258,7 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
                     title: _titles(context)[selectedIndex],
                     onPairPhone: _showDesktopPairingQr,
                     onRefresh: _refreshDashboard,
+                    expertModeEnabled: _expertModeEnabled,
                   ),
                   const SizedBox(height: 8),
                   SystemOverviewBar(
@@ -308,21 +340,39 @@ class _DashboardHeader extends StatelessWidget {
   final String title;
   final VoidCallback onPairPhone;
   final VoidCallback onRefresh;
+  final bool expertModeEnabled;
 
   const _DashboardHeader({
     required this.title,
     required this.onPairPhone,
     required this.onRefresh,
+    required this.expertModeEnabled,
   });
 
   @override
   Widget build(BuildContext context) {
+    final expertInfo = ExpertContextInfo(
+      contextName: S.of(context).home_home,
+      sourceFile: 'lib/features/dashboard/home_dashboard_screen.dart',
+      arbPrefix: 'home',
+      comment: S.of(context).home_expert_comment,
+    );
+
     return SizedBox(
       height: 32,
       child: Row(
         children: [
           Text(title, style: Theme.of(context).textTheme.headlineSmall),
           const Spacer(),
+          if (expertModeEnabled)
+            ExpertInfoButton(
+              info: expertInfo,
+            ),
+
+          ContextHelpButton(
+            title: S.of(context).home_home,
+            content: S.of(context).help_home,
+          ),
           IconButton(
             tooltip: S.of(context).pairPhone,
             onPressed: onPairPhone,

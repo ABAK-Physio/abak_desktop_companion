@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../generated/l10n.dart';
 import '../../import_export/abak_import_launcher.dart';
 import '../../import_export/import_history_screen.dart';
 import '../../maintenance/services/local_database_backup_service.dart';
@@ -53,7 +54,7 @@ class QuickActionsCard extends StatelessWidget {
                 const Icon(Icons.flash_on_outlined),
                 const SizedBox(width: 8),
                 Text(
-                  'Actions rapides',
+                  S.of(context).home_quick_actions,
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
               ],
@@ -72,7 +73,7 @@ class QuickActionsCard extends StatelessWidget {
                     );
                   },
                   icon: Icons.history_outlined,
-                  label: 'Historique des imports',
+                  label: S.of(context).home_import_history,
                 ),
                 _actionButton(
                   onPressed: () async {
@@ -85,8 +86,8 @@ class QuickActionsCard extends StatelessWidget {
                       SnackBar(
                         content: Text(
                           result.success
-                              ? 'Sauvegarde créée avec succès.'
-                              : 'Erreur lors de la sauvegarde : ${result.error}',
+                              ? S.of(context).home_backup_successfully_created
+                              : S.of(context).home_error_while_saving(result.error ?? ''),
                         ),
                       ),
                     );
@@ -96,7 +97,7 @@ class QuickActionsCard extends StatelessWidget {
                     }
                   },
                   icon: Icons.save_outlined,
-                  label: 'Créer une sauvegarde',
+                  label: S.of(context).home_create_a_backup,
                 ),
               ],
             ),

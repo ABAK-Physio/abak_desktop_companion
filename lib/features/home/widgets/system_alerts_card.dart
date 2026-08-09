@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../../../generated/l10n.dart';
 import '../../maintenance/models/system_health_snapshot.dart';
 import '../../maintenance/services/system_health_service.dart';
 
@@ -82,17 +83,18 @@ class SystemAlertsCard extends StatelessWidget {
                   : Colors.green,
             ),
             title: Text(
-              'Alertes système',
+              S.of(context).home_system_alert,
               style: Theme.of(context).textTheme.titleMedium,
             ),
             children: [
               if (!hasAlerts)
-                const Text('Aucune alerte détectée.')
+                Text (
+                S.of(context).home_no_alert_detected)
               else ...[
                 if (health.hasFailedImports)
                   _AlertLine(
                     icon: Icons.error_outline,
-                    label: 'Imports en erreur',
+                    label: S.of(context).home_imports_with_errors,
                     value: '${health.failedImportsCount}',
                     color: Theme.of(context).colorScheme.error,
                   ),
@@ -100,7 +102,7 @@ class SystemAlertsCard extends StatelessWidget {
                 if (health.hasRunningImports)
                   _AlertLine(
                     icon: Icons.sync_outlined,
-                    label: 'Imports interrompus ou en cours',
+                    label: S.of(context).home_imports_interrupted_or_in_progress,
                     value: '${health.runningImportsCount}',
                     color: Colors.blueGrey,
                   ),
@@ -108,23 +110,23 @@ class SystemAlertsCard extends StatelessWidget {
                 if (health.hasNoBackup)
                   _AlertLine(
                     icon: Icons.save_outlined,
-                    label: 'Aucune sauvegarde enregistrée',
-                    value: 'À faire',
+                    label: S.of(context).home_no_saved_backup,
+                    value: S.of(context).home_to_do_list,
                     color: Theme.of(context).colorScheme.error,
                   ),
 
                 if (health.hasOldBackup)
                   _AlertLine(
                     icon: Icons.schedule_outlined,
-                    label: 'Dernière sauvegarde ancienne',
-                    value: '+7 jours',
+                    label: S.of(context).home_last_old_backup,
+                    value: S.of(context).home_more_7_days,
                     color: Colors.orange,
                   ),
 
                 if (hasLargeDatabase)
                   _AlertLine(
                     icon: Icons.storage_outlined,
-                    label: 'Base SQLite volumineuse',
+                    label: S.of(context).home_large_sqlite_database,
                     value: _formatBytes(health.databaseSizeBytes),
                     color: Colors.orange,
                   ),
@@ -132,7 +134,7 @@ class SystemAlertsCard extends StatelessWidget {
                 if (hasLargeBackupStorage)
                   _AlertLine(
                     icon: Icons.folder_outlined,
-                    label: 'Sauvegardes très volumineuses',
+                    label: S.of(context).home_very_large_backups,
                     value: _formatBytes(health.backupsTotalSizeBytes),
                     color: Colors.orange,
                   ),
@@ -140,7 +142,7 @@ class SystemAlertsCard extends StatelessWidget {
                 if (hasManyArchivedPatients)
                   _AlertLine(
                     icon: Icons.archive_outlined,
-                    label: 'Nombre important de patients archivés',
+                    label: S.of(context).home_large_number_of_archived_patients,
                     value: '${health.archivedPatientsCount}',
                     color: Colors.orange,
                   ),
@@ -148,7 +150,7 @@ class SystemAlertsCard extends StatelessWidget {
                 if (recentRestore)
                   _AlertLine(
                     icon: Icons.restore_outlined,
-                    label: 'Restauration récente détectée',
+                    label: S.of(context).home_recent_restoration_detected,
                     value: DateFormat('dd/MM/yyyy').format(
                       DateTime.fromMillisecondsSinceEpoch(
                         health.lastRestoreAt!,

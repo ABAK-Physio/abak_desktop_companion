@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../generated/l10n.dart';
 import 'expert_context_info.dart';
 import 'expert_info_dialog.dart';
 
@@ -21,7 +22,7 @@ class ExpertInfoButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      tooltip: 'Informations techniques',
+      tooltip: S.of(context).g_technical_informations,
       onPressed: () => _showInfo(context),
       icon: const Icon(Icons.developer_mode_outlined),
     );

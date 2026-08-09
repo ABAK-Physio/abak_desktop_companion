@@ -9,6 +9,10 @@ import '../../smart_card/widgets/vitale_beneficiary_selector.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/services.dart';
 
+import '../../../core/expert/expert_context_info.dart';
+import '../../../core/expert/expert_info_button.dart';
+import '../../../core/settings/application_settings_service.dart';
+
 class PatientCreateScreen extends StatefulWidget {
   const PatientCreateScreen({super.key});
 
@@ -17,6 +21,15 @@ class PatientCreateScreen extends StatefulWidget {
 }
 
 class _PatientCreateScreenState extends State<PatientCreateScreen> {
+
+  static const ExpertContextInfo _expertInfo = ExpertContextInfo(
+    contextName: 'Nouveau Patien',
+    sourceFile: 'lib/features/patietient.screens/patient_craate_screen.dart',
+    arbPrefix: 'patientNew',
+    comment:
+    "Cet écran permet la création d'un nouveau patient par saisie ou lecture de la carte vitale.",
+  );
+
   final PatientRepository _patientRepository = PatientRepository();
   final VitaleIdentityService _vitaleIdentityService =
   VitaleIdentityService();
@@ -36,7 +49,27 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
   bool _identityReadFromVitale = false;
   DateTime? _vitaleReadAt;
 
+  final ApplicationSettingsService _applicationSettingsService =
+      const ApplicationSettingsService();
 
+  bool _expertModeEnabled = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadExpertMode();
+  }
+
+  Future<void> _loadExpertMode() async {
+    final expertModeEnabled =
+    await _applicationSettingsService.isExpertModeEnabled();
+
+    if (!mounted) return;
+
+    setState(() {
+      _expertModeEnabled = expertModeEnabled;
+    });
+  }
 
   @override
   void dispose() {
@@ -874,7 +907,14 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Nouveau patient')),
+      appBar: AppBar(title: const Text('Nouveau patient'),
+      actions: [
+        if (_expertModeEnabled)
+          const ExpertInfoButton(
+            info: _expertInfo,
+          ),
+      ],
+      ),
       body: ListView(
         padding: const EdgeInsets.all(24),
         children: [

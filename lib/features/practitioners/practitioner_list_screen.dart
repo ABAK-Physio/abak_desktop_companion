@@ -1,10 +1,18 @@
 import 'package:flutter/material.dart';
 
+import '../../generated/l10n.dart';
 import 'data/practitioner_repository.dart';
 import 'models/practitioner.dart';
 import 'widgets/practitioner_form_dialog.dart';
 import '../../core/utils/date_format_utils.dart';
 import 'widgets/practitioner_qr_dialog.dart';
+
+import '../../core/expert/expert_context_info.dart';
+import '../../core/expert/expert_info_button.dart';
+import '../../core/settings/application_settings_service.dart';
+
+import 'package:abak_shared/abak_shared.dart';
+
 
 class PractitionerListScreen extends StatefulWidget {
   const PractitionerListScreen({super.key});
@@ -14,16 +22,41 @@ class PractitionerListScreen extends StatefulWidget {
 }
 
 class _PractitionerListScreenState extends State<PractitionerListScreen> {
+  static const ExpertContextInfo _expertInfo = ExpertContextInfo(
+    contextName: 'Liste des praticiens',
+    sourceFile: 'lib/features/practitioner/practitioner_list_screen.dart',
+    arbPrefix: 'practitionerList',
+    comment:
+    'Cet écran affiche la liste des praticiens enregistrés. ',
+  );
+
   final PractitionerRepository _repository = PractitionerRepository();
 
   late Future<List<Practitioner>> _practitionersFuture;
 
   bool _showArchived = false;
 
+  final ApplicationSettingsService _applicationSettingsService =
+  const ApplicationSettingsService();
+
+  bool _expertModeEnabled = false;
+
   @override
   void initState() {
     super.initState();
     _reloadPractitioners();
+    _loadExpertMode();
+  }
+
+  Future<void> _loadExpertMode() async {
+    final expertModeEnabled =
+    await _applicationSettingsService.isExpertModeEnabled();
+
+    if (!mounted) return;
+
+    setState(() {
+      _expertModeEnabled = expertModeEnabled;
+    });
   }
 
   Future<void> _reloadPractitioners() async {
@@ -107,29 +140,35 @@ class _PractitionerListScreenState extends State<PractitionerListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<Practitioner>>(
+    final s=S.of(context);
+    return FutureBuilder<List>(
       future: _practitionersFuture,
       builder: (context, snapshot) {
         final practitioners = snapshot.data ?? [];
 
         return Scaffold(
-          body: _buildBody(snapshot, practitioners),
+          body: _buildBody(
+            context,
+            snapshot,
+            practitioners,
+          ),
           floatingActionButton: _showArchived
               ? null
               : FloatingActionButton.extended(
-                  onPressed: _createPractitioner,
-                  icon: const Icon(Icons.person_add_alt_1),
-                  label: const Text('Nouveau kiné'),
-                ),
+            onPressed: _createPractitioner,
+            icon: const Icon(Icons.person_add_alt_1),
+            label: Text(s.practitionerList_button_create),
+          ),
         );
       },
     );
   }
 
   Widget _buildBody(
-    AsyncSnapshot<List<Practitioner>> snapshot,
-    List<Practitioner> practitioners,
-  ) {
+      BuildContext context,
+      AsyncSnapshot<List> snapshot,
+      List practitioners,
+      ) {
     if (snapshot.connectionState == ConnectionState.waiting) {
       return const Center(child: CircularProgressIndicator());
     }
@@ -139,7 +178,29 @@ class _PractitionerListScreenState extends State<PractitionerListScreen> {
     }
 
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  S.of(context).practitionerList_title,
+                  style: Theme.of(context).textTheme.headlineSmall,
+                ),
+              ),
+              ContextHelpButton(
+                title: S.of(context).practitionerList_title,
+                content: S.of(context).help_practitionerList_helpText,
+              ),
+              if (_expertModeEnabled)
+                const ExpertInfoButton(
+                  info: _expertInfo,
+                ),
+            ],
+          ),
+        ),
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
           child: SegmentedButton<bool>(
