@@ -43,6 +43,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "g_context": MessageLookupByLibrary.simpleMessage("Background"),
         "g_copy": MessageLookupByLibrary.simpleMessage("Copy"),
         "g_file": MessageLookupByLibrary.simpleMessage("File"),
+        "g_learn_more": MessageLookupByLibrary.simpleMessage("Learn more"),
         "g_technical_informations":
             MessageLookupByLibrary.simpleMessage("Technical Information"),
         "g_technical_informations_copied": MessageLookupByLibrary.simpleMessage(
@@ -56,7 +57,18 @@ class MessageLookup extends MessageLookupByLibrary {
         "help_donnees_cliniques_patient": MessageLookupByLibrary.simpleMessage(
             "Here you will find additional information about your patient"),
         "help_home": MessageLookupByLibrary.simpleMessage(
-            "This screen is the main screen of ABAK Companion.\nIt consists of:\n- a banner that shows the number of active and archived patients.\n- the number of active alerts.\nIn the settings, you can enter the name of your facility and add your logo.\n\nThe \"Recent Imports\" section shows you the most recent result files imported from ABAL Mobile.\n\"System Status\" alerts you to any issues and displays the date of the last backup.\n\"New ABAK Results to Assign\" shows you results that have been sent but not yet assigned to a patient.\n\"System Alert\" informs you of the nature of any issues.\n\"Quick Action\" allows you to access the history of all your imports and create a new backup."),
+            "This screen is the main screen of ABAK Companion.\n\nIt consists of:\n\n1) a header bar that provides information on:\n - the number of active and archived patients.\n  - the number of current alerts.\n\nIn the settings, you can enter the name of your facility and add your logo.\n\n2) \"Recent Imports\" shows you the most recent result files imported from ABAK Mobile.\n\n3) \"System Status\" alerts you to any issues and displays the date of the last backup.\n\n4) \"New ABAK Results to Link\" shows you the results that have been sent from ABAK Mobile but have not yet been assigned to a patient in ABAK Companion.\n\n5) \"System Alert\" informs you of the nature of any issues.\n\n6) \"Quick Action\" allows you to access the history of all your imports and create a new backup."),
+        "help_home_active_archived_patients_content":
+            MessageLookupByLibrary.simpleMessage("Active patients"),
+        "help_home_active_archived_patients_title":
+            MessageLookupByLibrary.simpleMessage(
+                "Active and Archived Patients"),
+        "help_home_import_assignment_content":
+            MessageLookupByLibrary.simpleMessage(
+                "Once you\'ve finished your exercise in ABAK Mobile..."),
+        "help_home_import_assignment_title":
+            MessageLookupByLibrary.simpleMessage(
+                "Retrieving Results and Assigning Them to a Patient"),
         "help_information_patient": MessageLookupByLibrary.simpleMessage(
             "Here you will find your patient\'s identification information"),
         "help_parametres_utilisateur": MessageLookupByLibrary.simpleMessage(

@@ -372,6 +372,17 @@ class _DashboardHeader extends StatelessWidget {
           ContextHelpButton(
             title: S.of(context).home_home,
             content: S.of(context).help_home,
+            learnMoreLabel: S.of(context).g_learn_more,
+            links: [
+              ContextHelpLink(
+                title: S.of(context).help_home_active_archived_patients_title,
+                content: S.of(context).help_home_active_archived_patients_content,
+              ),
+              ContextHelpLink(
+                title: S.of(context).help_home_import_assignment_title,
+                content: S.of(context).help_home_import_assignment_content,
+              ),
+            ],
           ),
           IconButton(
             tooltip: S.of(context).pairPhone,

@@ -43,6 +43,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "g_context": MessageLookupByLibrary.simpleMessage("Contexte"),
         "g_copy": MessageLookupByLibrary.simpleMessage("Copier"),
         "g_file": MessageLookupByLibrary.simpleMessage("Fichier"),
+        "g_learn_more": MessageLookupByLibrary.simpleMessage("En savoir plus"),
         "g_technical_informations":
             MessageLookupByLibrary.simpleMessage("Informations techniques"),
         "g_technical_informations_copied": MessageLookupByLibrary.simpleMessage(
@@ -56,7 +57,17 @@ class MessageLookup extends MessageLookupByLibrary {
         "help_donnees_cliniques_patient": MessageLookupByLibrary.simpleMessage(
             "Vous trouvez ici les données complémentaires concernant votre patient"),
         "help_home": MessageLookupByLibrary.simpleMessage(
-            "Cet écran est l\'écran principal d\'ABAK Companion.\nIl est constitué :\n- d\'un bandeau qui vous informe sur le nombre de patients actifs et archivés.\n- du nombe d\'alertes en cours.\nVous pouvez dans les paramètres renseigner le nom de votre établissement et ajouter votre logo.\n\nLa zone Imports récents vous indique les dernier dossier de résultats importés depuis ABAL Mobile.\nEtat système vous indique un éventuel problème et la date de la dernière sauvegarde.\nNouveau résultats ABAK à associer vous montre les résultats qui ont été envoyé mais qui ne sont pas encore attribués à un patient.\nAlerte système vous renseingne sur la nature d\'un problème.\nAction rapide vous permet d\'accéder à l\'historique de tous vos imports et de créer une nouvelle sauvegarde."),
+            "Cet écran est l\'écran principal d\'ABAK Companion.\n\nIl est constitué :\n\n1) d\'un bandeau qui vous informe : \n - sur le nombre de patients actifs et archivés.\n  - du nombre d\'alertes en cours.\n\nVous pouvez dans les paramètres renseigner le nom de votre établissement et ajouter votre logo.\n\n2) \"Imports récents\" vous indique les dernier dossier de résultats importés depuis ABAK Mobile.\n\n3) \"Etat système\" vous indique un éventuel problème et la date de la dernière sauvegarde.\n\n4) \"Nouveau résultats ABAK à associer\", vous montre les résultats qui ont été envoyé depuis ABAK Mobile mais qui ne sont pas encore attribués à un patient dans ABAK Companion.\n\n5) \"Alerte système\" vous renseigne sur la nature d\'un problème.\n\n6) \"Action rapide\", vous permet d\'accéder à l\'historique de tous vos imports et de créer une nouvelle sauvegarde."),
+        "help_home_active_archived_patients_content":
+            MessageLookupByLibrary.simpleMessage(
+                "Les patients actifs sont ceux à qui vous pouvez attribuer un résultat de test ou questionnaire.\n\nLes patients archivés sont des patients dont les informations seront prochainement supprimées de l\'ordinateur.\n\nLa suppression intervient automatiquement aprsès la date indiquée.\n\nVous pouvez :\n  - Gérer le délai de conservation dans Paramètres.\n. -Réactiver un patient archivé pour le rendre actif.\n\nLa durée de conservation est paramètrable entre 30 et 365 jours."),
+        "help_home_active_archived_patients_title":
+            MessageLookupByLibrary.simpleMessage("Patients actifs et archivés"),
+        "help_home_import_assignment_content": MessageLookupByLibrary.simpleMessage(
+            "Les tests et exercices sont réalisés sur votre téléphone (ou tablette) avecABAK Mobile.\nUne fois le test terminé, si vous avez enregistré le résultat, l\'option Dossier > Envoyer vers Desktop vous permet de transférer les informations vers ABAK Companion\n\nUn message dans Companion vous informe qu\'un dossier est arrivé et qu\'il faut l\'attribuer à un patient. Cette attribution vous conduit à sélectionner le patient puis à sélectionner l\'épisode de soin.\n\nPourquoi un tel mécanisme ?\nABAK mobile ne gère pas les dossiers patients. Sur ABAK Mobile, vous pouvez identifier le patient par un pseudo et celui ci peut être différent selon le praticien. Ce pseudo vous sert ensuite à attribuer le résultat au bon patient. Ce mécanisme permet de conserver une indépendance de fonctionnemnent entre les deux applications et préserve, autant que possible, l\'anonymat des patients sur le téléphone ou la tablette qui peuvent êtr partagés."),
+        "help_home_import_assignment_title":
+            MessageLookupByLibrary.simpleMessage(
+                "Récupération d\'un résultats et affectation à un patient"),
         "help_information_patient": MessageLookupByLibrary.simpleMessage(
             "Vous trouvez ici l\'identification de votre patient"),
         "help_parametres_utilisateur": MessageLookupByLibrary.simpleMessage(

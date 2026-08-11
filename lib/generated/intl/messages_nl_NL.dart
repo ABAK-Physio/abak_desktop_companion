@@ -43,6 +43,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "g_context": MessageLookupByLibrary.simpleMessage("Achtergrond"),
         "g_copy": MessageLookupByLibrary.simpleMessage("Kopiëren"),
         "g_file": MessageLookupByLibrary.simpleMessage("Bestand"),
+        "g_learn_more": MessageLookupByLibrary.simpleMessage("Meer informatie"),
         "g_technical_informations":
             MessageLookupByLibrary.simpleMessage("Technische informatie"),
         "g_technical_informations_copied": MessageLookupByLibrary.simpleMessage(
@@ -56,7 +57,19 @@ class MessageLookup extends MessageLookupByLibrary {
         "help_donnees_cliniques_patient": MessageLookupByLibrary.simpleMessage(
             "Hier vindt u aanvullende gegevens over uw patiënt"),
         "help_home": MessageLookupByLibrary.simpleMessage(
-            "Dit scherm is het hoofdscherm van ABAK Companion.\nHet bestaat uit:\n- een balk die u informeert over het aantal actieve en gearchiveerde patiënten.\n- het aantal lopende meldingen.\nIn de instellingen kunt u de naam van uw instelling invoeren en uw logo toevoegen.\n\nHet gedeelte ‘Recente imports’ toont u de meest recente resultatendossiers die vanuit ABAL Mobile zijn geïmporteerd.\n‘Systeemstatus’ geeft aan of er een eventueel probleem is en de datum van de laatste back-up.\n‘Nieuwe ABAK-resultaten om te koppelen’ toont u de resultaten die zijn verzonden maar nog niet aan een patiënt zijn toegewezen.\n\'Systeemwaarschuwing\' geeft informatie over de aard van een probleem.\nMet \'Snelle actie\' kunt u de geschiedenis van al uw importen bekijken en een nieuwe back-up maken."),
+            "Dit scherm is het hoofdscherm van ABAK Companion.\n\nHet bestaat uit:\n\n1) een balk die u informeert over:\n - het aantal actieve en gearchiveerde patiënten.\n  - het aantal lopende waarschuwingen.\n\nIn de instellingen kunt u de naam van uw instelling invoeren en uw logo toevoegen.\n\n2) \"Recente imports\" toont u de laatste dossiers met resultaten die vanuit ABAK Mobile zijn geïmporteerd.\n\n3) \"Systeemstatus\" geeft aan of er een eventueel probleem is en de datum van de laatste back-up.\n\n4) \"Nieuwe ABAK-resultaten om te koppelen\" toont u de resultaten die vanuit ABAK Mobile zijn verzonden, maar die nog niet aan een patiënt in ABAK Companion zijn toegewezen.\n\n5) \"Systeemwaarschuwing\" informeert u over de aard van een probleem.\n\n6) Met „Snelle actie“ kunt u de geschiedenis van al uw importen bekijken en een nieuwe back-up maken."),
+        "help_home_active_archived_patients_content":
+            MessageLookupByLibrary.simpleMessage(
+                "De actieve patiënten zijn te vinden in de lijst..."),
+        "help_home_active_archived_patients_title":
+            MessageLookupByLibrary.simpleMessage(
+                "Actieve en gearchiveerde patiënten"),
+        "help_home_import_assignment_content":
+            MessageLookupByLibrary.simpleMessage(
+                "Zodra u uw oefening in ABAK Mobile hebt voltooid..."),
+        "help_home_import_assignment_title":
+            MessageLookupByLibrary.simpleMessage(
+                "Het import- en toewijzingsproces"),
         "help_information_patient": MessageLookupByLibrary.simpleMessage(
             "Hier vindt u de identificatiegegevens van uw patiënt"),
         "help_parametres_utilisateur": MessageLookupByLibrary.simpleMessage(

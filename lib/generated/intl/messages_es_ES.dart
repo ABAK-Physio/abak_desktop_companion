@@ -43,6 +43,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "g_context": MessageLookupByLibrary.simpleMessage("Contexto"),
         "g_copy": MessageLookupByLibrary.simpleMessage("Copiar"),
         "g_file": MessageLookupByLibrary.simpleMessage("Archivo"),
+        "g_learn_more": MessageLookupByLibrary.simpleMessage("Más información"),
         "g_technical_informations":
             MessageLookupByLibrary.simpleMessage("Información técnica"),
         "g_technical_informations_copied":
@@ -56,7 +57,18 @@ class MessageLookup extends MessageLookupByLibrary {
         "help_donnees_cliniques_patient": MessageLookupByLibrary.simpleMessage(
             "Aquí encontrarás información adicional sobre tu paciente"),
         "help_home": MessageLookupByLibrary.simpleMessage(
-            "Esta pantalla es la pantalla principal de ABAK Companion.\nConsta de:\n- una barra superior que te informa del número de pacientes activos y archivados.\n- del número de alertas activas.\nEn los ajustes, puede introducir el nombre de su centro y añadir su logotipo.\n\nLa sección «Importaciones recientes» le muestra los últimos expedientes de resultados importados desde ABAL Mobile.\n«Estado del sistema» le indica si hay algún problema y la fecha de la última copia de seguridad.\n«Nuevos resultados de ABAK para asociar» le muestra los resultados que se han enviado pero que aún no se han asignado a ningún paciente.\n«Alerta del sistema» le informa sobre la naturaleza de un problema.\n«Acción rápida» le permite acceder al historial de todas sus importaciones y crear una nueva copia de seguridad."),
+            "Esta pantalla es la pantalla principal de ABAK Companion.\n\nConsta de:\n\n1) una barra superior que te informa:\n - del número de pacientes activos y archivados.\n  - del número de alertas activas.\n\nEn los ajustes, puede introducir el nombre de su centro y añadir su logotipo.\n\n2) «Importaciones recientes» le muestra los últimos expedientes de resultados importados desde ABAK Mobile.\n\n3) «Estado del sistema» le indica si hay algún problema y la fecha de la última copia de seguridad.\n\n4) «Nuevos resultados de ABAK para asociar» te muestra los resultados que se han enviado desde ABAK Mobile pero que aún no se han asignado a ningún paciente en ABAK Companion.\n\n5) «Alerta del sistema» te informa sobre la naturaleza de un posible problema.\n\n6) «Acción rápida» le permite acceder al historial de todas sus importaciones y crear una nueva copia de seguridad."),
+        "help_home_active_archived_patients_content":
+            MessageLookupByLibrary.simpleMessage("Los pacientes activos"),
+        "help_home_active_archived_patients_title":
+            MessageLookupByLibrary.simpleMessage(
+                "Pacientes activos y archivados"),
+        "help_home_import_assignment_content":
+            MessageLookupByLibrary.simpleMessage(
+                "Una vez que hayas terminado el ejercicio en ABAK Mobile..."),
+        "help_home_import_assignment_title":
+            MessageLookupByLibrary.simpleMessage(
+                "Recuperación de un resultado y su asignación a un paciente"),
         "help_information_patient": MessageLookupByLibrary.simpleMessage(
             "Aquí encontrarás los datos de identificación de tu paciente"),
         "help_parametres_utilisateur": MessageLookupByLibrary.simpleMessage(

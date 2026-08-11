@@ -43,6 +43,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "g_context": MessageLookupByLibrary.simpleMessage("Hintergrund"),
         "g_copy": MessageLookupByLibrary.simpleMessage("Kopieren"),
         "g_file": MessageLookupByLibrary.simpleMessage("Datei"),
+        "g_learn_more": MessageLookupByLibrary.simpleMessage("Mehr erfahren"),
         "g_technical_informations":
             MessageLookupByLibrary.simpleMessage("Technische Informationen"),
         "g_technical_informations_copied": MessageLookupByLibrary.simpleMessage(
@@ -56,7 +57,18 @@ class MessageLookup extends MessageLookupByLibrary {
         "help_donnees_cliniques_patient": MessageLookupByLibrary.simpleMessage(
             "Hier finden Sie weitere Informationen zu Ihrem Patienten"),
         "help_home": MessageLookupByLibrary.simpleMessage(
-            "Dieser Bildschirm ist der Hauptbildschirm von ABAK Companion.\nEr besteht aus:\n- einer Leiste, die Sie über die Anzahl der aktiven und archivierten Patienten informiert.\n- der Anzahl der aktuellen Benachrichtigungen.\nIn den Einstellungen können Sie den Namen Ihrer Einrichtung angeben und Ihr Logo hinzufügen.\n\nDer Bereich „Letzte Importe“ zeigt Ihnen die zuletzt aus ABAL Mobile importierten Ergebnisordner an.\n„Systemstatus“ informiert Sie über eventuelle Probleme und das Datum der letzten Sicherung.\n„Neue ABAK-Ergebnisse zum Zuordnen“ zeigt Ihnen die Ergebnisse an, die gesendet, aber noch keinem Patienten zugeordnet wurden.\n„Systemwarnung“ informiert Sie über die Art eines Problems.\nÜber „Schnellaktion“ können Sie auf den Verlauf aller Ihrer Importe zugreifen und eine neue Sicherung erstellen."),
+            "Dieser Bildschirm ist der Hauptbildschirm von ABAK Companion.\n\nEr besteht aus:\n\n1) einem Kopfbereich, der Sie über Folgendes informiert: \n - die Anzahl der aktiven und archivierten Patienten.\n  - die Anzahl der aktuellen Warnmeldungen.\n\nIn den Einstellungen können Sie den Namen Ihrer Einrichtung angeben und Ihr Logo hinzufügen.\n\n2) „Letzte Importe“ zeigt Ihnen die zuletzt aus ABAK Mobile importierten Ergebnisdateien an.\n\n3) „Systemstatus“ zeigt Ihnen eventuelle Probleme sowie das Datum der letzten Sicherung an.\n\n4) „Neue ABAK-Befunde zum Zuordnen“ zeigt Ihnen die Befunde an, die von ABAK Mobile gesendet wurden, aber in ABAK Companion noch keinem Patienten zugeordnet sind.\n\n5) „Systemwarnung“ informiert Sie über die Art eines Problems.\n\n6) „Schnellaktion“ ermöglicht es Ihnen, auf den Verlauf all Ihrer Importe zuzugreifen und eine neue Sicherung zu erstellen."),
+        "help_home_active_archived_patients_content":
+            MessageLookupByLibrary.simpleMessage("Aktive Patienten"),
+        "help_home_active_archived_patients_title":
+            MessageLookupByLibrary.simpleMessage(
+                "Aktive und archivierte Patienten"),
+        "help_home_import_assignment_content":
+            MessageLookupByLibrary.simpleMessage(
+                "Sobald Sie Ihre Übung in ABAK Mobile abgeschlossen haben..."),
+        "help_home_import_assignment_title":
+            MessageLookupByLibrary.simpleMessage(
+                "Abruf eines Befunds und Zuordnung zu einem Patienten"),
         "help_information_patient": MessageLookupByLibrary.simpleMessage(
             "Hier finden Sie die Identifikationsdaten Ihres Patienten"),
         "help_parametres_utilisateur": MessageLookupByLibrary.simpleMessage(
