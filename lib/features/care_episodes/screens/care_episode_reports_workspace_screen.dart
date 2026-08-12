@@ -23,6 +23,8 @@ import '../data/care_episode_referring_practitioner_repository.dart';
 import '../widgets/referring_practitioner_history_dialog.dart';
 import '../../patients/screens/episode_documents_screen.dart';
 
+import '../../../core/speech/speech_dictation_button.dart';
+
 class CareEpisodeReportsWorkspaceScreen extends StatefulWidget {
   final CareEpisode episode;
   final String patientName;
@@ -2094,6 +2096,17 @@ class _SoapDraftCard extends StatelessWidget {
                       fontWeight: FontWeight.w600,
                     ),
                   ),
+                ),
+
+                SpeechDictationButton(
+                  controller: controller,
+                  focusNode: focusNode,
+                ),
+
+                IconButton(
+                  onPressed: draftReady ? onExpand : null,
+                  tooltip: 'Agrandir la zone de rédaction',
+                  icon: const Icon(Icons.zoom_out_map),
                 ),
 
                 IconButton(

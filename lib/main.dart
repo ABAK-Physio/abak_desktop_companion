@@ -19,6 +19,7 @@
 import 'package:flutter/material.dart';
 import 'package:window_manager/window_manager.dart';
 
+
 import 'app.dart';
 import 'core/database/database_service.dart';
 import 'features/import_export/data/import_session_repository.dart';
@@ -28,6 +29,10 @@ import 'features/maintenance/data/database_backup_repository.dart';
 import 'features/maintenance/services/local_backup_cleanup_service.dart';
 import 'features/patients/services/patient_purge_service.dart';
 import 'core/ui/app_messenger.dart';
+
+import 'core/speech/abak_whisper_speech_provider.dart';
+import 'core/speech/speech_to_text_provider_registry.dart';
+
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -42,6 +47,10 @@ Future<void> main() async {
   );
 
   await DatabaseService.database;
+
+  SpeechToTextProviderRegistry.register(
+    AbakWhisperSpeechProvider(),
+  );
 
   try {
     await LocalExchangeServer.instance.start();
