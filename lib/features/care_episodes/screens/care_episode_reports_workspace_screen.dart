@@ -2109,12 +2109,6 @@ class _SoapDraftCard extends StatelessWidget {
                   icon: const Icon(Icons.zoom_out_map),
                 ),
 
-                IconButton(
-                  onPressed: draftReady ? onExpand : null,
-                  tooltip: 'Agrandir la zone de rédaction',
-                  icon: const Icon(Icons.zoom_out_map),
-                ),
-
                 const SizedBox(width: 8),
                 SizedBox(
                   width: 240,

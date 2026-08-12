@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'speech_recording_service.dart';
 import 'speech_to_text_provider.dart';
 import 'speech_to_text_provider_registry.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SpeechDictationButton extends StatefulWidget {
   final TextEditingController controller;
@@ -50,6 +51,11 @@ class _SpeechDictationButtonState extends State<SpeechDictationButton> {
   }
 
   Future<void> _toggleDictation() async {
+    if (_provider == null) {
+      await _showAddonNotInstalledDialog();
+      return;
+    }
+
     if (_isRecording) {
       await _stopAndTranscribe();
     } else {
@@ -116,6 +122,52 @@ class _SpeechDictationButtonState extends State<SpeechDictationButton> {
     }
   }
 
+  Future<void> _showAddonNotInstalledDialog() async {
+    if (!mounted) {
+      return;
+    }
+
+    await showDialog<void>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Dictée vocale'),
+          content: const Text(
+            'La dictée vocale nécessite l’installation du module '
+                'optionnel ABAK Dictée vocale.\n\n'
+                'Ce module est gratuit et fonctionne localement sur '
+                'votre ordinateur, sans envoyer les enregistrements '
+                'vocaux sur Internet.\n\n'
+                'Le téléchargement représente environ 1,5 Go.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Fermer'),
+            ),
+            FilledButton(
+              onPressed: () async {
+                Navigator.of(context).pop();
+
+                final uri = Uri.parse(
+                  'https://abak.care/dictee-vocale/',
+                );
+
+                await launchUrl(
+                  uri,
+                  mode: LaunchMode.externalApplication,
+                );
+              },
+              child: const Text('Télécharger le module'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   void _insertText(String text) {
     final controller = widget.controller;
     final selection = controller.selection;
@@ -173,10 +225,6 @@ class _SpeechDictationButtonState extends State<SpeechDictationButton> {
 
   @override
   Widget build(BuildContext context) {
-    // Aucun add-on installé : aucun bouton affiché.
-    if (_provider == null) {
-      return const SizedBox.shrink();
-    }
 
     if (_isTranscribing) {
       return const SizedBox(
