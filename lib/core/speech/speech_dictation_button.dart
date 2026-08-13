@@ -52,8 +52,21 @@ class _SpeechDictationButtonState extends State<SpeechDictationButton> {
 
   Future<void> _toggleDictation() async {
     if (_provider == null) {
-      await _showAddonNotInstalledDialog();
-      return;
+      final provider =
+      await SpeechToTextProviderRegistry.firstAvailableProvider();
+
+      if (!mounted) {
+        return;
+      }
+
+      if (provider == null) {
+        await _showAddonNotInstalledDialog();
+        return;
+      }
+
+      setState(() {
+        _provider = provider;
+      });
     }
 
     if (_isRecording) {
