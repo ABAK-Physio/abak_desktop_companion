@@ -2954,17 +2954,7 @@ class _DocumentsCard extends StatelessWidget {
                   children: [
                     Expanded(
                       child: Center(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              Icons.folder_outlined,
-                              size: 40,
-                            ),
-                            SizedBox(height: 8),
-                            Text('Aucun document'),
-                          ],
-                        ),
+                        child: Text('Aucun document'),
                       ),
                     ),
                     Divider(),
