@@ -61,7 +61,7 @@ class DatabaseService {
 
     return openDatabase(
       path,
-      version: 16,  //////////////////////
+      version: 17,  //////////////////////
       onCreate: (db, version) async {
         await _createAllTables(db);
       },
@@ -200,6 +200,9 @@ class DatabaseService {
     CREATE INDEX IF NOT EXISTS idx_episode_documents_case_id
     ON episode_documents(case_id)
   ''');
+        }
+        if (oldVersion < 17) {
+          await _createPatientFrHealthIdentityTable(db);
         }
       },
     );
@@ -431,6 +434,8 @@ class DatabaseService {
 
   static Future<void> _createAllTables(Database db) async {
     await _createCoreTables(db);
+    await _createCoreTables(db);
+    await _createPatientFrHealthIdentityTable(db);
     await _createApplicationSettingsTable(db);
     await _createPatientClinicalTables(db);
     await _createCareEpisodeTables(db);
@@ -529,6 +534,42 @@ class DatabaseService {
           REFERENCES practitioners(practitioner_id)
       )
     ''');
+  }
+
+  static Future<void> _createPatientFrHealthIdentityTable(
+      Database db,
+      ) async {
+    await db.execute('''
+    CREATE TABLE IF NOT EXISTS patient_fr_health_identity (
+      patient_id TEXT PRIMARY KEY,
+
+      ins_number TEXT NULL,
+      ins_key TEXT NULL,
+      ins_oid TEXT NULL,
+
+      birth_last_name TEXT NULL,
+      birth_first_names TEXT NULL,
+      birth_date TEXT NULL,
+      sex_code TEXT NULL,
+      birth_place_code TEXT NULL,
+
+      identity_status TEXT NOT NULL DEFAULT 'provisional',
+      identity_doubtful INTEGER NOT NULL DEFAULT 0,
+
+      identity_validation_method TEXT NULL,
+      identity_validated_at INTEGER NULL,
+      identity_validated_by TEXT NULL,
+
+      ins_retrieved_at INTEGER NULL,
+      ins_last_checked_at INTEGER NULL,
+
+      updated_at INTEGER NULL,
+
+      FOREIGN KEY(patient_id)
+        REFERENCES patients(patient_id)
+        ON DELETE CASCADE
+    )
+  ''');
   }
 
   static Future<void> _createApplicationSettingsTable(Database db) async {

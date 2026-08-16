@@ -29,6 +29,7 @@ import 'features/maintenance/data/database_backup_repository.dart';
 import 'features/maintenance/services/local_backup_cleanup_service.dart';
 import 'features/patients/services/patient_purge_service.dart';
 import 'core/ui/app_messenger.dart';
+import 'features/patients/services/patient_fr_insi_pkcs11_diagnostic_service.dart';
 
 import 'core/speech/abak_whisper_speech_provider.dart';
 import 'core/speech/speech_to_text_provider_registry.dart';
@@ -36,6 +37,19 @@ import 'core/speech/speech_to_text_provider_registry.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  try {
+    final diagnostic =
+    await const PatientFrInsiPkcs11DiagnosticService().diagnose();
+
+    debugPrint(
+      '🔐 Diagnostic PKCS#11 : $diagnostic',
+    );
+  } catch (e) {
+    debugPrint(
+      '❌ Diagnostic PKCS#11 : $e',
+    );
+  }
 
   await windowManager.ensureInitialized();
 

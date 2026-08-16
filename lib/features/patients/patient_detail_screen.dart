@@ -19,6 +19,9 @@ import 'package:abak_shared/abak_shared.dart';
 import '../care_episodes/screens/care_episode_reports_workspace_screen.dart';
 import '../results/data/desktop_result_repository.dart';
 
+import 'data/patient_fr_health_identity_repository.dart';
+import 'models/patient_fr_health_identity.dart';
+
 class PatientDetailScreen extends StatefulWidget {
   final Patient patient;
 
@@ -36,6 +39,9 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
 
   final PatientAttributeRepository _patientAttributeRepository =
       PatientAttributeRepository();
+
+  final PatientFrHealthIdentityRepository _patientFrHealthIdentityRepository =
+  PatientFrHealthIdentityRepository();
 
   final CareEpisodeRepository _careEpisodeRepository = CareEpisodeRepository();
 
@@ -318,6 +324,14 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
           ),
 
           const SizedBox(height: 16),
+
+          _PatientFrHealthIdentitySection(
+            repository: _patientFrHealthIdentityRepository,
+            patientId: widget.patient.patientId,
+            refreshToken: _refreshToken,
+          ),
+          const SizedBox(height: 16),
+
           _CareEpisodesSection(
             repository: _careEpisodeRepository,
             patientId: widget.patient.patientId,
@@ -436,6 +450,95 @@ class _EmptySectionMessage extends StatelessWidget {
       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
         color: Theme.of(context).colorScheme.onSurfaceVariant,
       ),
+    );
+  }
+}
+
+class _PatientFrHealthIdentitySection extends StatelessWidget {
+  final PatientFrHealthIdentityRepository repository;
+  final String patientId;
+  final int refreshToken;
+
+  const _PatientFrHealthIdentitySection({
+    required this.repository,
+    required this.patientId,
+    required this.refreshToken,
+  });
+
+  String _statusLabel(PatientFrHealthIdentity? identity) {
+    switch (identity?.identityStatus) {
+      case 'retrieved':
+        return 'Récupérée';
+      case 'validated':
+        return 'Validée';
+      case 'qualified':
+        return 'Qualifiée';
+      case 'provisional':
+      default:
+        return 'Provisoire';
+    }
+  }
+
+  String _statusDescription(PatientFrHealthIdentity? identity) {
+    switch (identity?.identityStatus) {
+      case 'retrieved':
+        return 'INS obtenue, identité à contrôler';
+      case 'validated':
+        return 'Identité contrôlée, INS à rechercher';
+      case 'qualified':
+        return 'Identité conforme';
+      case 'provisional':
+      default:
+        return 'Identité à compléter';
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<PatientFrHealthIdentity?>(
+      key: ValueKey('patient-fr-health-identity-$refreshToken'),
+      future: repository.getByPatientId(patientId),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const _SectionCard(
+            title: 'Identité de santé — France',
+            icon: Icons.badge_outlined,
+            children: [
+              Padding(
+                padding: EdgeInsets.all(16),
+                child: CircularProgressIndicator(),
+              ),
+            ],
+          );
+        }
+
+        if (snapshot.hasError) {
+          return _SectionCard(
+            title: 'Identité de santé — France',
+            icon: Icons.badge_outlined,
+            children: [
+              Text('Erreur : ${snapshot.error}'),
+            ],
+          );
+        }
+
+        final identity = snapshot.data;
+
+        return _SectionCard(
+          title: 'Identité de santé — France',
+          icon: Icons.badge_outlined,
+          children: [
+            _InfoRow(
+              label: 'Statut',
+              value: _statusLabel(identity),
+            ),
+            _InfoRow(
+              label: 'État',
+              value: _statusDescription(identity),
+            ),
+          ],
+        );
+      },
     );
   }
 }
