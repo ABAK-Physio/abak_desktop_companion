@@ -61,7 +61,7 @@ class DatabaseService {
 
     return openDatabase(
       path,
-      version: 17,  //////////////////////
+      version: 18,  //////////////////////
       onCreate: (db, version) async {
         await _createAllTables(db);
       },
@@ -203,6 +203,9 @@ class DatabaseService {
         }
         if (oldVersion < 17) {
           await _createPatientFrHealthIdentityTable(db);
+        }
+        if (oldVersion < 18) {
+          await _createCareEpisodeDocumentEditDraftsTable(db);
         }
       },
     );
@@ -434,7 +437,6 @@ class DatabaseService {
 
   static Future<void> _createAllTables(Database db) async {
     await _createCoreTables(db);
-    await _createCoreTables(db);
     await _createPatientFrHealthIdentityTable(db);
     await _createApplicationSettingsTable(db);
     await _createPatientClinicalTables(db);
@@ -443,6 +445,7 @@ class DatabaseService {
     await _createCareEpisodeNoteTables(db);
     await _createCareEpisodeAssessmentTables(db);
     await _createCareEpisodeReportTables(db);
+    await _createCareEpisodeDocumentEditDraftsTable(db);
     await _createResultTables(db);
     await _createImportHistoryTables(db);
     await _createBackupTables(db);
@@ -723,6 +726,21 @@ class DatabaseService {
           REFERENCES care_episode_notes(note_id)
       )
     ''');
+  }
+
+  static Future<void> _createCareEpisodeDocumentEditDraftsTable(
+      Database db,
+      ) async {
+    await db.execute('''
+    CREATE TABLE IF NOT EXISTS care_episode_document_edit_drafts (
+      document_type TEXT NOT NULL,
+      document_id TEXT NOT NULL,
+      content_json TEXT NOT NULL,
+      updated_at INTEGER NOT NULL,
+
+      PRIMARY KEY(document_type, document_id)
+    )
+  ''');
   }
 
   static Future<void> _createCareEpisodeReportTables(Database db) async {

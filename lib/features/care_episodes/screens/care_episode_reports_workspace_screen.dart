@@ -24,6 +24,7 @@ import '../widgets/referring_practitioner_history_dialog.dart';
 import '../../patients/screens/episode_documents_screen.dart';
 
 import '../../../core/speech/speech_dictation_button.dart';
+import '../data/care_episode_document_edit_draft_repository.dart';
 
 class CareEpisodeReportsWorkspaceScreen extends StatefulWidget {
   final CareEpisode episode;
@@ -50,6 +51,10 @@ class _CareEpisodeReportsWorkspaceScreenState
   CareEpisodeAssessmentRepository();
   final CareEpisodeReportRepository _reportRepository =
   CareEpisodeReportRepository();
+
+  final CareEpisodeDocumentEditDraftRepository
+  _documentEditDraftRepository =
+  CareEpisodeDocumentEditDraftRepository();
 
   final TextEditingController _draftController = TextEditingController();
   final FocusNode _draftFocusNode = FocusNode();
@@ -199,27 +204,49 @@ class _CareEpisodeReportsWorkspaceScreenState
 
     switch (_documentType) {
       case ClinicalDocumentType.assessment:
-        if (_draft?.isDraft != true) {
+        final assessment = _draft;
+
+        if (assessment == null) {
           return;
         }
 
         _draftSaveTimer?.cancel();
         _draftSaveTimer = Timer(
           const Duration(seconds: 1),
-          _saveDraft,
+          assessment.isDraft
+              ? _saveDraft
+              : _saveAssessmentEditDraft,
         );
 
       case ClinicalDocumentType.report:
-        if (_reportDraft?.isDraft != true) {
+        final report = _reportDraft;
+
+        if (report == null) {
           return;
         }
 
         _draftSaveTimer?.cancel();
         _draftSaveTimer = Timer(
           const Duration(seconds: 1),
-          _saveReportDraft,
+          report.isDraft
+              ? _saveReportDraft
+              : _saveReportEditDraft,
         );
     }
+  }
+
+  Future<void> _saveAssessmentEditDraft() async {
+    final assessment = _draft;
+
+    if (assessment == null || !assessment.isSaved) {
+      return;
+    }
+
+    await _documentEditDraftRepository.saveContent(
+      documentType: 'assessment',
+      documentId: assessment.assessmentId,
+      contentJson: _draftController.text,
+    );
   }
 
   Future<void> _saveDraft() async {
@@ -273,6 +300,20 @@ class _CareEpisodeReportsWorkspaceScreenState
     if (!mounted) return;
 
     _reportDraft = updatedReport;
+  }
+
+  Future<void> _saveReportEditDraft() async {
+    final report = _reportDraft;
+
+    if (report == null || !report.isSaved) {
+      return;
+    }
+
+    await _documentEditDraftRepository.saveContent(
+      documentType: 'report',
+      documentId: report.reportId,
+      contentJson: _draftController.text,
+    );
   }
 
   Future<CareEpisodeReport> _getOrCreateReportDraft() async {
@@ -343,8 +384,9 @@ class _CareEpisodeReportsWorkspaceScreenState
   }
 
   Future<void> _showReport(
-      CareEpisodeReport report,
-      ) async {
+      CareEpisodeReport report, {
+        String? contentOverride,
+      }) async {
     if (!mounted) return;
 
     setState(() {
@@ -356,7 +398,9 @@ class _CareEpisodeReportsWorkspaceScreenState
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
 
-      _setDraftContent(report.contentJson);
+      _setDraftContent(
+        contentOverride ?? report.contentJson,
+      );
       _draftFocusNode.requestFocus();
     });
   }
@@ -390,7 +434,18 @@ class _CareEpisodeReportsWorkspaceScreenState
         return;
       }
 
-      await _showReport(reloadedReport);
+      final editDraftContent =
+      await _documentEditDraftRepository.getContent(
+        documentType: 'report',
+        documentId: reloadedReport.reportId,
+      );
+
+      if (!mounted) return;
+
+      await _showReport(
+        reloadedReport,
+        contentOverride: editDraftContent,
+      );
     } catch (_) {
       if (!mounted) return;
 
@@ -429,6 +484,11 @@ class _CareEpisodeReportsWorkspaceScreenState
     }
 
     _draftSaveTimer?.cancel();
+
+    await _documentEditDraftRepository.delete(
+      documentType: 'report',
+      documentId: report.reportId,
+    );
 
     try {
       final reloadedReport = await _reportRepository.getReportById(
@@ -499,6 +559,12 @@ class _CareEpisodeReportsWorkspaceScreenState
       reloadedAssessment.assessmentId,
     );
 
+    final editDraftContent =
+    await _documentEditDraftRepository.getContent(
+      documentType: 'assessment',
+      documentId: reloadedAssessment.assessmentId,
+    );
+
     if (!mounted) return;
 
     setState(() {
@@ -514,9 +580,154 @@ class _CareEpisodeReportsWorkspaceScreenState
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
 
-      _setDraftContent(reloadedAssessment.contentJson);
+      _setDraftContent(
+        editDraftContent ?? reloadedAssessment.contentJson,
+      );
       _draftFocusNode.requestFocus();
     });
+  }
+
+  Future<void> _duplicateAssessment(
+      CareEpisodeAssessment assessment,
+      ) async {
+    _draftSaveTimer?.cancel();
+
+    try {
+      final draft = await _getOrCreateDraft();
+
+      if (!mounted) return;
+
+      if (draft.contentJson.trim().isNotEmpty) {
+        final confirmed = await showDialog<bool>(
+          context: context,
+          builder: (dialogContext) {
+            return AlertDialog(
+              title: const Text('Remplacer le brouillon ?'),
+              content: const Text(
+                'Le brouillon actuel contient déjà du texte. '
+                    'La duplication remplacera son contenu.',
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () =>
+                      Navigator.of(dialogContext).pop(false),
+                  child: const Text('Annuler'),
+                ),
+                FilledButton(
+                  onPressed: () =>
+                      Navigator.of(dialogContext).pop(true),
+                  child: const Text('Dupliquer'),
+                ),
+              ],
+            );
+          },
+        );
+
+        if (confirmed != true) {
+          return;
+        }
+      }
+
+      final updatedDraft = CareEpisodeAssessment(
+        assessmentId: draft.assessmentId,
+        careEpisodeId: draft.careEpisodeId,
+        title: '',
+        contentJson: assessment.contentJson,
+        status: 'draft',
+        assessmentDate: draft.assessmentDate,
+        createdAt: draft.createdAt,
+        updatedAt: DateTime.now().millisecondsSinceEpoch,
+        archivedAt: draft.archivedAt,
+      );
+
+      await _assessmentRepository.updateAssessment(updatedDraft);
+
+      if (!mounted) return;
+
+      await _showAssessment(updatedDraft);
+    } catch (_) {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Impossible de dupliquer le bilan.',
+          ),
+        ),
+      );
+    }
+  }
+
+  Future<void> _duplicateReport(
+      CareEpisodeReport report,
+      ) async {
+    _draftSaveTimer?.cancel();
+
+    try {
+      final draft = await _getOrCreateReportDraft();
+
+      if (!mounted) return;
+
+      if (draft.contentJson.trim().isNotEmpty) {
+        final confirmed = await showDialog<bool>(
+          context: context,
+          builder: (dialogContext) {
+            return AlertDialog(
+              title: const Text('Remplacer le brouillon ?'),
+              content: const Text(
+                'Le brouillon actuel contient déjà du texte. '
+                    'La duplication remplacera son contenu.',
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () =>
+                      Navigator.of(dialogContext).pop(false),
+                  child: const Text('Annuler'),
+                ),
+                FilledButton(
+                  onPressed: () =>
+                      Navigator.of(dialogContext).pop(true),
+                  child: const Text('Dupliquer'),
+                ),
+              ],
+            );
+          },
+        );
+
+        if (confirmed != true) {
+          return;
+        }
+      }
+
+      final updatedDraft = CareEpisodeReport(
+        reportId: draft.reportId,
+        careEpisodeId: draft.careEpisodeId,
+        sourceAssessmentId: report.sourceAssessmentId,
+        title: '',
+        contentJson: report.contentJson,
+        status: 'draft',
+        reportDate: draft.reportDate,
+        createdAt: draft.createdAt,
+        updatedAt: DateTime.now().millisecondsSinceEpoch,
+        archivedAt: draft.archivedAt,
+      );
+
+      await _reportRepository.updateReport(updatedDraft);
+
+      if (!mounted) return;
+
+      await _showReport(updatedDraft);
+    } catch (_) {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Impossible de dupliquer le rapport.',
+          ),
+        ),
+      );
+    }
   }
 
   Future<void> _setTestIncluded({
@@ -702,6 +913,11 @@ class _CareEpisodeReportsWorkspaceScreenState
     }
 
     _draftSaveTimer?.cancel();
+
+    await _documentEditDraftRepository.delete(
+      documentType: 'assessment',
+      documentId: assessment.assessmentId,
+    );
 
     try {
       final reloadedAssessment =
@@ -1125,6 +1341,13 @@ class _CareEpisodeReportsWorkspaceScreenState
       await _assessmentRepository.updateAssessment(savedAssessment);
 
       if (isEditing) {
+        await _documentEditDraftRepository.delete(
+          documentType: 'assessment',
+          documentId: savedAssessment.assessmentId,
+        );
+      }
+
+      if (isEditing) {
         await _assessmentRepository.replaceSelectedTests(
           assessmentId: savedAssessment.assessmentId,
           exoIds: _selectedTestExoIds,
@@ -1234,6 +1457,13 @@ class _CareEpisodeReportsWorkspaceScreenState
 
     try {
       await _reportRepository.updateReport(savedReport);
+
+      if (isEditing) {
+        await _documentEditDraftRepository.delete(
+          documentType: 'report',
+          documentId: savedReport.reportId,
+        );
+      }
 
       if (isEditing) {
         if (!mounted) return;
@@ -1717,8 +1947,8 @@ class _CareEpisodeReportsWorkspaceScreenState
                                   _documentType == ClinicalDocumentType.assessment &&
                                       _draft?.isSaved == true
                                       ? _returnToDraft
-                                      : null,
-                                  onEditAssessment: _editAssessment,
+                                      : null,onEditAssessment: _editAssessment,
+                                  onDuplicateAssessment: _duplicateAssessment,
                                   onArchiveAssessment: _archiveAssessment,
                                   onExpand: () {
                                     _showExpandedWorkspaceContent(
@@ -1746,16 +1976,9 @@ class _CareEpisodeReportsWorkspaceScreenState
                                             _draft?.isSaved == true
                                             ? _returnToDraft
                                             : null,
-                                        onEditAssessment: _editAssessment,
-                                        onArchiveAssessment: (assessment) async {
-                                          final navigator = Navigator.of(context);
-
-                                          await _archiveAssessment(assessment);
-
-                                          if (!mounted) return;
-
-                                          navigator.pop();
-                                        },
+                                          onEditAssessment: _editAssessment,
+                                          onDuplicateAssessment: _duplicateAssessment,
+                                          onArchiveAssessment: _archiveAssessment,
                                         onExpand: null,
                                       ),
                                     );
@@ -1785,6 +2008,7 @@ class _CareEpisodeReportsWorkspaceScreenState
                                         ? _cancelReportChanges
                                         : null,
                                     onEditReport: _editReport,
+                                    onDuplicateReport: _duplicateReport,
                                     onArchiveReport: _archiveReport,
                                     onExpand: () {
                                       _showExpandedWorkspaceContent(
@@ -1810,6 +2034,7 @@ class _CareEpisodeReportsWorkspaceScreenState
                                               ? _cancelReportChanges
                                               : null,
                                           onEditReport: _editReport,
+                                          onDuplicateReport: _duplicateReport,
                                           onArchiveReport: (report) async {
                                             final navigator = Navigator.of(context);
 
@@ -2358,6 +2583,7 @@ class _AssessmentHistoryCard extends StatelessWidget {
   final ValueChanged<CareEpisodeAssessment> onEditAssessment;
   final ValueChanged<CareEpisodeAssessment> onArchiveAssessment;
   final VoidCallback? onExpand;
+  final ValueChanged<CareEpisodeAssessment> onDuplicateAssessment;
 
   const _AssessmentHistoryCard({
     required this.assessmentsFuture,
@@ -2370,6 +2596,7 @@ class _AssessmentHistoryCard extends StatelessWidget {
     required this.onEditAssessment,
     required this.onArchiveAssessment,
     required this.onExpand,
+    required this.onDuplicateAssessment,
   });
 
   @override
@@ -2462,6 +2689,7 @@ class _AssessmentHistoryCard extends StatelessWidget {
                           Expanded(flex: 2, child: Text('Date')),
                           SizedBox(width: 42),
                           SizedBox(width: 42),
+                          SizedBox(width: 42),
                         ],
                       ),
                       const Divider(height: 1),
@@ -2510,6 +2738,16 @@ class _AssessmentHistoryCard extends StatelessWidget {
                                   SizedBox(
                                     width: 42,
                                     child: IconButton(
+                                      onPressed: () => onDuplicateAssessment(assessment),
+                                      tooltip: 'Dupliquer',
+                                      icon: const Icon(
+                                        Icons.copy_outlined,
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 42,
+                                    child: IconButton(
                                       onPressed: () =>
                                           onArchiveAssessment(assessment),
                                       tooltip: 'Mettre à la corbeille',
@@ -2545,6 +2783,7 @@ class _ReportHistoryCard extends StatelessWidget {
   final ValueChanged<CareEpisodeReport> onEditReport;
   final ValueChanged<CareEpisodeReport> onArchiveReport;
   final VoidCallback? onExpand;
+  final ValueChanged<CareEpisodeReport> onDuplicateReport;
 
   const _ReportHistoryCard({
     required this.reportsFuture,
@@ -2555,6 +2794,7 @@ class _ReportHistoryCard extends StatelessWidget {
     required this.onEditReport,
     required this.onArchiveReport,
     required this.onExpand,
+    required this.onDuplicateReport,
   });
 
   @override
@@ -2628,6 +2868,7 @@ class _ReportHistoryCard extends StatelessWidget {
                   Expanded(flex: 2, child: Text('Date')),
                   SizedBox(width: 42),
                   SizedBox(width: 42),
+                  SizedBox(width: 42),
                 ],
               ),
               const Divider(height: 1),
@@ -2666,6 +2907,16 @@ class _ReportHistoryCard extends StatelessWidget {
                               onPressed: () => onEditReport(report),
                               tooltip: 'Modifier',
                               icon: const Icon(Icons.edit_outlined),
+                            ),
+                          ),
+                          SizedBox(
+                            width: 42,
+                            child: IconButton(
+                              onPressed: () => onDuplicateReport(report),
+                              tooltip: 'Dupliquer',
+                              icon: const Icon(
+                                Icons.copy_outlined,
+                              ),
                             ),
                           ),
                           SizedBox(
