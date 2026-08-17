@@ -22,13 +22,14 @@ class PractitionerListScreen extends StatefulWidget {
 }
 
 class _PractitionerListScreenState extends State<PractitionerListScreen> {
-  static const ExpertContextInfo _expertInfo = ExpertContextInfo(
-    contextName: 'Liste des praticiens',
-    sourceFile: 'lib/features/practitioner/practitioner_list_screen.dart',
-    arbPrefix: 'practitionerList',
-    comment:
-    'Cet écran affiche la liste des praticiens enregistrés. ',
-  );
+  ExpertContextInfo _expertInfo(S s) {
+    return ExpertContextInfo(
+      contextName: s.practitionerList_contextName,
+      sourceFile: 'lib/features/practitioner/practitioner_list_screen.dart',
+      arbPrefix: 'practitionerList',
+      comment: s.practitionerList_contextComment,
+    );
+  }
 
   final PractitionerRepository _repository = PractitionerRepository();
 
@@ -92,22 +93,25 @@ class _PractitionerListScreenState extends State<PractitionerListScreen> {
   }
 
   Future<void> _archivePractitioner(Practitioner practitioner) async {
+    final s = S.of(context);
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Archiver le kiné'),
+          title: Text(s.practitionerList_archivePractitioner),
           content: Text(
-            'Voulez-vous vraiment archiver ${practitioner.displayName} ?',
+            s.practitionerList_archiveConfirmation(
+              practitioner.displayName,
+            ),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(false),
-              child: const Text('Annuler'),
+              child: Text(s.practitionerList_cancel),
             ),
             FilledButton(
               onPressed: () => Navigator.of(context).pop(true),
-              child: const Text('Archiver'),
+              child: Text(s.practitionerList_archive),
             ),
           ],
         );
@@ -169,6 +173,7 @@ class _PractitionerListScreenState extends State<PractitionerListScreen> {
       AsyncSnapshot<List> snapshot,
       List practitioners,
       ) {
+    final s = S.of(context);
     if (snapshot.connectionState == ConnectionState.waiting) {
       return const Center(child: CircularProgressIndicator());
     }
@@ -186,17 +191,17 @@ class _PractitionerListScreenState extends State<PractitionerListScreen> {
             children: [
               Expanded(
                 child: Text(
-                  S.of(context).practitionerList_title,
+                  s.practitionerList_title,
                   style: Theme.of(context).textTheme.headlineSmall,
                 ),
               ),
               ContextHelpButton(
-                title: S.of(context).practitionerList_title,
-                content: S.of(context).help_practitionerList_helpText,
+                title: s.practitionerList_title,
+                content: s.help_practitionerList_helpText,
               ),
               if (_expertModeEnabled)
-                const ExpertInfoButton(
-                  info: _expertInfo,
+                ExpertInfoButton(
+                  info: _expertInfo(S.of(context)),
                 ),
             ],
           ),
@@ -204,15 +209,15 @@ class _PractitionerListScreenState extends State<PractitionerListScreen> {
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
           child: SegmentedButton<bool>(
-            segments: const [
+            segments: [
               ButtonSegment(
                 value: false,
-                label: Text('Actifs'),
+                label: Text(s.practitionerList_active),
                 icon: Icon(Icons.medical_services_outlined),
               ),
               ButtonSegment(
                 value: true,
-                label: Text('Archivés'),
+                label: Text(s.practitionerList_archived),
                 icon: Icon(Icons.archive_outlined),
               ),
             ],
@@ -237,15 +242,15 @@ class _PractitionerListScreenState extends State<PractitionerListScreen> {
                       const SizedBox(height: 16),
                       Text(
                         _showArchived
-                            ? 'Aucun kiné archivé'
-                            : 'Aucun kiné enregistré',
+                            ? s.practitionerList_noArchivedPractitioner
+                            : s.practitionerList_noPractitioner,
                         style: const TextStyle(fontSize: 22),
                       ),
                       const SizedBox(height: 8),
                       Text(
                         _showArchived
-                            ? 'La corbeille des kinés est vide pour le moment.'
-                            : 'Ajoutez les kinés du cabinet pour identifier les tests importés.',
+                            ? s.practitionerList_archiveEmpty
+                            : s.practitionerList_addPractitionersHint,
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
                     ],
@@ -269,19 +274,26 @@ class _PractitionerListScreenState extends State<PractitionerListScreen> {
                       title: Text(practitioner.displayName),
                       subtitle: Text(
                         _showArchived
-                            ? 'Archivé le ${DateFormatUtils.formatTimestampForDisplay(context, practitioner.archivedAt)}'
+                            ? s.practitionerList_archivedOn(
+                          DateFormatUtils.formatTimestampForDisplay(
+                            context,
+                            practitioner.archivedAt,
+                          ),
+                        )
                             : [
-                                if (practitioner.professionalId != null)
-                                  'ID pro : ${practitioner.professionalId}',
-                                if (practitioner.email != null)
-                                  practitioner.email!,
-                                if (practitioner.phone != null)
-                                  practitioner.phone!,
-                              ].join(' · '),
+                          if (practitioner.professionalId != null)
+                            s.practitionerList_professionalId(
+                              practitioner.professionalId!,
+                            ),
+                          if (practitioner.email != null)
+                            practitioner.email!,
+                          if (practitioner.phone != null)
+                            practitioner.phone!,
+                        ].join(' · '),
                       ),
                       trailing: _showArchived
                           ? IconButton(
-                              tooltip: 'Restaurer',
+                              tooltip: s.practitionerList_restore,
                               icon: const Icon(Icons.restore),
                               onPressed: () =>
                                   _restorePractitioner(practitioner),
@@ -290,17 +302,17 @@ class _PractitionerListScreenState extends State<PractitionerListScreen> {
                               mainAxisSize: MainAxisSize.min,
                         children: [
                           IconButton(
-                            tooltip: 'Afficher le QR Code',
+                            tooltip: s.practitionerList_showQrCode,
                             icon: const Icon(Icons.qr_code_2_outlined),
                             onPressed: () => _showPractitionerQrCode(practitioner),
                           ),
                           IconButton(
-                            tooltip: 'Modifier',
+                            tooltip: s.practitionerList_edit,
                             icon: const Icon(Icons.edit_outlined),
                             onPressed: () => _editPractitioner(practitioner),
                           ),
                           IconButton(
-                            tooltip: 'Archiver',
+                            tooltip: s.practitionerList_archive,
                             icon: const Icon(Icons.archive_outlined),
                             onPressed: () => _archivePractitioner(practitioner),
                           ),

@@ -87,5 +87,4 @@ class PractitionerRepository {
 
     return Practitioner.fromMap(rows.first);
   }
-
 }

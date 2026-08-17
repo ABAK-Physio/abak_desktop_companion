@@ -26,6 +26,8 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m2(count) => "${count} associação(ões) pendentes";
 
+  static String m3(error) => "Erro: ${error}";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "close": MessageLookupByLibrary.simpleMessage("Fechar"),
@@ -220,6 +222,47 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Criar um profissional"),
         "practitionerList_title":
             MessageLookupByLibrary.simpleMessage("Lista de profissionais"),
+        "practitionerNew_cancel":
+            MessageLookupByLibrary.simpleMessage("Cancelar"),
+        "practitionerNew_cet_ecran_permet":
+            MessageLookupByLibrary.simpleMessage(
+                "Este ecrã permite criar um profissional de saúde."),
+        "practitionerNew_create": MessageLookupByLibrary.simpleMessage("Criar"),
+        "practitionerNew_displayName":
+            MessageLookupByLibrary.simpleMessage("Nome apresentado"),
+        "practitionerNew_displayNameRequired":
+            MessageLookupByLibrary.simpleMessage(
+                "O nome apresentado é obrigatório"),
+        "practitionerNew_editPractitioner":
+            MessageLookupByLibrary.simpleMessage(
+                "Alterar o profissional de saúde"),
+        "practitionerNew_email": MessageLookupByLibrary.simpleMessage("E-mail"),
+        "practitionerNew_firstName":
+            MessageLookupByLibrary.simpleMessage("Nome próprio"),
+        "practitionerNew_lastName":
+            MessageLookupByLibrary.simpleMessage("Nome"),
+        "practitionerNew_newPractitioner":
+            MessageLookupByLibrary.simpleMessage("Novo profissional"),
+        "practitionerNew_phone":
+            MessageLookupByLibrary.simpleMessage("Telefone"),
+        "practitionerNew_professionalId":
+            MessageLookupByLibrary.simpleMessage("Identificação profissional"),
+        "practitionerNew_professionalIdHint":
+            MessageLookupByLibrary.simpleMessage("RPPS, ADELI…"),
+        "practitionerNew_save": MessageLookupByLibrary.simpleMessage("Guardar"),
+        "practitionerQr_close": MessageLookupByLibrary.simpleMessage("Fechar"),
+        "practitionerQr_defaultOrganizationName":
+            MessageLookupByLibrary.simpleMessage("Gabinete"),
+        "practitionerQr_professionalProfile":
+            MessageLookupByLibrary.simpleMessage("Perfil profissional da ABAK"),
+        "practitionerQr_scanQrCodeInstruction":
+            MessageLookupByLibrary.simpleMessage(
+                "Digitalize este código QR a partir da aplicação ABAK Mobile para adicionar automaticamente este perfil profissional."),
+        "practitionerSelector_archived":
+            MessageLookupByLibrary.simpleMessage("arquivado"),
+        "practitionerSelector_error": m3,
+        "practitionerSelector_noSelection":
+            MessageLookupByLibrary.simpleMessage("Nenhuma seleção"),
         "refreshDashboard": MessageLookupByLibrary.simpleMessage(
             "Atualizar o painel de controlo"),
         "reset": MessageLookupByLibrary.simpleMessage("Reiniciar"),

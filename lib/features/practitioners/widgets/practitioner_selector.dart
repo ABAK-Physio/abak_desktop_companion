@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../generated/l10n.dart';
 import '../data/practitioner_repository.dart';
 import '../models/practitioner.dart';
 
@@ -45,6 +46,8 @@ class PractitionerSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final s = S.of(context);
+
     return FutureBuilder<List<Practitioner>>(
       future: _loadPractitioners(),
       builder: (context, snapshot) {
@@ -55,7 +58,9 @@ class PractitionerSelector extends StatelessWidget {
         }
 
         if (snapshot.hasError) {
-          return Text('Erreur : ${snapshot.error}');
+          return Text(
+            s.practitionerSelector_error(snapshot.error.toString()),
+          );
         }
 
         final practitioners = snapshot.data ?? const <Practitioner>[];
@@ -68,16 +73,16 @@ class PractitionerSelector extends StatelessWidget {
           ),
           items: [
             if (allowEmpty)
-              const DropdownMenuItem<String>(
+              DropdownMenuItem<String>(
                 value: null,
-                child: Text('Aucune sélection'),
+                child: Text(s.practitionerSelector_noSelection),
               ),
             ...practitioners.map(
                   (practitioner) => DropdownMenuItem<String>(
                 value: practitioner.practitionerId,
                 child: Text(
                   practitioner.isArchived
-                      ? '${practitioner.displayName} — archivé'
+                      ? '${practitioner.displayName} — ${s.practitionerSelector_archived}'
                       : practitioner.displayName,
                 ),
               ),

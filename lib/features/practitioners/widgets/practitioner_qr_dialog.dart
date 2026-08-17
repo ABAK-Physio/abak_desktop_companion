@@ -3,6 +3,7 @@ import 'package:qr_flutter/qr_flutter.dart';
 
 import '../../../core/settings/cabinet_identity_service.dart';
 import '../../../core/settings/practitioner_qr_data.dart';
+import '../../../generated/l10n.dart';
 import '../models/practitioner.dart';
 
 class PractitionerQrDialog extends StatelessWidget {
@@ -15,8 +16,9 @@ class PractitionerQrDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final s=S.of(context);
     return FutureBuilder<_QrViewModel>(
-      future: _loadData(),
+      future: _loadData(s.practitionerQr_defaultOrganizationName),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return const AlertDialog(
@@ -32,7 +34,7 @@ class PractitionerQrDialog extends StatelessWidget {
         final data = snapshot.data!;
 
         return AlertDialog(
-          title: const Text('Profil professionnel ABAK'),
+          title:  Text(s.practitionerQr_professionalProfile),
           content: SizedBox(
             width: 360,
             child: Column(
@@ -56,8 +58,8 @@ class PractitionerQrDialog extends StatelessWidget {
                   backgroundColor: Colors.white,
                 ),
                 const SizedBox(height: 20),
-                const Text(
-                  "Scannez ce QR Code depuis ABAK Mobile afin d'ajouter automatiquement ce profil professionnel.",
+                Text(
+                  s.practitionerQr_scanQrCodeInstruction,
                   textAlign: TextAlign.center,
                 ),
               ],
@@ -66,7 +68,7 @@ class PractitionerQrDialog extends StatelessWidget {
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Fermer'),
+              child: Text(s.practitionerQr_close),
             ),
           ],
         );
@@ -74,12 +76,12 @@ class PractitionerQrDialog extends StatelessWidget {
     );
   }
 
-  Future<_QrViewModel> _loadData() async {
+  Future<_QrViewModel> _loadData(String defaultOrganizationName) async {
     const cabinetService = CabinetIdentityService();
 
     final organizationId = await cabinetService.getOrganizationId();
     final organizationName =
-        await cabinetService.getCabinetName() ?? 'Cabinet';
+        await cabinetService.getCabinetName() ?? defaultOrganizationName;
 
     final qrData = PractitionerQrData(
       organizationId: organizationId,

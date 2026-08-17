@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../../generated/l10n.dart';
 import '../models/practitioner.dart';
 import '../../../core/expert/expert_context_info.dart';
 import '../../../core/expert/expert_info_button.dart';
@@ -16,13 +17,15 @@ class PractitionerFormDialog extends StatefulWidget {
 }
 
 class _PractitionerFormDialogState extends State<PractitionerFormDialog> {
-  static const ExpertContextInfo _expertInfo = ExpertContextInfo(
-    contextName: 'Nouveau praticien',
-    sourceFile: 'lib/features/practitioners/widgets/practitioner_form_dialog.dart',
-    arbPrefix: 'practitionerNew',
-    comment:
-    'Cet écran permet de créer un praticien',
-  );
+  ExpertContextInfo _expertInfo(S s) {
+    return ExpertContextInfo(
+      contextName: s.practitionerNew_newPractitioner,
+      sourceFile:
+      'lib/features/practitioners/widgets/practitioner_form_dialog.dart',
+      arbPrefix: 'practitionerNew',
+      comment: s.practitionerNew_cet_ecran_permet,
+    );
+  }
 
   final ApplicationSettingsService _applicationSettingsService =
   const ApplicationSettingsService();
@@ -111,19 +114,21 @@ class _PractitionerFormDialogState extends State<PractitionerFormDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final s = S.of(context);
+
     return AlertDialog(
       title: Row(
         children: [
           Expanded(
             child: Text(
               _isEditing
-                  ? 'Modifier le praticien'
-                  : 'Nouveau praticien',
+                  ? s.practitionerNew_editPractitioner
+                  : s.practitionerNew_newPractitioner,
             ),
           ),
           if (_expertModeEnabled)
-            const ExpertInfoButton(
-              info: _expertInfo,
+            ExpertInfoButton(
+              info: _expertInfo(s),
             ),
         ],
       ),
@@ -137,10 +142,10 @@ class _PractitionerFormDialogState extends State<PractitionerFormDialog> {
               children: [
                 TextFormField(
                   controller: _displayNameController,
-                  decoration: const InputDecoration(labelText: 'Nom affiché'),
+                  decoration: InputDecoration(labelText: s.practitionerNew_displayName),
                   validator: (value) {
                     if (value == null || value.trim().isEmpty) {
-                      return 'Le nom affiché est obligatoire';
+                      return s.practitionerNew_displayNameRequired;
                     }
                     return null;
                   },
@@ -148,30 +153,30 @@ class _PractitionerFormDialogState extends State<PractitionerFormDialog> {
                 const SizedBox(height: 12),
                 TextFormField(
                   controller: _firstNameController,
-                  decoration: const InputDecoration(labelText: 'Prénom'),
+                  decoration: InputDecoration(labelText: s.practitionerNew_firstName),
                 ),
                 const SizedBox(height: 12),
                 TextFormField(
                   controller: _lastNameController,
-                  decoration: const InputDecoration(labelText: 'Nom'),
+                  decoration: InputDecoration(labelText: s.practitionerNew_lastName),
                 ),
                 const SizedBox(height: 12),
                 TextFormField(
                   controller: _professionalIdController,
-                  decoration: const InputDecoration(
-                    labelText: 'Identifiant professionnel',
-                    hintText: 'RPPS, ADELI…',
+                  decoration: InputDecoration(
+                    labelText: s.practitionerNew_professionalId,
+                    hintText: s.practitionerNew_professionalIdHint,
                   ),
                 ),
                 const SizedBox(height: 12),
                 TextFormField(
                   controller: _emailController,
-                  decoration: const InputDecoration(labelText: 'Email'),
+                  decoration: InputDecoration(labelText: s.practitionerNew_email),
                 ),
                 const SizedBox(height: 12),
                 TextFormField(
                   controller: _phoneController,
-                  decoration: const InputDecoration(labelText: 'Téléphone'),
+                  decoration: InputDecoration(labelText: s.practitionerNew_phone),
                 ),
               ],
             ),
@@ -181,11 +186,11 @@ class _PractitionerFormDialogState extends State<PractitionerFormDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(null),
-          child: const Text('Annuler'),
+          child: Text(s.practitionerNew_cancel),
         ),
         FilledButton(
           onPressed: _submit,
-          child: Text(_isEditing ? 'Enregistrer' : 'Créer'),
+          child: Text(_isEditing ? s.practitionerNew_save : s.practitionerNew_create),
         ),
       ],
     );

@@ -250,16 +250,6 @@ class S {
     );
   }
 
-  /// `Patients actifs et archivés`
-  String get help_home_active_archived_patients_title {
-    return Intl.message(
-      'Patients actifs et archivés',
-      name: 'help_home_active_archived_patients_title',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Les patients actifs sont ceux à qui vous pouvez attribuer un résultat de test ou questionnaire.\n\nLes patients archivés sont des patients dont les informations seront prochainement supprimées de l'ordinateur.\n\nLa suppression intervient automatiquement aprsès la date indiquée.\n\nVous pouvez :\n  - Gérer le délai de conservation dans Paramètres.\n. -Réactiver un patient archivé pour le rendre actif.\n\nLa durée de conservation est paramètrable entre 30 et 365 jours.`
   String get help_home_active_archived_patients_content {
     return Intl.message(
@@ -270,11 +260,11 @@ class S {
     );
   }
 
-  /// `Récupération d'un résultats et affectation à un patient`
-  String get help_home_import_assignment_title {
+  /// `Patients actifs et archivés`
+  String get help_home_active_archived_patients_title {
     return Intl.message(
-      'Récupération d\'un résultats et affectation à un patient',
-      name: 'help_home_import_assignment_title',
+      'Patients actifs et archivés',
+      name: 'help_home_active_archived_patients_title',
       desc: '',
       args: [],
     );
@@ -285,6 +275,16 @@ class S {
     return Intl.message(
       'Les tests et exercices sont réalisés sur votre téléphone (ou tablette) avecABAK Mobile.\nUne fois le test terminé, si vous avez enregistré le résultat, l\'option Dossier > Envoyer vers Desktop vous permet de transférer les informations vers ABAK Companion\n\nUn message dans Companion vous informe qu\'un dossier est arrivé et qu\'il faut l\'attribuer à un patient. Cette attribution vous conduit à sélectionner le patient puis à sélectionner l\'épisode de soin.\n\nPourquoi un tel mécanisme ?\nABAK mobile ne gère pas les dossiers patients. Sur ABAK Mobile, vous pouvez identifier le patient par un pseudo et celui ci peut être différent selon le praticien. Ce pseudo vous sert ensuite à attribuer le résultat au bon patient. Ce mécanisme permet de conserver une indépendance de fonctionnemnent entre les deux applications et préserve, autant que possible, l\'anonymat des patients sur le téléphone ou la tablette qui peuvent êtr partagés.',
       name: 'help_home_import_assignment_content',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Récupération d'un résultats et affectation à un patient`
+  String get help_home_import_assignment_title {
+    return Intl.message(
+      'Récupération d\'un résultats et affectation à un patient',
+      name: 'help_home_import_assignment_title',
       desc: '',
       args: [],
     );
@@ -1145,6 +1145,396 @@ class S {
     return Intl.message(
       'Liste des praticiens',
       name: 'practitionerList_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Liste des praticiens`
+  String get practitionerList_contextName {
+    return Intl.message(
+      'Liste des praticiens',
+      name: 'practitionerList_contextName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cet écran affiche la liste des praticiens enregistrés.`
+  String get practitionerList_contextComment {
+    return Intl.message(
+      'Cet écran affiche la liste des praticiens enregistrés.',
+      name: 'practitionerList_contextComment',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Erreur : {error}`
+  String practitionerList_error(Object error) {
+    return Intl.message(
+      'Erreur : $error',
+      name: 'practitionerList_error',
+      desc: '',
+      args: [error],
+    );
+  }
+
+  /// `Archiver le kiné`
+  String get practitionerList_archivePractitioner {
+    return Intl.message(
+      'Archiver le kiné',
+      name: 'practitionerList_archivePractitioner',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Voulez-vous vraiment archiver {practitionerName} ?`
+  String practitionerList_archiveConfirmation(Object practitionerName) {
+    return Intl.message(
+      'Voulez-vous vraiment archiver $practitionerName ?',
+      name: 'practitionerList_archiveConfirmation',
+      desc: '',
+      args: [practitionerName],
+    );
+  }
+
+  /// `Annuler`
+  String get practitionerList_cancel {
+    return Intl.message(
+      'Annuler',
+      name: 'practitionerList_cancel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Archiver`
+  String get practitionerList_archive {
+    return Intl.message(
+      'Archiver',
+      name: 'practitionerList_archive',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Actifs`
+  String get practitionerList_active {
+    return Intl.message(
+      'Actifs',
+      name: 'practitionerList_active',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Archivés`
+  String get practitionerList_archived {
+    return Intl.message(
+      'Archivés',
+      name: 'practitionerList_archived',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Aucun kiné archivé`
+  String get practitionerList_noArchivedPractitioner {
+    return Intl.message(
+      'Aucun kiné archivé',
+      name: 'practitionerList_noArchivedPractitioner',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Aucun kiné enregistré`
+  String get practitionerList_noPractitioner {
+    return Intl.message(
+      'Aucun kiné enregistré',
+      name: 'practitionerList_noPractitioner',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `La corbeille des kinés est vide pour le moment.`
+  String get practitionerList_archiveEmpty {
+    return Intl.message(
+      'La corbeille des kinés est vide pour le moment.',
+      name: 'practitionerList_archiveEmpty',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Ajoutez les kinés du cabinet pour identifier les tests importés.`
+  String get practitionerList_addPractitionersHint {
+    return Intl.message(
+      'Ajoutez les kinés du cabinet pour identifier les tests importés.',
+      name: 'practitionerList_addPractitionersHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Archivé le {date}`
+  String practitionerList_archivedOn(Object date) {
+    return Intl.message(
+      'Archivé le $date',
+      name: 'practitionerList_archivedOn',
+      desc: '',
+      args: [date],
+    );
+  }
+
+  /// `ID pro : {professionalId}`
+  String practitionerList_professionalId(Object professionalId) {
+    return Intl.message(
+      'ID pro : $professionalId',
+      name: 'practitionerList_professionalId',
+      desc: '',
+      args: [professionalId],
+    );
+  }
+
+  /// `Restaurer`
+  String get practitionerList_restore {
+    return Intl.message(
+      'Restaurer',
+      name: 'practitionerList_restore',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Afficher le QR Code`
+  String get practitionerList_showQrCode {
+    return Intl.message(
+      'Afficher le QR Code',
+      name: 'practitionerList_showQrCode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Modifier`
+  String get practitionerList_edit {
+    return Intl.message(
+      'Modifier',
+      name: 'practitionerList_edit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Annuler`
+  String get practitionerNew_cancel {
+    return Intl.message(
+      'Annuler',
+      name: 'practitionerNew_cancel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cet écran permet de créer un praticien.`
+  String get practitionerNew_cet_ecran_permet {
+    return Intl.message(
+      'Cet écran permet de créer un praticien.',
+      name: 'practitionerNew_cet_ecran_permet',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Créer`
+  String get practitionerNew_create {
+    return Intl.message(
+      'Créer',
+      name: 'practitionerNew_create',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Nom affiché`
+  String get practitionerNew_displayName {
+    return Intl.message(
+      'Nom affiché',
+      name: 'practitionerNew_displayName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Le nom affiché est obligatoire`
+  String get practitionerNew_displayNameRequired {
+    return Intl.message(
+      'Le nom affiché est obligatoire',
+      name: 'practitionerNew_displayNameRequired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Modifier le praticien`
+  String get practitionerNew_editPractitioner {
+    return Intl.message(
+      'Modifier le praticien',
+      name: 'practitionerNew_editPractitioner',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Email`
+  String get practitionerNew_email {
+    return Intl.message(
+      'Email',
+      name: 'practitionerNew_email',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Prénom`
+  String get practitionerNew_firstName {
+    return Intl.message(
+      'Prénom',
+      name: 'practitionerNew_firstName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Nom`
+  String get practitionerNew_lastName {
+    return Intl.message(
+      'Nom',
+      name: 'practitionerNew_lastName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Nouveau praticien`
+  String get practitionerNew_newPractitioner {
+    return Intl.message(
+      'Nouveau praticien',
+      name: 'practitionerNew_newPractitioner',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Téléphone`
+  String get practitionerNew_phone {
+    return Intl.message(
+      'Téléphone',
+      name: 'practitionerNew_phone',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Identifiant professionnel`
+  String get practitionerNew_professionalId {
+    return Intl.message(
+      'Identifiant professionnel',
+      name: 'practitionerNew_professionalId',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `RPPS, ADELI…`
+  String get practitionerNew_professionalIdHint {
+    return Intl.message(
+      'RPPS, ADELI…',
+      name: 'practitionerNew_professionalIdHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enregistrer`
+  String get practitionerNew_save {
+    return Intl.message(
+      'Enregistrer',
+      name: 'practitionerNew_save',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Profil professionnel ABAK`
+  String get practitionerQr_professionalProfile {
+    return Intl.message(
+      'Profil professionnel ABAK',
+      name: 'practitionerQr_professionalProfile',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Scannez ce QR Code depuis ABAK Mobile afin d'ajouter automatiquement ce profil professionnel.`
+  String get practitionerQr_scanQrCodeInstruction {
+    return Intl.message(
+      'Scannez ce QR Code depuis ABAK Mobile afin d\'ajouter automatiquement ce profil professionnel.',
+      name: 'practitionerQr_scanQrCodeInstruction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Fermer`
+  String get practitionerQr_close {
+    return Intl.message(
+      'Fermer',
+      name: 'practitionerQr_close',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cabinet`
+  String get practitionerQr_defaultOrganizationName {
+    return Intl.message(
+      'Cabinet',
+      name: 'practitionerQr_defaultOrganizationName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Erreur : {error}`
+  String practitionerSelector_error(Object error) {
+    return Intl.message(
+      'Erreur : $error',
+      name: 'practitionerSelector_error',
+      desc: '',
+      args: [error],
+    );
+  }
+
+  /// `Aucune sélection`
+  String get practitionerSelector_noSelection {
+    return Intl.message(
+      'Aucune sélection',
+      name: 'practitionerSelector_noSelection',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `archivé`
+  String get practitionerSelector_archived {
+    return Intl.message(
+      'archivé',
+      name: 'practitionerSelector_archived',
       desc: '',
       args: [],
     );
