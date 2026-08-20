@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../generated/l10n.dart';
 import '../data/contact_form_template_repository.dart';
 import '../models/contact_form_field.dart';
 import '../models/contact_form_template.dart';
@@ -74,7 +75,8 @@ class _ContactFormTemplateDiagnosticScreenState
     );
   }
 
-  Widget _buildTemplateCard(ContactFormTemplate template) {
+  Widget _buildTemplateCard(ContactFormTemplate template,
+      S s) {
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -94,15 +96,15 @@ class _ContactFormTemplateDiagnosticScreenState
                   child: Text(template.description!),
                 ),
               const Divider(height: 24),
-              _buildInfoLine('ID modèle', template.templateId),
+              _buildInfoLine(s.contactFormTemplateDiagnostic_templateId, template.templateId),
               _buildInfoLine(
-                'Praticien',
-                template.practitionerId ?? 'Modèle système',
+                s.contactFormTemplateDiagnostic_practitioner,
+                template.practitionerId ?? s.contactFormTemplateDiagnostic_systemTemplate,
               ),
-              _buildInfoLine('Catégorie', template.category ?? 'Non définie'),
+              _buildInfoLine(s.contactFormTemplateDiagnostic_category, template.category ?? s.contactFormTemplateDiagnostic_notDefined),
               _buildInfoLine(
-                'Modèle par défaut',
-                template.isDefault ? 'Oui' : 'Non',
+                s.contactFormTemplateDiagnostic_defaultTemplate,
+                template.isDefault ? s.contactFormTemplateDiagnostic_yes : s.contactFormTemplateDiagnostic_no,
               ),
             ],
           ),
@@ -111,51 +113,60 @@ class _ContactFormTemplateDiagnosticScreenState
     );
   }
 
-  Widget _buildFieldTile(ContactFormField field) {
+  Widget _buildFieldTile(ContactFormField field,
+      S s,
+      )
+  {
     return Card(
       child: ListTile(
         title: Text(field.label),
         subtitle: Text(
-          'Type : ${field.fieldType} • Ordre : ${field.sortOrder}'
-          '${field.required ? ' • Obligatoire' : ''}',
+          '${s.contactFormTemplateDiagnostic_type} : ${field.fieldType} • '
+              '${s.contactFormTemplateDiagnostic_order} : ${field.sortOrder}'
+          '${field.required ? s.contactFormTemplateDiagnostic_required : ''}',
         ),
         trailing: _buildScopeChip(field.targetScope),
       ),
     );
   }
 
-  Widget _buildContent(_TemplateDiagnosticData data) {
+  Widget _buildContent(_TemplateDiagnosticData data,
+      S s,
+      )
+  {
     final template = data.template;
 
     if (template == null) {
-      return const Center(
-        child: Text('Aucun modèle de fiche d’entretien initial trouvé.'),
+      return Center(
+        child: Text(s.contactFormTemplateDiagnostic_noTemplate),
       );
     }
 
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        _buildTemplateCard(template),
+        _buildTemplateCard(template, s),
         const SizedBox(height: 16),
         Text(
-          'Champs (${data.fields.length})',
+          '${s.contactFormTemplateDiagnostic_fields} (${data.fields.length})',
           style: Theme.of(context).textTheme.titleMedium,
         ),
         const SizedBox(height: 8),
-        for (final field in data.fields) _buildFieldTile(field),
+        for (final field in data.fields)
+          _buildFieldTile(field, s),
       ],
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final s = S.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Diagnostic fiche d’entretien'),
+        title: Text(s.contactFormTemplateDiagnostic_title),
         actions: [
           IconButton(
-            tooltip: 'Actualiser',
+            tooltip: s.contactFormTemplateDiagnostic_refresh,
             onPressed: _refresh,
             icon: const Icon(Icons.refresh),
           ),
@@ -173,7 +184,7 @@ class _ContactFormTemplateDiagnosticScreenState
               child: Padding(
                 padding: const EdgeInsets.all(16),
                 child: Text(
-                  'Erreur : ${snapshot.error}',
+                  '${s.contactFormTemplateDiagnostic_error} : ${snapshot.error}',
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -183,10 +194,10 @@ class _ContactFormTemplateDiagnosticScreenState
           final data = snapshot.data;
 
           if (data == null) {
-            return const Center(child: Text('Aucune donnée à afficher.'));
+            return Center(child: Text(s.contactFormTemplateDiagnostic_noData));
           }
 
-          return _buildContent(data);
+          return _buildContent(data, s);
         },
       ),
     );

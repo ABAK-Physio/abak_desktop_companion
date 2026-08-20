@@ -77,6 +77,43 @@ class MessageLookup extends MessageLookupByLibrary {
         "backupHistory_title": MessageLookupByLibrary.simpleMessage(
             "Histórico de cópias de segurança"),
         "close": MessageLookupByLibrary.simpleMessage("Fechar"),
+        "contactFormTemplateDiagnostic_category":
+            MessageLookupByLibrary.simpleMessage("Categoria"),
+        "contactFormTemplateDiagnostic_defaultTemplate":
+            MessageLookupByLibrary.simpleMessage("Modelo predefinido"),
+        "contactFormTemplateDiagnostic_error":
+            MessageLookupByLibrary.simpleMessage("Erro"),
+        "contactFormTemplateDiagnostic_fields":
+            MessageLookupByLibrary.simpleMessage("Campos"),
+        "contactFormTemplateDiagnostic_no":
+            MessageLookupByLibrary.simpleMessage("Não"),
+        "contactFormTemplateDiagnostic_noData":
+            MessageLookupByLibrary.simpleMessage(
+                "Não há dados para apresentar."),
+        "contactFormTemplateDiagnostic_noTemplate":
+            MessageLookupByLibrary.simpleMessage(
+                "Não foi encontrado nenhum modelo de ficha de entrevista inicial."),
+        "contactFormTemplateDiagnostic_notDefined":
+            MessageLookupByLibrary.simpleMessage("Não definida"),
+        "contactFormTemplateDiagnostic_order":
+            MessageLookupByLibrary.simpleMessage("Ordem"),
+        "contactFormTemplateDiagnostic_practitioner":
+            MessageLookupByLibrary.simpleMessage("Profissional"),
+        "contactFormTemplateDiagnostic_refresh":
+            MessageLookupByLibrary.simpleMessage("Atualizar"),
+        "contactFormTemplateDiagnostic_required":
+            MessageLookupByLibrary.simpleMessage("Obrigatório"),
+        "contactFormTemplateDiagnostic_systemTemplate":
+            MessageLookupByLibrary.simpleMessage("Modelo do sistema"),
+        "contactFormTemplateDiagnostic_templateId":
+            MessageLookupByLibrary.simpleMessage("ID do modelo"),
+        "contactFormTemplateDiagnostic_title":
+            MessageLookupByLibrary.simpleMessage(
+                "Ficha de diagnóstico e manutenção"),
+        "contactFormTemplateDiagnostic_type":
+            MessageLookupByLibrary.simpleMessage("Tipo"),
+        "contactFormTemplateDiagnostic_yes":
+            MessageLookupByLibrary.simpleMessage("Sim"),
         "dashboardTitle":
             MessageLookupByLibrary.simpleMessage("Centro clínico local ABAK"),
         "desktopAddress": MessageLookupByLibrary.simpleMessage("Morada"),
@@ -141,6 +178,63 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Mostrar o código QR"),
         "deviceList_title":
             MessageLookupByLibrary.simpleMessage("Lista de aparelhos"),
+        "episodeDashboard_documents":
+            MessageLookupByLibrary.simpleMessage("Documentos"),
+        "episodeDashboard_documentsDescription":
+            MessageLookupByLibrary.simpleMessage(
+                "Documentos relacionados com este episódio"),
+        "episodeDashboard_forms":
+            MessageLookupByLibrary.simpleMessage("Formulários"),
+        "episodeDashboard_formsDescription":
+            MessageLookupByLibrary.simpleMessage(
+                "Questionários específicos sobre este episódio"),
+        "episodeDashboard_notes": MessageLookupByLibrary.simpleMessage("Notas"),
+        "episodeDashboard_notesDescription":
+            MessageLookupByLibrary.simpleMessage(
+                "Observações e comentários do fisioterapeuta"),
+        "episodeDashboard_report":
+            MessageLookupByLibrary.simpleMessage("Relatório"),
+        "episodeDashboard_reportDescription":
+            MessageLookupByLibrary.simpleMessage("Resumo do episódio"),
+        "episodeDocuments_addDocument":
+            MessageLookupByLibrary.simpleMessage("Adicionar um documento"),
+        "episodeDocuments_addError": MessageLookupByLibrary.simpleMessage(
+            "Não é possível adicionar o documento"),
+        "episodeDocuments_addedOn":
+            MessageLookupByLibrary.simpleMessage("Adicionado em"),
+        "episodeDocuments_document":
+            MessageLookupByLibrary.simpleMessage("Documento"),
+        "episodeDocuments_documentAdded": MessageLookupByLibrary.simpleMessage(
+            "O documento foi adicionado à lista de suportados."),
+        "episodeDocuments_emptyDescription": MessageLookupByLibrary.simpleMessage(
+            "Pode adicionar um documento de texto, uma folha de cálculo, um PDF, uma imagem ou qualquer outro ficheiro útil."),
+        "episodeDocuments_fileNotFound": MessageLookupByLibrary.simpleMessage(
+            "Não foi possível encontrar o ficheiro associado."),
+        "episodeDocuments_help": MessageLookupByLibrary.simpleMessage(
+            "Pode associar a esta funcionalidade documentos criados com as suas aplicações habituais: processador de texto, folha de cálculo, leitor de PDF ou software de edição de imagens.\n\nOs ficheiros adicionados são copiados para o espaço de armazenamento do Companion. Ao clicar num documento, este é aberto com a aplicação correspondente instalada neste computador."),
+        "episodeDocuments_image":
+            MessageLookupByLibrary.simpleMessage("Imagem"),
+        "episodeDocuments_loadError": MessageLookupByLibrary.simpleMessage(
+            "Não foi possível carregar os documentos associados."),
+        "episodeDocuments_noDocument": MessageLookupByLibrary.simpleMessage(
+            "Não há nenhum documento associado a este tratamento."),
+        "episodeDocuments_openDocument":
+            MessageLookupByLibrary.simpleMessage("Abrir o documento"),
+        "episodeDocuments_openError": MessageLookupByLibrary.simpleMessage(
+            "Não é possível abrir o ficheiro"),
+        "episodeDocuments_pdfDocument":
+            MessageLookupByLibrary.simpleMessage("Documento em PDF"),
+        "episodeDocuments_platformNotSupported":
+            MessageLookupByLibrary.simpleMessage(
+                "A abertura não é suportada nesta plataforma."),
+        "episodeDocuments_refresh":
+            MessageLookupByLibrary.simpleMessage("Atualizar"),
+        "episodeDocuments_spreadsheet":
+            MessageLookupByLibrary.simpleMessage("Folha de cálculo"),
+        "episodeDocuments_textDocument":
+            MessageLookupByLibrary.simpleMessage("Documento de texto"),
+        "episodeDocuments_title": MessageLookupByLibrary.simpleMessage(
+            "Documentos relativos à admissão"),
         "episodeEvolution_evaluation":
             MessageLookupByLibrary.simpleMessage("avaliação"),
         "episodeEvolution_evaluations":
@@ -468,6 +562,113 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Associar um telemóvel"),
         "pairPhoneInstructions": MessageLookupByLibrary.simpleMessage(
             "Digitalize este código QR a partir da aplicação ABAK Mobile para configurar automaticamente a ligação ao Desktop."),
+        "patientDetail_address": MessageLookupByLibrary.simpleMessage("Morada"),
+        "patientDetail_administrativeIdentity":
+            MessageLookupByLibrary.simpleMessage("Identidade administrativa"),
+        "patientDetail_archived":
+            MessageLookupByLibrary.simpleMessage("arquivado"),
+        "patientDetail_bornOn":
+            MessageLookupByLibrary.simpleMessage("Nem (nem) a"),
+        "patientDetail_cancel":
+            MessageLookupByLibrary.simpleMessage("Cancelar"),
+        "patientDetail_careEpisodeOpenedIn":
+            MessageLookupByLibrary.simpleMessage("Apoio aberto em"),
+        "patientDetail_careEpisodes":
+            MessageLookupByLibrary.simpleMessage("Coberturas"),
+        "patientDetail_create": MessageLookupByLibrary.simpleMessage("Criar"),
+        "patientDetail_dominantSide":
+            MessageLookupByLibrary.simpleMessage("Lado dominante"),
+        "patientDetail_edit": MessageLookupByLibrary.simpleMessage("Editar"),
+        "patientDetail_editCareEpisode":
+            MessageLookupByLibrary.simpleMessage("Alterar a cobertura"),
+        "patientDetail_editClinicalData":
+            MessageLookupByLibrary.simpleMessage("Alterar os dados clínicos"),
+        "patientDetail_email": MessageLookupByLibrary.simpleMessage("E-mail"),
+        "patientDetail_error": MessageLookupByLibrary.simpleMessage("Erro"),
+        "patientDetail_frHealthIdentity": MessageLookupByLibrary.simpleMessage(
+            "Identidade de saúde — França"),
+        "patientDetail_healthSystemCountry":
+            MessageLookupByLibrary.simpleMessage(
+                "Países com sistemas de saúde"),
+        "patientDetail_height": MessageLookupByLibrary.simpleMessage("Tamanho"),
+        "patientDetail_identitySource":
+            MessageLookupByLibrary.simpleMessage("Fonte de identidade"),
+        "patientDetail_initialReport":
+            MessageLookupByLibrary.simpleMessage("Relatório inicial"),
+        "patientDetail_nationalIdentifier":
+            MessageLookupByLibrary.simpleMessage(
+                "Número de identificação nacional"),
+        "patientDetail_newCareEpisode":
+            MessageLookupByLibrary.simpleMessage("Nova cobertura"),
+        "patientDetail_noBirthdate":
+            MessageLookupByLibrary.simpleMessage("Não preenchido"),
+        "patientDetail_noCareEpisode": MessageLookupByLibrary.simpleMessage(
+            "Não foi criado qualquer plano de cuidados para este doente."),
+        "patientDetail_notProvided":
+            MessageLookupByLibrary.simpleMessage("Não indicado"),
+        "patientDetail_notProvidedFemale":
+            MessageLookupByLibrary.simpleMessage("Não preenchido"),
+        "patientDetail_pathology":
+            MessageLookupByLibrary.simpleMessage("Patologia"),
+        "patientDetail_patientInformation":
+            MessageLookupByLibrary.simpleMessage("Informações sobre o doente"),
+        "patientDetail_patientProfile":
+            MessageLookupByLibrary.simpleMessage("Perfil do doente"),
+        "patientDetail_phone": MessageLookupByLibrary.simpleMessage("Telefone"),
+        "patientDetail_profession":
+            MessageLookupByLibrary.simpleMessage("Profissão"),
+        "patientDetail_provisional":
+            MessageLookupByLibrary.simpleMessage("Provisório"),
+        "patientDetail_provisionalDescription":
+            MessageLookupByLibrary.simpleMessage("Dados pessoais a preencher"),
+        "patientDetail_qualified":
+            MessageLookupByLibrary.simpleMessage("Qualificada"),
+        "patientDetail_qualifiedDescription":
+            MessageLookupByLibrary.simpleMessage("Identidade em conformidade"),
+        "patientDetail_referringPractitioner":
+            MessageLookupByLibrary.simpleMessage(
+                "Fisioterapeuta de referência"),
+        "patientDetail_retrieved":
+            MessageLookupByLibrary.simpleMessage("Recuperada"),
+        "patientDetail_retrievedDescription":
+            MessageLookupByLibrary.simpleMessage(
+                "N.º de identificação nacional obtido, identidade a verificar"),
+        "patientDetail_save": MessageLookupByLibrary.simpleMessage("Guardar"),
+        "patientDetail_sex": MessageLookupByLibrary.simpleMessage("Sexo"),
+        "patientDetail_sportActivity":
+            MessageLookupByLibrary.simpleMessage("Atividade desportiva"),
+        "patientDetail_state": MessageLookupByLibrary.simpleMessage("Estado"),
+        "patientDetail_status":
+            MessageLookupByLibrary.simpleMessage("Estatuto"),
+        "patientDetail_validated":
+            MessageLookupByLibrary.simpleMessage("Validada"),
+        "patientDetail_validatedDescription":
+            MessageLookupByLibrary.simpleMessage(
+                "Identidade verificada, INS a determinar"),
+        "patientDetail_weight": MessageLookupByLibrary.simpleMessage("Peso"),
+        "patientDetail_years": MessageLookupByLibrary.simpleMessage("anos"),
+        "patientForm_birthDate":
+            MessageLookupByLibrary.simpleMessage("Data de nascimento"),
+        "patientForm_cancel": MessageLookupByLibrary.simpleMessage("Cancelar"),
+        "patientForm_create": MessageLookupByLibrary.simpleMessage("Criar"),
+        "patientForm_editPatient":
+            MessageLookupByLibrary.simpleMessage("Editar o doente"),
+        "patientForm_female": MessageLookupByLibrary.simpleMessage("Mulher"),
+        "patientForm_firstName":
+            MessageLookupByLibrary.simpleMessage("Nome próprio"),
+        "patientForm_firstNameRequired": MessageLookupByLibrary.simpleMessage(
+            "O nome próprio é obrigatório"),
+        "patientForm_lastName": MessageLookupByLibrary.simpleMessage("Nome"),
+        "patientForm_lastNameRequired":
+            MessageLookupByLibrary.simpleMessage("O nome é obrigatório"),
+        "patientForm_male": MessageLookupByLibrary.simpleMessage("Homem"),
+        "patientForm_newPatient":
+            MessageLookupByLibrary.simpleMessage("Novo doente"),
+        "patientForm_other": MessageLookupByLibrary.simpleMessage("Outros"),
+        "patientForm_save": MessageLookupByLibrary.simpleMessage("Guardar"),
+        "patientForm_sex": MessageLookupByLibrary.simpleMessage("Sexo"),
+        "patientForm_unspecified":
+            MessageLookupByLibrary.simpleMessage("Não especificado"),
         "patientList_active": MessageLookupByLibrary.simpleMessage("Ativos"),
         "patientList_archive": MessageLookupByLibrary.simpleMessage("Arquivar"),
         "patientList_archiveConfirmation": m9,

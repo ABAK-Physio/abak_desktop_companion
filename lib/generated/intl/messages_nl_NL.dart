@@ -77,6 +77,43 @@ class MessageLookup extends MessageLookupByLibrary {
         "backupHistory_title":
             MessageLookupByLibrary.simpleMessage("Overzicht van back-ups"),
         "close": MessageLookupByLibrary.simpleMessage("Sluiten"),
+        "contactFormTemplateDiagnostic_category":
+            MessageLookupByLibrary.simpleMessage("Categorie"),
+        "contactFormTemplateDiagnostic_defaultTemplate":
+            MessageLookupByLibrary.simpleMessage("Standaardmodel"),
+        "contactFormTemplateDiagnostic_error":
+            MessageLookupByLibrary.simpleMessage("Fout"),
+        "contactFormTemplateDiagnostic_fields":
+            MessageLookupByLibrary.simpleMessage("Velden"),
+        "contactFormTemplateDiagnostic_no":
+            MessageLookupByLibrary.simpleMessage("Niet"),
+        "contactFormTemplateDiagnostic_noData":
+            MessageLookupByLibrary.simpleMessage(
+                "Er zijn geen gegevens om weer te geven."),
+        "contactFormTemplateDiagnostic_noTemplate":
+            MessageLookupByLibrary.simpleMessage(
+                "Er is geen sjabloon voor een eerste onderhoudsformulier gevonden."),
+        "contactFormTemplateDiagnostic_notDefined":
+            MessageLookupByLibrary.simpleMessage("Niet gedefinieerd"),
+        "contactFormTemplateDiagnostic_order":
+            MessageLookupByLibrary.simpleMessage("Bestelling"),
+        "contactFormTemplateDiagnostic_practitioner":
+            MessageLookupByLibrary.simpleMessage("Behandelaar"),
+        "contactFormTemplateDiagnostic_refresh":
+            MessageLookupByLibrary.simpleMessage("Vernieuwen"),
+        "contactFormTemplateDiagnostic_required":
+            MessageLookupByLibrary.simpleMessage("Verplicht"),
+        "contactFormTemplateDiagnostic_systemTemplate":
+            MessageLookupByLibrary.simpleMessage("Systeemmodel"),
+        "contactFormTemplateDiagnostic_templateId":
+            MessageLookupByLibrary.simpleMessage("Model-ID"),
+        "contactFormTemplateDiagnostic_title":
+            MessageLookupByLibrary.simpleMessage(
+                "Diagnose- en onderhoudsformulier"),
+        "contactFormTemplateDiagnostic_type":
+            MessageLookupByLibrary.simpleMessage("Type"),
+        "contactFormTemplateDiagnostic_yes":
+            MessageLookupByLibrary.simpleMessage("Ja"),
         "dashboardTitle": MessageLookupByLibrary.simpleMessage(
             "Lokaal klinisch centrum ABAK"),
         "desktopAddress": MessageLookupByLibrary.simpleMessage("Adres"),
@@ -140,6 +177,64 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("QR-code weergeven"),
         "deviceList_title":
             MessageLookupByLibrary.simpleMessage("Lijst met apparaten"),
+        "episodeDashboard_documents":
+            MessageLookupByLibrary.simpleMessage("Documenten"),
+        "episodeDashboard_documentsDescription":
+            MessageLookupByLibrary.simpleMessage(
+                "Documenten die bij deze aflevering horen"),
+        "episodeDashboard_forms":
+            MessageLookupByLibrary.simpleMessage("Formulieren"),
+        "episodeDashboard_formsDescription": MessageLookupByLibrary.simpleMessage(
+            "Vragenlijsten die specifiek betrekking hebben op deze aflevering"),
+        "episodeDashboard_notes":
+            MessageLookupByLibrary.simpleMessage("Opmerkingen"),
+        "episodeDashboard_notesDescription":
+            MessageLookupByLibrary.simpleMessage(
+                "Opmerkingen en commentaar van de fysiotherapeut"),
+        "episodeDashboard_report":
+            MessageLookupByLibrary.simpleMessage("Rapport"),
+        "episodeDashboard_reportDescription":
+            MessageLookupByLibrary.simpleMessage(
+                "Samenvatting van de aflevering"),
+        "episodeDocuments_addDocument":
+            MessageLookupByLibrary.simpleMessage("Een document toevoegen"),
+        "episodeDocuments_addError": MessageLookupByLibrary.simpleMessage(
+            "Het document kan niet worden toegevoegd"),
+        "episodeDocuments_addedOn":
+            MessageLookupByLibrary.simpleMessage("Toegevoegd op"),
+        "episodeDocuments_document":
+            MessageLookupByLibrary.simpleMessage("Document"),
+        "episodeDocuments_documentAdded": MessageLookupByLibrary.simpleMessage(
+            "Het document is toegevoegd aan de ondersteuning."),
+        "episodeDocuments_emptyDescription": MessageLookupByLibrary.simpleMessage(
+            "U kunt een tekstdocument, een spreadsheet, een PDF, een afbeelding of een ander nuttig bestand toevoegen."),
+        "episodeDocuments_fileNotFound": MessageLookupByLibrary.simpleMessage(
+            "Het bijbehorende bestand kan niet worden gevonden."),
+        "episodeDocuments_help": MessageLookupByLibrary.simpleMessage(
+            "U kunt aan deze functie documenten koppelen die u met uw gebruikelijke programma’s hebt gemaakt: tekstverwerker, spreadsheetprogramma, PDF-reader of beeldbewerkingssoftware.\n\nDe toegevoegde bestanden worden naar de opslagruimte van Companion gekopieerd. Als u op een document klikt, wordt het geopend met het bijbehorende programma dat op deze computer is geïnstalleerd."),
+        "episodeDocuments_image":
+            MessageLookupByLibrary.simpleMessage("Afbeelding"),
+        "episodeDocuments_loadError": MessageLookupByLibrary.simpleMessage(
+            "De bijbehorende documenten kunnen niet worden geladen."),
+        "episodeDocuments_noDocument": MessageLookupByLibrary.simpleMessage(
+            "Er zijn geen documenten gekoppeld aan deze behandeling."),
+        "episodeDocuments_openDocument":
+            MessageLookupByLibrary.simpleMessage("Het document openen"),
+        "episodeDocuments_openError": MessageLookupByLibrary.simpleMessage(
+            "Het bestand kan niet worden geopend"),
+        "episodeDocuments_pdfDocument":
+            MessageLookupByLibrary.simpleMessage("PDF-document"),
+        "episodeDocuments_platformNotSupported":
+            MessageLookupByLibrary.simpleMessage(
+                "Openen wordt op dit platform niet ondersteund."),
+        "episodeDocuments_refresh":
+            MessageLookupByLibrary.simpleMessage("Vernieuwen"),
+        "episodeDocuments_spreadsheet":
+            MessageLookupByLibrary.simpleMessage("Spreadsheet"),
+        "episodeDocuments_textDocument":
+            MessageLookupByLibrary.simpleMessage("Tekstdocument"),
+        "episodeDocuments_title": MessageLookupByLibrary.simpleMessage(
+            "Documenten met betrekking tot de behandeling"),
         "episodeEvolution_evaluation":
             MessageLookupByLibrary.simpleMessage("beoordeling"),
         "episodeEvolution_evaluations":
@@ -466,6 +561,112 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Een telefoon koppelen"),
         "pairPhoneInstructions": MessageLookupByLibrary.simpleMessage(
             "Scan deze QR-code via ABAK Mobile om de verbinding met Desktop automatisch in te stellen."),
+        "patientDetail_address": MessageLookupByLibrary.simpleMessage("Adres"),
+        "patientDetail_administrativeIdentity":
+            MessageLookupByLibrary.simpleMessage("Administratieve identiteit"),
+        "patientDetail_archived":
+            MessageLookupByLibrary.simpleMessage("gearchiveerd"),
+        "patientDetail_bornOn": MessageLookupByLibrary.simpleMessage("Noch de"),
+        "patientDetail_cancel":
+            MessageLookupByLibrary.simpleMessage("Annuleren"),
+        "patientDetail_careEpisodeOpenedIn":
+            MessageLookupByLibrary.simpleMessage("Open zorg in"),
+        "patientDetail_careEpisodes":
+            MessageLookupByLibrary.simpleMessage("Vergoedingen"),
+        "patientDetail_create":
+            MessageLookupByLibrary.simpleMessage("Aanmaken"),
+        "patientDetail_dominantSide":
+            MessageLookupByLibrary.simpleMessage("Dominante kant"),
+        "patientDetail_edit": MessageLookupByLibrary.simpleMessage("Wijzigen"),
+        "patientDetail_editCareEpisode":
+            MessageLookupByLibrary.simpleMessage("De ondersteuning aanpassen"),
+        "patientDetail_editClinicalData":
+            MessageLookupByLibrary.simpleMessage("Klinische gegevens wijzigen"),
+        "patientDetail_email": MessageLookupByLibrary.simpleMessage("E-mail"),
+        "patientDetail_error": MessageLookupByLibrary.simpleMessage("Fout"),
+        "patientDetail_frHealthIdentity": MessageLookupByLibrary.simpleMessage(
+            "Gezondheidsidentiteit — Frankrijk"),
+        "patientDetail_healthSystemCountry":
+            MessageLookupByLibrary.simpleMessage(
+                "Land met een gezondheidszorgstelsel"),
+        "patientDetail_height": MessageLookupByLibrary.simpleMessage("Grootte"),
+        "patientDetail_identitySource":
+            MessageLookupByLibrary.simpleMessage("Bron: identiteit"),
+        "patientDetail_initialReport":
+            MessageLookupByLibrary.simpleMessage("Eerste verslag"),
+        "patientDetail_nationalIdentifier":
+            MessageLookupByLibrary.simpleMessage(
+                "Nationaal identificatienummer"),
+        "patientDetail_newCareEpisode":
+            MessageLookupByLibrary.simpleMessage("Nieuwe dekking"),
+        "patientDetail_noBirthdate":
+            MessageLookupByLibrary.simpleMessage("Niet opgegeven"),
+        "patientDetail_noCareEpisode": MessageLookupByLibrary.simpleMessage(
+            "Er is geen zorgplan aangemaakt voor deze patiënt."),
+        "patientDetail_notProvided":
+            MessageLookupByLibrary.simpleMessage("Niet opgegeven"),
+        "patientDetail_notProvidedFemale":
+            MessageLookupByLibrary.simpleMessage("Niet opgegeven"),
+        "patientDetail_pathology":
+            MessageLookupByLibrary.simpleMessage("Pathologie"),
+        "patientDetail_patientInformation":
+            MessageLookupByLibrary.simpleMessage("Informatie voor de patiënt"),
+        "patientDetail_patientProfile":
+            MessageLookupByLibrary.simpleMessage("Patiëntenprofiel"),
+        "patientDetail_phone": MessageLookupByLibrary.simpleMessage("Telefoon"),
+        "patientDetail_profession":
+            MessageLookupByLibrary.simpleMessage("Beroep"),
+        "patientDetail_provisional":
+            MessageLookupByLibrary.simpleMessage("Voorlopig"),
+        "patientDetail_provisionalDescription":
+            MessageLookupByLibrary.simpleMessage("Gegevens aanvullen"),
+        "patientDetail_qualified":
+            MessageLookupByLibrary.simpleMessage("Gekwalificeerd"),
+        "patientDetail_qualifiedDescription":
+            MessageLookupByLibrary.simpleMessage("Identiteit overeenkomend"),
+        "patientDetail_referringPractitioner":
+            MessageLookupByLibrary.simpleMessage(
+                "Verantwoordelijke fysiotherapeut"),
+        "patientDetail_retrieved":
+            MessageLookupByLibrary.simpleMessage("Opgehaald"),
+        "patientDetail_retrievedDescription":
+            MessageLookupByLibrary.simpleMessage(
+                "INS verkregen, identiteit te controleren"),
+        "patientDetail_save": MessageLookupByLibrary.simpleMessage("Opslaan"),
+        "patientDetail_sex": MessageLookupByLibrary.simpleMessage("Seks"),
+        "patientDetail_sportActivity":
+            MessageLookupByLibrary.simpleMessage("Sportactiviteit"),
+        "patientDetail_state": MessageLookupByLibrary.simpleMessage("Status"),
+        "patientDetail_status": MessageLookupByLibrary.simpleMessage("Status"),
+        "patientDetail_validated":
+            MessageLookupByLibrary.simpleMessage("Goedgekeurd"),
+        "patientDetail_validatedDescription":
+            MessageLookupByLibrary.simpleMessage(
+                "Identiteit gecontroleerd, INS nog te achterhalen"),
+        "patientDetail_weight": MessageLookupByLibrary.simpleMessage("Gewicht"),
+        "patientDetail_years": MessageLookupByLibrary.simpleMessage("jaar"),
+        "patientForm_birthDate":
+            MessageLookupByLibrary.simpleMessage("Geboortedatum"),
+        "patientForm_cancel": MessageLookupByLibrary.simpleMessage("Annuleren"),
+        "patientForm_create": MessageLookupByLibrary.simpleMessage("Aanmaken"),
+        "patientForm_editPatient":
+            MessageLookupByLibrary.simpleMessage("Patiënt bewerken"),
+        "patientForm_female": MessageLookupByLibrary.simpleMessage("Vrouw"),
+        "patientForm_firstName":
+            MessageLookupByLibrary.simpleMessage("Voornaam"),
+        "patientForm_firstNameRequired":
+            MessageLookupByLibrary.simpleMessage("De voornaam is verplicht"),
+        "patientForm_lastName": MessageLookupByLibrary.simpleMessage("Naam"),
+        "patientForm_lastNameRequired":
+            MessageLookupByLibrary.simpleMessage("De naam is verplicht"),
+        "patientForm_male": MessageLookupByLibrary.simpleMessage("Man"),
+        "patientForm_newPatient":
+            MessageLookupByLibrary.simpleMessage("Nieuwe patiënt"),
+        "patientForm_other": MessageLookupByLibrary.simpleMessage("Overig"),
+        "patientForm_save": MessageLookupByLibrary.simpleMessage("Opslaan"),
+        "patientForm_sex": MessageLookupByLibrary.simpleMessage("Seks"),
+        "patientForm_unspecified":
+            MessageLookupByLibrary.simpleMessage("Niet gespecificeerd"),
         "patientList_active": MessageLookupByLibrary.simpleMessage("Activa"),
         "patientList_archive":
             MessageLookupByLibrary.simpleMessage("Archiveren"),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../generated/l10n.dart';
 import 'episode_forms_screen.dart';
 import 'episode_documents_screen.dart';
 import 'episode_notes_screen.dart';
@@ -21,15 +22,16 @@ class EpisodeDashboardScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final s = S.of(context);
     return Scaffold(
       appBar: AppBar(title: Text(caseLabel)),
       body: ListView(
         padding: const EdgeInsets.all(24),
         children: [
           _DashboardCard(
-            icon: Icons.assignment_outlined,
-            title: 'Formulaires',
-            subtitle: 'Questionnaires spécifiques à cet épisode',
+            icon: Icons.attach_file_outlined,
+            title: s.episodeDashboard_documents,
+            subtitle: s.episodeDashboard_documentsDescription,
             onTap: () {
               Navigator.of(context).push(
                 MaterialPageRoute(
@@ -44,8 +46,8 @@ class EpisodeDashboardScreen extends StatelessWidget {
 
           _DashboardCard(
             icon: Icons.attach_file_outlined,
-            title: 'Documents',
-            subtitle: 'Documents associés à cet épisode',
+            title: s.episodeDashboard_documents,
+            subtitle: s.episodeDashboard_documentsDescription,
             onTap: () {
               Navigator.of(context).push(
                 MaterialPageRoute(
@@ -61,9 +63,9 @@ class EpisodeDashboardScreen extends StatelessWidget {
           const SizedBox(height: 16),
 
           _DashboardCard(
-            icon: Icons.notes_outlined,
-            title: 'Notes',
-            subtitle: 'Observations et commentaires du kiné',
+            icon: Icons.description_outlined,
+            title: s.episodeDashboard_report,
+            subtitle: s.episodeDashboard_reportDescription,
             onTap: () {
               Navigator.of(context).push(
                 MaterialPageRoute(

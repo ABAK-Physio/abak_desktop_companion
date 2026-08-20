@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 import 'package:intl/intl.dart';
+import '../../../generated/l10n.dart';
 import '../models/patient.dart';
 
 class PatientFormDialog extends StatefulWidget {
@@ -130,8 +131,9 @@ class _PatientFormDialogState extends State<PatientFormDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final s = S.of(context);
     return AlertDialog(
-      title: Text(_isEditing ? 'Modifier le patient' : 'Nouveau patient'),
+      title: Text(_isEditing ? s.patientForm_editPatient : s.patientForm_newPatient),
       content: SizedBox(
         width: 420,
         child: Form(
@@ -141,10 +143,10 @@ class _PatientFormDialogState extends State<PatientFormDialog> {
             children: [
               TextFormField(
                 controller: _lastNameController,
-                decoration: const InputDecoration(labelText: 'Nom'),
+                decoration: InputDecoration(labelText: s.patientForm_lastName),
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
-                    return 'Le nom est obligatoire';
+                    return s.patientForm_lastNameRequired;
                   }
                   return null;
                 },
@@ -152,10 +154,10 @@ class _PatientFormDialogState extends State<PatientFormDialog> {
               const SizedBox(height: 12),
               TextFormField(
                 controller: _firstNameController,
-                decoration: const InputDecoration(labelText: 'Prénom'),
+                decoration: InputDecoration(labelText: s.patientForm_firstName),
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
-                    return 'Le prénom est obligatoire';
+                    return s.patientForm_firstNameRequired;
                   }
                   return null;
                 },
@@ -164,8 +166,8 @@ class _PatientFormDialogState extends State<PatientFormDialog> {
               TextFormField(
                 controller: _birthDateController,
                 readOnly: true,
-                decoration: const InputDecoration(
-                  labelText: 'Date de naissance',
+                decoration: InputDecoration(
+                  labelText: s.patientForm_birthDate,
                   suffixIcon: Icon(Icons.calendar_today_outlined),
                 ),
                 onTap: _pickBirthDate,
@@ -173,12 +175,12 @@ class _PatientFormDialogState extends State<PatientFormDialog> {
               const SizedBox(height: 12),
               DropdownButtonFormField<String>(
                 initialValue: _sexCode,
-                decoration: const InputDecoration(labelText: 'Sexe'),
-                items: const [
-                  DropdownMenuItem(value: 'U', child: Text('Non précisé')),
-                  DropdownMenuItem(value: 'F', child: Text('Femme')),
-                  DropdownMenuItem(value: 'M', child: Text('Homme')),
-                  DropdownMenuItem(value: 'X', child: Text('Autre')),
+                decoration: InputDecoration(labelText: s.patientForm_sex),
+                items: [
+                  DropdownMenuItem(value: 'U', child: Text(s.patientForm_unspecified)),
+                  DropdownMenuItem(value: 'F', child: Text(s.patientForm_female)),
+                  DropdownMenuItem(value: 'M', child: Text(s.patientForm_male)),
+                  DropdownMenuItem(value: 'X', child: Text(s.patientForm_other)),
                 ],
                 onChanged: (value) {
                   setState(() {
@@ -193,11 +195,11 @@ class _PatientFormDialogState extends State<PatientFormDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(null),
-          child: const Text('Annuler'),
+          child: Text(s.patientForm_cancel),
         ),
         FilledButton(
           onPressed: _submit,
-          child: Text(_isEditing ? 'Enregistrer' : 'Créer'),
+          child: Text(_isEditing ? s.patientForm_save : s.patientForm_create),
         ),
       ],
     );

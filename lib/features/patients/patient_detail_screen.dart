@@ -50,8 +50,9 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
   CareEpisodeReferringPractitionerRepository();
 
   String _formatBirthDate(BuildContext context) {
+    final s = S.of(context);
     if (widget.patient.birthDate == null) {
-      return 'Non renseignée';
+      return s.patientDetail_noBirthdate;
     }
 
     final birthDate = DateTime.parse(widget.patient.birthDate!);
@@ -69,7 +70,7 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
       widget.patient.birthDate,
     );
 
-    return '$date ($age ans)';
+    return '$date ($age ${s.patientDetail_years})';
   }
 
   String _formatPatientTitle() {
@@ -77,6 +78,7 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
   }
 
   Future<void> _editCareEpisode(CareEpisode episode) async {
+    final s = S.of(context);
     final currentAssignment = await _referringPractitionerRepository
         .getCurrentReferringPractitioner(episode.careEpisodeId);
 
@@ -95,7 +97,7 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Modifier la prise en charge'),
+          title: Text(s.patientDetail_editCareEpisode),
           content: SizedBox(
             width: 520,
             child: Column(
@@ -103,16 +105,16 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
               children: [
                 TextField(
                   controller: pathologyController,
-                  decoration: const InputDecoration(
-                    labelText: 'Pathologie',
+                  decoration: InputDecoration(
+                    labelText: s.patientDetail_pathology,
                     border: OutlineInputBorder(),
                   ),
                 ),
                 const SizedBox(height: 16),
                 TextField(
                   controller: initialReportController,
-                  decoration: const InputDecoration(
-                    labelText: 'Compte rendu initial',
+                  decoration: InputDecoration(
+                    labelText: s.patientDetail_initialReport,
                     border: OutlineInputBorder(),
                     alignLabelWithHint: true,
                   ),
@@ -121,7 +123,7 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
                 ),
                 const SizedBox(height: 16),
                 PractitionerSelector(
-                  label: 'Kiné référent',
+                  label: s.patientDetail_referringPractitioner,
                   selectedPractitionerId: selectedPractitionerId,
                   allowEmpty: true,
                   onChanged: (practitionerId) {
@@ -134,11 +136,11 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(false),
-              child: const Text('Annuler'),
+              child: Text(s.patientDetail_cancel),
             ),
             FilledButton(
               onPressed: () => Navigator.of(context).pop(true),
-              child: const Text('Enregistrer'),
+              child: Text(s.patientDetail_save),
             ),
           ],
         );
@@ -196,6 +198,7 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
   }
 
   Future<void> _createCareEpisode() async {
+    final s = S.of(context);
     final pathologyController = TextEditingController();
     final initialReportController = TextEditingController();
 
@@ -205,7 +208,7 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Nouvelle prise en charge'),
+          title: Text(s.patientDetail_newCareEpisode),
           content: SizedBox(
             width: 520,
             child: Column(
@@ -213,16 +216,16 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
               children: [
                 TextField(
                   controller: pathologyController,
-                  decoration: const InputDecoration(
-                    labelText: 'Pathologie',
+                  decoration: InputDecoration(
+                    labelText: s.patientDetail_pathology,
                     border: OutlineInputBorder(),
                   ),
                 ),
                 const SizedBox(height: 16),
                 TextField(
                   controller: initialReportController,
-                  decoration: const InputDecoration(
-                    labelText: 'Compte rendu initial',
+                  decoration: InputDecoration(
+                    labelText: s.patientDetail_initialReport,
                     border: OutlineInputBorder(),
                     alignLabelWithHint: true,
                   ),
@@ -231,7 +234,7 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
                 ),
                 const SizedBox(height: 16),
                 PractitionerSelector(
-                  label: 'Kiné référent',
+                  label: s.patientDetail_referringPractitioner,
                   selectedPractitionerId: selectedPractitionerId,
                   allowEmpty: true,
                   onChanged: (practitionerId) {
@@ -244,11 +247,11 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(false),
-              child: const Text('Annuler'),
+              child: Text(s.patientDetail_cancel),
             ),
             FilledButton(
               onPressed: () => Navigator.of(context).pop(true),
-              child: const Text('Créer'),
+              child: Text(s.patientDetail_create),
             ),
           ],
         );
@@ -270,7 +273,7 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
     final episode = CareEpisode(
       careEpisodeId: const Uuid().v4(),
       patientId: widget.patient.patientId,
-      title: 'Prise en charge ouverte en $monthYear',
+      title: '${s.patientDetail_careEpisodeOpenedIn} $monthYear',
       pathologyLabel: pathology,
       initialReport: initialReport.isEmpty ? null : initialReport,
       createdAt: now,
@@ -294,6 +297,7 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final s = S.of(context);
     final birthDateText = _formatBirthDate(context);
 
     return Scaffold(
@@ -302,7 +306,8 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
         padding: const EdgeInsets.all(24),
         children: [
           _SectionCard(
-            title: 'Informations patient',
+            title:
+                s.patientDetail_patientInformation,
             icon: Icons.person_outline,
             helpContent: S.of(context).help_information_patient,
             children: [
@@ -316,8 +321,12 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
                         '${widget.patient.firstName}',
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
-                  Text('Né(e) le $birthDateText'),
-                  Text('Sexe : ${widget.patient.sexCode}'),
+                  Text(
+                    '${s.patientDetail_bornOn} $birthDateText',
+                  ),
+                  Text(
+                    '${s.patientDetail_sex} : ${widget.patient.sexCode}',
+                  ),
                 ],
               ),
             ],
@@ -465,17 +474,20 @@ class _PatientFrHealthIdentitySection extends StatelessWidget {
     required this.refreshToken,
   });
 
-  String _statusLabel(PatientFrHealthIdentity? identity) {
+  String _statusLabel(
+      PatientFrHealthIdentity? identity,
+      S s,
+      ) {
     switch (identity?.identityStatus) {
       case 'retrieved':
-        return 'Récupérée';
+        return s.patientDetail_retrieved;
       case 'validated':
-        return 'Validée';
+        return s.patientDetail_validated;
       case 'qualified':
-        return 'Qualifiée';
+        return s.patientDetail_qualified;
       case 'provisional':
       default:
-        return 'Provisoire';
+        return s.patientDetail_provisional;
     }
   }
 
@@ -495,13 +507,14 @@ class _PatientFrHealthIdentitySection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final s = S.of(context);
     return FutureBuilder<PatientFrHealthIdentity?>(
       key: ValueKey('patient-fr-health-identity-$refreshToken'),
       future: repository.getByPatientId(patientId),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const _SectionCard(
-            title: 'Identité de santé — France',
+          return _SectionCard(
+            title: s.patientDetail_frHealthIdentity,
             icon: Icons.badge_outlined,
             children: [
               Padding(
@@ -514,7 +527,7 @@ class _PatientFrHealthIdentitySection extends StatelessWidget {
 
         if (snapshot.hasError) {
           return _SectionCard(
-            title: 'Identité de santé — France',
+            title: s.patientDetail_frHealthIdentity,
             icon: Icons.badge_outlined,
             children: [
               Text('Erreur : ${snapshot.error}'),
@@ -525,15 +538,15 @@ class _PatientFrHealthIdentitySection extends StatelessWidget {
         final identity = snapshot.data;
 
         return _SectionCard(
-          title: 'Identité de santé — France',
+          title: s.patientDetail_frHealthIdentity,
           icon: Icons.badge_outlined,
           children: [
             _InfoRow(
-              label: 'Statut',
-              value: _statusLabel(identity),
+              label: s.patientDetail_status,
+              value: _statusLabel(identity, s),
             ),
             _InfoRow(
-              label: 'État',
+              label: s.patientDetail_state,
               value: _statusDescription(identity),
             ),
           ],
@@ -558,20 +571,24 @@ class _PatientClinicalDataSection extends StatelessWidget {
     required this.onRefresh,
   });
 
-  String _attributeValue(List<PatientAttribute> attributes, String key) {
+  String _attributeValue(List<PatientAttribute> attributes,
+      String key,
+      S s,
+      ) {
     final matching = attributes.where((a) => a.attributeKey == key);
 
     if (matching.isEmpty) {
-      return 'Non renseigné';
+      return s.patientDetail_notProvided;
     }
 
     return matching.first.attributeValue?.trim().isNotEmpty == true
         ? matching.first.attributeValue!
-        : 'Non renseigné';
+        : s.patientDetail_notProvided;
   }
 
   @override
   Widget build(BuildContext context) {
+    final s = S.of(context);
     return FutureBuilder<_PatientClinicalData>(
       key: ValueKey('patient-clinical-$refreshToken'),
       future: _loadData(),
@@ -579,9 +596,9 @@ class _PatientClinicalDataSection extends StatelessWidget {
         final data = snapshot.data;
 
         return _SectionCard(
-          title: 'Informations patient',
+          title: s.patientDetail_patientInformation,
           icon: Icons.person_outline,
-          helpContent: S.of(context).help_information_patient,
+          helpContent: s.help_information_patient,
           children: [
             Align(
               alignment: Alignment.centerLeft,
@@ -602,7 +619,7 @@ class _PatientClinicalDataSection extends StatelessWidget {
                   }
                 },
                 icon: const Icon(Icons.edit_outlined),
-                label: const Text('Modifier les données cliniques'),
+                label: Text(s.patientDetail_editClinicalData),
               ),
             ),
             const SizedBox(height: 16),
@@ -612,43 +629,45 @@ class _PatientClinicalDataSection extends StatelessWidget {
                 child: CircularProgressIndicator(),
               )
             else if (snapshot.hasError)
-              Text('Erreur : ${snapshot.error}')
+              Text(
+                '${s.patientDetail_error} : ${snapshot.error}',
+              )
             else ...[
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Expanded(
                     child: _ClinicalDataColumn(
-                      title: 'Identité administrative',
+                      title: s.patientDetail_administrativeIdentity,
                       children: [
                         _InfoRow(
-                          label: 'Identifiant national',
+                          label: s.patientDetail_nationalIdentifier,
                           value:
                               data?.identity?.nationalHealthId ??
-                              'Non renseigné',
+                              s.patientDetail_notProvided,
                         ),
                         _InfoRow(
-                          label: 'Pays système santé',
+                          label: s.patientDetail_healthSystemCountry,
                           value:
                               data?.identity?.healthSystemCountry ??
-                              'Non renseigné',
+                              s.patientDetail_notProvided,
                         ),
                         _InfoRow(
-                          label: 'Source identité',
+                          label: s.patientDetail_identitySource,
                           value:
-                              data?.identity?.identitySource ?? 'Non renseigné',
+                              data?.identity?.identitySource ?? s.patientDetail_notProvided,
                         ),
                         _InfoRow(
                           label: 'Téléphone',
-                          value: data?.identity?.phone ?? 'Non renseigné',
+                          value: data?.identity?.phone ?? s.patientDetail_notProvided,
                         ),
                         _InfoRow(
                           label: 'Email',
-                          value: data?.identity?.email ?? 'Non renseigné',
+                          value: data?.identity?.email ?? s.patientDetail_notProvided,
                         ),
                         _InfoRow(
                           label: 'Adresse',
-                          value: data?.identity?.address ?? 'Non renseigné',
+                          value: data?.identity?.address ?? s.patientDetail_notProvided,
                         ),
                       ],
                     ),
@@ -656,41 +675,46 @@ class _PatientClinicalDataSection extends StatelessWidget {
                   const SizedBox(width: 32),
                   Expanded(
                     child: _ClinicalDataColumn(
-                      title: 'Profil patient',
+                      title: s.patientDetail_patientProfile,
                       children: [
                         _InfoRow(
-                          label: 'Côté dominant',
+                          label: s.patientDetail_dominantSide,
                           value: _attributeValue(
                             data?.attributes ?? [],
                             'dominant_side',
+                            s,
                           ),
                         ),
                         _InfoRow(
-                          label: 'Profession',
+                          label: s.patientDetail_profession,
                           value: _attributeValue(
                             data?.attributes ?? [],
                             'profession',
+                            s,
                           ),
                         ),
                         _InfoRow(
-                          label: 'Activité sportive',
+                          label: s.patientDetail_sportActivity,
                           value: _attributeValue(
                             data?.attributes ?? [],
                             'sport',
+                            s,
                           ),
                         ),
                         _InfoRow(
-                          label: 'Taille',
+                          label: s.patientDetail_height,
                           value: _attributeValue(
                             data?.attributes ?? [],
                             'height_cm',
+                            s,
                           ),
                         ),
                         _InfoRow(
-                          label: 'Poids',
+                          label: s.patientDetail_weight,
                           value: _attributeValue(
                             data?.attributes ?? [],
                             'weight_kg',
+                            s,
                           ),
                         ),
                       ],
@@ -759,15 +783,18 @@ class _CareEpisodesSection extends StatelessWidget {
     required this.patientName,
   });
 
-  String _referringPractitionerLabel(CareEpisodeSummary summary) {
+  String _referringPractitionerLabel(
+      CareEpisodeSummary summary,
+      S s,
+      ) {
     final name = summary.referringPractitionerDisplayName?.trim();
 
     if (name == null || name.isEmpty) {
-      return 'Non renseigné';
+      return s.patientDetail_notProvided;
     }
 
     if (summary.referringPractitionerArchived) {
-      return '$name — archivé';
+      return '$name — ${s.patientDetail_archived}';
     }
 
     return name;
@@ -775,6 +802,7 @@ class _CareEpisodesSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final s = S.of(context);
     return FutureBuilder<List<CareEpisodeSummary>>(
       key: ValueKey('care-episodes-$refreshToken'),
       future: repository.getEpisodeSummariesForPatient(patientId),
@@ -820,8 +848,9 @@ class _CareEpisodesSection extends StatelessWidget {
                   title: Text('Prise en charge ouverte en $monthYear'),
                   subtitle: Text(
                     [
-                      'Pathologie : ${episode.pathologyLabel}',
-                      'Kiné référent : ${_referringPractitionerLabel(summary)}',
+                      '${s.patientDetail_pathology} : ${episode.pathologyLabel}',
+                      '${s.patientDetail_referringPractitioner} : '
+                          '${_referringPractitionerLabel(summary, s)}',
                     ].join('\n'),
                   ),
                   trailing: IconButton(

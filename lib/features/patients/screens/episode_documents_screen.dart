@@ -5,6 +5,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import '../../../core/utils/date_format_utils.dart';
 
+import '../../../generated/l10n.dart';
 import '../data/episode_document_repository.dart';
 import '../models/episode_document.dart';
 import '../services/episode_document_storage_service.dart';
@@ -50,6 +51,7 @@ class _EpisodeDocumentsScreenState extends State<EpisodeDocumentsScreen> {
   }
 
   Future<void> _addDocument() async {
+    final s = S.of(context);
     final result = await FilePicker.platform.pickFiles();
 
     if (result == null || result.files.isEmpty) {
@@ -83,9 +85,9 @@ class _EpisodeDocumentsScreenState extends State<EpisodeDocumentsScreen> {
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
+        SnackBar(
           content: Text(
-            'Le document a été ajouté à la prise en charge.',
+            s.episodeDocuments_documentAdded,
           ),
         ),
       );
@@ -95,7 +97,7 @@ class _EpisodeDocumentsScreenState extends State<EpisodeDocumentsScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            'Impossible d’ajouter le document : $error',
+            '${s.episodeDocuments_addError} : $error',
           ),
         ),
       );
@@ -103,14 +105,16 @@ class _EpisodeDocumentsScreenState extends State<EpisodeDocumentsScreen> {
   }
 
   Future<void> _openDocument(EpisodeDocument document) async {
+    final s = S.of(context);
+
     final file = File(document.filePath);
 
     if (!await file.exists()) {
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Le fichier associé est introuvable.'),
+        SnackBar(
+          content: Text(s.episodeDocuments_fileNotFound),
         ),
       );
 
@@ -136,7 +140,7 @@ class _EpisodeDocumentsScreenState extends State<EpisodeDocumentsScreen> {
         );
       } else {
         throw Exception(
-          'Ouverture non prise en charge sur cette plateforme.',
+          s.episodeDocuments_platformNotSupported,
         );
       }
     } catch (error) {
@@ -204,12 +208,15 @@ class _EpisodeDocumentsScreenState extends State<EpisodeDocumentsScreen> {
     return fileName.substring(separatorIndex + 1).toLowerCase();
   }
 
-  String _documentTypeLabel(EpisodeDocument document) {
+  String _documentTypeLabel(
+      EpisodeDocument document,
+      S s,
+      ) {
     final extension = _documentExtension(document);
 
     switch (extension) {
       case 'pdf':
-        return 'Document PDF';
+        return s.episodeDocuments_pdfDocument;
 
       case 'doc':
       case 'docx':
@@ -217,14 +224,14 @@ class _EpisodeDocumentsScreenState extends State<EpisodeDocumentsScreen> {
       case 'pages':
       case 'rtf':
       case 'txt':
-        return 'Document texte';
+        return s.episodeDocuments_textDocument;
 
       case 'xls':
       case 'xlsx':
       case 'ods':
       case 'numbers':
       case 'csv':
-        return 'Feuille de calcul';
+        return s.episodeDocuments_spreadsheet;
 
       case 'jpg':
       case 'jpeg':
@@ -232,12 +239,12 @@ class _EpisodeDocumentsScreenState extends State<EpisodeDocumentsScreen> {
       case 'gif':
       case 'webp':
       case 'heic':
-        return 'Image';
+        return s.episodeDocuments_image;
 
       default:
         return extension.isEmpty
-            ? 'Document'
-            : 'Document ${extension.toUpperCase()}';
+            ? s.episodeDocuments_document
+            : '${s.episodeDocuments_document} ${extension.toUpperCase()}';
     }
   }
 
@@ -251,7 +258,10 @@ class _EpisodeDocumentsScreenState extends State<EpisodeDocumentsScreen> {
     );
   }
 
-  Widget _buildDocumentTile(EpisodeDocument document) {
+  Widget _buildDocumentTile(
+      EpisodeDocument document,
+      S s,
+      ) {
     return Card(
       child: ListTile(
         leading: Icon(
@@ -264,11 +274,12 @@ class _EpisodeDocumentsScreenState extends State<EpisodeDocumentsScreen> {
           overflow: TextOverflow.ellipsis,
         ),
         subtitle: Text(
-          '${_documentTypeLabel(document)}'
-              ' · Ajouté le ${_createdAtLabel(context, document)}',
+          '${_documentTypeLabel(document, s)}'
+              ' · ${s.episodeDocuments_addedOn} '
+              '${_createdAtLabel(context, document)}',
         ),
         trailing: IconButton(
-          tooltip: 'Ouvrir le document',
+          tooltip: s.episodeDocuments_openDocument,
           onPressed: () => _openDocument(document),
           icon: const Icon(Icons.open_in_new_outlined),
         ),
@@ -277,8 +288,8 @@ class _EpisodeDocumentsScreenState extends State<EpisodeDocumentsScreen> {
     );
   }
 
-  Widget _buildEmptyState() {
-    return const Padding(
+  Widget _buildEmptyState(S s) {
+    return Padding(
       padding: EdgeInsets.symmetric(vertical: 48),
       child: Column(
         children: [
@@ -288,13 +299,12 @@ class _EpisodeDocumentsScreenState extends State<EpisodeDocumentsScreen> {
           ),
           SizedBox(height: 12),
           Text(
-            'Aucun document associé à cette prise en charge.',
+            s.episodeDocuments_noDocument,
             textAlign: TextAlign.center,
           ),
           SizedBox(height: 8),
           Text(
-            'Vous pouvez ajouter un document texte, une feuille de calcul, '
-                'un PDF, une image ou tout autre fichier utile.',
+            s.episodeDocuments_emptyDescription,
             textAlign: TextAlign.center,
           ),
         ],
@@ -304,24 +314,20 @@ class _EpisodeDocumentsScreenState extends State<EpisodeDocumentsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final s = S.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Documents de la prise en charge',
+        title: Text(
+          s.episodeDocuments_title,
         ),
         actions: [
           ContextHelpButton(
-            title: 'Documents de la prise en charge',
+            title: s.episodeDocuments_title,
             content:
-            'Vous pouvez associer à cette prise en charge des documents '
-                'créés avec vos applications habituelles : traitement de '
-                'texte, tableur, lecteur PDF ou logiciel d’image.\n\n'
-                'Les fichiers ajoutés sont copiés dans l’espace de stockage '
-                'de Companion. Un clic sur un document l’ouvre avec '
-                'l’application correspondante installée sur cet ordinateur.',
+            s.episodeDocuments_help,
           ),
           IconButton(
-            tooltip: 'Actualiser',
+            tooltip: s.episodeDocuments_refresh,
             onPressed: _refresh,
             icon: const Icon(Icons.refresh),
           ),
@@ -337,9 +343,9 @@ class _EpisodeDocumentsScreenState extends State<EpisodeDocumentsScreen> {
           }
 
           if (snapshot.hasError) {
-            return const Center(
+            return Center(
               child: Text(
-                'Impossible de charger les documents associés.',
+                s.episodeDocuments_loadError,
               ),
             );
           }
@@ -359,14 +365,16 @@ class _EpisodeDocumentsScreenState extends State<EpisodeDocumentsScreen> {
                 child: FilledButton.icon(
                   onPressed: _addDocument,
                   icon: const Icon(Icons.add),
-                  label: const Text('Ajouter un document'),
+                  label: Text(s.episodeDocuments_addDocument),
                 ),
               ),
               const SizedBox(height: 16),
               if (documents.isEmpty)
-                _buildEmptyState()
+                _buildEmptyState(s)
               else
-                ...documents.map(_buildDocumentTile),
+                ...documents.map(
+                      (document) => _buildDocumentTile(document, s),
+                ),
             ],
           );
         },
