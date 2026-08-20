@@ -48,9 +48,6 @@ class PatientFrInsiPsSignatureBuilder {
       },
     );
 
-    return builder.buildDocument().rootElement.toXmlString(
-      pretty: true,
-      indent: '  ',
-    );
+    return builder.buildDocument().rootElement.toXmlString();
   }
 }

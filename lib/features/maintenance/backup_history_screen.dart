@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
+import '../../core/utils/date_format_utils.dart';
+import '../../generated/l10n.dart';
 import 'data/database_backup_repository.dart';
 import 'models/database_backup.dart';
 import 'package:abak_desktop_companion/features/desktop_backup/services/local_database_restore_service.dart';
@@ -26,25 +27,22 @@ class _BackupHistoryScreenState extends State<BackupHistoryScreen> {
   }
 
   Future<void> _restoreBackup(DatabaseBackup backup) async {
+    final s=S.of(context);
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Restaurer cette sauvegarde ?'),
-          content: const Text(
-            'Cette opération remplacera totalement la base actuelle.\n\n'
-            'Une sauvegarde automatique de sécurité sera créée avant restauration.\n\n'
-            'Continuer ?',
-          ),
+          title: Text(s.backupHistory_restoreTitle),
+          content: Text(s.backupHistory_restoreWarning),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(false),
-              child: const Text('Annuler'),
+              child: Text(s.backupHistory_cancel),
             ),
             FilledButton.icon(
               onPressed: () => Navigator.of(context).pop(true),
               icon: const Icon(Icons.restore),
-              label: const Text('Restaurer'),
+              label: Text(s.backupHistory_restore),
             ),
           ],
         );
@@ -73,8 +71,9 @@ class _BackupHistoryScreenState extends State<BackupHistoryScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final s=S.of(context);
     return Scaffold(
-      appBar: AppBar(title: const Text('Historique des sauvegardes')),
+      appBar: AppBar(title: Text(s.backupHistory_title)),
       body: FutureBuilder<List<DatabaseBackup>>(
         future: _futureBackups,
         builder: (context, snapshot) {
@@ -85,7 +84,7 @@ class _BackupHistoryScreenState extends State<BackupHistoryScreen> {
           }
 
           if (backups.isEmpty) {
-            return const Center(child: Text('Aucune sauvegarde enregistrée.'));
+            return Center(child: Text(s.backupHistory_empty));
           }
 
           return ListView.separated(
@@ -123,9 +122,12 @@ class _BackupTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final date = DateTime.fromMillisecondsSinceEpoch(backup.createdAt);
+    final s = S.of(context);
 
-    final formattedDate = DateFormat('dd/MM/yyyy HH:mm').format(date);
+    final formattedDate = DateFormatUtils.formatTimestamp(
+      context,
+      backup.createdAt,
+    );
 
     return ListTile(
       leading: const Icon(Icons.save_outlined),
@@ -138,7 +140,7 @@ class _BackupTile extends StatelessWidget {
       trailing: OutlinedButton.icon(
         onPressed: onRestore,
         icon: const Icon(Icons.restore),
-        label: const Text('Restaurer'),
+        label: Text(s.backupHistory_restore),
       ),
     );
   }

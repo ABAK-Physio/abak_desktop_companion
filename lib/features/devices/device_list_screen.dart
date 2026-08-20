@@ -20,12 +20,14 @@ class DeviceListScreen extends StatefulWidget {
 }
 
 class _DeviceListScreenState extends State<DeviceListScreen> {
-  static const ExpertContextInfo _expertInfo = ExpertContextInfo(
-    contextName: 'Liste des appareils',
-    sourceFile: 'lib/features/devices/device_list_screen.dart',
-    arbPrefix: 'deviceList',
-    comment: 'Cet écran montre la liste des appareils connectés à l’établissement',
-  );
+  ExpertContextInfo _expertInfo(S s) {
+    return ExpertContextInfo(
+      contextName: s.deviceList_contextName,
+      sourceFile: 'lib/features/devices/device_list_screen.dart',
+      arbPrefix: 'deviceList',
+      comment: s.deviceList_contextComment,
+    );
+  }
 
   final ApplicationSettingsService _applicationSettingsService =
   const ApplicationSettingsService();
@@ -91,22 +93,23 @@ class _DeviceListScreenState extends State<DeviceListScreen> {
   }
 
   Future<void> _archiveDevice(PairedDevice device) async {
+    final s=S.of(context);
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Archiver l’appareil'),
+          title: Text(s.deviceList_archiveTitle),
           content: Text(
-            'Voulez-vous vraiment archiver ${device.deviceLabel} ?',
+            s.deviceList_archiveConfirmation(device.deviceLabel),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(false),
-              child: const Text('Annuler'),
+              child: Text(s.deviceList_cancel),
             ),
             FilledButton(
               onPressed: () => Navigator.of(context).pop(true),
-              child: const Text('Archiver'),
+              child: Text(s.deviceList_archive),
             ),
           ],
         );
@@ -130,20 +133,22 @@ class _DeviceListScreenState extends State<DeviceListScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final s = S.of(context);
+
     return FutureBuilder<List<PairedDevice>>(
       future: _devicesFuture,
       builder: (context, snapshot) {
         final devices = snapshot.data ?? [];
 
         return Scaffold(
-          body: _buildBody(snapshot, devices),
+          body: _buildBody(snapshot, devices, s),
           floatingActionButton: _showArchived
               ? null
               : FloatingActionButton.extended(
-                  onPressed: _createDevice,
-                  icon: const Icon(Icons.devices),
-                  label: const Text('Nouvel appareil'),
-                ),
+            onPressed: _createDevice,
+            icon: const Icon(Icons.devices),
+            label: Text(s.deviceList_newDevice),
+          ),
         );
       },
     );
@@ -151,14 +156,14 @@ class _DeviceListScreenState extends State<DeviceListScreen> {
 
   Widget _buildBody(
     AsyncSnapshot<List<PairedDevice>> snapshot,
-    List<PairedDevice> devices,
+    List<PairedDevice> devices, S s
   ) {
     if (snapshot.connectionState == ConnectionState.waiting) {
       return const Center(child: CircularProgressIndicator());
     }
 
     if (snapshot.hasError) {
-      return Center(child: Text('Erreur : ${snapshot.error}'));
+      return Center(child: Text('${s.deviceList_error} : ${snapshot.error}'));
     }
 
     return Column(
@@ -170,7 +175,7 @@ class _DeviceListScreenState extends State<DeviceListScreen> {
             children: [
               Expanded(
                 child: Text(
-                  'Liste des appareils',
+                  s.deviceList_contextName,
                   style: Theme.of(context).textTheme.headlineSmall,
                 ),
               ),
@@ -180,8 +185,8 @@ class _DeviceListScreenState extends State<DeviceListScreen> {
               ),
 
               if (_expertModeEnabled)
-                const ExpertInfoButton(
-                  info: _expertInfo,
+                ExpertInfoButton(
+                  info: _expertInfo(s),
                 ),
             ],
           ),
@@ -189,15 +194,15 @@ class _DeviceListScreenState extends State<DeviceListScreen> {
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
           child: SegmentedButton<bool>(
-            segments: const [
+            segments: [
               ButtonSegment(
                 value: false,
-                label: Text('Actifs'),
+                label: Text(s.deviceList_active),
                 icon: Icon(Icons.devices_other_outlined),
               ),
               ButtonSegment(
                 value: true,
-                label: Text('Archivés'),
+                label: Text(s.deviceList_archived),
                 icon: Icon(Icons.archive_outlined),
               ),
             ],
@@ -222,15 +227,15 @@ class _DeviceListScreenState extends State<DeviceListScreen> {
                       const SizedBox(height: 16),
                       Text(
                         _showArchived
-                            ? 'Aucun appareil archivé'
-                            : 'Aucun appareil associé',
+                            ? s.deviceList_noArchivedDevices
+                            : s.deviceList_noPairedDevices,
                         style: const TextStyle(fontSize: 22),
                       ),
                       const SizedBox(height: 8),
                       Text(
                         _showArchived
-                            ? 'La corbeille des appareils est vide pour le moment.'
-                            : "'Les appareils ABAK associés à l'établissement apparaîtront ici.",
+                            ? s.deviceList_archivedDevicesEmpty
+                            : s.deviceList_pairedDevicesExplanation,
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
                     ],
@@ -248,19 +253,23 @@ class _DeviceListScreenState extends State<DeviceListScreen> {
                         child: Icon(Icons.phone_android),
                       ),
                       title: Text(device.deviceLabel),
-                      subtitle: Text(
-                        _showArchived
-                            ? 'Archivé le ${DateFormatUtils.formatTimestampForDisplay(context, device.archivedAt)}'
-                            : [
-                                if (device.platform != null)
-                                  'Plateforme : ${device.platform}',
-                                if (device.practitionerId != null)
-                                  'Praticien associé : ${device.practitionerId}',
-                              ].join(' · '),
-                      ),
+                        subtitle: Text(
+                          _showArchived
+                              ? '${s.deviceList_archivedOn} '
+                              '${DateFormatUtils.formatTimestampForDisplay(
+                            context,
+                            device.archivedAt,
+                          )}'
+                              : [
+                            if (device.platform != null)
+                              '${s.deviceList_platform} : ${device.platform}',
+                            if (device.practitionerId != null)
+                              '${s.deviceList_associatedPractitioner} : ${device.practitionerId}',
+                          ].join(' · '),
+                        ),
                       trailing: _showArchived
                           ? IconButton(
-                        tooltip: 'Restaurer',
+                        tooltip: s.deviceList_restore,
                         icon: const Icon(Icons.restore),
                         onPressed: () => _restoreDevice(device),
                       )
@@ -268,7 +277,7 @@ class _DeviceListScreenState extends State<DeviceListScreen> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           IconButton(
-                            tooltip: 'Afficher le QR Code',
+                            tooltip: s.deviceList_showQrCode,
                             icon: const Icon(Icons.qr_code),
                             onPressed: () {
                               showDialog<void>(
@@ -280,12 +289,12 @@ class _DeviceListScreenState extends State<DeviceListScreen> {
                             },
                           ),
                           IconButton(
-                            tooltip: 'Modifier',
+                            tooltip: s.deviceList_edit,
                             icon: const Icon(Icons.edit_outlined),
                             onPressed: () => _editDevice(device),
                           ),
                           IconButton(
-                            tooltip: 'Archiver',
+                            tooltip: s.deviceList_archive,
                             icon: const Icon(Icons.archive_outlined),
                             onPressed: () => _archiveDevice(device),
                           ),

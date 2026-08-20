@@ -1,8 +1,7 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:fl_chart/fl_chart.dart';
-
+import '../../../core/utils/date_format_utils.dart';
 import 'package:abak_desktop_companion/features/results/models/desktop_result.dart';
 import 'package:abak_shared/abak_shared.dart';
 import '../services/structured_metric_reader.dart';
@@ -152,10 +151,6 @@ class _EvolutionGroupSection extends StatelessWidget {
             FollowUpPolicy.declaredMetricsOnly &&
             !hasDeclaredChartMetrics;
 
-    final formatter = DateFormat.yMd(
-      Localizations.localeOf(context).toLanguageTag(),
-    );
-
     final normalizedUnit = followUpUnit?.trim();
 
     final unit = normalizedUnit == null || normalizedUnit.isEmpty
@@ -214,8 +209,9 @@ class _EvolutionGroupSection extends StatelessWidget {
         ],
 
         ...measures.map((result) {
-          final date = formatter.format(
-            DateTime.fromMillisecondsSinceEpoch(result.createdAt),
+          final date = DateFormatUtils.formatTimestampForDisplay(
+            context,
+            result.createdAt,
           );
 
           final followUpValue = _readFollowUpValue(
@@ -1149,18 +1145,14 @@ class _EvolutionLineChart extends StatelessWidget {
                   return const SizedBox.shrink();
                 }
 
-                final formatter = DateFormat.Md(
-                  Localizations.localeOf(context).toLanguageTag(),
-                );
-
-                final date = DateTime.fromMillisecondsSinceEpoch(
-                  measures[index].createdAt,
-                );
 
                 return Padding(
                   padding: const EdgeInsets.only(top: 8),
                   child: Text(
-                    formatter.format(date),
+                    DateFormatUtils.formatMonthDayTimestamp(
+                      context,
+                      measures[index].createdAt,
+                    ),
                     style: Theme.of(context).textTheme.bodySmall,
                   ),
                 );

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../models/care_episode.dart';
-import 'package:intl/intl.dart';
+import '../../../core/utils/date_format_utils.dart';
 import '../../results/data/desktop_result_repository.dart';
 import '../../results/models/desktop_result.dart';
 import '../../results/result_detail_screen.dart';
@@ -202,14 +202,6 @@ class _AbakResultsCard extends StatelessWidget {
                   const Text('Aucun résultat rattaché pour le moment.')
                 else
                   ...results.map((result) {
-                    final date = DateTime.fromMillisecondsSinceEpoch(
-                      result.createdAt,
-                    );
-
-                    final formatter = DateFormat.yMd(
-                      Localizations.localeOf(context).toLanguageTag(),
-                    );
-
                     final mobileOrigin =
                         result.mobilePathologyLabel ??
                         result.mobilePatientLabel;
@@ -226,7 +218,10 @@ class _AbakResultsCard extends StatelessWidget {
                           children: [
                             Text(
                               [
-                                formatter.format(date),
+                                DateFormatUtils.formatTimestampForDisplay(
+                                  context,
+                                  result.createdAt,
+                                ),
                                 if (result.scoreTotal != null)
                                   'Score : ${result.scoreTotal?.toStringAsFixed(2) ?? '-'}',
                                 if (result.measureUnit != null)

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import '../../core/utils/date_format_utils.dart';
 
 import 'data/import_session_repository.dart';
 import 'models/import_session.dart';
@@ -52,10 +52,10 @@ class _ImportSessionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final date = DateTime.fromMillisecondsSinceEpoch(session.startedAt);
-    final formatter = DateFormat.yMd(
-      Localizations.localeOf(context).toLanguageTag(),
-    ).add_Hm();
+    final formattedDate = DateFormatUtils.formatTimestamp(
+      context,
+      session.startedAt,
+    );
 
     return Card(
       child: ListTile(
@@ -69,7 +69,7 @@ class _ImportSessionTile extends StatelessWidget {
                   _ => Icons.check_circle_outline,
                 },
         ),
-        title: Text(formatter.format(date)),
+        title: Text(formattedDate),
         subtitle: Text(
           '${session.status} · '
           '${session.processedFilesCount} fichier(s) · '

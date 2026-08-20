@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
+import '../../core/utils/date_format_utils.dart';
+import '../../generated/l10n.dart';
 import 'data/import_session_repository.dart';
 import 'import_session_detail_screen.dart';
 import 'models/import_session.dart';
@@ -51,24 +52,25 @@ class _ImportResolutionAssistantScreenState
   }
 
   String _sessionTitle(BuildContext context, ImportSession session) {
+    final s = S.of(context);
     if (session.status == 'needs_resolution') {
-      return 'Import à terminer';
+      return s.importResolutionAssistant_importToComplete;
     }
 
     if (session.status == 'failed' || session.failedFilesCount > 0) {
-      return 'Import en échec';
+      return s.importResolutionAssistant_importFailed;
     }
 
     if (session.conflictResultsCount > 0 ||
         session.skippedResultsCount > 0 ||
         session.status == 'completed_with_errors') {
-      return 'Import à vérifier';
+      return s.importResolutionAssistant_importToReview;
     }
 
-    return 'Import';
+    return s.importResolutionAssistant_import;
   }
 
-  String _sessionDescription(ImportSession session) {
+  String _sessionDescription(ImportSession session, S s) {
     final elements = <String>[];
 
     final patient = session.summaryPatientLabel?.trim();
@@ -83,20 +85,26 @@ class _ImportResolutionAssistantScreenState
 
     if (session.failedFilesCount > 0) {
       elements.add(
-        '${session.failedFilesCount} fichier'
-            '${session.failedFilesCount > 1 ? 's' : ''} en erreur',
+        '${session.failedFilesCount} '
+            '${session.failedFilesCount > 1
+            ? s.importResolutionAssistant_files
+            : s.importResolutionAssistant_file} '
+            '${s.importResolutionAssistant_inError}',
       );
     }
 
     if (session.conflictResultsCount > 0) {
       elements.add(
-        '${session.conflictResultsCount} résultat'
-            '${session.conflictResultsCount > 1 ? 's' : ''} à vérifier',
+        '${session.conflictResultsCount} '
+            '${session.conflictResultsCount > 1
+            ? s.importResolutionAssistant_results
+            : s.importResolutionAssistant_result} '
+            '${s.importResolutionAssistant_toReview}',
       );
     }
 
     if (elements.isEmpty) {
-      return 'Une intervention est nécessaire pour terminer cet import.';
+      return s.importResolutionAssistant_interventionRequired;
     }
 
     return elements.join(' · ');
@@ -124,13 +132,10 @@ class _ImportResolutionAssistantScreenState
 
   @override
   Widget build(BuildContext context) {
-    final formatter = DateFormat.yMd(
-      Localizations.localeOf(context).toLanguageTag(),
-    ).add_Hm();
-
+    final s = S.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Résolution des problèmes d’import'),
+        title: Text(s.importResolutionAssistant_title),
       ),
       body: FutureBuilder<List<ImportSession>>(
         future: _sessionsFuture,
@@ -146,7 +151,7 @@ class _ImportResolutionAssistantScreenState
               child: Padding(
                 padding: const EdgeInsets.all(24),
                 child: Text(
-                  'Impossible de charger les imports : ${snapshot.error}',
+                  '${s.importResolutionAssistant_loadingError} : ${snapshot.error}',
                 ),
               ),
             );
@@ -157,21 +162,21 @@ class _ImportResolutionAssistantScreenState
               .toList();
 
           if (sessions.isEmpty) {
-            return const Center(
+            return Center(
               child: Padding(
-                padding: EdgeInsets.all(24),
+                padding: const EdgeInsets.all(24),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.check_circle_outline,
                       size: 48,
                       color: Colors.green,
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                     Text(
-                      'Aucun problème d’import détecté.',
-                      style: TextStyle(
+                      s.importResolutionAssistant_noProblem,
+                      style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w600,
                       ),
@@ -189,11 +194,10 @@ class _ImportResolutionAssistantScreenState
                 color: Theme.of(
                   context,
                 ).colorScheme.surfaceContainerHighest,
-                child: const Padding(
-                  padding: EdgeInsets.all(16),
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
                   child: Text(
-                    'Sélectionnez un import pour afficher son détail '
-                        'et suivre les étapes proposées.',
+                    s.importResolutionAssistant_selectImportInstruction,
                   ),
                 ),
               ),
@@ -219,12 +223,11 @@ class _ImportResolutionAssistantScreenState
                       ),
                     ),
                     subtitle: Text(
-                      '${formatter.format(
-                        DateTime.fromMillisecondsSinceEpoch(
-                          session.startedAt,
-                        ),
+                      '${DateFormatUtils.formatTimestamp(
+                        context,
+                        session.startedAt,
                       )}\n'
-                          '${_sessionDescription(session)}',
+                          '${_sessionDescription(session, s)}',
                     ),
                     isThreeLine: true,
                     trailing: const Icon(Icons.chevron_right),

@@ -9,6 +9,10 @@ class PatientFrInsiWsIns2EnvelopeBuilder {
   static const String addressingNamespace =
       'http://www.w3.org/2005/08/addressing';
 
+  static const String wsSecurityNamespace =
+      'http://docs.oasis-open.org/wss/2004/01/'
+      'oasis-200401-wss-wssecurity-secext-1.0.xsd';
+
   static const String action =
       'urn:ServiceIdentiteCertifiee:1.0.0:rechercherInsAvecTraitsIdentite';
 
@@ -17,11 +21,24 @@ class PatientFrInsiWsIns2EnvelopeBuilder {
     required String messageIdXml,
     required String contexteBamXml,
     required String bodyXml,
+    String? psAssertionXml,
   }) {
-    final contexteLps = XmlDocument.parse(contexteLpsXml).rootElement;
-    final messageId = XmlDocument.parse(messageIdXml).rootElement;
-    final contexteBam = XmlDocument.parse(contexteBamXml).rootElement;
-    final body = XmlDocument.parse(bodyXml).rootElement;
+    final contexteLps =
+        XmlDocument.parse(contexteLpsXml).rootElement;
+    final messageId =
+        XmlDocument.parse(messageIdXml).rootElement;
+    final contexteBam =
+        XmlDocument.parse(contexteBamXml).rootElement;
+    final body =
+        XmlDocument.parse(bodyXml).rootElement;
+
+    XmlElement? psAssertion;
+
+    if (psAssertionXml != null &&
+        psAssertionXml.trim().isNotEmpty) {
+      psAssertion =
+          XmlDocument.parse(psAssertionXml).rootElement;
+    }
 
     final builder = XmlBuilder();
 
@@ -30,6 +47,7 @@ class PatientFrInsiWsIns2EnvelopeBuilder {
       attributes: {
         'xmlns:soap': soapNamespace,
         'xmlns:add': addressingNamespace,
+        'xmlns:wsse': wsSecurityNamespace,
       },
       nest: () {
         builder.element(
@@ -44,6 +62,17 @@ class PatientFrInsiWsIns2EnvelopeBuilder {
 
             builder.xml(contexteLps.toXmlString());
             builder.xml(messageId.toXmlString());
+
+            if (psAssertion != null) {
+              builder.element(
+                'wsse:Security',
+                nest: () {
+                  builder.xml(
+                    psAssertion!.toXmlString(),
+                  );
+                },
+              );
+            }
           },
         );
 
@@ -56,9 +85,7 @@ class PatientFrInsiWsIns2EnvelopeBuilder {
       },
     );
 
-    return builder.buildDocument().toXmlString(
-      pretty: true,
-      indent: '  ',
-    );
+    return builder.buildDocument().toXmlString();
   }
+
 }

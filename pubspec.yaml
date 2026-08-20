@@ -39,6 +39,7 @@ dependencies:
 
   abak_vitale:
     path: ../abak_vitale
+  http: ^1.6.0
 
 dev_dependencies:
   flutter_test:

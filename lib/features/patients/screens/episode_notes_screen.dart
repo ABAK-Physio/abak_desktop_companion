@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../data/episode_note_repository.dart';
 import '../models/episode_note.dart';
+import '../../../core/utils/date_format_utils.dart';
 
 class EpisodeNotesScreen extends StatefulWidget {
   final String caseId;
@@ -53,7 +54,11 @@ class _EpisodeNotesScreenState extends State<EpisodeNotesScreen> {
 
   Widget _buildNoteTile(EpisodeNote note) {
     final updatedAt = note.updatedAt ?? note.createdAt;
-    final date = DateTime.fromMillisecondsSinceEpoch(updatedAt);
+
+    final formattedDate = DateFormatUtils.formatTimestamp(
+      context,
+      updatedAt,
+    );
 
     return Card(
       child: ListTile(
@@ -61,7 +66,7 @@ class _EpisodeNotesScreenState extends State<EpisodeNotesScreen> {
         title: Text(note.title),
         subtitle: Text(
           [
-            'Modifiée le : ${date.toLocal()}',
+            'Modifiée le : $formattedDate',
             if (note.content.trim().isNotEmpty) note.content.trim(),
           ].join('\n'),
           maxLines: 3,

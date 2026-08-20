@@ -21,16 +21,15 @@ class PatientListScreen extends StatefulWidget {
   @override
   State<PatientListScreen> createState() => _PatientListScreenState();
 }
-
 class _PatientListScreenState extends State<PatientListScreen> {
-  static const ExpertContextInfo _expertInfo = ExpertContextInfo(
-    contextName: 'Liste des patients',
+ExpertContextInfo _expertInfo(S s) {
+  return ExpertContextInfo(
+    contextName: s.patientList_contextName,
     sourceFile: 'lib/features/patients/patient_list_screen.dart',
     arbPrefix: 'patientList',
-    comment:
-    'Cet écran permet de voir la liste des patients actifs et archivés. ',
+    comment: s.patientList_contextComment,
   );
-
+}
   final ApplicationSettingsService _applicationSettingsService =
   const ApplicationSettingsService();
 
@@ -84,13 +83,16 @@ class _PatientListScreenState extends State<PatientListScreen> {
   }
 
   Future<void> _restorePatient(Patient patient) async {
+    final s = S.of(context);
     await _repository.restorePatient(patient.patientId);
 
     if (!mounted) return;
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('${patient.displayName} restauré dans la liste active.'),
+        content: Text(
+          s.patientList_restoreSuccess(patient.displayName),
+        ),
       ),
     );
 
@@ -135,22 +137,23 @@ class _PatientListScreenState extends State<PatientListScreen> {
   }
 
   Future<void> _deletePatient(Patient patient) async {
+    final s = S.of(context);
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Archiver le patient'),
+          title: Text(s.patientList_archiveTitle),
           content: Text(
-            'Voulez-vous vraiment archiver ${patient.displayName} ? Il ne sera plus affiché dans la liste active.',
+            s.patientList_archiveConfirmation(patient.displayName),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(false),
-              child: const Text('Annuler'),
+              child: Text(s.patientList_cancel),
             ),
             FilledButton(
               onPressed: () => Navigator.of(context).pop(true),
-              child: const Text('Archiver'),
+              child: Text(s.patientList_archive),
             ),
           ],
         );
@@ -183,6 +186,7 @@ class _PatientListScreenState extends State<PatientListScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final s = S.of(context);
     return FutureBuilder<List<Patient>>(
       future: _patientsFuture,
       builder: (context, snapshot) {
@@ -193,7 +197,7 @@ class _PatientListScreenState extends State<PatientListScreen> {
           floatingActionButton: FloatingActionButton.extended(
             onPressed: _createPatient,
             icon: const Icon(Icons.person_add),
-            label: const Text('Nouveau patient'),
+            label: Text(s.patientList_newPatient),
           ),
         );
       },
@@ -204,12 +208,18 @@ class _PatientListScreenState extends State<PatientListScreen> {
     AsyncSnapshot<List<Patient>> snapshot,
     List<Patient> patients,
   ) {
+    final s = S.of(context);
+
     if (snapshot.connectionState == ConnectionState.waiting) {
       return const Center(child: CircularProgressIndicator());
     }
 
     if (snapshot.hasError) {
-      return Center(child: Text('Erreur : ${snapshot.error}'));
+      return Center(
+        child: Text(
+            s.patientList_error(snapshot.error.toString())
+        ),
+      );
     }
 
     if (patients.isEmpty) {
@@ -221,15 +231,15 @@ class _PatientListScreenState extends State<PatientListScreen> {
             const SizedBox(height: 16),
             Text(
               _showArchived
-                  ? 'Aucun patient archivé'
-                  : 'Aucun patient enregistré',
+                  ? s.patientList_noArchivedPatients
+                  : s.patientList_noRegisteredPatients,
               style: const TextStyle(fontSize: 22),
             ),
             const SizedBox(height: 8),
             Text(
               _showArchived
-                  ? 'La corbeille des patients est vide pour le moment.'
-                  : 'Le fichier patient local est vide pour le moment.',
+                  ? s.patientList_archivedPatientsEmpty
+                  : s.patientList_patientFileEmpty,
               style: Theme.of(context).textTheme.bodyMedium,
             ),
           ],
@@ -256,13 +266,13 @@ class _PatientListScreenState extends State<PatientListScreen> {
             children: [
               Expanded(
                 child: Text(
-                  'Liste des patients',
+                  s.patientList_title,
                   style: Theme.of(context).textTheme.headlineSmall,
                 ),
               ),
               if (_expertModeEnabled)
-                const ExpertInfoButton(
-                  info: _expertInfo,
+                ExpertInfoButton(
+                  info: _expertInfo(s),
                 ),
             ],
           ),
@@ -273,12 +283,16 @@ class _PatientListScreenState extends State<PatientListScreen> {
             segments: [
               ButtonSegment(
                 value: false,
-                label: Text('Actifs ($_activePatientsCount)'),
+                label: Text(
+                  '${s.patientList_active} ($_activePatientsCount)',
+                ),
                 icon: Icon(Icons.people_outline),
               ),
               ButtonSegment(
                 value: true,
-                label: Text('Archivés ($_archivedPatientsCount)'),
+                label: Text(
+                  '${s.patientList_archived} ($_archivedPatientsCount)',
+                ),
                 icon: Icon(Icons.archive_outlined),
               ),
             ],
@@ -296,8 +310,8 @@ class _PatientListScreenState extends State<PatientListScreen> {
         Padding(
           padding: const EdgeInsets.all(16),
           child: TextField(
-            decoration: const InputDecoration(
-              labelText: 'Rechercher un patient',
+            decoration: InputDecoration(
+              labelText: s.patientList_searchPatient,
               prefixIcon: Icon(Icons.search),
               border: OutlineInputBorder(),
             ),
@@ -310,9 +324,9 @@ class _PatientListScreenState extends State<PatientListScreen> {
         ),
         Expanded(
           child: filteredPatients.isEmpty
-              ? const Center(
+              ? Center(
                   child: Text(
-                    'Aucun patient trouvé',
+                    s.patientList_noPatientFound,
                     style: TextStyle(fontSize: 18),
                   ),
                 )
@@ -348,19 +362,23 @@ class _PatientListScreenState extends State<PatientListScreen> {
                           ? Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Sexe : ${patient.sexCode}'),
+                          Text(
+                            '${s.patientList_sex} : ${patient.sexCode}',
+                          ),
                           if (archivedAt != null)
                             Row(
                               children: [
                                 Expanded(
                                   child: Text(
-                                    'Archivé le '
+                                    '${s.patientList_archivedOn} '
                                         '${DateFormatUtils.formatTimestampForDisplay(context, archivedAt)}'
-                                        '${restorableUntil == null ? '' : ' · Restaurable jusqu’au ${DateFormatUtils.formatTimestampForDisplay(context, restorableUntil)}'}',
+                                        '${restorableUntil == null
+                                        ? ''
+                                        : ' · ${s.patientList_restorableUntil} ${DateFormatUtils.formatTimestampForDisplay(context, restorableUntil)}'}',
                                   ),
                                 ),
                                 ContextHelpButton(
-                                  title: 'Patient archivé',
+                                  title: s.patientList_archivedPatient,
                                   content: S.of(context).help_archived_patient,
                                 ),
                               ],
@@ -368,12 +386,14 @@ class _PatientListScreenState extends State<PatientListScreen> {
                         ],
                       )
                           : Text(
-                        'Sexe : ${patient.sexCode}'
-                            '${patient.birthDate == null ? '' : ' · Né(e) le ${DateFormatUtils.formatIsoDateForDisplay(context, patient.birthDate)}'}',
+                        '${s.patientList_sex} : ${patient.sexCode}'
+                            '${patient.birthDate == null
+                            ? ''
+                            : ' · ${s.patientList_bornOn} ${DateFormatUtils.formatIsoDateForDisplay(context, patient.birthDate)}'}',
                       ),
                       trailing: _showArchived
                           ? IconButton(
-                              tooltip: 'Restaurer',
+                              tooltip: s.patientList_restore,
                               icon: const Icon(Icons.restore),
                               onPressed: () => _restorePatient(patient),
                             )
@@ -381,12 +401,12 @@ class _PatientListScreenState extends State<PatientListScreen> {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 IconButton(
-                                  tooltip: 'Modifier',
+                                  tooltip: s.patientList_edit,
                                   icon: const Icon(Icons.edit_outlined),
                                   onPressed: () => _editPatient(patient),
                                 ),
                                 IconButton(
-                                  tooltip: 'Archiver',
+                                  tooltip: s.patientList_archive,
                                   icon: const Icon(Icons.archive_outlined),
                                   onPressed: () => _deletePatient(patient),
                                 ),

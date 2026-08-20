@@ -809,8 +809,10 @@ class _CareEpisodesSection extends StatelessWidget {
                   episode.createdAt,
                 );
 
-                final monthYear =
-                    '${createdAt.month.toString().padLeft(2, '0')}/${createdAt.year}';
+                final monthYear = DateFormatUtils.formatMonthYear(
+                  context,
+                  createdAt,
+                );
 
                 return ListTile(
                   contentPadding: EdgeInsets.zero,

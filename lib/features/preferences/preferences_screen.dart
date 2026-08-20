@@ -27,13 +27,14 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
   final PatientArchiveSettingsService _archiveSettingsService =
   PatientArchiveSettingsService();
 
-  static const ExpertContextInfo _expertInfo = ExpertContextInfo(
-    contextName: 'Paramètres utilisateur',
-    sourceFile: 'lib/features/preferences/preferences_screen.dart',
-    arbPrefix: 'preferences',
-    comment:
-    'Cet écran centralise les paramètres généraux de Companion.',
-  );
+  ExpertContextInfo _expertInfo(S s) {
+    return ExpertContextInfo(
+      contextName: s.preferences_contextName,
+      sourceFile: 'lib/features/preferences/preferences_screen.dart',
+      arbPrefix: 'preferences',
+      comment: s.preferences_contextComment,
+    );
+  }
 
   String? _languageCode;
   int _retentionDays =
@@ -82,6 +83,7 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
   }
 
   Future<void> _changeLanguage(String? code) async {
+    final s = S.of(context);
     if (code == null) return;
 
     await _languageService.setLanguageCode(code);
@@ -96,10 +98,11 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
 
     ScaffoldMessenger.of(
       context,
-    ).showSnackBar(const SnackBar(content: Text('Langue enregistrée.')));
+    ).showSnackBar(SnackBar(content: Text(s.preferences_languageSaved)));
   }
 
   Future<void> _changeRetentionDays(int? days) async {
+    final s = S.of(context);
     if (days == null) return;
 
     await _archiveSettingsService.setRetentionDays(days);
@@ -111,13 +114,15 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
     });
 
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Durée de conservation enregistrée.'),
+      SnackBar(
+        content: Text(s.preferences_retentionSaved),
       ),
     );
   }
 
   Future<void> _changeExpertMode(bool enabled) async {
+    final s = S.of(context);
+
     await _applicationSettingsService.setExpertModeEnabled(enabled);
 
     if (!mounted) return;
@@ -127,8 +132,10 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
     });
 
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Paramètre du mode Expert enregistré.'),
+      SnackBar(
+        content: Text(
+          s.preferences_expertModeSaved,
+        ),
       ),
     );
   }
@@ -156,8 +163,8 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
                       ),
                     ),
                     if (_expertModeEnabled)
-                      const ExpertInfoButton(
-                        info: _expertInfo,
+                      ExpertInfoButton(
+                        info: _expertInfo(s),
                       ),
                     ContextHelpButton(
                       title: S.of(context).user_settings,
@@ -200,7 +207,7 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
                             const Icon(Icons.archive_outlined),
                             const SizedBox(width: 8),
                             Text(
-                              'Patients archivés',
+                              s.preferences_archivedPatients,
                               style: Theme.of(context).textTheme.titleMedium,
                             ),
                           ],
@@ -208,22 +215,23 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
                         const SizedBox(height: 16),
                         DropdownButtonFormField<int>(
                           initialValue: _retentionDays,
-                          decoration: const InputDecoration(
-                            labelText: 'Durée de conservation',
-                            border: OutlineInputBorder(),
+                          decoration: InputDecoration(
+                            labelText: s.preferences_retentionDuration,
+                            border: const OutlineInputBorder(),
                           ),
                           items: PatientArchiveSettingsService.retentionOptions.map((days) {
                             return DropdownMenuItem<int>(
                               value: days,
-                              child: Text('$days jours'),
+                              child: Text(
+                                '$days ${s.preferences_days}',
+                              ),
                             );
                           }).toList(),
                           onChanged: _loading ? null : _changeRetentionDays,
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          'Les patients archivés peuvent être restaurés pendant cette durée '
-                              'Ils seront ensuite supprimés automatiquement.',
+                          s.preferences_retentionExplanation,
                           style: Theme.of(context).textTheme.bodySmall,
                         ),
                       ],
@@ -235,10 +243,9 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
                 Card(
                   child: SwitchListTile(
                     secondary: const Icon(Icons.developer_mode_outlined),
-                    title: const Text('Mode Expert'),
-                    subtitle: const Text(
-                      'Affiche des informations techniques destinées '
-                          'aux développeurs et aux contributeurs.',
+                    title: Text(s.preferences_expertMode),
+                    subtitle: Text(
+                      s.preferences_expertModeDescription,
                     ),
                     value: _expertModeEnabled,
                     onChanged: _loading ? null : _changeExpertMode,
@@ -248,9 +255,9 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
                 Card(
                   child: ListTile(
                     leading: const Icon(Icons.business_outlined),
-                    title: const Text('Établissement'),
-                    subtitle: const Text(
-                      'Nom, logo et informations générales.',
+                    title: Text(s.preferences_organization),
+                    subtitle: Text(
+                      s.preferences_organizationDescription,
                     ),
                     trailing: const Icon(Icons.chevron_right),
                     onTap: () {

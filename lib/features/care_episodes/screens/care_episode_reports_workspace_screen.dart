@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:abak_shared/abak_shared.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
+import '../../../core/utils/date_format_utils.dart';
 
 import '../../results/data/desktop_result_repository.dart';
 import '../../results/models/desktop_result.dart';
@@ -2476,10 +2476,6 @@ class _LatestTestsCard extends StatelessWidget {
             );
           }
 
-          final formatter = DateFormat.yMd(
-            Localizations.localeOf(context).toLanguageTag(),
-          );
-
           return Column(
             children: [
               const _TableHeader(
@@ -2497,9 +2493,6 @@ class _LatestTestsCard extends StatelessWidget {
                   separatorBuilder: (_, _) => const Divider(height: 1),
                   itemBuilder: (context, index) {
                     final result = latestResults[index];
-                    final date = DateTime.fromMillisecondsSinceEpoch(
-                      result.createdAt,
-                    );
 
                     return InkWell(
                       onTap: () {
@@ -2529,7 +2522,12 @@ class _LatestTestsCard extends StatelessWidget {
                             ),
                             Expanded(
                               flex: 2,
-                              child: Text(formatter.format(date)),
+                              child: Text(
+                                DateFormatUtils.formatTimestampForDisplay(
+                                  context,
+                                  result.createdAt,
+                                ),
+                              ),
                             ),
                             Expanded(
                               flex: 3,
@@ -2677,10 +2675,6 @@ class _AssessmentHistoryCard extends StatelessWidget {
                     );
                   }
 
-                  final formatter = DateFormat.yMd(
-                    Localizations.localeOf(context).toLanguageTag(),
-                  );
-
                   return Column(
                     children: [
                       const _TableHeader(
@@ -2700,10 +2694,6 @@ class _AssessmentHistoryCard extends StatelessWidget {
                           const Divider(height: 1),
                           itemBuilder: (context, index) {
                             final assessment = assessments[index];
-                            final date =
-                            DateTime.fromMillisecondsSinceEpoch(
-                              assessment.assessmentDate,
-                            );
 
                             return Padding(
                               padding: const EdgeInsets.symmetric(
@@ -2722,7 +2712,12 @@ class _AssessmentHistoryCard extends StatelessWidget {
                                   ),
                                   Expanded(
                                     flex: 2,
-                                    child: Text(formatter.format(date)),
+                                    child: Text(
+                                      DateFormatUtils.formatTimestampForDisplay(
+                                        context,
+                                        assessment.assessmentDate,
+                                      ),
+                                    ),
                                   ),
                                   SizedBox(
                                     width: 42,
@@ -2856,10 +2851,6 @@ class _ReportHistoryCard extends StatelessWidget {
             );
           }
 
-          final formatter = DateFormat.yMd(
-            Localizations.localeOf(context).toLanguageTag(),
-          );
-
           return Column(
             children: [
               const _TableHeader(
@@ -2878,9 +2869,6 @@ class _ReportHistoryCard extends StatelessWidget {
                   separatorBuilder: (_, _) => const Divider(height: 1),
                   itemBuilder: (context, index) {
                     final report = reports[index];
-                    final date = DateTime.fromMillisecondsSinceEpoch(
-                      report.reportDate,
-                    );
 
                     return Padding(
                       padding: const EdgeInsets.symmetric(
@@ -2899,7 +2887,12 @@ class _ReportHistoryCard extends StatelessWidget {
                           ),
                           Expanded(
                             flex: 2,
-                            child: Text(formatter.format(date)),
+                            child: Text(
+                              DateFormatUtils.formatTimestampForDisplay(
+                                context,
+                                report.reportDate,
+                              ),
+                            ),
                           ),
                           SizedBox(
                             width: 42,
@@ -3035,10 +3028,6 @@ class _FollowUpNotesCard extends StatelessWidget {
             );
           }
 
-          final formatter = DateFormat.yMd(
-            Localizations.localeOf(context).toLanguageTag(),
-          );
-
           return Column(
             children: [
               const _TableHeader(
@@ -3056,9 +3045,6 @@ class _FollowUpNotesCard extends StatelessWidget {
                   separatorBuilder: (_, _) => const Divider(height: 1),
                   itemBuilder: (context, index) {
                     final note = notes[index];
-                    final date = DateTime.fromMillisecondsSinceEpoch(
-                      note.noteDate,
-                    );
 
                     return Padding(
                       padding: const EdgeInsets.symmetric(
@@ -3070,7 +3056,12 @@ class _FollowUpNotesCard extends StatelessWidget {
                         children: [
                           Expanded(
                             flex: 2,
-                            child: Text(formatter.format(date)),
+                            child: Text(
+                              DateFormatUtils.formatTimestampForDisplay(
+                                context,
+                                note.noteDate,
+                              ),
+                            ),
                           ),
                           Expanded(
                             flex: 5,
@@ -3217,10 +3208,6 @@ class _DocumentsCard extends StatelessWidget {
                 );
               }
 
-              final formatter = DateFormat.yMd(
-                Localizations.localeOf(context).toLanguageTag(),
-              );
-
               return Column(
                 children: [
                   Expanded(
@@ -3230,10 +3217,6 @@ class _DocumentsCard extends StatelessWidget {
                       const Divider(height: 1),
                       itemBuilder: (context, index) {
                         final item = items[index];
-                        final date = DateTime.fromMillisecondsSinceEpoch(
-                          item.archivedAt,
-                        );
-
                         return Padding(
                           padding: const EdgeInsets.symmetric(
                             vertical: 6,
@@ -3258,7 +3241,10 @@ class _DocumentsCard extends StatelessWidget {
                                     ),
                                     Text(
                                       '${item.typeLabel} — '
-                                          '${formatter.format(date)}',
+                                          '${DateFormatUtils.formatTimestampForDisplay(
+                                        context,
+                                        item.archivedAt,
+                                      )}',
                                       style: Theme.of(context)
                                           .textTheme
                                           .bodySmall,

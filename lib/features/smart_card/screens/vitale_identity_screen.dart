@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-
+import '../../../core/utils/date_format_utils.dart';
 import 'package:abak_vitale/abak_vitale.dart';
-
+import '../../../generated/l10n.dart';
 import '../widgets/vitale_beneficiary_selector.dart';
 
 class VitaleIdentityScreen extends StatefulWidget {
@@ -35,8 +35,8 @@ class _VitaleIdentityScreenState extends State<VitaleIdentityScreen> {
       _diagnostic = null;
     });
 
+    final s = S.of(context);
     final identities = await _service.readVitaleIdentities();
-
 
     if (!mounted) return;
 
@@ -59,7 +59,7 @@ class _VitaleIdentityScreenState extends State<VitaleIdentityScreen> {
       _diagnostic = identities.isEmpty
           ? {
         'success': false,
-        'message': 'Aucune identité Carte Vitale disponible',
+        'message': s.vitaleIdentity_noIdentityAvailable,
         'beneficiaryCount': 0,
       }
           : {
@@ -69,24 +69,30 @@ class _VitaleIdentityScreenState extends State<VitaleIdentityScreen> {
     });
   }
 
-  String _formatBirthDate(DateTime? birthDate) {
+  String _formatBirthDate(
+      BuildContext context,
+      DateTime? birthDate,
+      ) {
     if (birthDate == null) {
       return '';
     }
 
-    return birthDate.toIso8601String().split('T').first;
+    return DateFormatUtils.formatDate(
+      context,
+      birthDate,
+    );
   }
 
-  String _sexLabel(String? sexCode) {
+  String _sexLabel(String? sexCode, S s) {
     switch (sexCode?.trim().toUpperCase()) {
       case 'F':
-        return 'Féminin';
+        return s.vitaleIdentity_female;
       case 'M':
-        return 'Masculin';
+        return s.vitaleIdentity_male;
       case 'X':
-        return 'Autre';
+        return s.vitaleIdentity_other;
       default:
-        return 'Non renseigné';
+        return s.vitaleIdentity_notProvided;
     }
   }
 
@@ -95,6 +101,7 @@ class _VitaleIdentityScreenState extends State<VitaleIdentityScreen> {
   }
 
   String _formatDiagnostic(Map<String, dynamic> diagnostic) {
+    final s=S.of(context);
     final lines = <String>[];
 
     for (final entry in diagnostic.entries) {
@@ -103,18 +110,17 @@ class _VitaleIdentityScreenState extends State<VitaleIdentityScreen> {
 
         if (identityRaw is Map) {
           lines.add(
-            'identity : identité reçue '
-                '(données personnelles masquées)',
+            s.vitaleIdentity_identityReceivedMasked,
           );
         } else {
-          lines.add('identity : non disponible');
+          lines.add(s.vitaleIdentity_identityUnavailable);
         }
 
         continue;
       }
 
       if (entry.key.toLowerCase().contains('nir')) {
-        lines.add('${entry.key} : donnée masquée');
+        lines.add('${entry.key} : ${s.vitaleIdentity_dataMasked}');
         continue;
       }
 
@@ -126,12 +132,13 @@ class _VitaleIdentityScreenState extends State<VitaleIdentityScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final s=S.of(context);
     final diagnostic = _diagnostic;
     final identity = _identity;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Lire identité Carte Vitale'),
+        title: Text(s.vitaleIdentity_title),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -143,8 +150,8 @@ class _VitaleIdentityScreenState extends State<VitaleIdentityScreen> {
               icon: const Icon(Icons.badge_outlined),
               label: Text(
                 _loading
-                    ? 'Lecture en cours...'
-                    : 'Lire identité Carte Vitale',
+                    ? s.vitaleIdentity_reading
+                    : s.vitaleIdentity_title,
               ),
             ),
 
@@ -162,8 +169,8 @@ class _VitaleIdentityScreenState extends State<VitaleIdentityScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        'Identité lue',
+                      Text(
+                        s.vitaleIdentity_identityRead,
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                         ),
@@ -172,24 +179,24 @@ class _VitaleIdentityScreenState extends State<VitaleIdentityScreen> {
                       const SizedBox(height: 12),
 
                       Text(
-                        'Nom : ${identity.lastName ?? ''}',
+                        '${s.vitaleIdentity_lastName} ${identity.lastName ?? ''}',
                       ),
                       Text(
-                        'Prénom : ${identity.firstName ?? ''}',
+                        '${s.vitaleIdentity_firstName} ${identity.firstName ?? ''}',
                       ),
                       Text(
-                        'Date de naissance : '
-                            '${_formatBirthDate(identity.birthDate)}',
+                        '${s.vitaleIdentity_birthDate} '
+                            '${_formatBirthDate(context, identity.birthDate)}',
                       ),
                       Text(
-                        'Sexe : ${_sexLabel(identity.sexCode)}',
+                        '${s.vitaleIdentity_sex} ${_sexLabel(identity.sexCode, s)}',
                       ),
                       Text(
-                        'NIR : '
-                            '${_hasNir(identity) ? 'détecté' : 'non disponible'}',
+                        '${s.vitaleIdentity_nir}'
+                            '${_hasNir(identity) ? s.vitaleIdentity_detected : s.vitaleIdentity_unavailable}',
                       ),
                       Text(
-                        'Source : ${identity.source}',
+                        '${s.vitaleIdentity_source} ${identity.source}',
                       ),
 
                       const SizedBox(height: 16),
@@ -203,8 +210,8 @@ class _VitaleIdentityScreenState extends State<VitaleIdentityScreen> {
                         icon: const Icon(
                           Icons.person_add_alt_1_outlined,
                         ),
-                        label: const Text(
-                          'Utiliser pour créer un patient',
+                        label: Text(
+                          s.vitaleIdentity_useForPatientCreation,
                         ),
                       ),
                     ],
@@ -221,7 +228,7 @@ class _VitaleIdentityScreenState extends State<VitaleIdentityScreen> {
                   child: Text(
                     diagnostic['error']?.toString() ??
                         diagnostic['message']?.toString() ??
-                        'Aucune identité Carte Vitale disponible',
+                        s.vitaleIdentity_noIdentityAvailable,
                   ),
                 ),
               ),

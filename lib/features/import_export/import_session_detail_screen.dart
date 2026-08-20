@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import '../../core/utils/date_format_utils.dart';
 
 import 'data/import_session_repository.dart';
 import 'models/import_session.dart';
@@ -104,15 +104,17 @@ class ImportSessionDetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final repository = ImportSessionRepository();
 
-    final startedDate = DateTime.fromMillisecondsSinceEpoch(session.startedAt);
+    final startedLabel = DateFormatUtils.formatTimestamp(
+      context,
+      session.startedAt,
+    );
 
-    final completedDate = session.completedAt == null
+    final completedLabel = session.completedAt == null
         ? null
-        : DateTime.fromMillisecondsSinceEpoch(session.completedAt!);
-
-    final formatter = DateFormat.yMd(
-      Localizations.localeOf(context).toLanguageTag(),
-    ).add_Hm();
+        : DateFormatUtils.formatTimestamp(
+      context,
+      session.completedAt!,
+    );
 
     final actionInfo = const ImportActionInfoService().describe(
       context,
@@ -136,9 +138,7 @@ class ImportSessionDetailScreen extends StatelessWidget {
               _BusinessSummaryCard(
                 session: session,
                 actionInfo: actionInfo,
-                dateLabel: completedDate == null
-                    ? formatter.format(startedDate)
-                    : formatter.format(completedDate),
+                dateLabel: completedLabel ?? startedLabel,
               ),
               const SizedBox(height: 16),
               FutureBuilder<List<ImportSessionFile>>(
@@ -170,10 +170,8 @@ class ImportSessionDetailScreen extends StatelessWidget {
               const SizedBox(height: 16),
               _ImportReportCard(
                 session: session,
-                startedLabel: formatter.format(startedDate),
-                completedLabel: completedDate == null
-                    ? 'Non terminé'
-                    : formatter.format(completedDate),
+                startedLabel: startedLabel,
+                completedLabel: completedLabel ?? 'Non terminé',
               ),
               const SizedBox(height: 16),
               FutureBuilder<List<ImportSessionFile>>(

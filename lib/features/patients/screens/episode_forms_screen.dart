@@ -5,6 +5,7 @@ import '../data/episode_form_repository.dart';
 import '../models/contact_form_template.dart';
 import '../models/episode_form.dart';
 import 'episode_form_editor_screen.dart';
+import '../../../core/utils/date_format_utils.dart';
 
 class EpisodeFormsScreen extends StatefulWidget {
   final String caseId;
@@ -90,10 +91,15 @@ class _EpisodeFormsScreenState extends State<EpisodeFormsScreen> {
   }
 
   Widget _buildFormTile(
-    EpisodeForm form,
-    ContactFormTemplate? template,
-    bool completed,
-  ) {
+      EpisodeForm form,
+      ContactFormTemplate? template,
+      bool completed,
+      ) {
+    final formattedDate = DateFormatUtils.formatTimestamp(
+      context,
+      form.createdAt,
+    );
+
     return ListTile(
       contentPadding: EdgeInsets.zero,
       leading: const Icon(Icons.assignment_outlined),
@@ -101,7 +107,7 @@ class _EpisodeFormsScreenState extends State<EpisodeFormsScreen> {
       subtitle: Text(
         [
           if (template?.category != null) 'Catégorie : ${template!.category}',
-          'Créé le : ${DateTime.fromMillisecondsSinceEpoch(form.createdAt).toLocal()}',
+          'Créé le : $formattedDate',
           'État : ${completed ? 'complété' : 'en cours'}',
         ].join('\n'),
       ),

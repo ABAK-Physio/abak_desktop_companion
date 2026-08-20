@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
 import 'package:abak_vitale/abak_vitale.dart';
+import '../../../generated/l10n.dart';
 
 class VitaleBeneficiarySelector {
   static Future<VitaleIdentity?> show(
       BuildContext context,
       List<VitaleIdentity> identities,
       ) {
+    final s = S.of(context);
     final dateFormat = DateFormat.yMd(
       Localizations.localeOf(context).toLanguageTag(),
     );
@@ -16,7 +17,7 @@ class VitaleBeneficiarySelector {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Sélectionnez un bénéficiaire'),
+          title: Text(s.vitaleBeneficiarySelector_selectBeneficiary),
           content: SizedBox(
             width: 520,
             height: 420,
@@ -48,7 +49,7 @@ class VitaleBeneficiarySelector {
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Annuler'),
+              child: Text(s.vitaleBeneficiarySelector_cancel),
             ),
           ],
         );

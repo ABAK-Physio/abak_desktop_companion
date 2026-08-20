@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:abak_shared/abak_shared.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import '../../../core/utils/date_format_utils.dart';
 
 import '../data/episode_document_repository.dart';
 import '../models/episode_document.dart';
@@ -245,13 +245,10 @@ class _EpisodeDocumentsScreenState extends State<EpisodeDocumentsScreen> {
       BuildContext context,
       EpisodeDocument document,
       ) {
-    final date = DateTime.fromMillisecondsSinceEpoch(
+    return DateFormatUtils.formatTimestamp(
+      context,
       document.createdAt,
     );
-
-    final locale = Localizations.localeOf(context).toLanguageTag();
-
-    return DateFormat.yMd(locale).add_Hm().format(date);
   }
 
   Widget _buildDocumentTile(EpisodeDocument document) {

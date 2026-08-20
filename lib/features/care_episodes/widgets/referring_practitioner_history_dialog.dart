@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-
+import '../../../core/utils/date_format_utils.dart';
 import '../data/care_episode_referring_practitioner_repository.dart';
 import '../models/care_episode_referring_practitioner_history_item.dart';
 
@@ -16,11 +15,10 @@ class ReferringPractitionerHistoryDialog extends StatelessWidget {
   CareEpisodeReferringPractitionerRepository();
 
   String _formatDate(BuildContext context, int timestamp) {
-    final date = DateTime.fromMillisecondsSinceEpoch(timestamp);
-
-    return DateFormat.yMd(
-      Localizations.localeOf(context).toLanguageTag(),
-    ).format(date);
+    return DateFormatUtils.formatTimestampForDisplay(
+      context,
+      timestamp,
+    );
   }
 
   String _periodLabel(

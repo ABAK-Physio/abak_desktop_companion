@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import '../../../generated/l10n.dart';
 
 import 'package:abak_desktop_companion/features/results/data/desktop_result_repository.dart';
 import 'package:abak_desktop_companion/features/results/models/desktop_result.dart';
@@ -111,10 +112,13 @@ class EpisodeEvolutionScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final s = S.of(context);
     final repository = DesktopResultRepository();
 
     return Scaffold(
-      appBar: AppBar(title: const Text("Évolution de l'épisode")),
+      appBar: AppBar(
+        title: Text(s.episodeEvolution_title),
+      ),
       body: FutureBuilder<List<DesktopResult>>(
         future: repository.getResultsForCareEpisode(careEpisodeId),
         builder: (context, snapshot) {
@@ -125,8 +129,8 @@ class EpisodeEvolutionScreen extends StatelessWidget {
           final results = snapshot.data ?? [];
 
           if (results.isEmpty) {
-            return const Center(
-              child: Text("Aucun résultat disponible pour cet épisode."),
+            return Center(
+              child: Text(s.episodeEvolution_noResults),
             );
           }
 
@@ -148,7 +152,7 @@ class EpisodeEvolutionScreen extends StatelessWidget {
             padding: const EdgeInsets.all(24),
             children: [
               Text(
-                "Exercices suivis",
+                s.episodeEvolution_followedExercises,
                 style: Theme.of(context).textTheme.titleLarge,
               ),
               const SizedBox(height: 16),
@@ -242,20 +246,22 @@ class EpisodeEvolutionScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 12),
                         Text(
-                          "${measures.length} "
-                          "évaluation${measures.length > 1 ? 's' : ''}",
+                          '${measures.length} '
+                              '${measures.length > 1
+                              ? s.episodeEvolution_evaluations
+                              : s.episodeEvolution_evaluation}',
                           style: Theme.of(context).textTheme.bodyMedium,
                         ),
                         const SizedBox(height: 12),
                         Text(
-                          "Première : "
-                          "${formatValue(firstValue)} "
-                          "($firstDate)",
+                          '${s.episodeEvolution_first} : '
+                              '${formatValue(firstValue)} '
+                              '($firstDate)',
                         ),
                         Text(
-                          "Dernière : "
-                          "${formatValue(lastValue)} "
-                          "($lastDate)",
+                          '${s.episodeEvolution_last} : '
+                              '${formatValue(lastValue)} '
+                              '($lastDate)',
                         ),
                         const SizedBox(height: 16),
                         Align(
@@ -275,12 +281,12 @@ class EpisodeEvolutionScreen extends StatelessWidget {
                                     );
                                   },
                                   icon: const Icon(Icons.show_chart),
-                                  label: const Text("Voir l'évolution"),
+                                  label: Text(s.episodeEvolution_viewEvolution),
                                 )
                               : Text(
-                                  'Une seule valeur chiffrée disponible',
-                                  style: Theme.of(context).textTheme.bodySmall,
-                                ),
+                            s.episodeEvolution_singleNumericValue,
+                            style: Theme.of(context).textTheme.bodySmall,
+                          ),
                         ),
                       ],
                     ),

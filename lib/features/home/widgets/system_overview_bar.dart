@@ -5,6 +5,7 @@ import 'package:abak_desktop_companion/core/settings/cabinet_identity_service.da
 
 import 'package:flutter/material.dart';
 
+import '../../../generated/l10n.dart';
 import '../../maintenance/models/system_health_snapshot.dart';
 import '../../maintenance/services/system_health_service.dart';
 
@@ -105,8 +106,9 @@ class _SystemOverviewBarState extends State<SystemOverviewBar> {
 
   @override
   Widget build(BuildContext context) {
+    final s=S.of(context);
     if (_isLoading) {
-      return const Card(
+      return Card(
         child: Padding(
           padding: EdgeInsets.all(16),
           child: Row(
@@ -117,7 +119,7 @@ class _SystemOverviewBarState extends State<SystemOverviewBar> {
                 child: CircularProgressIndicator(strokeWidth: 2),
               ),
               SizedBox(width: 16),
-              Text('Chargement du résumé système...'),
+              Text(s.systemOverviewBar_loading_system_summary),
             ],
           ),
         ),
@@ -130,7 +132,7 @@ class _SystemOverviewBarState extends State<SystemOverviewBar> {
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Text(
-            'Erreur supervision : $_error',
+            '${s.systemOverviewBar_supervision_error} $_error',
             style: const TextStyle(color: Colors.red),
           ),
         ),
@@ -140,10 +142,10 @@ class _SystemOverviewBarState extends State<SystemOverviewBar> {
     final health = _health;
 
     if (health == null) {
-      return const Card(
+      return Card(
         child: Padding(
-          padding: EdgeInsets.all(16),
-          child: Text('Supervision indisponible.'),
+          padding: const EdgeInsets.all(16),
+          child: Text(s.systemOverviewBar_supervision_unavailable),
         ),
       );
     }
@@ -167,17 +169,17 @@ class _SystemOverviewBarState extends State<SystemOverviewBar> {
                 children: [
                   _OverviewItem(
                     icon: Icons.people_outline,
-                    label: 'Patients actifs',
+                    label: s.systemOverviewBar_active_patients,
                     value: health.activePatientsCount.toString(),
                   ),
                   _OverviewItem(
                     icon: Icons.archive_outlined,
-                    label: 'Patients archivés',
+                    label: s.systemOverviewBar_archived_patients,
                     value: health.archivedPatientsCount.toString(),
                   ),
                   _OverviewItem(
                     icon: Icons.warning_amber_outlined,
-                    label: 'Alertes',
+                    label: s.systemOverviewBar_alert,
                     value: alertCount.toString(),
                     color: alertCount > 0 ? Colors.orange : Colors.green,
                   ),

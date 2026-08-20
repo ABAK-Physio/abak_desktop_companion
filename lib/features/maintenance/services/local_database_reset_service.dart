@@ -1,5 +1,7 @@
 import 'dart:io';
+
 import 'package:path/path.dart';
+
 import '../data/database_backup_repository.dart';
 import '../../../core/database/database_service.dart';
 import 'local_database_backup_service.dart';
@@ -16,22 +18,37 @@ class LocalDatabaseResetResult {
   });
 
   factory LocalDatabaseResetResult.success({required String backupPath}) {
-    return LocalDatabaseResetResult._(success: true, backupPath: backupPath);
+    return LocalDatabaseResetResult._(
+      success: true,
+      backupPath: backupPath,
+    );
   }
 
   factory LocalDatabaseResetResult.failure(String error) {
-    return LocalDatabaseResetResult._(success: false, error: error);
+    return LocalDatabaseResetResult._(
+      success: false,
+      error: error,
+    );
   }
 }
 
 class LocalDatabaseResetService {
-  Future<LocalDatabaseResetResult> resetDatabase() async {
+  Future<LocalDatabaseResetResult> resetDatabase({
+    required String databaseNotFoundMessage,
+    required String chooseBackupFolderTitle,
+    required String backupCancelledMessage,
+    required String Function(String error) backupFailedMessage,
+  }) async {
     try {
-      final backupResult = await LocalDatabaseBackupService().createBackup();
+      final backupResult = await LocalDatabaseBackupService().createBackup(
+        databaseNotFoundMessage: databaseNotFoundMessage,
+        chooseBackupFolderTitle: chooseBackupFolderTitle,
+        cancelledMessage: backupCancelledMessage,
+      );
 
       if (!backupResult.success) {
         return LocalDatabaseResetResult.failure(
-          'Sauvegarde préalable impossible : ${backupResult.error}',
+          backupFailedMessage(backupResult.error ?? ''),
         );
       }
 
@@ -56,7 +73,9 @@ class LocalDatabaseResetService {
         backupPath: backupResult.backupPath ?? '',
       );
     } catch (e) {
-      return LocalDatabaseResetResult.failure(e.toString());
+      return LocalDatabaseResetResult.failure(
+        e.toString(),
+      );
     }
   }
 }

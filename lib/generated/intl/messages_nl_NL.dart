@@ -20,21 +20,145 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'nl_NL';
 
-  static String m0(error) => "Fout bij het opslaan: ${error}";
+  static String m0(size) => "${size}";
 
-  static String m1(count) => "${count} andere oefening(en)";
+  static String m1(deviceName) => "Wilt u ${deviceName} echt archiveren?";
 
-  static String m2(count) => "${count} vereniging(en) in afwachting";
+  static String m2(error) => "Fout bij het opslaan: ${error}";
 
-  static String m3(error) => "Fout: ${error}";
+  static String m3(count) => "${count} andere oefening(en)";
+
+  static String m4(count) => "${count} vereniging(en) in afwachting";
+
+  static String m5(count) => "${count} back-ups";
+
+  static String m6(size) => "Maat: ${size}";
+
+  static String m7(size) => "Totale afmeting: ${size}";
+
+  static String m8(version) => "Versie ${version}";
+
+  static String m9(patientName) =>
+      "Wilt u ${patientName} echt archiveren? Hij/zij wordt dan niet meer in de actieve lijst weergegeven.";
+
+  static String m10(patientName) => "${patientName} gearchiveerd.";
+
+  static String m11(error) => "Fout: ${error}";
+
+  static String m12(patientName) =>
+      "${patientName} is weer toegevoegd aan de actieve lijst.";
+
+  static String m13(practitionerName) =>
+      "Wilt u ${practitionerName} echt archiveren?";
+
+  static String m14(date) => "Gearchiveerd op ${date}";
+
+  static String m15(error) => "Fout: ${error}";
+
+  static String m16(professionalId) => "ID pro: ${professionalId}";
+
+  static String m17(error) => "Fout: ${error}";
+
+  static String m18(error) => "Fout bij het resetten: ${error}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+        "backupHistory_cancel":
+            MessageLookupByLibrary.simpleMessage("Annuleren"),
+        "backupHistory_empty": MessageLookupByLibrary.simpleMessage(
+            "Er is geen back-up opgeslagen."),
+        "backupHistory_fileSize": m0,
+        "backupHistory_restore":
+            MessageLookupByLibrary.simpleMessage("Herstellen"),
+        "backupHistory_restoreTitle":
+            MessageLookupByLibrary.simpleMessage("Deze back-up herstellen?"),
+        "backupHistory_restoreWarning": MessageLookupByLibrary.simpleMessage(
+            "Deze bewerking zal de huidige database volledig vervangen.\n\nEr wordt een automatische back-up gemaakt voordat het herstel wordt uitgevoerd.\n\nDoorgaan?"),
+        "backupHistory_title":
+            MessageLookupByLibrary.simpleMessage("Overzicht van back-ups"),
         "close": MessageLookupByLibrary.simpleMessage("Sluiten"),
         "dashboardTitle": MessageLookupByLibrary.simpleMessage(
             "Lokaal klinisch centrum ABAK"),
         "desktopAddress": MessageLookupByLibrary.simpleMessage("Adres"),
         "desktopPort": MessageLookupByLibrary.simpleMessage("Haven"),
+        "deviceForm_associatedPractitioner":
+            MessageLookupByLibrary.simpleMessage("Geassocieerd arts"),
+        "deviceForm_cancel": MessageLookupByLibrary.simpleMessage("Annuleren"),
+        "deviceForm_contextName":
+            MessageLookupByLibrary.simpleMessage("Nieuw apparaat"),
+        "deviceForm_create": MessageLookupByLibrary.simpleMessage("Aanmaken"),
+        "deviceForm_deviceName":
+            MessageLookupByLibrary.simpleMessage("Naam van het apparaat"),
+        "deviceForm_deviceNameHint":
+            MessageLookupByLibrary.simpleMessage("iPhone Claire, Pixel Marc…"),
+        "deviceForm_deviceNameRequired": MessageLookupByLibrary.simpleMessage(
+            "De naam van het apparaat is verplicht"),
+        "deviceForm_editDevice":
+            MessageLookupByLibrary.simpleMessage("Het apparaat wijzigen"),
+        "deviceForm_loadingPractitionersError":
+            MessageLookupByLibrary.simpleMessage(
+                "Fout bij het laden van de zorgverleners"),
+        "deviceForm_newDevice":
+            MessageLookupByLibrary.simpleMessage("Nieuw apparaat"),
+        "deviceForm_platform": MessageLookupByLibrary.simpleMessage("Platform"),
+        "deviceForm_save": MessageLookupByLibrary.simpleMessage("Opslaan"),
+        "deviceForm_sharedDevice":
+            MessageLookupByLibrary.simpleMessage("Geen / gedeeld apparaat"),
+        "deviceList_active": MessageLookupByLibrary.simpleMessage("Activa"),
+        "deviceList_archive":
+            MessageLookupByLibrary.simpleMessage("Archiveren"),
+        "deviceList_archiveConfirmation": m1,
+        "deviceList_archiveTitle":
+            MessageLookupByLibrary.simpleMessage("Het apparaat archiveren"),
+        "deviceList_archived":
+            MessageLookupByLibrary.simpleMessage("Gearchiveerd"),
+        "deviceList_archivedDevicesEmpty": MessageLookupByLibrary.simpleMessage(
+            "Het winkelmandje voor apparaten is momenteel leeg."),
+        "deviceList_archivedOn":
+            MessageLookupByLibrary.simpleMessage("Gearchiveerd op"),
+        "deviceList_associatedPractitioner":
+            MessageLookupByLibrary.simpleMessage("Geassocieerd behandelaar"),
+        "deviceList_cancel": MessageLookupByLibrary.simpleMessage("Annuleren"),
+        "deviceList_contextComment": MessageLookupByLibrary.simpleMessage(
+            "Op dit scherm wordt de lijst weergegeven van de apparaten die met de instelling zijn verbonden"),
+        "deviceList_contextName":
+            MessageLookupByLibrary.simpleMessage("Lijst met apparaten"),
+        "deviceList_edit": MessageLookupByLibrary.simpleMessage("Wijzigen"),
+        "deviceList_error": MessageLookupByLibrary.simpleMessage("Fout"),
+        "deviceList_newDevice":
+            MessageLookupByLibrary.simpleMessage("Nieuw apparaat"),
+        "deviceList_noArchivedDevices": MessageLookupByLibrary.simpleMessage(
+            "Geen gearchiveerde apparaten"),
+        "deviceList_noPairedDevices":
+            MessageLookupByLibrary.simpleMessage("Geen gekoppelde apparaten"),
+        "deviceList_pairedDevicesExplanation": MessageLookupByLibrary.simpleMessage(
+            "De ABAK-apparaten die aan de instelling zijn gekoppeld, worden hier weergegeven."),
+        "deviceList_platform": MessageLookupByLibrary.simpleMessage("Platform"),
+        "deviceList_restore":
+            MessageLookupByLibrary.simpleMessage("Herstellen"),
+        "deviceList_showQrCode":
+            MessageLookupByLibrary.simpleMessage("QR-code weergeven"),
+        "deviceList_title":
+            MessageLookupByLibrary.simpleMessage("Lijst met apparaten"),
+        "episodeEvolution_evaluation":
+            MessageLookupByLibrary.simpleMessage("beoordeling"),
+        "episodeEvolution_evaluations":
+            MessageLookupByLibrary.simpleMessage("beoordelingen"),
+        "episodeEvolution_first":
+            MessageLookupByLibrary.simpleMessage("Première"),
+        "episodeEvolution_followedExercises":
+            MessageLookupByLibrary.simpleMessage("Gedane oefeningen"),
+        "episodeEvolution_last":
+            MessageLookupByLibrary.simpleMessage("Laatste"),
+        "episodeEvolution_noResults": MessageLookupByLibrary.simpleMessage(
+            "Er zijn geen resultaten beschikbaar voor deze aflevering."),
+        "episodeEvolution_singleNumericValue":
+            MessageLookupByLibrary.simpleMessage(
+                "Er is slechts één cijferwaarde beschikbaar"),
+        "episodeEvolution_title":
+            MessageLookupByLibrary.simpleMessage("Verloop van de aflevering"),
+        "episodeEvolution_viewEvolution":
+            MessageLookupByLibrary.simpleMessage("Bekijk de ontwikkeling"),
         "exchangeDirectoryReset": MessageLookupByLibrary.simpleMessage(
             "Uitwisselingsdossier gereset"),
         "exchangeDirectoryUpdated": MessageLookupByLibrary.simpleMessage(
@@ -80,6 +204,26 @@ class MessageLookup extends MessageLookupByLibrary {
             "Op dit scherm kunt u een nieuwe zorgverlener toevoegen of diens gegevens wijzigen.\n\nAls u de zorgverlener naar de prullenbak verplaatst, wordt deze niet verwijderd. Omwille van de traceerbaarheid is het niet mogelijk om een zorgverlener te verwijderen.\n\nDoor de QR-code te scannen kunt u automatisch het profiel van de zorgverlener voor uw instelling aanmaken op diens telefoon of tablet."),
         "help_prise_en_charge": MessageLookupByLibrary.simpleMessage(
             "Hier vindt u de verschillende behandelingen van uw patiënt. U kunt een bestaande behandelingsperiode gebruiken of een nieuwe aanmaken."),
+        "homeImportSummary_conflicts":
+            MessageLookupByLibrary.simpleMessage("Conflicten"),
+        "homeImportSummary_failedFiles":
+            MessageLookupByLibrary.simpleMessage("Bestanden met fouten"),
+        "homeImportSummary_importDate":
+            MessageLookupByLibrary.simpleMessage("Gegevens importeren"),
+        "homeImportSummary_importedMetrics":
+            MessageLookupByLibrary.simpleMessage("Geïmporteerde statistieken"),
+        "homeImportSummary_importedResults":
+            MessageLookupByLibrary.simpleMessage("Geïmporteerde resultaten"),
+        "homeImportSummary_open":
+            MessageLookupByLibrary.simpleMessage("Openen"),
+        "homeImportSummary_patients":
+            MessageLookupByLibrary.simpleMessage("Betrokken patiënten"),
+        "homeImportSummary_processedFiles":
+            MessageLookupByLibrary.simpleMessage("Verwerkte bestanden"),
+        "homeImportSummary_skippedResults":
+            MessageLookupByLibrary.simpleMessage("Resultaten genegeerd"),
+        "homeImportSummary_title":
+            MessageLookupByLibrary.simpleMessage("Laatste ABAK-import"),
         "home_abak_exercice":
             MessageLookupByLibrary.simpleMessage("ABAK-oefening"),
         "home_abak_file": MessageLookupByLibrary.simpleMessage("ABAK-bestand"),
@@ -104,7 +248,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "home_date_not_specified":
             MessageLookupByLibrary.simpleMessage("Datum niet opgegeven"),
         "home_devices": MessageLookupByLibrary.simpleMessage("Apparaten"),
-        "home_error_while_saving": m0,
+        "home_error_while_saving": m2,
         "home_everything_is_working_normally":
             MessageLookupByLibrary.simpleMessage("Alles werkt normaal"),
         "home_expert_comment": MessageLookupByLibrary.simpleMessage(
@@ -157,13 +301,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "home_not_specified":
             MessageLookupByLibrary.simpleMessage("geïnformeerd"),
         "home_octets": MessageLookupByLibrary.simpleMessage("Octetten"),
-        "home_other_exercises": m1,
+        "home_other_exercises": m3,
         "home_parameters": MessageLookupByLibrary.simpleMessage("Instellingen"),
         "home_pathway": MessageLookupByLibrary.simpleMessage("Pad"),
         "home_patient_abak":
             MessageLookupByLibrary.simpleMessage("Patiënt ABAK"),
         "home_patients": MessageLookupByLibrary.simpleMessage("Patiënten"),
-        "home_pending_association": m2,
+        "home_pending_association": m4,
         "home_practitioners":
             MessageLookupByLibrary.simpleMessage("beoefenaars"),
         "home_quick_actions":
@@ -201,24 +345,209 @@ class MessageLookup extends MessageLookupByLibrary {
         "home_verify": MessageLookupByLibrary.simpleMessage("Controleren"),
         "home_very_large_backups":
             MessageLookupByLibrary.simpleMessage("Zeer omvangrijke back-ups"),
+        "importResolutionAssistant_file":
+            MessageLookupByLibrary.simpleMessage("bestand"),
+        "importResolutionAssistant_files":
+            MessageLookupByLibrary.simpleMessage("bestanden"),
+        "importResolutionAssistant_import":
+            MessageLookupByLibrary.simpleMessage("Importeren"),
+        "importResolutionAssistant_importFailed":
+            MessageLookupByLibrary.simpleMessage("Import mislukt"),
+        "importResolutionAssistant_importToComplete":
+            MessageLookupByLibrary.simpleMessage("Import nog voltooien"),
+        "importResolutionAssistant_importToReview":
+            MessageLookupByLibrary.simpleMessage(
+                "Import moet worden gecontroleerd"),
+        "importResolutionAssistant_inError":
+            MessageLookupByLibrary.simpleMessage("per ongeluk"),
+        "importResolutionAssistant_interventionRequired":
+            MessageLookupByLibrary.simpleMessage(
+                "Er is een handmatige ingreep nodig om deze import te voltooien."),
+        "importResolutionAssistant_loadingError":
+            MessageLookupByLibrary.simpleMessage(
+                "De imports kunnen niet worden geladen"),
+        "importResolutionAssistant_noProblem":
+            MessageLookupByLibrary.simpleMessage(
+                "Er zijn geen importproblemen vastgesteld."),
+        "importResolutionAssistant_result":
+            MessageLookupByLibrary.simpleMessage("resultaat"),
+        "importResolutionAssistant_results":
+            MessageLookupByLibrary.simpleMessage("resultaten"),
+        "importResolutionAssistant_selectImportInstruction":
+            MessageLookupByLibrary.simpleMessage(
+                "Selecteer een import om de details ervan te bekijken en volg de voorgestelde stappen."),
+        "importResolutionAssistant_title": MessageLookupByLibrary.simpleMessage(
+            "Oplossen van importproblemen"),
+        "importResolutionAssistant_toReview":
+            MessageLookupByLibrary.simpleMessage("te controleren"),
+        "information_backupCount": m5,
+        "information_backups": MessageLookupByLibrary.simpleMessage("Back-ups"),
+        "information_configured":
+            MessageLookupByLibrary.simpleMessage("Geconfigureerd"),
+        "information_contextComment": MessageLookupByLibrary.simpleMessage(
+            "Op dit scherm wordt algemene, technische en juridische informatie over Companion weergegeven."),
+        "information_contextName":
+            MessageLookupByLibrary.simpleMessage("Informatie"),
+        "information_database":
+            MessageLookupByLibrary.simpleMessage("Database"),
+        "information_language": MessageLookupByLibrary.simpleMessage("Taal"),
+        "information_legalNotice":
+            MessageLookupByLibrary.simpleMessage("Wettelijke kennisgeving"),
+        "information_loading":
+            MessageLookupByLibrary.simpleMessage("Bezig met laden..."),
+        "information_localStorage":
+            MessageLookupByLibrary.simpleMessage("Lokale opslag"),
+        "information_logo": MessageLookupByLibrary.simpleMessage("Logo"),
+        "information_notConfigured":
+            MessageLookupByLibrary.simpleMessage("Niet geconfigureerd"),
+        "information_notProvided":
+            MessageLookupByLibrary.simpleMessage("Niet opgegeven"),
+        "information_office": MessageLookupByLibrary.simpleMessage("Kantoor"),
+        "information_size": m6,
+        "information_system": MessageLookupByLibrary.simpleMessage("Systeem"),
+        "information_title": MessageLookupByLibrary.simpleMessage("Informatie"),
+        "information_totalSize": m7,
+        "information_version": m8,
+        "information_versionLoading":
+            MessageLookupByLibrary.simpleMessage("Versie..."),
+        "information_viewLicense":
+            MessageLookupByLibrary.simpleMessage("De licentie raadplegen"),
         "languageSaved":
             MessageLookupByLibrary.simpleMessage("Taal opgeslagen."),
         "language_choice":
             MessageLookupByLibrary.simpleMessage("Taal van de applicatie"),
+        "legalNotice_appBarTitle":
+            MessageLookupByLibrary.simpleMessage("Waarschuwing"),
+        "legalNotice_content": MessageLookupByLibrary.simpleMessage(
+            "ABAK Desktop Companion is software die helpt bij het organiseren, importeren en raadplegen van klinische resultaten uit het ABAK-ecosysteem.\n\nHet is geen gecertificeerd medisch hulpmiddel en vervangt niet het oordeel van de zorgverlener.\n\nDe weergegeven resultaten, scores, rapporten en indicatoren moeten altijd worden geïnterpreteerd door een gekwalificeerde zorgverlener, waarbij rekening moet worden gehouden met het klinisch onderzoek, de context van de patiënt en de geldende aanbevelingen.\n\nDe gebruiker blijft als enige verantwoordelijk voor zijn klinische beslissingen, voor de controle van de geïmporteerde gegevens en voor de naleving van de toepasselijke beroeps-, wettelijke en deontologische regels bij het gebruik ervan.\n\nABAK Desktop Companion stelt geen zelfstandige diagnose, schrijft geen behandeling voor en is in geen geval een vervanging voor een medisch of paramedisch consult."),
+        "legalNotice_title":
+            MessageLookupByLibrary.simpleMessage("Juridische kennisgeving"),
         "loading": MessageLookupByLibrary.simpleMessage("Bezig met laden..."),
+        "localDatabaseBackup_cancelled":
+            MessageLookupByLibrary.simpleMessage("Back-up geannuleerd."),
+        "localDatabaseBackup_chooseBackupFolder":
+            MessageLookupByLibrary.simpleMessage(
+                "De ABAK-back-upmap selecteren"),
+        "localDatabaseBackup_databaseNotFound":
+            MessageLookupByLibrary.simpleMessage(
+                "SQLite-database niet gevonden."),
+        "localDatabaseReset_backupFailed": MessageLookupByLibrary.simpleMessage(
+            "Back-up vooraf niet mogelijk"),
+        "main_alreadyRunningMessage": MessageLookupByLibrary.simpleMessage(
+            "Er kan slechts één venster tegelijk worden geopend.\n\nGebruik het reeds geopende Companion-venster."),
+        "main_alreadyRunningTitle": MessageLookupByLibrary.simpleMessage(
+            "ABAK Desktop Companion is al geopend"),
+        "main_close": MessageLookupByLibrary.simpleMessage(""),
         "modify": MessageLookupByLibrary.simpleMessage("Wijzigen"),
         "noDirectoryDefined":
             MessageLookupByLibrary.simpleMessage("Er is geen map gedefinieerd"),
         "ok": MessageLookupByLibrary.simpleMessage("Oké"),
         "open": MessageLookupByLibrary.simpleMessage("Openen"),
+        "organization_chooseLogo":
+            MessageLookupByLibrary.simpleMessage("Een logo kiezen"),
+        "organization_identityTitle": MessageLookupByLibrary.simpleMessage(
+            "Identiteit van de instelling"),
+        "organization_logoRemoved": MessageLookupByLibrary.simpleMessage(
+            "Het logo van de instelling is verwijderd."),
+        "organization_logoSaved": MessageLookupByLibrary.simpleMessage(
+            "Logo van de geregistreerde instelling."),
+        "organization_nameLabel":
+            MessageLookupByLibrary.simpleMessage("Naam van de instelling"),
+        "organization_nameSaved": MessageLookupByLibrary.simpleMessage(
+            "Geregistreerde naam van de instelling."),
+        "organization_removeLogo":
+            MessageLookupByLibrary.simpleMessage("Het logo verwijderen"),
+        "organization_saveName":
+            MessageLookupByLibrary.simpleMessage("De naam opslaan"),
+        "organization_title": MessageLookupByLibrary.simpleMessage("Vestiging"),
         "pairPhone":
             MessageLookupByLibrary.simpleMessage("Een telefoon koppelen"),
         "pairPhoneDialogTitle":
             MessageLookupByLibrary.simpleMessage("Een telefoon koppelen"),
         "pairPhoneInstructions": MessageLookupByLibrary.simpleMessage(
             "Scan deze QR-code via ABAK Mobile om de verbinding met Desktop automatisch in te stellen."),
+        "patientList_active": MessageLookupByLibrary.simpleMessage("Activa"),
+        "patientList_archive":
+            MessageLookupByLibrary.simpleMessage("Archiveren"),
+        "patientList_archiveConfirmation": m9,
+        "patientList_archiveSuccess": m10,
+        "patientList_archiveTitle":
+            MessageLookupByLibrary.simpleMessage("De patiënt archiveren"),
+        "patientList_archived":
+            MessageLookupByLibrary.simpleMessage("Gearchiveerd"),
+        "patientList_archivedOn":
+            MessageLookupByLibrary.simpleMessage("Gearchiveerd op"),
+        "patientList_archivedPatient":
+            MessageLookupByLibrary.simpleMessage("Gearchiveerde patiënt"),
+        "patientList_archivedPatientsEmpty":
+            MessageLookupByLibrary.simpleMessage(
+                "De prullenbak van de patiënten is op dit moment leeg."),
+        "patientList_bornOn": MessageLookupByLibrary.simpleMessage("Noch de"),
+        "patientList_cancel": MessageLookupByLibrary.simpleMessage("Annuleren"),
+        "patientList_contextComment": MessageLookupByLibrary.simpleMessage(
+            "U kunt de lijst met actieve en gearchiveerde patiënten bekijken"),
+        "patientList_contextName":
+            MessageLookupByLibrary.simpleMessage("Lijst van patiënten"),
+        "patientList_edit": MessageLookupByLibrary.simpleMessage("Wijzigen"),
+        "patientList_error": m11,
+        "patientList_newPatient":
+            MessageLookupByLibrary.simpleMessage("Nieuwe patiënt"),
+        "patientList_noArchivedPatients": MessageLookupByLibrary.simpleMessage(
+            "Geen gearchiveerde patiënten"),
+        "patientList_noPatientFound": MessageLookupByLibrary.simpleMessage(
+            "Er zijn geen patiënten gevonden"),
+        "patientList_noRegisteredPatients":
+            MessageLookupByLibrary.simpleMessage(
+                "Er zijn geen geregistreerde patiënten"),
+        "patientList_patientFileEmpty": MessageLookupByLibrary.simpleMessage(
+            "Het lokale patiëntendossier is momenteel leeg."),
+        "patientList_restorableUntil":
+            MessageLookupByLibrary.simpleMessage("Kan worden hersteld tot"),
+        "patientList_restore":
+            MessageLookupByLibrary.simpleMessage("Herstellen"),
+        "patientList_restoreSuccess": m12,
+        "patientList_searchPatient":
+            MessageLookupByLibrary.simpleMessage("Een patiënt zoeken"),
+        "patientList_sex": MessageLookupByLibrary.simpleMessage("Seks"),
+        "patientList_title":
+            MessageLookupByLibrary.simpleMessage("Lijst van patiënten"),
+        "practitionerList_active":
+            MessageLookupByLibrary.simpleMessage("Activa"),
+        "practitionerList_addPractitionersHint":
+            MessageLookupByLibrary.simpleMessage(
+                "Voeg de fysiotherapeuten van de praktijk toe om de geïmporteerde tests te identificeren."),
+        "practitionerList_archive":
+            MessageLookupByLibrary.simpleMessage("Archiveren"),
+        "practitionerList_archiveConfirmation": m13,
+        "practitionerList_archiveEmpty": MessageLookupByLibrary.simpleMessage(
+            "De prullenbak van de fysiotherapeuten is op dit moment leeg."),
+        "practitionerList_archivePractitioner":
+            MessageLookupByLibrary.simpleMessage(
+                "De fysiotherapeut archiveren"),
+        "practitionerList_archived":
+            MessageLookupByLibrary.simpleMessage("Gearchiveerd"),
+        "practitionerList_archivedOn": m14,
         "practitionerList_button_create":
             MessageLookupByLibrary.simpleMessage("Een behandelaar aanmaken"),
+        "practitionerList_cancel":
+            MessageLookupByLibrary.simpleMessage("Annuleren"),
+        "practitionerList_contextComment": MessageLookupByLibrary.simpleMessage(
+            "Op dit scherm wordt de lijst met geregistreerde zorgverleners weergegeven."),
+        "practitionerList_contextName":
+            MessageLookupByLibrary.simpleMessage("Lijst van behandelaars"),
+        "practitionerList_edit":
+            MessageLookupByLibrary.simpleMessage("Wijzigen"),
+        "practitionerList_error": m15,
+        "practitionerList_noArchivedPractitioner":
+            MessageLookupByLibrary.simpleMessage(
+                "Geen fysiotherapeuten in het archief"),
+        "practitionerList_noPractitioner": MessageLookupByLibrary.simpleMessage(
+            "Er zijn geen fysiotherapeuten geregistreerd"),
+        "practitionerList_professionalId": m16,
+        "practitionerList_restore":
+            MessageLookupByLibrary.simpleMessage("Herstellen"),
+        "practitionerList_showQrCode":
+            MessageLookupByLibrary.simpleMessage("QR-code weergeven"),
         "practitionerList_title":
             MessageLookupByLibrary.simpleMessage("Lijst van behandelaars"),
         "practitionerNew_cancel":
@@ -259,17 +588,212 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Scan deze QR-code via ABAK Mobile om dit professionele profiel automatisch toe te voegen."),
         "practitionerSelector_archived":
             MessageLookupByLibrary.simpleMessage("gearchiveerd"),
-        "practitionerSelector_error": m3,
+        "practitionerSelector_error": m17,
         "practitionerSelector_noSelection":
             MessageLookupByLibrary.simpleMessage("Geen selectie"),
+        "preferences_archivedPatients":
+            MessageLookupByLibrary.simpleMessage("Gearchiveerde patiënten"),
+        "preferences_contextComment": MessageLookupByLibrary.simpleMessage(
+            "Op dit scherm worden de algemene instellingen van Companion weergegeven."),
+        "preferences_contextName":
+            MessageLookupByLibrary.simpleMessage("Gebruikersinstellingen"),
+        "preferences_days": MessageLookupByLibrary.simpleMessage("dagen"),
+        "preferences_expertMode":
+            MessageLookupByLibrary.simpleMessage("Mode-expert"),
+        "preferences_expertModeDescription":
+            MessageLookupByLibrary.simpleMessage(
+                "Toont technische informatie voor ontwikkelaars en bijdragers."),
+        "preferences_expertModeSaved": MessageLookupByLibrary.simpleMessage(
+            "Instelling van de Expert-modus opgeslagen."),
+        "preferences_languageSaved":
+            MessageLookupByLibrary.simpleMessage("Taal opgeslagen."),
+        "preferences_organization":
+            MessageLookupByLibrary.simpleMessage("Vestiging"),
+        "preferences_organizationDescription":
+            MessageLookupByLibrary.simpleMessage(
+                "Naam, logo en algemene informatie."),
+        "preferences_retentionDuration":
+            MessageLookupByLibrary.simpleMessage("Houdbaarheid"),
+        "preferences_retentionExplanation": MessageLookupByLibrary.simpleMessage(
+            "Gearchiveerde patiënten kunnen gedurende deze periode worden hersteld. Daarna worden ze automatisch verwijderd."),
+        "preferences_retentionSaved": MessageLookupByLibrary.simpleMessage(
+            "Geregistreerde houdbaarheid."),
+        "recentImportCard_conflict":
+            MessageLookupByLibrary.simpleMessage("conflict"),
+        "recentImportCard_error": MessageLookupByLibrary.simpleMessage("fout"),
+        "recentImportCard_fichier":
+            MessageLookupByLibrary.simpleMessage("bestand"),
+        "recentImportCard_file":
+            MessageLookupByLibrary.simpleMessage("bestand"),
+        "recentImportCard_ignored":
+            MessageLookupByLibrary.simpleMessage("genegeerd"),
+        "recentImportCard_no_result_imported":
+            MessageLookupByLibrary.simpleMessage(
+                "Er zijn geen resultaten geïmporteerd"),
+        "recentImportCard_result":
+            MessageLookupByLibrary.simpleMessage("resultaat"),
         "refreshDashboard":
             MessageLookupByLibrary.simpleMessage("Het dashboard vernieuwen"),
+        "reportArchive_title":
+            MessageLookupByLibrary.simpleMessage("Archief van de verslagen"),
         "reset": MessageLookupByLibrary.simpleMessage("Resetten"),
+        "resultDetail_addCommentHint":
+            MessageLookupByLibrary.simpleMessage("Een opmerking toevoegen..."),
+        "resultDetail_archiveConfirmation":
+            MessageLookupByLibrary.simpleMessage(
+                "Wilt u dit resultaat echt archiveren?"),
+        "resultDetail_archiveTitle":
+            MessageLookupByLibrary.simpleMessage("Het resultaat archiveren"),
+        "resultDetail_birthDate":
+            MessageLookupByLibrary.simpleMessage("Geboorte"),
+        "resultDetail_cancel": MessageLookupByLibrary.simpleMessage("Apparaat"),
+        "resultDetail_clinicalComment":
+            MessageLookupByLibrary.simpleMessage("Klinische opmerking"),
+        "resultDetail_commentSaved":
+            MessageLookupByLibrary.simpleMessage("Opmerking opgeslagen"),
+        "resultDetail_detailedResult":
+            MessageLookupByLibrary.simpleMessage("Gedetailleerd resultaat"),
+        "resultDetail_device": MessageLookupByLibrary.simpleMessage(
+            "Specificaties van het apparaat"),
+        "resultDetail_exerciseDate":
+            MessageLookupByLibrary.simpleMessage("Boekjaar"),
+        "resultDetail_generalInformation":
+            MessageLookupByLibrary.simpleMessage("Algemene informatie"),
+        "resultDetail_identityUnverified": MessageLookupByLibrary.simpleMessage(
+            "Identiteit niet geverifieerd"),
+        "resultDetail_identityVerified":
+            MessageLookupByLibrary.simpleMessage("Identiteit geverifieerd"),
+        "resultDetail_import":
+            MessageLookupByLibrary.simpleMessage("Importeren"),
+        "resultDetail_lastModified":
+            MessageLookupByLibrary.simpleMessage("Laatste wijziging"),
+        "resultDetail_metrics": MessageLookupByLibrary.simpleMessage("Metriek"),
+        "resultDetail_noMetrics": MessageLookupByLibrary.simpleMessage(
+            "Er zijn geen statistieken geregistreerd."),
+        "resultDetail_patient": MessageLookupByLibrary.simpleMessage("Patiënt"),
+        "resultDetail_performedBy":
+            MessageLookupByLibrary.simpleMessage("Geregisseerd door"),
+        "resultDetail_save": MessageLookupByLibrary.simpleMessage("Opslaan"),
+        "resultDetail_score": MessageLookupByLibrary.simpleMessage("Score"),
+        "resultDetail_syncState":
+            MessageLookupByLibrary.simpleMessage("Synchronisatiestatus"),
+        "settings_assistanceWarning": MessageLookupByLibrary.simpleMessage(
+            "Deze functies zijn bedoeld voor installatie, diagnose en technische ondersteuning.\n\nGebruik ze alleen wanneer een technicus of de ABAK-documentatie u hierom vraagt."),
+        "settings_cancel": MessageLookupByLibrary.simpleMessage("Annuleren"),
+        "settings_configuration":
+            MessageLookupByLibrary.simpleMessage("Configuratie"),
+        "settings_confirmationRequired":
+            MessageLookupByLibrary.simpleMessage("Bevestiging verplicht"),
+        "settings_contextComment": MessageLookupByLibrary.simpleMessage(
+            "Op dit scherm zijn de installatie-, diagnose- en onderhoudsfuncties van Companion gebundeld."),
+        "settings_contextName": MessageLookupByLibrary.simpleMessage("Hulp"),
+        "settings_continue": MessageLookupByLibrary.simpleMessage("Doorgaan"),
+        "settings_databaseResetError": m18,
+        "settings_databaseResetSuccess": MessageLookupByLibrary.simpleMessage(
+            "Database gereset. Automatische back-up aangemaakt."),
+        "settings_diagnostic": MessageLookupByLibrary.simpleMessage("Diagnose"),
+        "settings_edit": MessageLookupByLibrary.simpleMessage("Wijzigen"),
+        "settings_exchangeDirectory":
+            MessageLookupByLibrary.simpleMessage("ABAK-uitwisselingsdossier"),
+        "settings_exchangeDirectoryReset": MessageLookupByLibrary.simpleMessage(
+            "Uitwisselingsdossier gereset"),
+        "settings_exchangeDirectoryUpdated":
+            MessageLookupByLibrary.simpleMessage(
+                "Bijgewerkt ABAK-uitwisselingsdossier"),
+        "settings_importAbakFile": MessageLookupByLibrary.simpleMessage(
+            "Een .abak-bestand handmatig importeren"),
+        "settings_invalidConfirmation":
+            MessageLookupByLibrary.simpleMessage("Ongeldige bevestiging."),
+        "settings_loading":
+            MessageLookupByLibrary.simpleMessage("Bezig met laden..."),
+        "settings_maintenance":
+            MessageLookupByLibrary.simpleMessage("Onderhoud"),
+        "settings_manageBackups":
+            MessageLookupByLibrary.simpleMessage("Back-ups beheren"),
+        "settings_noDirectoryDefined":
+            MessageLookupByLibrary.simpleMessage("Er is geen map gedefinieerd"),
+        "settings_open": MessageLookupByLibrary.simpleMessage("Openen"),
+        "settings_openingExchangeDirectory":
+            MessageLookupByLibrary.simpleMessage(
+                "Het uitwisselingsdossier wordt geopend"),
+        "settings_reset": MessageLookupByLibrary.simpleMessage("Resetten"),
+        "settings_resetDatabase":
+            MessageLookupByLibrary.simpleMessage("Het basisstation resetten"),
+        "settings_resetDatabaseTitle": MessageLookupByLibrary.simpleMessage(
+            "Het lokale basisstation resetten?"),
+        "settings_resetDatabaseWarning": MessageLookupByLibrary.simpleMessage(
+            "Hierdoor worden alle lokale gegevens (patiënten, resultaten, geïmporteerde gegevens en geschiedenis) gewist.\n\nVóór het resetten wordt er automatisch een back-up gemaakt.\n\nGebruik deze functie uitsluitend in het kader van technische ondersteuning."),
+        "settings_resetKeyword": MessageLookupByLibrary.simpleMessage("RESET"),
+        "settings_resetTooltip":
+            MessageLookupByLibrary.simpleMessage("Resetten"),
+        "settings_resolveImportProblem":
+            MessageLookupByLibrary.simpleMessage("Een importprobleem oplossen"),
+        "settings_title": MessageLookupByLibrary.simpleMessage("Hulp"),
+        "settings_typeResetConfirmation": MessageLookupByLibrary.simpleMessage(
+            "Typ RESET om definitief te bevestigen."),
+        "settings_vitaleDiagnostic": MessageLookupByLibrary.simpleMessage(
+            "Diagnose van de Carte Vitale"),
         "smartCardDiagnostic": MessageLookupByLibrary.simpleMessage(
             "Diagnose van de Carte Vitale"),
+        "systemOverviewBar_active_patients":
+            MessageLookupByLibrary.simpleMessage("Actieve patiënten"),
+        "systemOverviewBar_alert":
+            MessageLookupByLibrary.simpleMessage("Waarschuwingen"),
+        "systemOverviewBar_archived_patients":
+            MessageLookupByLibrary.simpleMessage("Gearchiveerde patiënten"),
+        "systemOverviewBar_loading_system_summary":
+            MessageLookupByLibrary.simpleMessage(
+                "Systeemoverzicht wordt geladen..."),
+        "systemOverviewBar_supervision_error":
+            MessageLookupByLibrary.simpleMessage("Fout in het toezicht"),
+        "systemOverviewBar_supervision_unavailable":
+            MessageLookupByLibrary.simpleMessage("Toezicht niet beschikbaar"),
+        "systemStatusCard_nome": MessageLookupByLibrary.simpleMessage("Geen"),
         "userPreferences":
             MessageLookupByLibrary.simpleMessage("Gebruikersinstellingen"),
         "user_settings":
-            MessageLookupByLibrary.simpleMessage("Gebruikersinstellingen")
+            MessageLookupByLibrary.simpleMessage("Gebruikersinstellingen"),
+        "vitaleBeneficiarySelector_cancel":
+            MessageLookupByLibrary.simpleMessage("Annuleren"),
+        "vitaleBeneficiarySelector_selectBeneficiary":
+            MessageLookupByLibrary.simpleMessage("Kies een begunstigde"),
+        "vitaleIdentity_birthDate":
+            MessageLookupByLibrary.simpleMessage("Geboortedatum"),
+        "vitaleIdentity_dataMasked":
+            MessageLookupByLibrary.simpleMessage("verborgen gegevens"),
+        "vitaleIdentity_detected":
+            MessageLookupByLibrary.simpleMessage("gedetecteerd"),
+        "vitaleIdentity_female":
+            MessageLookupByLibrary.simpleMessage("Vrouwelijk"),
+        "vitaleIdentity_firstName":
+            MessageLookupByLibrary.simpleMessage("Voornaam"),
+        "vitaleIdentity_identityRead":
+            MessageLookupByLibrary.simpleMessage("Identiteit gelezen"),
+        "vitaleIdentity_identityReceivedMasked":
+            MessageLookupByLibrary.simpleMessage(
+                "ontvangen identiteitsgegevens (persoonsgegevens verborgen)"),
+        "vitaleIdentity_identityUnavailable":
+            MessageLookupByLibrary.simpleMessage("identiteit niet beschikbaar"),
+        "vitaleIdentity_lastName": MessageLookupByLibrary.simpleMessage("Naam"),
+        "vitaleIdentity_male":
+            MessageLookupByLibrary.simpleMessage("Mannelijk"),
+        "vitaleIdentity_nir": MessageLookupByLibrary.simpleMessage("NIR"),
+        "vitaleIdentity_noIdentityAvailable":
+            MessageLookupByLibrary.simpleMessage(
+                "Er is geen Carte Vitale-identiteitsnummer beschikbaar"),
+        "vitaleIdentity_notProvided":
+            MessageLookupByLibrary.simpleMessage("Niet opgegeven"),
+        "vitaleIdentity_other": MessageLookupByLibrary.simpleMessage("Overig"),
+        "vitaleIdentity_reading":
+            MessageLookupByLibrary.simpleMessage("Wordt geladen..."),
+        "vitaleIdentity_sex": MessageLookupByLibrary.simpleMessage("Seks"),
+        "vitaleIdentity_source": MessageLookupByLibrary.simpleMessage("Bron"),
+        "vitaleIdentity_title": MessageLookupByLibrary.simpleMessage(
+            "Identiteit van de Carte Vitale lezen"),
+        "vitaleIdentity_unavailable":
+            MessageLookupByLibrary.simpleMessage("niet beschikbaar"),
+        "vitaleIdentity_useForPatientCreation":
+            MessageLookupByLibrary.simpleMessage(
+                "Gebruik dit om een patiënt aan te maken")
       };
 }

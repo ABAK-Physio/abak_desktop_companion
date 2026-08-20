@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import '../../../generated/l10n.dart';
 
+import '../../../generated/l10n.dart';
+import '../../../core/utils/date_format_utils.dart';
 import '../../import_export/data/import_session_repository.dart';
 import '../../import_export/import_history_screen.dart';
 import '../../import_export/models/import_session.dart';
@@ -140,7 +140,10 @@ class _RecentImportTile extends StatelessWidget {
       session.completedAt ?? session.startedAt,
     );
 
-    final formattedDate = DateFormat('dd/MM/yyyy HH:mm').format(date);
+    final formattedDate = DateFormatUtils.formatDateTime(
+      context,
+      date,
+    );
 
     final needsResolution = session.status == 'needs_resolution';
     final hasErrors =
@@ -197,6 +200,7 @@ class _ImportSummary extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final s = S.of(context);
     final lines = <Widget>[];
 
     if (session.summaryPatientLabel != null &&
@@ -256,7 +260,7 @@ class _ImportSummary extends StatelessWidget {
     if (lines.isEmpty) {
       lines.add(
         Text(
-          _legacySummary(session),
+          _legacySummary(session, s),
           style: Theme.of(context).textTheme.bodySmall,
         ),
       );
@@ -268,30 +272,35 @@ class _ImportSummary extends StatelessWidget {
     );
   }
 
-  static String _legacySummary(ImportSession session) {
+  static String _legacySummary(
+      ImportSession session,
+      S s,
+      ) {
     final parts = <String>[];
 
     if (session.processedFilesCount > 0) {
-      parts.add('${session.processedFilesCount} fichier');
+      parts.add('${session.processedFilesCount} ${s.recentImportCard_file}');
     }
 
     if (session.importedResultsCount > 0) {
-      parts.add('${session.importedResultsCount} résultat');
+      parts.add('${session.importedResultsCount} ${s.recentImportCard_result}');
     }
 
     if (session.skippedResultsCount > 0) {
-      parts.add('${session.skippedResultsCount} ignoré');
+      parts.add('${session.skippedResultsCount} ${s.recentImportCard_ignored}');
     }
 
     if (session.conflictResultsCount > 0) {
-      parts.add('${session.conflictResultsCount} conflit');
+      parts.add('${session.conflictResultsCount} ${s.recentImportCard_conflict}');
     }
 
     if (session.failedFilesCount > 0) {
-      parts.add('${session.failedFilesCount} erreur');
+      parts.add('${session.failedFilesCount} ${s.recentImportCard_error}');
     }
 
-    return parts.isEmpty ? 'Aucun résultat importé' : parts.join(' · ');
+    return parts.isEmpty
+        ? s.recentImportCard_no_result_imported
+        : parts.join(' · ');
   }
 }
 

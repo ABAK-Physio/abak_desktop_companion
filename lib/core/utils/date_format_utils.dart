@@ -44,4 +44,46 @@ class DateFormatUtils {
 
     return DateFormat.yMd(locale.toLanguageTag()).add_Hm().format(date);
   }
+
+  static String formatDate(
+      BuildContext context,
+      DateTime date,
+      ) {
+    final locale = Localizations.localeOf(context);
+
+    return DateFormat.yMd(
+      locale.toLanguageTag(),
+    ).format(date);
+  }
+
+  static String formatDateTime(
+      BuildContext context,
+      DateTime date,
+      ) {
+    final locale = Localizations.localeOf(context);
+
+    return DateFormat.yMd(
+      locale.toLanguageTag(),
+    ).add_Hm().format(date);
+  }
+  static String formatMonthYear(
+      BuildContext context,
+      DateTime date,
+      ) {
+    final locale = Localizations.localeOf(context);
+
+    return DateFormat.yMMM(
+      locale.toLanguageTag(),
+    ).format(date);
+  }
+
+  static String formatMonthDayTimestamp(
+      BuildContext context,
+      int timestamp,
+      ) {
+    final locale = Localizations.localeOf(context).toLanguageTag();
+    final date = DateTime.fromMillisecondsSinceEpoch(timestamp);
+
+    return DateFormat.Md(locale).format(date);
+  }
 }

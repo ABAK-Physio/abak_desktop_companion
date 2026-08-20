@@ -50,6 +50,76 @@ class S {
     return Localizations.of<S>(context, S);
   }
 
+  /// `Annuler`
+  String get backupHistory_cancel {
+    return Intl.message(
+      'Annuler',
+      name: 'backupHistory_cancel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Aucune sauvegarde enregistrée.`
+  String get backupHistory_empty {
+    return Intl.message(
+      'Aucune sauvegarde enregistrée.',
+      name: 'backupHistory_empty',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{size}`
+  String backupHistory_fileSize(Object size) {
+    return Intl.message(
+      '$size',
+      name: 'backupHistory_fileSize',
+      desc: '',
+      args: [size],
+    );
+  }
+
+  /// `Restaurer`
+  String get backupHistory_restore {
+    return Intl.message(
+      'Restaurer',
+      name: 'backupHistory_restore',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Restaurer cette sauvegarde ?`
+  String get backupHistory_restoreTitle {
+    return Intl.message(
+      'Restaurer cette sauvegarde ?',
+      name: 'backupHistory_restoreTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cette opération remplacera totalement la base actuelle.\n\nUne sauvegarde automatique de sécurité sera créée avant restauration.\n\nContinuer ?`
+  String get backupHistory_restoreWarning {
+    return Intl.message(
+      'Cette opération remplacera totalement la base actuelle.\n\nUne sauvegarde automatique de sécurité sera créée avant restauration.\n\nContinuer ?',
+      name: 'backupHistory_restoreWarning',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Historique des sauvegardes`
+  String get backupHistory_title {
+    return Intl.message(
+      'Historique des sauvegardes',
+      name: 'backupHistory_title',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Fermer`
   String get close {
     return Intl.message(
@@ -85,6 +155,436 @@ class S {
     return Intl.message(
       'Port',
       name: 'desktopPort',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Nouvel appareil`
+  String get deviceForm_contextName {
+    return Intl.message(
+      'Nouvel appareil',
+      name: 'deviceForm_contextName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Modifier l’appareil`
+  String get deviceForm_editDevice {
+    return Intl.message(
+      'Modifier l’appareil',
+      name: 'deviceForm_editDevice',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Nouvel appareil`
+  String get deviceForm_newDevice {
+    return Intl.message(
+      'Nouvel appareil',
+      name: 'deviceForm_newDevice',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Erreur lors du chargement des praticiens`
+  String get deviceForm_loadingPractitionersError {
+    return Intl.message(
+      'Erreur lors du chargement des praticiens',
+      name: 'deviceForm_loadingPractitionersError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Nom de l’appareil`
+  String get deviceForm_deviceName {
+    return Intl.message(
+      'Nom de l’appareil',
+      name: 'deviceForm_deviceName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `iPhone Claire, Pixel Marc…`
+  String get deviceForm_deviceNameHint {
+    return Intl.message(
+      'iPhone Claire, Pixel Marc…',
+      name: 'deviceForm_deviceNameHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Le nom de l’appareil est obligatoire`
+  String get deviceForm_deviceNameRequired {
+    return Intl.message(
+      'Le nom de l’appareil est obligatoire',
+      name: 'deviceForm_deviceNameRequired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Plateforme`
+  String get deviceForm_platform {
+    return Intl.message(
+      'Plateforme',
+      name: 'deviceForm_platform',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Praticien associé`
+  String get deviceForm_associatedPractitioner {
+    return Intl.message(
+      'Praticien associé',
+      name: 'deviceForm_associatedPractitioner',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Aucun / appareil partagé`
+  String get deviceForm_sharedDevice {
+    return Intl.message(
+      'Aucun / appareil partagé',
+      name: 'deviceForm_sharedDevice',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Annuler`
+  String get deviceForm_cancel {
+    return Intl.message(
+      'Annuler',
+      name: 'deviceForm_cancel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enregistrer`
+  String get deviceForm_save {
+    return Intl.message(
+      'Enregistrer',
+      name: 'deviceForm_save',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Créer`
+  String get deviceForm_create {
+    return Intl.message(
+      'Créer',
+      name: 'deviceForm_create',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Liste des appareils`
+  String get deviceList_contextName {
+    return Intl.message(
+      'Liste des appareils',
+      name: 'deviceList_contextName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cet écran montre la liste des appareils connectés à l’établissement`
+  String get deviceList_contextComment {
+    return Intl.message(
+      'Cet écran montre la liste des appareils connectés à l’établissement',
+      name: 'deviceList_contextComment',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Archiver l’appareil`
+  String get deviceList_archiveTitle {
+    return Intl.message(
+      'Archiver l’appareil',
+      name: 'deviceList_archiveTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Voulez-vous vraiment archiver {deviceName} ?`
+  String deviceList_archiveConfirmation(Object deviceName) {
+    return Intl.message(
+      'Voulez-vous vraiment archiver $deviceName ?',
+      name: 'deviceList_archiveConfirmation',
+      desc: '',
+      args: [deviceName],
+    );
+  }
+
+  /// `Annuler`
+  String get deviceList_cancel {
+    return Intl.message(
+      'Annuler',
+      name: 'deviceList_cancel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Archiver`
+  String get deviceList_archive {
+    return Intl.message(
+      'Archiver',
+      name: 'deviceList_archive',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Nouvel appareil`
+  String get deviceList_newDevice {
+    return Intl.message(
+      'Nouvel appareil',
+      name: 'deviceList_newDevice',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Erreur`
+  String get deviceList_error {
+    return Intl.message(
+      'Erreur',
+      name: 'deviceList_error',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Liste des appareils`
+  String get deviceList_title {
+    return Intl.message(
+      'Liste des appareils',
+      name: 'deviceList_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Actifs`
+  String get deviceList_active {
+    return Intl.message(
+      'Actifs',
+      name: 'deviceList_active',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Archivés`
+  String get deviceList_archived {
+    return Intl.message(
+      'Archivés',
+      name: 'deviceList_archived',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Aucun appareil archivé`
+  String get deviceList_noArchivedDevices {
+    return Intl.message(
+      'Aucun appareil archivé',
+      name: 'deviceList_noArchivedDevices',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Aucun appareil associé`
+  String get deviceList_noPairedDevices {
+    return Intl.message(
+      'Aucun appareil associé',
+      name: 'deviceList_noPairedDevices',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `La corbeille des appareils est vide pour le moment.`
+  String get deviceList_archivedDevicesEmpty {
+    return Intl.message(
+      'La corbeille des appareils est vide pour le moment.',
+      name: 'deviceList_archivedDevicesEmpty',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Les appareils ABAK associés à l’établissement apparaîtront ici.`
+  String get deviceList_pairedDevicesExplanation {
+    return Intl.message(
+      'Les appareils ABAK associés à l’établissement apparaîtront ici.',
+      name: 'deviceList_pairedDevicesExplanation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Archivé le`
+  String get deviceList_archivedOn {
+    return Intl.message(
+      'Archivé le',
+      name: 'deviceList_archivedOn',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Plateforme`
+  String get deviceList_platform {
+    return Intl.message(
+      'Plateforme',
+      name: 'deviceList_platform',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Praticien associé`
+  String get deviceList_associatedPractitioner {
+    return Intl.message(
+      'Praticien associé',
+      name: 'deviceList_associatedPractitioner',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Restaurer`
+  String get deviceList_restore {
+    return Intl.message(
+      'Restaurer',
+      name: 'deviceList_restore',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Afficher le QR Code`
+  String get deviceList_showQrCode {
+    return Intl.message(
+      'Afficher le QR Code',
+      name: 'deviceList_showQrCode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Modifier`
+  String get deviceList_edit {
+    return Intl.message(
+      'Modifier',
+      name: 'deviceList_edit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `évaluation`
+  String get episodeEvolution_evaluation {
+    return Intl.message(
+      'évaluation',
+      name: 'episodeEvolution_evaluation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `évaluations`
+  String get episodeEvolution_evaluations {
+    return Intl.message(
+      'évaluations',
+      name: 'episodeEvolution_evaluations',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Première`
+  String get episodeEvolution_first {
+    return Intl.message(
+      'Première',
+      name: 'episodeEvolution_first',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Exercices suivis`
+  String get episodeEvolution_followedExercises {
+    return Intl.message(
+      'Exercices suivis',
+      name: 'episodeEvolution_followedExercises',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Dernière`
+  String get episodeEvolution_last {
+    return Intl.message(
+      'Dernière',
+      name: 'episodeEvolution_last',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Aucun résultat disponible pour cet épisode.`
+  String get episodeEvolution_noResults {
+    return Intl.message(
+      'Aucun résultat disponible pour cet épisode.',
+      name: 'episodeEvolution_noResults',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Une seule valeur chiffrée disponible`
+  String get episodeEvolution_singleNumericValue {
+    return Intl.message(
+      'Une seule valeur chiffrée disponible',
+      name: 'episodeEvolution_singleNumericValue',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Évolution de l'épisode`
+  String get episodeEvolution_title {
+    return Intl.message(
+      'Évolution de l\'épisode',
+      name: 'episodeEvolution_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Voir l'évolution`
+  String get episodeEvolution_viewEvolution {
+    return Intl.message(
+      'Voir l\'évolution',
+      name: 'episodeEvolution_viewEvolution',
       desc: '',
       args: [],
     );
@@ -1030,6 +1530,466 @@ class S {
     );
   }
 
+  /// `Conflits`
+  String get homeImportSummary_conflicts {
+    return Intl.message(
+      'Conflits',
+      name: 'homeImportSummary_conflicts',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Fichiers en erreur`
+  String get homeImportSummary_failedFiles {
+    return Intl.message(
+      'Fichiers en erreur',
+      name: 'homeImportSummary_failedFiles',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Date import`
+  String get homeImportSummary_importDate {
+    return Intl.message(
+      'Date import',
+      name: 'homeImportSummary_importDate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Métriques importées`
+  String get homeImportSummary_importedMetrics {
+    return Intl.message(
+      'Métriques importées',
+      name: 'homeImportSummary_importedMetrics',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Résultats importés`
+  String get homeImportSummary_importedResults {
+    return Intl.message(
+      'Résultats importés',
+      name: 'homeImportSummary_importedResults',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Ouvrir`
+  String get homeImportSummary_open {
+    return Intl.message(
+      'Ouvrir',
+      name: 'homeImportSummary_open',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Patients concernés`
+  String get homeImportSummary_patients {
+    return Intl.message(
+      'Patients concernés',
+      name: 'homeImportSummary_patients',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Fichiers traités`
+  String get homeImportSummary_processedFiles {
+    return Intl.message(
+      'Fichiers traités',
+      name: 'homeImportSummary_processedFiles',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Résultats ignorés`
+  String get homeImportSummary_skippedResults {
+    return Intl.message(
+      'Résultats ignorés',
+      name: 'homeImportSummary_skippedResults',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Dernier import ABAK`
+  String get homeImportSummary_title {
+    return Intl.message(
+      'Dernier import ABAK',
+      name: 'homeImportSummary_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `fichier`
+  String get importResolutionAssistant_file {
+    return Intl.message(
+      'fichier',
+      name: 'importResolutionAssistant_file',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `fichiers`
+  String get importResolutionAssistant_files {
+    return Intl.message(
+      'fichiers',
+      name: 'importResolutionAssistant_files',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Import`
+  String get importResolutionAssistant_import {
+    return Intl.message(
+      'Import',
+      name: 'importResolutionAssistant_import',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Import en échec`
+  String get importResolutionAssistant_importFailed {
+    return Intl.message(
+      'Import en échec',
+      name: 'importResolutionAssistant_importFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Import à terminer`
+  String get importResolutionAssistant_importToComplete {
+    return Intl.message(
+      'Import à terminer',
+      name: 'importResolutionAssistant_importToComplete',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Import à vérifier`
+  String get importResolutionAssistant_importToReview {
+    return Intl.message(
+      'Import à vérifier',
+      name: 'importResolutionAssistant_importToReview',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `en erreur`
+  String get importResolutionAssistant_inError {
+    return Intl.message(
+      'en erreur',
+      name: 'importResolutionAssistant_inError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Une intervention est nécessaire pour terminer cet import.`
+  String get importResolutionAssistant_interventionRequired {
+    return Intl.message(
+      'Une intervention est nécessaire pour terminer cet import.',
+      name: 'importResolutionAssistant_interventionRequired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Impossible de charger les imports`
+  String get importResolutionAssistant_loadingError {
+    return Intl.message(
+      'Impossible de charger les imports',
+      name: 'importResolutionAssistant_loadingError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Aucun problème d’import détecté.`
+  String get importResolutionAssistant_noProblem {
+    return Intl.message(
+      'Aucun problème d’import détecté.',
+      name: 'importResolutionAssistant_noProblem',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `résultat`
+  String get importResolutionAssistant_result {
+    return Intl.message(
+      'résultat',
+      name: 'importResolutionAssistant_result',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `résultats`
+  String get importResolutionAssistant_results {
+    return Intl.message(
+      'résultats',
+      name: 'importResolutionAssistant_results',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sélectionnez un import pour afficher son détail et suivre les étapes proposées.`
+  String get importResolutionAssistant_selectImportInstruction {
+    return Intl.message(
+      'Sélectionnez un import pour afficher son détail et suivre les étapes proposées.',
+      name: 'importResolutionAssistant_selectImportInstruction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Résolution des problèmes d’import`
+  String get importResolutionAssistant_title {
+    return Intl.message(
+      'Résolution des problèmes d’import',
+      name: 'importResolutionAssistant_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `à vérifier`
+  String get importResolutionAssistant_toReview {
+    return Intl.message(
+      'à vérifier',
+      name: 'importResolutionAssistant_toReview',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{count} sauvegardes`
+  String information_backupCount(Object count) {
+    return Intl.message(
+      '$count sauvegardes',
+      name: 'information_backupCount',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `Sauvegardes`
+  String get information_backups {
+    return Intl.message(
+      'Sauvegardes',
+      name: 'information_backups',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Configuré`
+  String get information_configured {
+    return Intl.message(
+      'Configuré',
+      name: 'information_configured',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cet écran affiche les informations générales, techniques et légales de Companion.`
+  String get information_contextComment {
+    return Intl.message(
+      'Cet écran affiche les informations générales, techniques et légales de Companion.',
+      name: 'information_contextComment',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Informations`
+  String get information_contextName {
+    return Intl.message(
+      'Informations',
+      name: 'information_contextName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Base de données`
+  String get information_database {
+    return Intl.message(
+      'Base de données',
+      name: 'information_database',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Langue`
+  String get information_language {
+    return Intl.message(
+      'Langue',
+      name: 'information_language',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Avertissement légal`
+  String get information_legalNotice {
+    return Intl.message(
+      'Avertissement légal',
+      name: 'information_legalNotice',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Chargement...`
+  String get information_loading {
+    return Intl.message(
+      'Chargement...',
+      name: 'information_loading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Stockage local`
+  String get information_localStorage {
+    return Intl.message(
+      'Stockage local',
+      name: 'information_localStorage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Logo`
+  String get information_logo {
+    return Intl.message(
+      'Logo',
+      name: 'information_logo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Non configuré`
+  String get information_notConfigured {
+    return Intl.message(
+      'Non configuré',
+      name: 'information_notConfigured',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Non renseigné`
+  String get information_notProvided {
+    return Intl.message(
+      'Non renseigné',
+      name: 'information_notProvided',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cabinet`
+  String get information_office {
+    return Intl.message(
+      'Cabinet',
+      name: 'information_office',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Taille : {size}`
+  String information_size(Object size) {
+    return Intl.message(
+      'Taille : $size',
+      name: 'information_size',
+      desc: '',
+      args: [size],
+    );
+  }
+
+  /// `Système`
+  String get information_system {
+    return Intl.message(
+      'Système',
+      name: 'information_system',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Informations`
+  String get information_title {
+    return Intl.message(
+      'Informations',
+      name: 'information_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Taille totale : {size}`
+  String information_totalSize(Object size) {
+    return Intl.message(
+      'Taille totale : $size',
+      name: 'information_totalSize',
+      desc: '',
+      args: [size],
+    );
+  }
+
+  /// `Version {version}`
+  String information_version(Object version) {
+    return Intl.message(
+      'Version $version',
+      name: 'information_version',
+      desc: '',
+      args: [version],
+    );
+  }
+
+  /// `Version...`
+  String get information_versionLoading {
+    return Intl.message(
+      'Version...',
+      name: 'information_versionLoading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Consulter la licence`
+  String get information_viewLicense {
+    return Intl.message(
+      'Consulter la licence',
+      name: 'information_viewLicense',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Langue de l'application`
   String get language_choice {
     return Intl.message(
@@ -1050,11 +2010,111 @@ class S {
     );
   }
 
+  /// `Avertissement`
+  String get legalNotice_appBarTitle {
+    return Intl.message(
+      'Avertissement',
+      name: 'legalNotice_appBarTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `ABAK Desktop Companion est un logiciel d’aide à l’organisation, à l’importation et à la consultation de résultats cliniques issus de l’écosystème ABAK.\n\nIl ne constitue pas un dispositif médical certifié et ne remplace pas le jugement du professionnel de santé.\n\nLes résultats, scores, comptes rendus et indicateurs affichés doivent toujours être interprétés par un professionnel qualifié, en tenant compte de l’examen clinique, du contexte du patient et des recommandations en vigueur.\n\nL’utilisateur reste seul responsable de ses décisions cliniques, de la vérification des données importées et de la conformité de leur utilisation avec les règles professionnelles, réglementaires et déontologiques applicables.\n\nABAK Desktop Companion ne réalise pas de diagnostic autonome, ne prescrit aucun traitement et ne se substitue en aucun cas à une consultation médicale ou paramédicale.`
+  String get legalNotice_content {
+    return Intl.message(
+      'ABAK Desktop Companion est un logiciel d’aide à l’organisation, à l’importation et à la consultation de résultats cliniques issus de l’écosystème ABAK.\n\nIl ne constitue pas un dispositif médical certifié et ne remplace pas le jugement du professionnel de santé.\n\nLes résultats, scores, comptes rendus et indicateurs affichés doivent toujours être interprétés par un professionnel qualifié, en tenant compte de l’examen clinique, du contexte du patient et des recommandations en vigueur.\n\nL’utilisateur reste seul responsable de ses décisions cliniques, de la vérification des données importées et de la conformité de leur utilisation avec les règles professionnelles, réglementaires et déontologiques applicables.\n\nABAK Desktop Companion ne réalise pas de diagnostic autonome, ne prescrit aucun traitement et ne se substitue en aucun cas à une consultation médicale ou paramédicale.',
+      name: 'legalNotice_content',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Avertissement Légal`
+  String get legalNotice_title {
+    return Intl.message(
+      'Avertissement Légal',
+      name: 'legalNotice_title',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Chargement...`
   String get loading {
     return Intl.message(
       'Chargement...',
       name: 'loading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sauvegarde annulée.`
+  String get localDatabaseBackup_cancelled {
+    return Intl.message(
+      'Sauvegarde annulée.',
+      name: 'localDatabaseBackup_cancelled',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choisir le dossier de sauvegarde ABAK`
+  String get localDatabaseBackup_chooseBackupFolder {
+    return Intl.message(
+      'Choisir le dossier de sauvegarde ABAK',
+      name: 'localDatabaseBackup_chooseBackupFolder',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Base SQLite introuvable.`
+  String get localDatabaseBackup_databaseNotFound {
+    return Intl.message(
+      'Base SQLite introuvable.',
+      name: 'localDatabaseBackup_databaseNotFound',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sauvegarde préalable impossible`
+  String get localDatabaseReset_backupFailed {
+    return Intl.message(
+      'Sauvegarde préalable impossible',
+      name: 'localDatabaseReset_backupFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Une seule instance peut être ouverte à la fois.\n\nUtilisez la fenêtre Companion déjà ouverte.`
+  String get main_alreadyRunningMessage {
+    return Intl.message(
+      'Une seule instance peut être ouverte à la fois.\n\nUtilisez la fenêtre Companion déjà ouverte.',
+      name: 'main_alreadyRunningMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `ABAK Desktop Companion est déjà ouvert`
+  String get main_alreadyRunningTitle {
+    return Intl.message(
+      'ABAK Desktop Companion est déjà ouvert',
+      name: 'main_alreadyRunningTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get main_close {
+    return Intl.message(
+      '',
+      name: 'main_close',
       desc: '',
       args: [],
     );
@@ -1100,6 +2160,96 @@ class S {
     );
   }
 
+  /// `Choisir un logo`
+  String get organization_chooseLogo {
+    return Intl.message(
+      'Choisir un logo',
+      name: 'organization_chooseLogo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Identité de l’établissement`
+  String get organization_identityTitle {
+    return Intl.message(
+      'Identité de l’établissement',
+      name: 'organization_identityTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Logo de l’établissement supprimé.`
+  String get organization_logoRemoved {
+    return Intl.message(
+      'Logo de l’établissement supprimé.',
+      name: 'organization_logoRemoved',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Logo de l’établissement enregistré.`
+  String get organization_logoSaved {
+    return Intl.message(
+      'Logo de l’établissement enregistré.',
+      name: 'organization_logoSaved',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Nom de l’établissement`
+  String get organization_nameLabel {
+    return Intl.message(
+      'Nom de l’établissement',
+      name: 'organization_nameLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Nom de l’établissement enregistré.`
+  String get organization_nameSaved {
+    return Intl.message(
+      'Nom de l’établissement enregistré.',
+      name: 'organization_nameSaved',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Supprimer le logo`
+  String get organization_removeLogo {
+    return Intl.message(
+      'Supprimer le logo',
+      name: 'organization_removeLogo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enregistrer le nom`
+  String get organization_saveName {
+    return Intl.message(
+      'Enregistrer le nom',
+      name: 'organization_saveName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Établissement`
+  String get organization_title {
+    return Intl.message(
+      'Établissement',
+      name: 'organization_title',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Associer un téléphone`
   String get pairPhone {
     return Intl.message(
@@ -1130,91 +2280,261 @@ class S {
     );
   }
 
-  /// `Créer un praticien`
-  String get practitionerList_button_create {
+  /// `Actifs`
+  String get patientList_active {
     return Intl.message(
-      'Créer un praticien',
-      name: 'practitionerList_button_create',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Liste des praticiens`
-  String get practitionerList_title {
-    return Intl.message(
-      'Liste des praticiens',
-      name: 'practitionerList_title',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Liste des praticiens`
-  String get practitionerList_contextName {
-    return Intl.message(
-      'Liste des praticiens',
-      name: 'practitionerList_contextName',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Cet écran affiche la liste des praticiens enregistrés.`
-  String get practitionerList_contextComment {
-    return Intl.message(
-      'Cet écran affiche la liste des praticiens enregistrés.',
-      name: 'practitionerList_contextComment',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Erreur : {error}`
-  String practitionerList_error(Object error) {
-    return Intl.message(
-      'Erreur : $error',
-      name: 'practitionerList_error',
-      desc: '',
-      args: [error],
-    );
-  }
-
-  /// `Archiver le kiné`
-  String get practitionerList_archivePractitioner {
-    return Intl.message(
-      'Archiver le kiné',
-      name: 'practitionerList_archivePractitioner',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Voulez-vous vraiment archiver {practitionerName} ?`
-  String practitionerList_archiveConfirmation(Object practitionerName) {
-    return Intl.message(
-      'Voulez-vous vraiment archiver $practitionerName ?',
-      name: 'practitionerList_archiveConfirmation',
-      desc: '',
-      args: [practitionerName],
-    );
-  }
-
-  /// `Annuler`
-  String get practitionerList_cancel {
-    return Intl.message(
-      'Annuler',
-      name: 'practitionerList_cancel',
+      'Actifs',
+      name: 'patientList_active',
       desc: '',
       args: [],
     );
   }
 
   /// `Archiver`
-  String get practitionerList_archive {
+  String get patientList_archive {
     return Intl.message(
       'Archiver',
-      name: 'practitionerList_archive',
+      name: 'patientList_archive',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Voulez-vous vraiment archiver {patientName} ? Il ne sera plus affiché dans la liste active.`
+  String patientList_archiveConfirmation(Object patientName) {
+    return Intl.message(
+      'Voulez-vous vraiment archiver $patientName ? Il ne sera plus affiché dans la liste active.',
+      name: 'patientList_archiveConfirmation',
+      desc: '',
+      args: [patientName],
+    );
+  }
+
+  /// `Archivés`
+  String get patientList_archived {
+    return Intl.message(
+      'Archivés',
+      name: 'patientList_archived',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Archivé le`
+  String get patientList_archivedOn {
+    return Intl.message(
+      'Archivé le',
+      name: 'patientList_archivedOn',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Patient archivé`
+  String get patientList_archivedPatient {
+    return Intl.message(
+      'Patient archivé',
+      name: 'patientList_archivedPatient',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `La corbeille des patients est vide pour le moment.`
+  String get patientList_archivedPatientsEmpty {
+    return Intl.message(
+      'La corbeille des patients est vide pour le moment.',
+      name: 'patientList_archivedPatientsEmpty',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{patientName} archivé.`
+  String patientList_archiveSuccess(Object patientName) {
+    return Intl.message(
+      '$patientName archivé.',
+      name: 'patientList_archiveSuccess',
+      desc: '',
+      args: [patientName],
+    );
+  }
+
+  /// `Archiver le patient`
+  String get patientList_archiveTitle {
+    return Intl.message(
+      'Archiver le patient',
+      name: 'patientList_archiveTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Né(e) le`
+  String get patientList_bornOn {
+    return Intl.message(
+      'Né(e) le',
+      name: 'patientList_bornOn',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Annuler`
+  String get patientList_cancel {
+    return Intl.message(
+      'Annuler',
+      name: 'patientList_cancel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Vous pouvez afficher la liste des patients actifs et ceux archivés`
+  String get patientList_contextComment {
+    return Intl.message(
+      'Vous pouvez afficher la liste des patients actifs et ceux archivés',
+      name: 'patientList_contextComment',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Liste des patients`
+  String get patientList_contextName {
+    return Intl.message(
+      'Liste des patients',
+      name: 'patientList_contextName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Modifier`
+  String get patientList_edit {
+    return Intl.message(
+      'Modifier',
+      name: 'patientList_edit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Erreur : {error}`
+  String patientList_error(Object error) {
+    return Intl.message(
+      'Erreur : $error',
+      name: 'patientList_error',
+      desc: '',
+      args: [error],
+    );
+  }
+
+  /// `Nouveau patient`
+  String get patientList_newPatient {
+    return Intl.message(
+      'Nouveau patient',
+      name: 'patientList_newPatient',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Aucun patient archivé`
+  String get patientList_noArchivedPatients {
+    return Intl.message(
+      'Aucun patient archivé',
+      name: 'patientList_noArchivedPatients',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Aucun patient trouvé`
+  String get patientList_noPatientFound {
+    return Intl.message(
+      'Aucun patient trouvé',
+      name: 'patientList_noPatientFound',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Aucun patient enregistré`
+  String get patientList_noRegisteredPatients {
+    return Intl.message(
+      'Aucun patient enregistré',
+      name: 'patientList_noRegisteredPatients',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Le fichier patient local est vide pour le moment.`
+  String get patientList_patientFileEmpty {
+    return Intl.message(
+      'Le fichier patient local est vide pour le moment.',
+      name: 'patientList_patientFileEmpty',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Restaurable jusqu’au`
+  String get patientList_restorableUntil {
+    return Intl.message(
+      'Restaurable jusqu’au',
+      name: 'patientList_restorableUntil',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Restaurer`
+  String get patientList_restore {
+    return Intl.message(
+      'Restaurer',
+      name: 'patientList_restore',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{patientName} restauré dans la liste active.`
+  String patientList_restoreSuccess(Object patientName) {
+    return Intl.message(
+      '$patientName restauré dans la liste active.',
+      name: 'patientList_restoreSuccess',
+      desc: '',
+      args: [patientName],
+    );
+  }
+
+  /// `Rechercher un patient`
+  String get patientList_searchPatient {
+    return Intl.message(
+      'Rechercher un patient',
+      name: 'patientList_searchPatient',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sexe`
+  String get patientList_sex {
+    return Intl.message(
+      'Sexe',
+      name: 'patientList_sex',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Liste des patients`
+  String get patientList_title {
+    return Intl.message(
+      'Liste des patients',
+      name: 'patientList_title',
       desc: '',
       args: [],
     );
@@ -1230,6 +2550,36 @@ class S {
     );
   }
 
+  /// `Ajoutez les kinés du cabinet pour identifier les tests importés.`
+  String get practitionerList_addPractitionersHint {
+    return Intl.message(
+      'Ajoutez les kinés du cabinet pour identifier les tests importés.',
+      name: 'practitionerList_addPractitionersHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Archiver`
+  String get practitionerList_archive {
+    return Intl.message(
+      'Archiver',
+      name: 'practitionerList_archive',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Voulez-vous vraiment archiver {practitionerName} ?`
+  String practitionerList_archiveConfirmation(Object practitionerName) {
+    return Intl.message(
+      'Voulez-vous vraiment archiver $practitionerName ?',
+      name: 'practitionerList_archiveConfirmation',
+      desc: '',
+      args: [practitionerName],
+    );
+  }
+
   /// `Archivés`
   String get practitionerList_archived {
     return Intl.message(
@@ -1237,6 +2587,96 @@ class S {
       name: 'practitionerList_archived',
       desc: '',
       args: [],
+    );
+  }
+
+  /// `Archivé le {date}`
+  String practitionerList_archivedOn(Object date) {
+    return Intl.message(
+      'Archivé le $date',
+      name: 'practitionerList_archivedOn',
+      desc: '',
+      args: [date],
+    );
+  }
+
+  /// `La corbeille des kinés est vide pour le moment.`
+  String get practitionerList_archiveEmpty {
+    return Intl.message(
+      'La corbeille des kinés est vide pour le moment.',
+      name: 'practitionerList_archiveEmpty',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Archiver le kiné`
+  String get practitionerList_archivePractitioner {
+    return Intl.message(
+      'Archiver le kiné',
+      name: 'practitionerList_archivePractitioner',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Créer un praticien`
+  String get practitionerList_button_create {
+    return Intl.message(
+      'Créer un praticien',
+      name: 'practitionerList_button_create',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Annuler`
+  String get practitionerList_cancel {
+    return Intl.message(
+      'Annuler',
+      name: 'practitionerList_cancel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cet écran affiche la liste des praticiens enregistrés.`
+  String get practitionerList_contextComment {
+    return Intl.message(
+      'Cet écran affiche la liste des praticiens enregistrés.',
+      name: 'practitionerList_contextComment',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Liste des praticiens`
+  String get practitionerList_contextName {
+    return Intl.message(
+      'Liste des praticiens',
+      name: 'practitionerList_contextName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Modifier`
+  String get practitionerList_edit {
+    return Intl.message(
+      'Modifier',
+      name: 'practitionerList_edit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Erreur : {error}`
+  String practitionerList_error(Object error) {
+    return Intl.message(
+      'Erreur : $error',
+      name: 'practitionerList_error',
+      desc: '',
+      args: [error],
     );
   }
 
@@ -1257,36 +2697,6 @@ class S {
       name: 'practitionerList_noPractitioner',
       desc: '',
       args: [],
-    );
-  }
-
-  /// `La corbeille des kinés est vide pour le moment.`
-  String get practitionerList_archiveEmpty {
-    return Intl.message(
-      'La corbeille des kinés est vide pour le moment.',
-      name: 'practitionerList_archiveEmpty',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Ajoutez les kinés du cabinet pour identifier les tests importés.`
-  String get practitionerList_addPractitionersHint {
-    return Intl.message(
-      'Ajoutez les kinés du cabinet pour identifier les tests importés.',
-      name: 'practitionerList_addPractitionersHint',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Archivé le {date}`
-  String practitionerList_archivedOn(Object date) {
-    return Intl.message(
-      'Archivé le $date',
-      name: 'practitionerList_archivedOn',
-      desc: '',
-      args: [date],
     );
   }
 
@@ -1320,11 +2730,11 @@ class S {
     );
   }
 
-  /// `Modifier`
-  String get practitionerList_edit {
+  /// `Liste des praticiens`
+  String get practitionerList_title {
     return Intl.message(
-      'Modifier',
-      name: 'practitionerList_edit',
+      'Liste des praticiens',
+      name: 'practitionerList_title',
       desc: '',
       args: [],
     );
@@ -1470,6 +2880,26 @@ class S {
     );
   }
 
+  /// `Fermer`
+  String get practitionerQr_close {
+    return Intl.message(
+      'Fermer',
+      name: 'practitionerQr_close',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cabinet`
+  String get practitionerQr_defaultOrganizationName {
+    return Intl.message(
+      'Cabinet',
+      name: 'practitionerQr_defaultOrganizationName',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Profil professionnel ABAK`
   String get practitionerQr_professionalProfile {
     return Intl.message(
@@ -1490,21 +2920,11 @@ class S {
     );
   }
 
-  /// `Fermer`
-  String get practitionerQr_close {
+  /// `archivé`
+  String get practitionerSelector_archived {
     return Intl.message(
-      'Fermer',
-      name: 'practitionerQr_close',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Cabinet`
-  String get practitionerQr_defaultOrganizationName {
-    return Intl.message(
-      'Cabinet',
-      name: 'practitionerQr_defaultOrganizationName',
+      'archivé',
+      name: 'practitionerSelector_archived',
       desc: '',
       args: [],
     );
@@ -1530,11 +2950,201 @@ class S {
     );
   }
 
-  /// `archivé`
-  String get practitionerSelector_archived {
+  /// `Patients archivés`
+  String get preferences_archivedPatients {
     return Intl.message(
-      'archivé',
-      name: 'practitionerSelector_archived',
+      'Patients archivés',
+      name: 'preferences_archivedPatients',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cet écran centralise les paramètres généraux de Companion.`
+  String get preferences_contextComment {
+    return Intl.message(
+      'Cet écran centralise les paramètres généraux de Companion.',
+      name: 'preferences_contextComment',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Paramètres utilisateur`
+  String get preferences_contextName {
+    return Intl.message(
+      'Paramètres utilisateur',
+      name: 'preferences_contextName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `jours`
+  String get preferences_days {
+    return Intl.message(
+      'jours',
+      name: 'preferences_days',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Mode Expert`
+  String get preferences_expertMode {
+    return Intl.message(
+      'Mode Expert',
+      name: 'preferences_expertMode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Affiche des informations techniques destinées aux développeurs et aux contributeurs.`
+  String get preferences_expertModeDescription {
+    return Intl.message(
+      'Affiche des informations techniques destinées aux développeurs et aux contributeurs.',
+      name: 'preferences_expertModeDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Paramètre du mode Expert enregistré.`
+  String get preferences_expertModeSaved {
+    return Intl.message(
+      'Paramètre du mode Expert enregistré.',
+      name: 'preferences_expertModeSaved',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Langue enregistrée.`
+  String get preferences_languageSaved {
+    return Intl.message(
+      'Langue enregistrée.',
+      name: 'preferences_languageSaved',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Établissement`
+  String get preferences_organization {
+    return Intl.message(
+      'Établissement',
+      name: 'preferences_organization',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Nom, logo et informations générales.`
+  String get preferences_organizationDescription {
+    return Intl.message(
+      'Nom, logo et informations générales.',
+      name: 'preferences_organizationDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Durée de conservation`
+  String get preferences_retentionDuration {
+    return Intl.message(
+      'Durée de conservation',
+      name: 'preferences_retentionDuration',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Les patients archivés peuvent être restaurés pendant cette durée. Ils seront ensuite supprimés automatiquement.`
+  String get preferences_retentionExplanation {
+    return Intl.message(
+      'Les patients archivés peuvent être restaurés pendant cette durée. Ils seront ensuite supprimés automatiquement.',
+      name: 'preferences_retentionExplanation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Durée de conservation enregistrée.`
+  String get preferences_retentionSaved {
+    return Intl.message(
+      'Durée de conservation enregistrée.',
+      name: 'preferences_retentionSaved',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `conflit`
+  String get recentImportCard_conflict {
+    return Intl.message(
+      'conflit',
+      name: 'recentImportCard_conflict',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `erreur`
+  String get recentImportCard_error {
+    return Intl.message(
+      'erreur',
+      name: 'recentImportCard_error',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `fichier`
+  String get recentImportCard_fichier {
+    return Intl.message(
+      'fichier',
+      name: 'recentImportCard_fichier',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `fichier`
+  String get recentImportCard_file {
+    return Intl.message(
+      'fichier',
+      name: 'recentImportCard_file',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `ignoré`
+  String get recentImportCard_ignored {
+    return Intl.message(
+      'ignoré',
+      name: 'recentImportCard_ignored',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Aucun résultat importé`
+  String get recentImportCard_no_result_imported {
+    return Intl.message(
+      'Aucun résultat importé',
+      name: 'recentImportCard_no_result_imported',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `résultat`
+  String get recentImportCard_result {
+    return Intl.message(
+      'résultat',
+      name: 'recentImportCard_result',
       desc: '',
       args: [],
     );
@@ -1550,6 +3160,16 @@ class S {
     );
   }
 
+  /// `Archives des rapports`
+  String get reportArchive_title {
+    return Intl.message(
+      'Archives des rapports',
+      name: 'reportArchive_title',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Réinitialiser`
   String get reset {
     return Intl.message(
@@ -1560,11 +3180,621 @@ class S {
     );
   }
 
+  /// `Ajouter un commentaire...`
+  String get resultDetail_addCommentHint {
+    return Intl.message(
+      'Ajouter un commentaire...',
+      name: 'resultDetail_addCommentHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Voulez-vous vraiment archiver ce résultat ?`
+  String get resultDetail_archiveConfirmation {
+    return Intl.message(
+      'Voulez-vous vraiment archiver ce résultat ?',
+      name: 'resultDetail_archiveConfirmation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Archiver le résultat`
+  String get resultDetail_archiveTitle {
+    return Intl.message(
+      'Archiver le résultat',
+      name: 'resultDetail_archiveTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Naissance`
+  String get resultDetail_birthDate {
+    return Intl.message(
+      'Naissance',
+      name: 'resultDetail_birthDate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Appareil`
+  String get resultDetail_cancel {
+    return Intl.message(
+      'Appareil',
+      name: 'resultDetail_cancel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Commentaire clinique`
+  String get resultDetail_clinicalComment {
+    return Intl.message(
+      'Commentaire clinique',
+      name: 'resultDetail_clinicalComment',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Commentaire enregistré`
+  String get resultDetail_commentSaved {
+    return Intl.message(
+      'Commentaire enregistré',
+      name: 'resultDetail_commentSaved',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Résultat détaillé`
+  String get resultDetail_detailedResult {
+    return Intl.message(
+      'Résultat détaillé',
+      name: 'resultDetail_detailedResult',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Détail de l'appareil`
+  String get resultDetail_device {
+    return Intl.message(
+      'Détail de l\'appareil',
+      name: 'resultDetail_device',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Date de l'exercice`
+  String get resultDetail_exerciseDate {
+    return Intl.message(
+      'Date de l\'exercice',
+      name: 'resultDetail_exerciseDate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Informations générales`
+  String get resultDetail_generalInformation {
+    return Intl.message(
+      'Informations générales',
+      name: 'resultDetail_generalInformation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Identité non vérifiée`
+  String get resultDetail_identityUnverified {
+    return Intl.message(
+      'Identité non vérifiée',
+      name: 'resultDetail_identityUnverified',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Identité vérifiée`
+  String get resultDetail_identityVerified {
+    return Intl.message(
+      'Identité vérifiée',
+      name: 'resultDetail_identityVerified',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Import`
+  String get resultDetail_import {
+    return Intl.message(
+      'Import',
+      name: 'resultDetail_import',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Dernière modification`
+  String get resultDetail_lastModified {
+    return Intl.message(
+      'Dernière modification',
+      name: 'resultDetail_lastModified',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Métriques`
+  String get resultDetail_metrics {
+    return Intl.message(
+      'Métriques',
+      name: 'resultDetail_metrics',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Aucune métrique enregistrée.`
+  String get resultDetail_noMetrics {
+    return Intl.message(
+      'Aucune métrique enregistrée.',
+      name: 'resultDetail_noMetrics',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Patient`
+  String get resultDetail_patient {
+    return Intl.message(
+      'Patient',
+      name: 'resultDetail_patient',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Réalisé par`
+  String get resultDetail_performedBy {
+    return Intl.message(
+      'Réalisé par',
+      name: 'resultDetail_performedBy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enregistrer`
+  String get resultDetail_save {
+    return Intl.message(
+      'Enregistrer',
+      name: 'resultDetail_save',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Score`
+  String get resultDetail_score {
+    return Intl.message(
+      'Score',
+      name: 'resultDetail_score',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `État sync`
+  String get resultDetail_syncState {
+    return Intl.message(
+      'État sync',
+      name: 'resultDetail_syncState',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Ces fonctions sont destinées à l’installation, au diagnostic et aux opérations d’assistance technique.\n\nUtilisez-les uniquement lorsqu’un technicien ou la documentation ABAK vous le demande.`
+  String get settings_assistanceWarning {
+    return Intl.message(
+      'Ces fonctions sont destinées à l’installation, au diagnostic et aux opérations d’assistance technique.\n\nUtilisez-les uniquement lorsqu’un technicien ou la documentation ABAK vous le demande.',
+      name: 'settings_assistanceWarning',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Annuler`
+  String get settings_cancel {
+    return Intl.message(
+      'Annuler',
+      name: 'settings_cancel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Configuration`
+  String get settings_configuration {
+    return Intl.message(
+      'Configuration',
+      name: 'settings_configuration',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Confirmation obligatoire`
+  String get settings_confirmationRequired {
+    return Intl.message(
+      'Confirmation obligatoire',
+      name: 'settings_confirmationRequired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cet écran regroupe les fonctions d’installation, de diagnostic et de maintenance de Companion.`
+  String get settings_contextComment {
+    return Intl.message(
+      'Cet écran regroupe les fonctions d’installation, de diagnostic et de maintenance de Companion.',
+      name: 'settings_contextComment',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Assistance`
+  String get settings_contextName {
+    return Intl.message(
+      'Assistance',
+      name: 'settings_contextName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Continuer`
+  String get settings_continue {
+    return Intl.message(
+      'Continuer',
+      name: 'settings_continue',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Erreur lors de la réinitialisation : {error}`
+  String settings_databaseResetError(Object error) {
+    return Intl.message(
+      'Erreur lors de la réinitialisation : $error',
+      name: 'settings_databaseResetError',
+      desc: '',
+      args: [error],
+    );
+  }
+
+  /// `Base réinitialisée. Sauvegarde automatique créée.`
+  String get settings_databaseResetSuccess {
+    return Intl.message(
+      'Base réinitialisée. Sauvegarde automatique créée.',
+      name: 'settings_databaseResetSuccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Diagnostic`
+  String get settings_diagnostic {
+    return Intl.message(
+      'Diagnostic',
+      name: 'settings_diagnostic',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Modifier`
+  String get settings_edit {
+    return Intl.message(
+      'Modifier',
+      name: 'settings_edit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Dossier d’échange ABAK`
+  String get settings_exchangeDirectory {
+    return Intl.message(
+      'Dossier d’échange ABAK',
+      name: 'settings_exchangeDirectory',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Dossier d’échange réinitialisé`
+  String get settings_exchangeDirectoryReset {
+    return Intl.message(
+      'Dossier d’échange réinitialisé',
+      name: 'settings_exchangeDirectoryReset',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Dossier d’échange ABAK mis à jour`
+  String get settings_exchangeDirectoryUpdated {
+    return Intl.message(
+      'Dossier d’échange ABAK mis à jour',
+      name: 'settings_exchangeDirectoryUpdated',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Importer manuellement un fichier .abak`
+  String get settings_importAbakFile {
+    return Intl.message(
+      'Importer manuellement un fichier .abak',
+      name: 'settings_importAbakFile',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Confirmation invalide.`
+  String get settings_invalidConfirmation {
+    return Intl.message(
+      'Confirmation invalide.',
+      name: 'settings_invalidConfirmation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Chargement...`
+  String get settings_loading {
+    return Intl.message(
+      'Chargement...',
+      name: 'settings_loading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Maintenance`
+  String get settings_maintenance {
+    return Intl.message(
+      'Maintenance',
+      name: 'settings_maintenance',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Gérer les sauvegardes`
+  String get settings_manageBackups {
+    return Intl.message(
+      'Gérer les sauvegardes',
+      name: 'settings_manageBackups',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Aucun dossier défini`
+  String get settings_noDirectoryDefined {
+    return Intl.message(
+      'Aucun dossier défini',
+      name: 'settings_noDirectoryDefined',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Ouvrir`
+  String get settings_open {
+    return Intl.message(
+      'Ouvrir',
+      name: 'settings_open',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Ouverture du dossier d’échange`
+  String get settings_openingExchangeDirectory {
+    return Intl.message(
+      'Ouverture du dossier d’échange',
+      name: 'settings_openingExchangeDirectory',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Réinitialiser`
+  String get settings_reset {
+    return Intl.message(
+      'Réinitialiser',
+      name: 'settings_reset',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Réinitialiser la base`
+  String get settings_resetDatabase {
+    return Intl.message(
+      'Réinitialiser la base',
+      name: 'settings_resetDatabase',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Réinitialiser la base locale ?`
+  String get settings_resetDatabaseTitle {
+    return Intl.message(
+      'Réinitialiser la base locale ?',
+      name: 'settings_resetDatabaseTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cette opération supprimera toutes les données locales (patients, résultats, imports et historiques).\n\nUne sauvegarde automatique sera créée avant la réinitialisation.\n\nUtilisez cette fonction uniquement lors d’une opération d’assistance technique.`
+  String get settings_resetDatabaseWarning {
+    return Intl.message(
+      'Cette opération supprimera toutes les données locales (patients, résultats, imports et historiques).\n\nUne sauvegarde automatique sera créée avant la réinitialisation.\n\nUtilisez cette fonction uniquement lors d’une opération d’assistance technique.',
+      name: 'settings_resetDatabaseWarning',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `RESET`
+  String get settings_resetKeyword {
+    return Intl.message(
+      'RESET',
+      name: 'settings_resetKeyword',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Réinitialiser`
+  String get settings_resetTooltip {
+    return Intl.message(
+      'Réinitialiser',
+      name: 'settings_resetTooltip',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Résoudre un problème d’import`
+  String get settings_resolveImportProblem {
+    return Intl.message(
+      'Résoudre un problème d’import',
+      name: 'settings_resolveImportProblem',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Assistance`
+  String get settings_title {
+    return Intl.message(
+      'Assistance',
+      name: 'settings_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Tapez RESET pour confirmer définitivement.`
+  String get settings_typeResetConfirmation {
+    return Intl.message(
+      'Tapez RESET pour confirmer définitivement.',
+      name: 'settings_typeResetConfirmation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Diagnostic Carte Vitale`
+  String get settings_vitaleDiagnostic {
+    return Intl.message(
+      'Diagnostic Carte Vitale',
+      name: 'settings_vitaleDiagnostic',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Diagnostic Carte Vitale`
   String get smartCardDiagnostic {
     return Intl.message(
       'Diagnostic Carte Vitale',
       name: 'smartCardDiagnostic',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Patients actifs`
+  String get systemOverviewBar_active_patients {
+    return Intl.message(
+      'Patients actifs',
+      name: 'systemOverviewBar_active_patients',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Alertes`
+  String get systemOverviewBar_alert {
+    return Intl.message(
+      'Alertes',
+      name: 'systemOverviewBar_alert',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Patients archivés`
+  String get systemOverviewBar_archived_patients {
+    return Intl.message(
+      'Patients archivés',
+      name: 'systemOverviewBar_archived_patients',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Chargement du résumé système...`
+  String get systemOverviewBar_loading_system_summary {
+    return Intl.message(
+      'Chargement du résumé système...',
+      name: 'systemOverviewBar_loading_system_summary',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Erreur supervision`
+  String get systemOverviewBar_supervision_error {
+    return Intl.message(
+      'Erreur supervision',
+      name: 'systemOverviewBar_supervision_error',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Supervision indisponible`
+  String get systemOverviewBar_supervision_unavailable {
+    return Intl.message(
+      'Supervision indisponible',
+      name: 'systemOverviewBar_supervision_unavailable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Aucune`
+  String get systemStatusCard_nome {
+    return Intl.message(
+      'Aucune',
+      name: 'systemStatusCard_nome',
       desc: '',
       args: [],
     );
@@ -1585,6 +3815,226 @@ class S {
     return Intl.message(
       'Paramètres utilisateur',
       name: 'userPreferences',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Annuler`
+  String get vitaleBeneficiarySelector_cancel {
+    return Intl.message(
+      'Annuler',
+      name: 'vitaleBeneficiarySelector_cancel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sélectionnez un bénéficiaire`
+  String get vitaleBeneficiarySelector_selectBeneficiary {
+    return Intl.message(
+      'Sélectionnez un bénéficiaire',
+      name: 'vitaleBeneficiarySelector_selectBeneficiary',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Date de naissance`
+  String get vitaleIdentity_birthDate {
+    return Intl.message(
+      'Date de naissance',
+      name: 'vitaleIdentity_birthDate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `donnée masquée`
+  String get vitaleIdentity_dataMasked {
+    return Intl.message(
+      'donnée masquée',
+      name: 'vitaleIdentity_dataMasked',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `détecté`
+  String get vitaleIdentity_detected {
+    return Intl.message(
+      'détecté',
+      name: 'vitaleIdentity_detected',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Féminin`
+  String get vitaleIdentity_female {
+    return Intl.message(
+      'Féminin',
+      name: 'vitaleIdentity_female',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Prénom`
+  String get vitaleIdentity_firstName {
+    return Intl.message(
+      'Prénom',
+      name: 'vitaleIdentity_firstName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Identité lue`
+  String get vitaleIdentity_identityRead {
+    return Intl.message(
+      'Identité lue',
+      name: 'vitaleIdentity_identityRead',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `identité reçue (données personnelles masquées)`
+  String get vitaleIdentity_identityReceivedMasked {
+    return Intl.message(
+      'identité reçue (données personnelles masquées)',
+      name: 'vitaleIdentity_identityReceivedMasked',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `identité non disponible`
+  String get vitaleIdentity_identityUnavailable {
+    return Intl.message(
+      'identité non disponible',
+      name: 'vitaleIdentity_identityUnavailable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Nom`
+  String get vitaleIdentity_lastName {
+    return Intl.message(
+      'Nom',
+      name: 'vitaleIdentity_lastName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Masculin`
+  String get vitaleIdentity_male {
+    return Intl.message(
+      'Masculin',
+      name: 'vitaleIdentity_male',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `NIR`
+  String get vitaleIdentity_nir {
+    return Intl.message(
+      'NIR',
+      name: 'vitaleIdentity_nir',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Aucune identité Carte Vitale disponible`
+  String get vitaleIdentity_noIdentityAvailable {
+    return Intl.message(
+      'Aucune identité Carte Vitale disponible',
+      name: 'vitaleIdentity_noIdentityAvailable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Non renseigné`
+  String get vitaleIdentity_notProvided {
+    return Intl.message(
+      'Non renseigné',
+      name: 'vitaleIdentity_notProvided',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Autre`
+  String get vitaleIdentity_other {
+    return Intl.message(
+      'Autre',
+      name: 'vitaleIdentity_other',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Lecture en cours...`
+  String get vitaleIdentity_reading {
+    return Intl.message(
+      'Lecture en cours...',
+      name: 'vitaleIdentity_reading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sexe`
+  String get vitaleIdentity_sex {
+    return Intl.message(
+      'Sexe',
+      name: 'vitaleIdentity_sex',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Source`
+  String get vitaleIdentity_source {
+    return Intl.message(
+      'Source',
+      name: 'vitaleIdentity_source',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Lire identité Carte Vitale`
+  String get vitaleIdentity_title {
+    return Intl.message(
+      'Lire identité Carte Vitale',
+      name: 'vitaleIdentity_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `non disponible`
+  String get vitaleIdentity_unavailable {
+    return Intl.message(
+      'non disponible',
+      name: 'vitaleIdentity_unavailable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Utiliser pour créer un patient`
+  String get vitaleIdentity_useForPatientCreation {
+    return Intl.message(
+      'Utiliser pour créer un patient',
+      name: 'vitaleIdentity_useForPatientCreation',
       desc: '',
       args: [],
     );

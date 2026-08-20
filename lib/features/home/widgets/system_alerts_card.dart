@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 import '../../../generated/l10n.dart';
 import '../../maintenance/models/system_health_snapshot.dart';
 import '../../maintenance/services/system_health_service.dart';
+import '../../../core/utils/date_format_utils.dart';
 
 class SystemAlertsCard extends StatelessWidget {
   const SystemAlertsCard({super.key});
@@ -151,10 +151,9 @@ class SystemAlertsCard extends StatelessWidget {
                   _AlertLine(
                     icon: Icons.restore_outlined,
                     label: S.of(context).home_recent_restoration_detected,
-                    value: DateFormat('dd/MM/yyyy').format(
-                      DateTime.fromMillisecondsSinceEpoch(
-                        health.lastRestoreAt!,
-                      ),
+                    value: DateFormatUtils.formatTimestampForDisplay(
+                      context,
+                      health.lastRestoreAt,
                     ),
                     color: Colors.blue,
                   ),

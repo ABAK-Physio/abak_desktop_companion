@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import '../../generated/l10n.dart';
 import 'package:flutter/material.dart';
 
 import '../../core/settings/exchange_directory_service.dart';
@@ -21,14 +21,14 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  static const ExpertContextInfo _expertInfo = ExpertContextInfo(
-    contextName: 'Assistance',
-    sourceFile: 'lib/features/settings/settings_screen.dart',
-    arbPrefix: 'settings',
-    comment:
-    'Cet écran regroupe les fonctions d’installation, de diagnostic '
-        'et de maintenance de Companion.',
-  );
+  ExpertContextInfo _expertInfo(S s) {
+    return ExpertContextInfo(
+      contextName: s.settings_contextName,
+      sourceFile: 'lib/features/settings/settings_screen.dart',
+      arbPrefix: 'settings',
+      comment: s.settings_contextComment,
+    );
+  }
 
   final ApplicationSettingsService _applicationSettingsService =
   const ApplicationSettingsService();
@@ -136,28 +136,25 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Future<void> _resetLocalDatabase() async {
+    final s = S.of(context);
     final messenger = ScaffoldMessenger.of(context);
 
     final firstConfirm = await showDialog<bool>(
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
-          title: const Text('Réinitialiser la base locale ?'),
-          content: const Text(
-            'Cette opération supprimera toutes les données locales '
-                '(patients, résultats, imports et historiques).\n\n'
-                'Une sauvegarde automatique sera créée avant la réinitialisation.\n\n'
-                'Utilisez cette fonction uniquement lors d’une opération '
-                'd’assistance technique.',
+          title: Text(s.settings_resetDatabaseTitle),
+          content: Text(
+            s.settings_resetDatabaseWarning,
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(false),
-              child: const Text('Annuler'),
+              child: Text(s.settings_cancel),
             ),
             FilledButton(
               onPressed: () => Navigator.of(dialogContext).pop(true),
-              child: const Text('Continuer'),
+              child: Text(s.settings_continue),
             ),
           ],
         );
@@ -172,21 +169,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
-          title: const Text('Confirmation obligatoire'),
+          title: Text(s.settings_confirmationRequired),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'Tapez RESET pour confirmer définitivement.',
+              Text(
+                s.settings_typeResetConfirmation,
               ),
               const SizedBox(height: 16),
               TextField(
                 controller: controller,
                 autofocus: true,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   border: OutlineInputBorder(),
-                  hintText: 'RESET',
+                  hintText: s.settings_resetKeyword,
                 ),
               ),
             ],
@@ -194,7 +191,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           actions: [
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(false),
-              child: const Text('Annuler'),
+              child: Text(s.settings_cancel),
             ),
             FilledButton(
               onPressed: () {
@@ -203,7 +200,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
                 Navigator.of(dialogContext).pop(valid);
               },
-              child: const Text('Réinitialiser'),
+              child: Text(s.settings_reset),
             ),
           ],
         );
@@ -216,23 +213,31 @@ class _SettingsScreenState extends State<SettingsScreen> {
       if (!mounted) return;
 
       messenger.showSnackBar(
-        const SnackBar(
-          content: Text('Confirmation invalide.'),
+        SnackBar(
+          content: Text(s.settings_invalidConfirmation),
         ),
       );
       return;
     }
 
-    final result = await LocalDatabaseResetService().resetDatabase();
+    final result = await LocalDatabaseResetService().resetDatabase(
+      databaseNotFoundMessage:
+      s.localDatabaseBackup_databaseNotFound,
+      chooseBackupFolderTitle:
+      s.localDatabaseBackup_chooseBackupFolder,
+      backupCancelledMessage:
+      s.localDatabaseBackup_cancelled,
+      backupFailedMessage:
+          (error) => '${s.localDatabaseReset_backupFailed} : $error',
+    );
 
     if (!mounted) return;
-
     messenger.showSnackBar(
       SnackBar(
         content: Text(
           result.success
-              ? 'Base réinitialisée. Sauvegarde automatique créée.'
-              : 'Erreur lors de la réinitialisation : ${result.error}',
+              ? s.settings_databaseResetSuccess
+              : s.settings_databaseResetError(result.error ?? ''),
         ),
       ),
     );
@@ -248,6 +253,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final s=S.of(context);
     return Center(
       child: SizedBox(
         width: 650,
@@ -259,29 +265,26 @@ class _SettingsScreenState extends State<SettingsScreen> {
               children: [
                 Row(
                   children: [
-                    const Expanded(
+                   Expanded(
                       child: Text(
-                        'Assistance',
+                        s.settings_title,
                         style: TextStyle(fontSize: 24),
                       ),
                     ),
                     if (_expertModeEnabled)
-                      const ExpertInfoButton(
-                        info: _expertInfo,
-                      ),
+                    ExpertInfoButton(
+                    info: _expertInfo(s),
+                  ),
                   ],
                 ),
                 const SizedBox(height: 16),
 
                 Card(
                   color: Theme.of(context).colorScheme.surfaceContainerHighest,
-                  child: const Padding(
+                  child: Padding(
                     padding: EdgeInsets.all(16),
                     child: Text(
-                      'Ces fonctions sont destinées à l’installation, au diagnostic '
-                          'et aux opérations d’assistance technique.\n\n'
-                          'Utilisez-les uniquement lorsqu’un technicien ou la '
-                          'documentation ABAK vous le demande.',
+                      s.settings_assistanceWarning,
                     ),
                   ),
                 ),
@@ -291,7 +294,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    'Configuration',
+                    s.settings_configuration,
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                 ),
@@ -300,11 +303,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 Card(
                   child: ListTile(
                     leading: const Icon(Icons.folder_open),
-                    title: const Text('Dossier d’échange ABAK'),
+                    title: Text(s.settings_exchangeDirectory),
                     subtitle: Text(
                       _isLoading
-                          ? 'Chargement...'
-                          : (_exchangeDirectoryPath ?? 'Aucun dossier défini'),
+                          ? s.settings_loading
+                          : (_exchangeDirectoryPath ?? s.settings_noDirectoryDefined),
                     ),
                     trailing: Wrap(
                       spacing: 8,
@@ -312,14 +315,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         OutlinedButton.icon(
                           onPressed: _openExchangeDirectory,
                           icon: const Icon(Icons.open_in_new),
-                          label: const Text('Ouvrir'),
+                          label: Text(s.settings_open),
                         ),
                         OutlinedButton(
                           onPressed: _chooseExchangeDirectory,
-                          child: const Text('Modifier'),
+                          child: Text(s.settings_edit),
                         ),
                         IconButton(
-                          tooltip: 'Réinitialiser',
+                          tooltip: s.settings_resetTooltip,
                           onPressed: _resetExchangeDirectory,
                           icon: const Icon(Icons.restart_alt),
                         ),
@@ -333,7 +336,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    'Diagnostic',
+                    s.settings_diagnostic,
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                 ),
@@ -343,7 +346,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   alignment: Alignment.centerLeft,
                   child: OutlinedButton.icon(
                     icon: const Icon(Icons.credit_card),
-                    label: const Text('Diagnostic Carte Vitale'),
+                    label: Text(s.settings_vitaleDiagnostic),
                     onPressed: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
@@ -359,7 +362,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    'Maintenance',
+                    s.settings_maintenance,
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                 ),
@@ -372,17 +375,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     OutlinedButton.icon(
                       onPressed: _openImportResolutionAssistant,
                       icon: const Icon(Icons.assistant_outlined),
-                      label: const Text('Résoudre un problème d’import'),
+                      label: Text(s.settings_resolveImportProblem),
                     ),
                     OutlinedButton.icon(
                       onPressed: _importAbakFile,
                       icon: const Icon(Icons.file_upload_outlined),
-                      label: const Text('Importer manuellement un fichier .abak'),
+                      label: Text(s.settings_importAbakFile),
                     ),
                     OutlinedButton.icon(
                       onPressed: _openBackupHistory,
                       icon: const Icon(Icons.folder_copy_outlined),
-                      label: const Text('Gérer les sauvegardes'),
+                      label: Text(s.settings_manageBackups),
                     ),
                     OutlinedButton.icon(
                       onPressed: _resetLocalDatabase,
@@ -390,7 +393,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         foregroundColor: Theme.of(context).colorScheme.error,
                       ),
                       icon: const Icon(Icons.restart_alt_outlined),
-                      label: const Text('Réinitialiser la base'),
+                      label: Text(s.settings_resetDatabase),
                     ),
                   ],
                 ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../../generated/l10n.dart';
 import '../../practitioners/data/practitioner_repository.dart';
 import '../../practitioners/models/practitioner.dart';
 import '../models/paired_device.dart';
@@ -127,14 +128,15 @@ class _DeviceFormDialogState extends State<DeviceFormDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final s = S.of(context);
     return AlertDialog(
       title: Row(
         children: [
           Expanded(
             child: Text(
               _isEditing
-                  ? 'Modifier l’appareil'
-                  : 'Nouvel appareil',
+                  ? s.deviceForm_editDevice
+                  : s.deviceForm_contextName,
             ),
           ),
           if (_expertModeEnabled)
@@ -161,7 +163,7 @@ class _DeviceFormDialogState extends State<DeviceFormDialog> {
 
               if (snapshot.hasError) {
                 return Text(
-                  'Erreur lors du chargement des praticiens : ${snapshot.error}',
+                  '${s.deviceForm_loadingPractitionersError} : ${snapshot.error}',
                 );
               }
 
@@ -172,13 +174,13 @@ class _DeviceFormDialogState extends State<DeviceFormDialog> {
                 children: [
                   TextFormField(
                     controller: _deviceLabelController,
-                    decoration: const InputDecoration(
-                      labelText: 'Nom de l’appareil',
-                      hintText: 'iPhone Claire, Pixel Marc…',
+                    decoration: InputDecoration(
+                      labelText: s.deviceForm_deviceName,
+                      hintText: s.deviceForm_deviceNameHint,
                     ),
                     validator: (value) {
                       if (value == null || value.trim().isEmpty) {
-                        return 'Le nom de l’appareil est obligatoire';
+                        return s.deviceForm_deviceNameRequired;
                       }
                       return null;
                     },
@@ -186,7 +188,7 @@ class _DeviceFormDialogState extends State<DeviceFormDialog> {
                   const SizedBox(height: 12),
                   DropdownButtonFormField<String>(
                     initialValue: _platform,
-                    decoration: const InputDecoration(labelText: 'Plateforme'),
+                    decoration: InputDecoration(labelText: s.deviceForm_platform),
                     items: const [
                       DropdownMenuItem(value: 'ios', child: Text('iOS')),
                       DropdownMenuItem(
@@ -203,13 +205,13 @@ class _DeviceFormDialogState extends State<DeviceFormDialog> {
                   const SizedBox(height: 12),
                   DropdownButtonFormField<String?>(
                     initialValue: _selectedPractitionerId,
-                    decoration: const InputDecoration(
-                      labelText: 'Praticien associé',
+                    decoration: InputDecoration(
+                      labelText: s.deviceForm_associatedPractitioner,
                     ),
                     items: [
-                      const DropdownMenuItem<String?>(
+                      DropdownMenuItem<String?>(
                         value: null,
-                        child: Text('Aucun / appareil partagé'),
+                        child: Text(s.deviceForm_sharedDevice),
                       ),
                       ...practitioners.map(
                         (p) => DropdownMenuItem<String?>(
@@ -233,12 +235,12 @@ class _DeviceFormDialogState extends State<DeviceFormDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(null),
-          child: const Text('Annuler'),
+          child: Text(s.deviceForm_cancel),
         ),
         FilledButton(
           onPressed: _submit,
           child: Text(
-            _isEditing ? 'Enregistrer' : 'Créer',
+            _isEditing ? s.deviceForm_save : s.deviceForm_create,
           ),
         ),
       ],

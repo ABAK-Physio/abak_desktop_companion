@@ -5,6 +5,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/settings/cabinet_identity_service.dart';
+import '../../generated/l10n.dart';
 import 'avertissement.dart';
 import '../maintenance/models/system_health_snapshot.dart';
 import '../maintenance/services/system_health_service.dart';
@@ -20,14 +21,14 @@ class AboutScreen extends StatefulWidget {
 }
 
 class _AboutScreenState extends State<AboutScreen> {
-  static const ExpertContextInfo _expertInfo = ExpertContextInfo(
-    contextName: 'Informations',
-    sourceFile: 'lib/features/informations/about.dart',
-    arbPrefix: 'information',
-    comment:
-    'Cet écran affiche les informations générales, techniques '
-        'et légales de Companion.',
-  );
+  ExpertContextInfo _expertInfo(S s) {
+    return ExpertContextInfo(
+      contextName: s.information_contextName,
+      sourceFile: 'lib/features/informations/about.dart',
+      arbPrefix: 'information',
+      comment: s.information_contextComment,
+    );
+  }
 
   final ApplicationSettingsService _applicationSettingsService =
   const ApplicationSettingsService();
@@ -150,16 +151,17 @@ class _AboutScreenState extends State<AboutScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     final logoFile = _cabinetLogoPath == null ? null : File(_cabinetLogoPath!);
     final hasLogo = logoFile != null && logoFile.existsSync();
-
+    final s = S.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Informations'),
+        title: Text(s.information_contextName),
         actions: [
           if (_expertModeEnabled)
-            const ExpertInfoButton(
-              info: _expertInfo,
+            ExpertInfoButton(
+              info: _expertInfo(s),
             ),
         ],
       ),
@@ -180,28 +182,28 @@ class _AboutScreenState extends State<AboutScreen> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    _version.isEmpty ? 'Version...' : 'Version $_version',
+                    _version.isEmpty ? s.information_versionLoading : s.information_version(_version),
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                   const SizedBox(height: 32),
 
                   _InfoLine(
-                    label: 'Cabinet',
+                    label: s.information_office,
                     value: _cabinetName?.trim().isNotEmpty == true
                         ? _cabinetName!.trim()
-                        : 'Non renseigné',
+                        : s.information_notProvided,
                   ),
                   _InfoLine(
-                    label: 'Logo',
-                    value: hasLogo ? 'Configuré' : 'Non configuré',
+                    label: s.information_logo,
+                    value: hasLogo ? s.information_configured : s.information_notConfigured,
                   ),
                   _InfoLine(
-                    label: 'Système',
-                    value: _platform.isEmpty ? 'Chargement...' : _platform,
+                    label: s.information_system,
+                    value: _platform.isEmpty ? s.information_loading : _platform,
                   ),
                   _InfoLine(
-                    label: 'Langue',
-                    value: _language.isEmpty ? 'Chargement...' : _language,
+                    label: s.information_language,
+                    value: _language.isEmpty ? s.information_loading : _language,
                   ),
 
                   const SizedBox(height: 20),
@@ -209,7 +211,7 @@ class _AboutScreenState extends State<AboutScreen> {
                   const SizedBox(height: 20),
 
                   Text(
-                    'Stockage local',
+                    s.information_localStorage,
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
 
@@ -217,15 +219,16 @@ class _AboutScreenState extends State<AboutScreen> {
 
                   if (_health != null) ...[
                     _InfoLine(
-                      label: 'Base de données',
-                      value: 'Taille : ${_formatFileSize(_health!.databaseSizeBytes)}',
+                      label: s.information_database,
+                      value: s.information_size(_formatFileSize(_health!.databaseSizeBytes)),
                     ),
                     _InfoLine(
-                      label: 'Sauvegardes',
+                      label: s.information_backups,
                       value:
-                      '${_health!.backupsCount} sauvegardes\n'
-                          'Taille totale : '
-                          '${_formatFileSize(_health!.backupsTotalSizeBytes)}',
+                      '${s.information_backupCount(_health!.backupsCount)}\n'
+                          '${s.information_totalSize(
+                        _formatFileSize(_health!.backupsTotalSizeBytes),
+                      )}',
                     ),
                   ],
 
@@ -236,7 +239,7 @@ class _AboutScreenState extends State<AboutScreen> {
                   OutlinedButton.icon(
                     onPressed: _openLicence,
                     icon: const Icon(Icons.open_in_browser),
-                    label: const Text('Consulter la licence'),
+                    label:Text(s.information_viewLicense),
                   ),
                   const SizedBox(height: 12),
                   OutlinedButton.icon(
@@ -248,7 +251,7 @@ class _AboutScreenState extends State<AboutScreen> {
                       );
                     },
                     icon: const Icon(Icons.gavel_outlined),
-                    label: const Text('Avertissement légal'),
+                    label: Text(s.information_legalNotice),
                   ),
 
                   const SizedBox(height: 32),

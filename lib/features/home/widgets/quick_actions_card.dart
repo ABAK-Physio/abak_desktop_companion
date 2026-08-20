@@ -53,9 +53,11 @@ class QuickActionsCard extends StatelessWidget {
               children: [
                 const Icon(Icons.flash_on_outlined),
                 const SizedBox(width: 8),
-                Text(
-                  S.of(context).home_quick_actions,
-                  style: Theme.of(context).textTheme.titleMedium,
+                Expanded(
+                  child: Text(
+                    S.of(context).home_quick_actions,
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
                 ),
               ],
             ),
@@ -77,8 +79,16 @@ class QuickActionsCard extends StatelessWidget {
                 ),
                 _actionButton(
                   onPressed: () async {
-                    final result = await LocalDatabaseBackupService()
-                        .createBackup();
+                    final s = S.of(context);
+
+                    final result = await LocalDatabaseBackupService().createBackup(
+                      databaseNotFoundMessage:
+                      s.localDatabaseBackup_databaseNotFound,
+                      chooseBackupFolderTitle:
+                      s.localDatabaseBackup_chooseBackupFolder,
+                      cancelledMessage:
+                      s.localDatabaseBackup_cancelled,
+                    );
 
                     if (!context.mounted) return;
 

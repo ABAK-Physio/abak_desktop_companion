@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../generated/l10n.dart';
 import '../../patients/patient_detail_screen.dart';
 import '../../patients/data/patient_repository.dart';
 import '../../import_export/abak_import_launcher.dart';
@@ -13,6 +14,7 @@ class HomeImportSummaryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final s = S.of(context);
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(20),
@@ -30,7 +32,7 @@ class HomeImportSummaryCard extends StatelessWidget {
                   ),
                   const SizedBox(width: 8),
                   Text(
-                    'Dernier import ABAK',
+                    s.homeImportSummary_title,
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                 ],
@@ -38,39 +40,39 @@ class HomeImportSummaryCard extends StatelessWidget {
               const Divider(height: 28),
 
               _InfoLine(
-                label: 'Date import',
+                label: s.homeImportSummary_importDate,
                 value: DateFormat(
                   'dd/MM/yyyy HH:mm',
                 ).format(result.completedAt),
               ),
 
               _InfoLine(
-                label: 'Fichiers traités',
+                label: s.homeImportSummary_processedFiles,
                 value: result.processedFiles.toString(),
               ),
 
               _InfoLine(
-                label: 'Fichiers en erreur',
+                label: s.homeImportSummary_failedFiles,
                 value: result.failedFiles.toString(),
               ),
 
               _InfoLine(
-                label: 'Résultats importés',
+                label: s.homeImportSummary_importedResults,
                 value: result.importedResults.toString(),
               ),
 
               _InfoLine(
-                label: 'Résultats ignorés',
+                label: s.homeImportSummary_skippedResults,
                 value: result.skippedResults.toString(),
               ),
 
               _InfoLine(
-                label: 'Conflits',
+                label: s.homeImportSummary_conflicts,
                 value: result.conflictResults.toString(),
               ),
 
               _InfoLine(
-                label: 'Métriques importées',
+                label: s.homeImportSummary_importedMetrics,
                 value: result.importedMetrics.toString(),
               ),
 
@@ -78,7 +80,7 @@ class HomeImportSummaryCard extends StatelessWidget {
                 const SizedBox(height: 20),
 
                 Text(
-                  'Patients concernés',
+                  s.homeImportSummary_patients,
                   style: Theme.of(context).textTheme.titleSmall,
                 ),
 
@@ -118,7 +120,7 @@ class HomeImportSummaryCard extends StatelessWidget {
                             Icons.folder_open_outlined,
                             size: 18,
                           ),
-                          label: const Text('Ouvrir'),
+                          label: Text(s.homeImportSummary_open),
                         ),
                       ],
                     ),

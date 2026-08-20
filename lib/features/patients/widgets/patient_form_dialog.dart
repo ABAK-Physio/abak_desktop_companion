@@ -76,7 +76,9 @@ class _PatientFormDialogState extends State<PatientFormDialog> {
   }
 
   DateFormat get _displayDateFormat {
-    return DateFormat('dd/MM/yyyy');
+    final locale = Localizations.localeOf(context);
+
+    return DateFormat.yMd(locale.toLanguageTag());
   }
 
   String _formatIsoDateForDisplay(String? isoDate) {
@@ -162,10 +164,9 @@ class _PatientFormDialogState extends State<PatientFormDialog> {
               TextFormField(
                 controller: _birthDateController,
                 readOnly: true,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Date de naissance',
-                  hintText: 'jj/mm/aaaa',
-                  suffixIcon: const Icon(Icons.calendar_today_outlined),
+                  suffixIcon: Icon(Icons.calendar_today_outlined),
                 ),
                 onTap: _pickBirthDate,
               ),

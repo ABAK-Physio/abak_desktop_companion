@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-
+import '../../core/utils/date_format_utils.dart';
+import '../../generated/l10n.dart';
 import 'data/desktop_result_repository.dart';
 import 'models/desktop_result.dart';
 import 'models/desktop_result_metric.dart';
@@ -48,18 +48,19 @@ class _ResultDetailScreenState extends State<ResultDetailScreen> {
     super.dispose();
   }
 
-  String _formatVerificationStatus(String? status) {
+  String _formatVerificationStatus(String? status, S s) {
     switch (status) {
       case 'verified':
-        return 'Identité vérifiée';
+        return s.resultDetail_identityVerified;
       case 'unverified':
-        return 'Identité non vérifiée';
+        return s.resultDetail_identityUnverified;
       default:
         return '-';
     }
   }
 
   Future<void> _saveComment() async {
+    final s=S.of(context);
     final text = _commentController.text.trim();
     final now = DateTime.now().millisecondsSinceEpoch;
 
@@ -78,26 +79,28 @@ class _ResultDetailScreenState extends State<ResultDetailScreen> {
       );
     });
 
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(const SnackBar(content: Text('Commentaire enregistré')));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(s.resultDetail_commentSaved),
+      ),
+    );
   }
 
   Future<void> _archiveResult(BuildContext context) async {
+    final s = S.of(context);
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) {
-        return AlertDialog(
-          title: const Text('Archiver le résultat'),
-          content: const Text('Voulez-vous vraiment archiver ce résultat ?'),
+        return AlertDialog(title: Text(s.resultDetail_archiveTitle),
+          content: Text(s.resultDetail_archiveConfirmation),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(false),
-              child: const Text('Annuler'),
+              child: Text(s.resultDetail_cancel),
             ),
             FilledButton(
               onPressed: () => Navigator.of(context).pop(true),
-              child: const Text('Archiver'),
+              child: Text(s.resultDetail_cancel),
             ),
           ],
         );
@@ -115,65 +118,72 @@ class _ResultDetailScreenState extends State<ResultDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final createdAt = DateTime.fromMillisecondsSinceEpoch(_result.createdAt);
-    final locale = Localizations.localeOf(context);
-    final formatter = DateFormat.yMd(locale.toLanguageTag());
+    final s=S.of(context);
 
     final traceabilityInfo = [
       _traceability?.practitionerDisplayName,
       _formatVerificationStatus(
         _traceability?.practitionerVerificationStatus,
+        s
       ),
       if (_traceability?.deviceLabel?.trim().isNotEmpty == true)
-        'Appareil : ${_traceability!.deviceLabel!.trim()}',
+        '${s.resultDetail_device} : ${_traceability!.deviceLabel!.trim()}',
     ].whereType<String>().where((value) {
       final trimmed = value.trim();
       return trimmed.isNotEmpty && trimmed != '-';
     }).join(' · ');
 
     final generalInformationCard = _SectionCard(
-      title: 'Informations générales',
+      title: s.resultDetail_generalInformation,
       icon: Icons.info_outline,
       children: [
         _InfoRow(
-          label: 'Patient',
+          label: s.resultDetail_patient,
           value: _result.mobilePatientLabel ?? '-',
         ),
         _InfoRow(
-          label: 'Naissance',
-          value: _result.patientBirthDate ?? '-',
+          label: s.resultDetail_birthDate,
+          value: _result.patientBirthDate == null
+              ? '-'
+              : DateFormatUtils.formatIsoDateForDisplay(
+            context,
+            _result.patientBirthDate,
+          ),
         ),
         _InfoRow(
-          label: "Date de l'exercice",
-          value: formatter.format(createdAt),
+          label: s.resultDetail_exerciseDate,
+          value: DateFormatUtils.formatTimestampForDisplay(
+            context,
+            _result.createdAt,
+          ),
         ),
         _InfoRow(
-          label: 'Score',
+          label: s.resultDetail_score,
           value: _result.scoreTotal == null
               ? '-'
               : '${_result.scoreTotal!.toStringAsFixed(2)}'
               '${_result.measureUnit == null ? '' : ' ${_result.measureUnit}'}',
         ),
         _InfoRow(
-          label: 'Réalisé par',
+          label: s.resultDetail_performedBy,
           value: traceabilityInfo.isEmpty ? '-' : traceabilityInfo,
         ),
       ],
     );
 
     final commentCard = _SectionCard(
-      title: 'Commentaire clinique',
+      title: s.resultDetail_clinicalComment,
       icon: Icons.edit_note_outlined,
       children: [
         TextField(
           controller: _commentController,
           minLines: 3,
           maxLines: 5,
-          decoration: const InputDecoration(
-            border: OutlineInputBorder(),
-            hintText: 'Ajouter un commentaire...',
+          decoration: InputDecoration(
+            border: const OutlineInputBorder(),
+            hintText: s.resultDetail_addCommentHint,
             isDense: true,
-            contentPadding: EdgeInsets.all(12),
+            contentPadding: const EdgeInsets.all(12),
           ),
         ),
         const SizedBox(height: 8),
@@ -182,14 +192,14 @@ class _ResultDetailScreenState extends State<ResultDetailScreen> {
           child: FilledButton.icon(
             onPressed: _saveComment,
             icon: const Icon(Icons.save_outlined),
-            label: const Text('Enregistrer'),
+            label: Text(s.resultDetail_save),
           ),
         ),
       ],
     );
 
     final detailedResultCard = _SectionCard(
-      title: 'Résultat détaillé',
+      title: s.resultDetail_detailedResult,
       icon: Icons.description_outlined,
       children: [
         SelectableText(_result.exportSimpleText),
@@ -202,21 +212,17 @@ class _ResultDetailScreenState extends State<ResultDetailScreen> {
     );
 
     final synchronizationCard = _SectionCard(
-      title: 'Import',
+      title: s.resultDetail_import,
       icon: Icons.sync_outlined,
       children: [
-        _InfoRow(label: 'État sync', value: _result.syncState),
+        _InfoRow(label: s.resultDetail_syncState, value: _result.syncState),
         _InfoRow(
-          label: 'Dernière modification',
+          label: s.resultDetail_lastModified,
           value: _result.lastModifiedAt == null
               ? '-'
-              : DateFormat(
-            'dd/MM/yyyy HH:mm',
-            locale.toLanguageTag(),
-          ).format(
-            DateTime.fromMillisecondsSinceEpoch(
-              _result.lastModifiedAt!,
-            ),
+              : DateFormatUtils.formatTimestamp(
+            context,
+            _result.lastModifiedAt,
           ),
         ),
       ],
@@ -227,7 +233,7 @@ class _ResultDetailScreenState extends State<ResultDetailScreen> {
         title: Text(ClinicalActivityCatalog.displayLabel(_result.exoId)),
         actions: [
           IconButton(
-            tooltip: 'Archiver',
+            tooltip: s.resultDetail_cancel,
             icon: const Icon(Icons.archive_outlined),
             onPressed: () => _archiveResult(context),
           ),
@@ -302,13 +308,14 @@ class _MetricsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final s=S.of(context);
     return FutureBuilder<List<DesktopResultMetric>>(
       future: repository.getMetricsForResult(resultId),
       builder: (context, snapshot) {
         final metrics = snapshot.data ?? [];
 
         return _SectionCard(
-          title: 'Métriques',
+          title: s.resultDetail_metrics,
           icon: Icons.analytics_outlined,
           children: [
             if (snapshot.connectionState == ConnectionState.waiting)
@@ -317,7 +324,7 @@ class _MetricsSection extends StatelessWidget {
                 child: CircularProgressIndicator(),
               )
             else if (metrics.isEmpty)
-              const Text('Aucune métrique enregistrée.')
+              Text(s.resultDetail_noMetrics)
             else
               ...metrics.map(
                 (metric) => _InfoRow(

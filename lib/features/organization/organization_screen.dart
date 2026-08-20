@@ -4,6 +4,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 
 import '../../core/settings/cabinet_identity_service.dart';
+import '../../generated/l10n.dart';
 
 class OrganizationScreen extends StatefulWidget {
   const OrganizationScreen({super.key});
@@ -49,6 +50,7 @@ class _OrganizationScreenState extends State<OrganizationScreen> {
   }
 
   Future<void> _saveCabinetName() async {
+    final s=S.of(context);
     await _cabinetIdentityService.setCabinetName(
       _cabinetNameController.text,
     );
@@ -56,13 +58,14 @@ class _OrganizationScreenState extends State<OrganizationScreen> {
     if (!mounted) return;
 
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Nom de l’établissement enregistré.'),
+      SnackBar(
+        content: Text(s.organization_nameSaved),
       ),
     );
   }
 
   Future<void> _chooseLogo() async {
+    final s=S.of(context);
     final result = await FilePicker.platform.pickFiles(
       type: FileType.image,
       allowMultiple: false,
@@ -80,13 +83,14 @@ class _OrganizationScreenState extends State<OrganizationScreen> {
     });
 
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Logo de l’établissement enregistré.'),
+      SnackBar(
+        content: Text(s.organization_logoSaved),
       ),
     );
   }
 
   Future<void> _removeLogo() async {
+    final s=S.of(context);
     await _cabinetIdentityService.clearCabinetLogoPath();
 
     if (!mounted) return;
@@ -96,17 +100,18 @@ class _OrganizationScreenState extends State<OrganizationScreen> {
     });
 
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Logo de l’établissement supprimé.'),
+      SnackBar(
+        content: Text(s.organization_logoRemoved),
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final s=S.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Établissement'),
+        title: Text(s.organization_title),
       ),
       body: Center(
         child: SizedBox(
@@ -122,14 +127,14 @@ class _OrganizationScreenState extends State<OrganizationScreen> {
                 shrinkWrap: true,
                 children: [
                   Text(
-                    'Identité de l’établissement',
+                    s.organization_identityTitle,
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
                   const SizedBox(height: 24),
                   TextField(
                     controller: _cabinetNameController,
-                    decoration: const InputDecoration(
-                      labelText: 'Nom de l’établissement',
+                    decoration: InputDecoration(
+                      labelText: s.organization_nameLabel,
                       border: OutlineInputBorder(),
                     ),
                     onSubmitted: (_) => _saveCabinetName(),
@@ -140,7 +145,7 @@ class _OrganizationScreenState extends State<OrganizationScreen> {
                     child: FilledButton.icon(
                       onPressed: _saveCabinetName,
                       icon: const Icon(Icons.save_outlined),
-                      label: const Text('Enregistrer le nom'),
+                      label: Text(s.organization_saveName),
                     ),
                   ),
                   const SizedBox(height: 24),
@@ -156,13 +161,13 @@ class _OrganizationScreenState extends State<OrganizationScreen> {
                             OutlinedButton.icon(
                               onPressed: _chooseLogo,
                               icon: const Icon(Icons.image_outlined),
-                              label: const Text('Choisir un logo'),
+                              label: Text(s.organization_chooseLogo),
                             ),
                             if (_cabinetLogoPath != null)
                               TextButton.icon(
                                 onPressed: _removeLogo,
                                 icon: const Icon(Icons.delete_outline),
-                                label: const Text('Supprimer le logo'),
+                                label: Text(s.organization_removeLogo),
                               ),
                           ],
                         ),

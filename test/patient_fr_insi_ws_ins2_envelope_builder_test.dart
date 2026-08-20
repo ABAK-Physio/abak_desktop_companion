@@ -124,4 +124,92 @@ void main() {
       isEmpty,
     );
   });
+  test('build inserts signed PS assertion in WS-Security header', () {
+    final contexteBamXml = contexteBamBuilder.build(
+      id: 'bam-id',
+      time: DateTime.utc(2026, 8, 15, 14, 0),
+      emitter: '899900063480',
+    );
+
+    final messageIdXml = messageIdBuilder.build(
+      'e451e702-85aa-4c55-a083-7f02da22cc40',
+    );
+
+    final contexteLpsXml = contexteLpsBuilder.build(
+      id: 'lps-id',
+      time: DateTime.utc(2026, 8, 15, 14, 0),
+      emitter: '899900063480',
+      idam: 'NumAutorisation',
+      idamReference: '4',
+      lpsVersion: '01.00',
+      instance: 'test-instance',
+      name: 'ABAK',
+    );
+
+    final bodyXml = bodyBuilder.buildBody(
+      birthLastName: 'ADRDEUX',
+      firstNames: const ['LAURENT'],
+      sexCode: 'M',
+      birthDate: '1981-01-01',
+    );
+
+    const psAssertionXml = '''
+<saml:Assertion
+    xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion"
+    ID="_test-assertion"
+    Version="2.0">
+  <saml:Issuer>CN=TEST CPS</saml:Issuer>
+  <saml:Subject>
+    <saml:NameID>899900063480</saml:NameID>
+  </saml:Subject>
+</saml:Assertion>
+''';
+
+    final xml = envelopeBuilder.build(
+      contexteLpsXml: contexteLpsXml,
+      messageIdXml: messageIdXml,
+      contexteBamXml: contexteBamXml,
+      bodyXml: bodyXml,
+      psAssertionXml: psAssertionXml,
+    );
+
+    final document = XmlDocument.parse(xml);
+
+    final security = document.descendants
+        .whereType<XmlElement>()
+        .singleWhere(
+          (element) => element.name.local == 'Security',
+    );
+
+    expect(
+      security.name.namespaceUri,
+      PatientFrInsiWsIns2EnvelopeBuilder.wsSecurityNamespace,
+    );
+
+    final assertion = security.descendants
+        .whereType<XmlElement>()
+        .singleWhere(
+          (element) => element.name.local == 'Assertion',
+    );
+
+    expect(
+      assertion.name.namespaceUri,
+      'urn:oasis:names:tc:SAML:2.0:assertion',
+    );
+
+    expect(
+      assertion.getAttribute('ID'),
+      '_test-assertion',
+    );
+
+    expect(
+      assertion.descendants
+          .whereType<XmlElement>()
+          .singleWhere(
+            (element) => element.name.local == 'NameID',
+      )
+          .innerText,
+      '899900063480',
+    );
+  });
 }

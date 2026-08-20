@@ -31,9 +31,6 @@ class PatientFrInsiPsSignatureInserter {
       signature,
     );
 
-    return assertion.toXmlString(
-      pretty: true,
-      indent: '  ',
-    );
+    return assertion.toXmlString();
   }
 }

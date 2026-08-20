@@ -19,7 +19,11 @@ class LocalDatabaseBackupResult {
 }
 
 class LocalDatabaseBackupService {
-  Future<LocalDatabaseBackupResult> createBackup() async {
+  Future<LocalDatabaseBackupResult> createBackup({
+    required String databaseNotFoundMessage,
+    required String chooseBackupFolderTitle,
+    required String cancelledMessage,
+  }) async {
     try {
       final appSupportDir = await getApplicationSupportDirectory();
 
@@ -32,22 +36,22 @@ class LocalDatabaseBackupService {
       final databaseFile = File(databasePath);
 
       if (!await databaseFile.exists()) {
-        return const LocalDatabaseBackupResult(
+        return LocalDatabaseBackupResult(
           success: false,
-          error: 'Base SQLite introuvable.',
+          error: databaseNotFoundMessage,
         );
       }
 
       final DatabaseBackupRepository repository = DatabaseBackupRepository();
 
       final selectedDirectory = await FilePicker.platform.getDirectoryPath(
-        dialogTitle: 'Choisir le dossier de sauvegarde ABAK',
+        dialogTitle: chooseBackupFolderTitle,
       );
 
       if (selectedDirectory == null) {
-        return const LocalDatabaseBackupResult(
+        return LocalDatabaseBackupResult(
           success: false,
-          error: 'Sauvegarde annulée.',
+          error: cancelledMessage,
         );
       }
 

@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import '../../../core/utils/date_format_utils.dart';
 
 import '../../../generated/l10n.dart';
 
@@ -128,7 +128,10 @@ class _SystemStatusCardState extends State<SystemStatusCard> {
                   const Divider(height: 28),
                   _StatusLine(
                     label: S.of(context).home_last_backup,
-                    value: _formatLastBackup(lastBackup),
+                    value: _formatLastBackup(
+                      context,
+                      lastBackup,
+                    ),
                     icon: Icons.save_outlined,
                     isWarning: lastBackup == null,
                   ),
@@ -141,13 +144,17 @@ class _SystemStatusCardState extends State<SystemStatusCard> {
     );
   }
 
-  String _formatLastBackup(DatabaseBackup? lastBackup) {
+  String _formatLastBackup(
+      BuildContext context,
+      DatabaseBackup? lastBackup,
+      ) {
     if (lastBackup == null) {
-      return 'Aucune';
+      return S.of(context).systemStatusCard_nome;
     }
 
-    return DateFormat('dd/MM/yyyy HH:mm').format(
-      DateTime.fromMillisecondsSinceEpoch(lastBackup.createdAt),
+    return DateFormatUtils.formatTimestamp(
+      context,
+      lastBackup.createdAt,
     );
   }
 }
