@@ -26,6 +26,8 @@ import '../../patients/screens/episode_documents_screen.dart';
 import '../../../core/speech/speech_dictation_button.dart';
 import '../data/care_episode_document_edit_draft_repository.dart';
 
+import 'care_episode_reports_workspace/widgets/table_header.dart';
+
 class CareEpisodeReportsWorkspaceScreen extends StatefulWidget {
   final CareEpisode episode;
   final String patientName;

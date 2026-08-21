@@ -130,6 +130,76 @@ class S {
     );
   }
 
+  /// `Nouvelle interface bilans et rapports`
+  String get careEpisodeDetail_reportsWorkspaceTooltip {
+    return Intl.message(
+      'Nouvelle interface bilans et rapports',
+      name: 'careEpisodeDetail_reportsWorkspaceTooltip',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pathologie`
+  String get careEpisodeDetail_pathology {
+    return Intl.message(
+      'Pathologie',
+      name: 'careEpisodeDetail_pathology',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Résultats ABAK`
+  String get careEpisodeDetail_results {
+    return Intl.message(
+      'Résultats ABAK',
+      name: 'careEpisodeDetail_results',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Évolution`
+  String get careEpisodeDetail_evolution {
+    return Intl.message(
+      'Évolution',
+      name: 'careEpisodeDetail_evolution',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Aucun résultat rattaché pour le moment.`
+  String get careEpisodeDetail_noResult {
+    return Intl.message(
+      'Aucun résultat rattaché pour le moment.',
+      name: 'careEpisodeDetail_noResult',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Score`
+  String get careEpisodeDetail_score {
+    return Intl.message(
+      'Score',
+      name: 'careEpisodeDetail_score',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Origine ABAK`
+  String get careEpisodeDetail_abakOrigin {
+    return Intl.message(
+      'Origine ABAK',
+      name: 'careEpisodeDetail_abakOrigin',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Diagnostic fiche d’entretien`
   String get contactFormTemplateDiagnostic_title {
     return Intl.message(

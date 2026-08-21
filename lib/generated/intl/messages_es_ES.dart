@@ -86,6 +86,21 @@ class MessageLookup extends MessageLookupByLibrary {
             "Esta operación sustituirá por completo la base de datos actual.\n\nSe creará una copia de seguridad automática antes de la restauración.\n\n¿Deseas continuar?"),
         "backupHistory_title": MessageLookupByLibrary.simpleMessage(
             "Historial de copias de seguridad"),
+        "careEpisodeDetail_abakOrigin":
+            MessageLookupByLibrary.simpleMessage("Origen: ABAK"),
+        "careEpisodeDetail_evolution":
+            MessageLookupByLibrary.simpleMessage("Evolución"),
+        "careEpisodeDetail_noResult": MessageLookupByLibrary.simpleMessage(
+            "De momento no hay ningún resultado relacionado."),
+        "careEpisodeDetail_pathology":
+            MessageLookupByLibrary.simpleMessage("Patología"),
+        "careEpisodeDetail_reportsWorkspaceTooltip":
+            MessageLookupByLibrary.simpleMessage(
+                "Nueva interfaz de balances e informes"),
+        "careEpisodeDetail_results":
+            MessageLookupByLibrary.simpleMessage("Resultados de ABAK"),
+        "careEpisodeDetail_score":
+            MessageLookupByLibrary.simpleMessage("Puntuación"),
         "close": MessageLookupByLibrary.simpleMessage("Cerrar"),
         "contactFormTemplateDiagnostic_category":
             MessageLookupByLibrary.simpleMessage("Categoría"),

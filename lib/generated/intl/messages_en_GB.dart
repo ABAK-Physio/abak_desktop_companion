@@ -87,6 +87,21 @@ class MessageLookup extends MessageLookupByLibrary {
             "This operation will completely replace the current database.\n\nAn automatic backup will be created before restoration.\n\nContinue?"),
         "backupHistory_title":
             MessageLookupByLibrary.simpleMessage("Backup History"),
+        "careEpisodeDetail_abakOrigin":
+            MessageLookupByLibrary.simpleMessage("Origin: ABAK"),
+        "careEpisodeDetail_evolution":
+            MessageLookupByLibrary.simpleMessage("Evolution"),
+        "careEpisodeDetail_noResult": MessageLookupByLibrary.simpleMessage(
+            "No related results at this time."),
+        "careEpisodeDetail_pathology":
+            MessageLookupByLibrary.simpleMessage("Pathology"),
+        "careEpisodeDetail_reportsWorkspaceTooltip":
+            MessageLookupByLibrary.simpleMessage(
+                "New Interface for Financial Statements and Reports"),
+        "careEpisodeDetail_results":
+            MessageLookupByLibrary.simpleMessage("ABAK Results"),
+        "careEpisodeDetail_score":
+            MessageLookupByLibrary.simpleMessage("Score"),
         "close": MessageLookupByLibrary.simpleMessage("Close"),
         "contactFormTemplateDiagnostic_category":
             MessageLookupByLibrary.simpleMessage("Category"),

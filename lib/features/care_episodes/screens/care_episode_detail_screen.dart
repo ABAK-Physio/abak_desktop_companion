@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import '../../../generated/l10n.dart';
 import '../models/care_episode.dart';
 import '../../../core/utils/date_format_utils.dart';
 import '../../results/data/desktop_result_repository.dart';
@@ -59,6 +59,7 @@ class _CareEpisodeDetailScreenState extends State<CareEpisodeDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final s = S.of(context);
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, result) {
@@ -75,7 +76,7 @@ class _CareEpisodeDetailScreenState extends State<CareEpisodeDetailScreen> {
           ),
           actions: [
             IconButton(
-              tooltip: 'Nouvelle interface bilans et rapports',
+              tooltip: s.careEpisodeDetail_reportsWorkspaceTooltip,
               icon: const Icon(Icons.dashboard_customize_outlined),
               onPressed: () {
                 Navigator.of(context).push(
@@ -105,7 +106,7 @@ class _CareEpisodeDetailScreenState extends State<CareEpisodeDetailScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Pathologie',
+                      s.careEpisodeDetail_pathology,
                       style: Theme.of(context).textTheme.titleLarge,
                     ),
                     const SizedBox(height: 12),
@@ -153,6 +154,7 @@ class _AbakResultsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final s = S.of(context);
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(20),
@@ -169,7 +171,7 @@ class _AbakResultsCard extends StatelessWidget {
                   children: [
                     Expanded(
                       child: Text(
-                        'Résultats ABAK',
+                        s.careEpisodeDetail_results,
                         style: Theme.of(context).textTheme.titleLarge,
                       ),
                     ),
@@ -187,7 +189,7 @@ class _AbakResultsCard extends StatelessWidget {
                               );
                             },
                       icon: const Icon(Icons.show_chart),
-                      label: const Text('Évolution'),
+                        label: Text(s.careEpisodeDetail_evolution),
                     ),
                   ],
                 ),
@@ -199,7 +201,7 @@ class _AbakResultsCard extends StatelessWidget {
                     child: CircularProgressIndicator(),
                   )
                 else if (results.isEmpty)
-                  const Text('Aucun résultat rattaché pour le moment.')
+                  Text(s.careEpisodeDetail_noResult)
                 else
                   ...results.map((result) {
                     final mobileOrigin =
@@ -223,7 +225,8 @@ class _AbakResultsCard extends StatelessWidget {
                                   result.createdAt,
                                 ),
                                 if (result.scoreTotal != null)
-                                  'Score : ${result.scoreTotal?.toStringAsFixed(2) ?? '-'}',
+                                  '${s.careEpisodeDetail_score} : '
+                                      '${result.scoreTotal?.toStringAsFixed(2) ?? '-'}',
                                 if (result.measureUnit != null)
                                   result.measureUnit!,
                               ].join(' · '),
@@ -231,7 +234,7 @@ class _AbakResultsCard extends StatelessWidget {
                             if (mobileOrigin != null &&
                                 mobileOrigin.trim().isNotEmpty)
                               Text(
-                                'Origine ABAK : ${mobileOrigin.trim()}',
+                                '${s.careEpisodeDetail_abakOrigin} : ${mobileOrigin.trim()}',
                                 style: Theme.of(context).textTheme.bodySmall,
                               ),
                           ],

@@ -86,6 +86,21 @@ class MessageLookup extends MessageLookupByLibrary {
             "Deze bewerking zal de huidige database volledig vervangen.\n\nEr wordt een automatische back-up gemaakt voordat het herstel wordt uitgevoerd.\n\nDoorgaan?"),
         "backupHistory_title":
             MessageLookupByLibrary.simpleMessage("Overzicht van back-ups"),
+        "careEpisodeDetail_abakOrigin":
+            MessageLookupByLibrary.simpleMessage("Oorsprong ABAK"),
+        "careEpisodeDetail_evolution":
+            MessageLookupByLibrary.simpleMessage("Ontwikkeling"),
+        "careEpisodeDetail_noResult": MessageLookupByLibrary.simpleMessage(
+            "Er zijn momenteel geen resultaten gevonden."),
+        "careEpisodeDetail_pathology":
+            MessageLookupByLibrary.simpleMessage("Pathologie"),
+        "careEpisodeDetail_reportsWorkspaceTooltip":
+            MessageLookupByLibrary.simpleMessage(
+                "Nieuwe interface voor balansen en rapporten"),
+        "careEpisodeDetail_results":
+            MessageLookupByLibrary.simpleMessage("ABAK-resultaten"),
+        "careEpisodeDetail_score":
+            MessageLookupByLibrary.simpleMessage("Score"),
         "close": MessageLookupByLibrary.simpleMessage("Sluiten"),
         "contactFormTemplateDiagnostic_category":
             MessageLookupByLibrary.simpleMessage("Categorie"),
