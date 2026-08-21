@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import '../../../generated/l10n.dart';
 import '../data/patient_attribute_repository.dart';
 import '../data/patient_identity_repository.dart';
 import '../models/patient_attribute.dart';
@@ -121,6 +121,7 @@ class _PatientClinicalDataEditScreenState
     required String label,
     required String value,
     required List<String> values,
+    required String Function(String value) displayLabel,
     required ValueChanged<String?> onChanged,
   }) {
     return Padding(
@@ -132,7 +133,12 @@ class _PatientClinicalDataEditScreenState
           labelText: label,
         ),
         items: values
-            .map((e) => DropdownMenuItem(value: e, child: Text(e)))
+            .map(
+              (e) => DropdownMenuItem(
+            value: e,
+            child: Text(displayLabel(e)),
+          ),
+        )
             .toList(),
         onChanged: onChanged,
       ),
@@ -215,35 +221,37 @@ class _PatientClinicalDataEditScreenState
   }
 
   Widget _buildContent() {
+    final s = S.of(context);
     return ListView(
       padding: const EdgeInsets.all(24),
       children: [
         Text(
-          'Identité administrative',
+          s.patientClinicalDataEdit_administrativeIdentity,
           style: Theme.of(context).textTheme.titleMedium,
         ),
         const SizedBox(height: 16),
         _buildTextField(
           controller: _nationalHealthIdController,
-          label: 'Identifiant national de santé',
-          helperText: 'Exemple France : numéro de sécurité sociale',
+          label: s.patientClinicalDataEdit_nationalHealthId,
+          helperText: s.patientClinicalDataEdit_nationalHealthIdHelper,
         ),
         _buildDropdownField(
-          label: 'Pays du système de santé',
-          value: _healthSystemCountry,
-          values: const ['FR'],
-          onChanged: (value) {
-            if (value == null) return;
-
-            setState(() {
-              _healthSystemCountry = value;
-            });
-          },
-        ),
-        _buildDropdownField(
-          label: 'Source de l’identité',
+          label: s.patientClinicalDataEdit_identitySource,
           value: _identitySource,
-          values: const ['saisie manuelle', 'Carte Vitale'],
+          values: const [
+            'saisie manuelle',
+            'Carte Vitale',
+          ],
+          displayLabel: (value) {
+            switch (value) {
+              case 'saisie manuelle':
+                return s.patientClinicalDataEdit_manualEntry;
+              case 'Carte Vitale':
+                return s.patientClinicalDataEdit_vitaleCard;
+              default:
+                return value;
+            }
+          },
           onChanged: (value) {
             if (value == null) return;
 
@@ -254,28 +262,47 @@ class _PatientClinicalDataEditScreenState
         ),
         _buildTextField(
           controller: _phoneController,
-          label: 'Téléphone',
+          label: s.patientClinicalDataEdit_phone,
           keyboardType: TextInputType.phone,
         ),
 
         _buildTextField(
           controller: _emailController,
-          label: 'Email',
+          label: s.patientClinicalDataEdit_email,
           keyboardType: TextInputType.emailAddress,
         ),
 
         _buildTextField(
           controller: _addressController,
-          label: 'Adresse',
+          label: s.patientClinicalDataEdit_address,
           keyboardType: TextInputType.multiline,
         ),
         const SizedBox(height: 24),
-        Text('Profil patient', style: Theme.of(context).textTheme.titleMedium),
+        Text(s.patientClinicalDataEdit_patientProfile, style: Theme.of(context).textTheme.titleMedium),
         const SizedBox(height: 16),
         _buildDropdownField(
-          label: 'Côté dominant',
+          label: s.patientClinicalDataEdit_dominantSide,
           value: _dominantSide,
-          values: const ['droite', 'gauche', 'ambidextre', 'non précisé'],
+          values: const [
+            'droite',
+            'gauche',
+            'ambidextre',
+            'non précisé',
+          ],
+          displayLabel: (value) {
+            switch (value) {
+              case 'droite':
+                return s.patientClinicalDataEdit_right;
+              case 'gauche':
+                return s.patientClinicalDataEdit_left;
+              case 'ambidextre':
+                return s.patientClinicalDataEdit_ambidextrous;
+              case 'non précisé':
+                return s.patientClinicalDataEdit_unspecified;
+              default:
+                return value;
+            }
+          },
           onChanged: (value) {
             if (value == null) return;
 
@@ -284,21 +311,21 @@ class _PatientClinicalDataEditScreenState
             });
           },
         ),
-        _buildTextField(controller: _professionController, label: 'Profession'),
+        _buildTextField(controller: _professionController, label: s.patientClinicalDataEdit_profession),
         _buildTextField(
           controller: _sportController,
-          label: 'Activité sportive habituelle',
+          label: s.patientClinicalDataEdit_sportActivity,
         ),
         _buildTextField(
           controller: _heightController,
-          label: 'Taille',
-          helperText: 'En centimètres',
+          label: s.patientClinicalDataEdit_height,
+          helperText: s.patientClinicalDataEdit_centimeters,
           keyboardType: TextInputType.number,
         ),
         _buildTextField(
           controller: _weightController,
-          label: 'Poids',
-          helperText: 'En kilogrammes',
+          label: s.patientClinicalDataEdit_weight,
+          helperText: s.patientClinicalDataEdit_kilograms,
           keyboardType: TextInputType.number,
         ),
       ],
@@ -307,14 +334,15 @@ class _PatientClinicalDataEditScreenState
 
   @override
   Widget build(BuildContext context) {
+    final s = S.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Modifier les données cliniques'),
+        title: Text(s.patientClinicalDataEdit_title),
         actions: [
           TextButton.icon(
             onPressed: _saving ? null : _save,
             icon: const Icon(Icons.save_outlined),
-            label: const Text('Enregistrer'),
+            label: Text(s.patientClinicalDataEdit_save),
           ),
         ],
       ),

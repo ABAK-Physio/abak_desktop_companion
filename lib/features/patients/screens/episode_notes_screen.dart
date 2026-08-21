@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import '../../../generated/l10n.dart';
 import '../data/episode_note_repository.dart';
 import '../models/episode_note.dart';
 import '../../../core/utils/date_format_utils.dart';
@@ -52,7 +52,8 @@ class _EpisodeNotesScreenState extends State<EpisodeNotesScreen> {
     }
   }
 
-  Widget _buildNoteTile(EpisodeNote note) {
+  Widget _buildNoteTile(EpisodeNote note, S s,
+      ) {
     final updatedAt = note.updatedAt ?? note.createdAt;
 
     final formattedDate = DateFormatUtils.formatTimestamp(
@@ -66,7 +67,7 @@ class _EpisodeNotesScreenState extends State<EpisodeNotesScreen> {
         title: Text(note.title),
         subtitle: Text(
           [
-            'Modifiée le : $formattedDate',
+            '${s.episodeNotes_modifiedOn} : $formattedDate',
             if (note.content.trim().isNotEmpty) note.content.trim(),
           ].join('\n'),
           maxLines: 3,
@@ -84,20 +85,23 @@ class _EpisodeNotesScreenState extends State<EpisodeNotesScreen> {
   }
 
   Future<void> _confirmArchive(EpisodeNote note) async {
+    final s=S.of(context);
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
-          title: const Text('Archiver la note ?'),
-          content: Text('La note "${note.title}" ne sera plus affichée.'),
+          title: Text(s.episodeNotes_archiveTitle),
+          content: Text(
+            s.episodeNotes_archiveConfirmation(note.title),
+          ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(false),
-              child: const Text('Annuler'),
+              child: Text(s.episodeNotes_cancel),
             ),
             FilledButton(
               onPressed: () => Navigator.of(dialogContext).pop(true),
-              child: const Text('Archiver'),
+              child: Text(s.episodeNotes_archive),
             ),
           ],
         );
@@ -111,12 +115,15 @@ class _EpisodeNotesScreenState extends State<EpisodeNotesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final s = S.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text('Notes — ${widget.caseLabel}'),
+        title: Text(
+          '${s.episodeNotes_title} — ${widget.caseLabel}',
+        ),
         actions: [
           IconButton(
-            tooltip: 'Actualiser',
+            tooltip: s.episodeForms_refresh,
             onPressed: _refresh,
             icon: const Icon(Icons.refresh),
           ),
@@ -132,7 +139,11 @@ class _EpisodeNotesScreenState extends State<EpisodeNotesScreen> {
           }
 
           if (snapshot.hasError) {
-            return Center(child: Text('Erreur : ${snapshot.error}'));
+            return Center(
+              child: Text(
+                '${s.episodeNotes_error} : ${snapshot.error}',
+              ),
+            );
           }
 
           return ListView(
@@ -143,12 +154,12 @@ class _EpisodeNotesScreenState extends State<EpisodeNotesScreen> {
                 child: OutlinedButton.icon(
                   onPressed: () => _openEditor(),
                   icon: const Icon(Icons.add),
-                  label: const Text('Nouvelle note'),
+                  label: Text(s.episodeNotes_newNote),
                 ),
               ),
               const SizedBox(height: 16),
               if (notes.isEmpty)
-                const Text('Aucune note associée à cet épisode.')
+                Text(s.episodeNotes_noNote)
               else
                 ...notes.map(
                   (note) => Dismissible(
@@ -167,7 +178,7 @@ class _EpisodeNotesScreenState extends State<EpisodeNotesScreen> {
                         color: Theme.of(context).colorScheme.onError,
                       ),
                     ),
-                    child: _buildNoteTile(note),
+                    child: _buildNoteTile(note, s),
                   ),
                 ),
             ],
@@ -213,12 +224,13 @@ class _EpisodeNoteEditorScreenState extends State<_EpisodeNoteEditorScreen> {
   }
 
   Future<void> _save() async {
+    final s=S.of(context);
     final title = _titleController.text.trim();
     final content = _contentController.text.trim();
 
     if (title.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Le titre est obligatoire.')),
+        SnackBar(content: Text(s.episodeNotes_titleRequired)),
       );
 
       return;
@@ -249,16 +261,17 @@ class _EpisodeNoteEditorScreenState extends State<_EpisodeNoteEditorScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final s = S.of(context);
     final isEditing = widget.note != null;
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(isEditing ? 'Modifier la note' : 'Nouvelle note'),
+        title: Text(isEditing ? s.episodeNotes_editNote : s.episodeNotes_newNote),
         actions: [
           TextButton.icon(
             onPressed: _saving ? null : _save,
             icon: const Icon(Icons.save_outlined),
-            label: const Text('Enregistrer'),
+            label: Text(s.episodeNotes_save),
           ),
         ],
       ),
@@ -267,9 +280,9 @@ class _EpisodeNoteEditorScreenState extends State<_EpisodeNoteEditorScreen> {
         children: [
           TextField(
             controller: _titleController,
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               border: OutlineInputBorder(),
-              labelText: 'Titre',
+              labelText: s.episodeNotes_noteTitle,
             ),
           ),
           const SizedBox(height: 16),
@@ -277,9 +290,9 @@ class _EpisodeNoteEditorScreenState extends State<_EpisodeNoteEditorScreen> {
             controller: _contentController,
             minLines: 10,
             maxLines: 20,
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               border: OutlineInputBorder(),
-              labelText: 'Contenu',
+              labelText: s.episodeNotes_content,
               alignLabelWithHint: true,
             ),
           ),

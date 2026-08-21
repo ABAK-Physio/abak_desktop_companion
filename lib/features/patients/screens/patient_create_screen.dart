@@ -2,7 +2,8 @@
 import 'package:abak_vitale/abak_vitale.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
+import '../../../core/utils/date_format_utils.dart';
+import '../../../generated/l10n.dart';
 import '../data/patient_repository.dart';
 import '../models/patient.dart';
 import '../../smart_card/widgets/vitale_beneficiary_selector.dart';
@@ -22,13 +23,14 @@ class PatientCreateScreen extends StatefulWidget {
 
 class _PatientCreateScreenState extends State<PatientCreateScreen> {
 
-  static const ExpertContextInfo _expertInfo = ExpertContextInfo(
-    contextName: 'Nouveau Patien',
-    sourceFile: 'lib/features/patietient.screens/patient_craate_screen.dart',
-    arbPrefix: 'patientNew',
-    comment:
-    "Cet écran permet la création d'un nouveau patient par saisie ou lecture de la carte vitale.",
-  );
+  ExpertContextInfo _expertInfo(S s) {
+    return ExpertContextInfo(
+      contextName: s.patientNew_contextName,
+      sourceFile: 'lib/features/patients/screens/patient_create_screen.dart',
+      arbPrefix: 'patientNew',
+      comment: s.patientNew_contextComment,
+    );
+  }
 
   final PatientRepository _patientRepository = PatientRepository();
   final VitaleIdentityService _vitaleIdentityService =
@@ -118,6 +120,8 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
   Future<Patient?> _selectMatchingPatient(
       List<Patient> patients,
       ) async {
+    final s = S.of(context);
+
     if (patients.isEmpty) {
       return null;
     }
@@ -125,31 +129,37 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
     if (patients.length == 1) {
       final patient = patients.first;
 
+      final birthDate = patient.birthDate == null
+          ? s.patientNew_notProvidedFemale
+          : DateFormatUtils.formatIsoDateForDisplay(
+        context,
+        patient.birthDate!,
+      );
+
       final confirmed = await showDialog<bool>(
         context: context,
         barrierDismissible: false,
         builder: (dialogContext) {
           return AlertDialog(
-            title: const Text('Patient déjà existant ?'),
+            title: Text(s.patientNew_existingPatientTitle),
             content: Text(
-              'Un patient correspondant a été trouvé :\n\n'
+              '${s.patientNew_matchingPatientFound}\n\n'
                   '${patient.displayName}\n'
-                  'Date de naissance : ${patient.birthDate ?? 'non renseignée'}\n\n'
-                  'Voulez-vous rattacher les informations de la Carte Vitale '
-                  'à ce patient ?',
+                  '${s.patientNew_birthDate} : $birthDate\n\n'
+                  '${s.patientNew_attachVitaleQuestion}',
             ),
             actions: [
               TextButton(
                 onPressed: () {
                   Navigator.of(dialogContext).pop(false);
                 },
-                child: const Text('Non'),
+                child: Text(s.patientNew_no),
               ),
               FilledButton(
                 onPressed: () {
                   Navigator.of(dialogContext).pop(true);
                 },
-                child: const Text('Rattacher'),
+                child: Text(s.patientNew_attach),
               ),
             ],
           );
@@ -164,7 +174,7 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
       barrierDismissible: false,
       builder: (dialogContext) {
         return AlertDialog(
-          title: const Text('Choisir le patient'),
+          title: Text(s.patientNew_choosePatient),
           content: SizedBox(
             width: 500,
             child: ListView.separated(
@@ -174,12 +184,18 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
               itemBuilder: (context, index) {
                 final patient = patients[index];
 
+                final birthDate = patient.birthDate == null
+                    ? s.patientNew_notProvidedFemale
+                    : DateFormatUtils.formatIsoDateForDisplay(
+                  context,
+                  patient.birthDate,
+                );
+
                 return ListTile(
                   leading: const Icon(Icons.person_outline),
                   title: Text(patient.displayName),
                   subtitle: Text(
-                    'Date de naissance : '
-                        '${patient.birthDate ?? 'non renseignée'}',
+                    '${s.patientNew_birthDate} : $birthDate',
                   ),
                   onTap: () {
                     Navigator.of(dialogContext).pop(patient);
@@ -193,7 +209,7 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
               onPressed: () {
                 Navigator.of(dialogContext).pop();
               },
-              child: const Text('Annuler'),
+              child: Text(s.patientNew_cancel),
             ),
           ],
         );
@@ -206,32 +222,32 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
         required bool attachNir,
         String? nir,
       }) async {
+    final s=S.of(context);
     final confirmed = await showDialog<bool>(
       context: context,
       barrierDismissible: false,
       builder: (dialogContext) {
         return AlertDialog(
-          title: const Text('Patient trouvé dans les archives'),
+          title: Text(s.patientNew_archivedPatientFound),
           content: Text(
-            'Cette Carte Vitale correspond au patient archivé :\n\n'
+            '${s.patientNew_archivedPatientMatch}\n\n'
                 '${patient.displayName}\n'
-                'Date de naissance : '
-                '${patient.birthDate ?? 'non renseignée'}\n\n'
-                'Souhaitez-vous restaurer ce dossier plutôt que créer '
-                'un nouveau patient ?',
+                '${s.patientNew_birthDate} : '
+                '${patient.birthDate ?? s.patientNew_notProvidedFemale}\n\n'
+                '${s.patientNew_restoreInsteadOfCreate}',
           ),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(dialogContext).pop(false);
               },
-              child: const Text('Annuler'),
+              child: Text(s.patientNew_cancel),
             ),
             FilledButton(
               onPressed: () {
                 Navigator.of(dialogContext).pop(true);
               },
-              child: const Text('Restaurer'),
+              child: Text(s.patientNew_restore),
             ),
           ],
         );
@@ -264,7 +280,7 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            'Impossible de restaurer le patient : $error',
+            '${s.patientNew_restoreError} $error',
           ),
         ),
       );
@@ -279,7 +295,7 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          'Le patient ${patient.displayName} a été restauré.',
+          s.patientNew_restoreSuccess(patient.displayName),
         ),
       ),
     );
@@ -292,6 +308,7 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
   Future<bool> _resolveExistingPatient(
       VitaleIdentity identity,
       ) async {
+    final s=S.of(context);
     final lastName = identity.lastName?.trim();
     final firstName = identity.firstName?.trim();
     final birthDate = identity.birthDate;
@@ -349,20 +366,20 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
           barrierDismissible: false,
           builder: (dialogContext) {
             return AlertDialog(
-              title: const Text('Patient déjà enregistré'),
+              title: Text(s.patientNew_patientAlreadyRegistered),
               content: Text(
-                'Cette Carte Vitale correspond au patient :\n\n'
+                '${s.patientNew_vitaleMatchesPatient}\n\n'
                     '${patient.displayName}\n'
-                    'Date de naissance : '
-                    '${patient.birthDate ?? 'non renseignée'}\n\n'
-                    'Aucun nouveau patient ne sera créé.',
+                    '${s.patientNew_birthDate}'
+                    '${patient.birthDate ?? s.patientNew_notProvidedFemale}\n\n'
+                    '${s.patientNew_noNewPatientCreated}',
               ),
               actions: [
                 FilledButton(
                   onPressed: () {
                     Navigator.of(dialogContext).pop();
                   },
-                  child: const Text('Retour à la liste'),
+                  child: Text(s.patientNew_backToList),
                 ),
               ],
             );
@@ -407,7 +424,7 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(
-                  'Impossible de rattacher la Carte Vitale : $error',
+                  '${s.patientNew_attachVitaleError} : $error',
                 ),
               ),
             );
@@ -422,8 +439,7 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(
-                'Carte Vitale rattachée au patient '
-                    '${selectedPatient.displayName}.',
+                s.patientNew_attachVitaleSuccess(selectedPatient.displayName),
               ),
             ),
           );
@@ -449,19 +465,16 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
         barrierDismissible: false,
         builder: (dialogContext) {
           return AlertDialog(
-            title: const Text('Correspondance à vérifier'),
-            content: const Text(
-              'Un patient ayant les mêmes nom, prénom et date de naissance '
-                  'existe déjà.\n\n'
-                  'Les informations administratives ne correspondent pas '
-                  'complètement. Vérifiez le dossier avant de poursuivre.',
+            title: Text(s.patientNew_matchToReview),
+            content: Text(
+              s.patientNew_matchToReviewMessage,
             ),
             actions: [
               FilledButton(
                 onPressed: () {
                   Navigator.of(dialogContext).pop();
                 },
-                child: const Text('Fermer'),
+                child: Text(s.patientNew_close),
               ),
             ],
           );
@@ -521,22 +534,18 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
         barrierDismissible: false,
         builder: (dialogContext) {
           return AlertDialog(
-            title: const Text(
-              'Correspondance archivée à vérifier',
+            title: Text(
+              s.patientNew_archivedMatchToReview,
             ),
-            content: const Text(
-              'Un patient archivé ayant les mêmes nom, prénom et '
-                  'date de naissance existe déjà, mais ses informations '
-                  'administratives sont différentes.\n\n'
-                  'Aucune restauration automatique ne sera effectuée. '
-                  'Vérifiez les dossiers avant de poursuivre.',
+            content: Text(
+              s.patientNew_archivedMatchToReviewMessage,
             ),
             actions: [
               FilledButton(
                 onPressed: () {
                   Navigator.of(dialogContext).pop();
                 },
-                child: const Text('Fermer'),
+                child: Text(s.patientNew_close),
               ),
             ],
           );
@@ -571,22 +580,22 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
   }
 
   Future<void> _showModuleNotInstalledDialog() async {
+    final s=S.of(context);
     await showDialog<void>(
       context: context,
       barrierDismissible: false,
       builder: (dialogContext) {
         return AlertDialog(
-          title: const Text('Module Carte Vitale non installé'),
-          content: const Text(
-            'Le module ABAK Carte Vitale n’est pas installé sur cet ordinateur.\n\n'
-                'Vous pouvez le télécharger gratuitement depuis le site ABAK.',
+          title: Text(s.patientNew_vitaleModuleNotInstalled),
+          content: Text(
+            s.patientNew_vitaleModuleNotInstalledMessage,
           ),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(dialogContext).pop();
               },
-              child: const Text('Fermer'),
+              child: Text(s.patientNew_close),
             ),
             FilledButton(
               onPressed: () async {
@@ -601,7 +610,7 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
                   mode: LaunchMode.externalApplication,
                 );
               },
-              child: const Text('Télécharger'),
+              child: Text(s.patientNew_download),
             ),
           ],
         );
@@ -610,29 +619,24 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
   }
 
   Future<void> _showReaderNotDetectedDialog() async {
+    final s=S.of(context);
     await showDialog<void>(
       context: context,
       barrierDismissible: false,
       builder: (dialogContext) {
         return AlertDialog(
-          title: const Text(
-            'Lecteur de Carte Vitale non détecté',
+          title: Text(
+            s.patientNew_readerNotDetected,
           ),
-          content: const Text(
-            'ABAK Desktop Companion n’a détecté aucun lecteur '
-                'de Carte Vitale.\n\n'
-                'Pour utiliser cette fonction, vous devez disposer :\n\n'
-                '• d’un lecteur de Carte Vitale compatible PC/SC, généralement connecté en USB ;\n'
-                '• du module ABAK Carte Vitale, fourni gratuitement. Voir le site abak.care.\n\n'
-                'Une fois le lecteur connecté, cliquez de nouveau sur '
-                '« Lire Carte Vitale ».',
+          content: Text(
+            s.patientNew_readerNotDetectedMessage,
           ),
           actions: [
             FilledButton(
               onPressed: () {
                 Navigator.of(dialogContext).pop();
               },
-              child: const Text('Fermer'),
+              child: Text(s.patientNew_close),
             ),
           ],
         );
@@ -641,6 +645,7 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
   }
 
   Future<void> _readVitaleIdentity() async {
+    final s=S.of(context);
     if (_saving || _loadingVitale) {
       return;
     }
@@ -684,9 +689,8 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
         final message =
         error.code == 'API_INIT_ERROR' &&
             (error.message?.contains('retour=32') ?? false)
-            ? 'La configuration du module Carte Vitale est absente ou incorrecte. '
-            'Réinstallez le module puis réessayez.'
-            : 'La lecture de la Carte Vitale a échoué.';
+            ? s.patientNew_vitaleModuleConfigurationError
+            : s.patientNew_vitaleReadFailed;
 
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -725,9 +729,9 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
 
     if (identity == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
+        SnackBar(
           content: Text(
-            'La lecture de la Carte Vitale a échoué.',
+            s.patientNew_vitaleReadFailed,
           ),
         ),
       );
@@ -774,15 +778,16 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
     });
 
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
+      SnackBar(
         content: Text(
-          'Informations patient préremplies depuis la Carte Vitale.',
+          s.patientNew_vitalePrefilled,
         ),
       ),
     );
   }
 
   Future<void> _save() async {
+    final s=S.of(context);
     if (_saving) return;
 
     final form = _formKey.currentState;
@@ -810,8 +815,8 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Erreur lors de la création du patient : $e')),
-      );
+        SnackBar(content: Text(('${s.patientNew_createError} $e')),
+      ));
 
       setState(() {
         _saving = false;
@@ -819,16 +824,16 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
     }
   }
 
-  String _sexLabel(String sexCode) {
+  String _sexLabel(String sexCode, S s) {
     switch (sexCode) {
       case 'F':
-        return 'Féminin';
+        return s.patientNew_female;
       case 'M':
-        return 'Masculin';
+        return s.patientNew_male;
       case 'X':
-        return 'Autre';
+        return s.patientNew_other;
       default:
-        return 'Non renseigné';
+        return s.patientNew_notProvided;
     }
   }
 
@@ -845,6 +850,7 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
   }
 
   Widget _buildVitaleIdentityCard(BuildContext context) {
+    final s=S.of(context);
     return Card(
       color: Theme.of(context).colorScheme.primaryContainer,
       child: Padding(
@@ -862,7 +868,7 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Identité lue depuis la Carte Vitale',
+                    s.patientNew_vitaleIdentityRead,
                     style: Theme.of(context).textTheme.titleSmall?.copyWith(
                       fontWeight: FontWeight.bold,
                       color: Theme.of(
@@ -872,26 +878,26 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Nom : ${_lastNameController.text.trim()}',
+                    '${s.patientNew_lastName} ${_lastNameController.text.trim()}',
                   ),
                   Text(
-                    'Prénom : ${_firstNameController.text.trim()}',
+                    '${s.patientNew_firstName} ${_firstNameController.text.trim()}',
                   ),
                   Text(
-                    'Date de naissance : '
-                        '${_birthDateController.text.trim().isEmpty ? 'Non renseignée' : _birthDateController.text.trim()}',
+                    '${s.patientNew_birthDate}'
+                    '${_birthDateController.text.trim().isEmpty ? s.patientNew_notProvidedFemale : _birthDateController.text.trim()}',
                   ),
                   Text(
-                    'Sexe : ${_sexLabel(_sexCode)}',
+                    '${s.patientList_sex} ${_sexLabel(_sexCode, s)}',
                   ),
                   Text(
-                    'NIR : ${_nir == null ? 'non disponible' : 'détecté et protégé'}',
+                    '${s.patientNew_nir} ${_nir == null ? s.patientNew_nirUnavailable : s.patientNew_nirDetectedProtected}',
                   ),
                   if (_vitaleReadAt != null) ...[
                     const SizedBox(height: 8),
                     Text(
-                      'Lecture effectuée le '
-                          '${_vitaleReadDateLabel(context)}',
+                      '${s.patientNew_readOn}'
+                      '${_vitaleReadDateLabel(context)}',
                       style: Theme.of(context).textTheme.bodySmall,
                     ),
                   ],
@@ -906,12 +912,13 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final s=S.of(context);
     return Scaffold(
-      appBar: AppBar(title: const Text('Nouveau patient'),
+      appBar: AppBar(title: Text(s.patientNew_contextName),
       actions: [
         if (_expertModeEnabled)
-          const ExpertInfoButton(
-            info: _expertInfo,
+          ExpertInfoButton(
+            info: _expertInfo(s),
           ),
       ],
       ),
@@ -933,7 +940,7 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
                           children: [
                             Expanded(
                               child: Text(
-                                'Identité du patient',
+                                s.patientNew_patientIdentity,
                                 style: Theme.of(context).textTheme.titleLarge,
                               ),
                             ),
@@ -951,8 +958,8 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
                                   : const Icon(Icons.credit_card_outlined),
                               label: Text(
                                 _loadingVitale
-                                    ? 'Lecture en cours...'
-                                    : 'Lire Carte Vitale',
+                                    ? s.patientNew_reading
+                                    : s.patientNew_readVitale,
                               ),
                             ),
                           ],
@@ -967,14 +974,14 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
 
                         TextFormField(
                           controller: _lastNameController,
-                          decoration: const InputDecoration(
-                            labelText: 'Nom',
+                          decoration: InputDecoration(
+                            labelText: s.patientNew_lastName,
                             border: OutlineInputBorder(),
                           ),
                           textInputAction: TextInputAction.next,
                           validator: (value) {
                             if (value == null || value.trim().isEmpty) {
-                              return 'Le nom est obligatoire';
+                              return s.patientNew_lastNameRequired;
                             }
                             return null;
                           },
@@ -984,14 +991,14 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
 
                         TextFormField(
                           controller: _firstNameController,
-                          decoration: const InputDecoration(
-                            labelText: 'Prénom',
+                          decoration: InputDecoration(
+                            labelText: s.patientNew_firstName,
                             border: OutlineInputBorder(),
                           ),
                           textInputAction: TextInputAction.next,
                           validator: (value) {
                             if (value == null || value.trim().isEmpty) {
-                              return 'Le prénom est obligatoire';
+                              return s.patientNew_firstNameRequired;
                             }
                             return null;
                           },
@@ -1001,9 +1008,8 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
 
                         TextFormField(
                           controller: _birthDateController,
-                          decoration: const InputDecoration(
-                            labelText: 'Date de naissance',
-                            hintText: 'JJ/MM/AAAA',
+                          decoration: InputDecoration(
+                            labelText: s.patientNew_birthDate,
                             border: OutlineInputBorder(),
                             suffixIcon: Icon(Icons.calendar_today_outlined),
                           ),
@@ -1015,24 +1021,24 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
 
                         DropdownButtonFormField<String>(
                           initialValue: _sexCode,
-                          decoration: const InputDecoration(
-                            labelText: 'Sexe',
+                          decoration: InputDecoration(
+                            labelText: s.patientList_sex,
                             border: OutlineInputBorder(),
                           ),
-                          items: const [
+                          items: [
                             DropdownMenuItem(
                               value: 'U',
-                              child: Text('Non renseigné'),
+                              child: Text(s.patientNew_notProvidedFemale),
                             ),
                             DropdownMenuItem(
                               value: 'F',
-                              child: Text('Féminin'),
+                              child: Text(s.patientNew_female),
                             ),
                             DropdownMenuItem(
                               value: 'M',
-                              child: Text('Masculin'),
+                              child: Text(s.patientNew_male),
                             ),
-                            DropdownMenuItem(value: 'X', child: Text('Autre')),
+                            DropdownMenuItem(value: 'X', child: Text(s.patientNew_other)),
                           ],
                           onChanged: (value) {
                             if (value == null) return;
@@ -1051,7 +1057,7 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
                               onPressed: _saving
                                   ? null
                                   : () => Navigator.of(context).pop(false),
-                              child: const Text('Annuler'),
+                              child: Text(s.patientNew_cancel),
                             ),
                             const SizedBox(width: 12),
                             FilledButton.icon(
@@ -1066,7 +1072,7 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
                                     )
                                   : const Icon(Icons.check),
                               label: Text(
-                                _saving ? 'Création...' : 'Créer le patient',
+                                _saving ? s.patientNew_creating : s.patientNew_createPatient,
                               ),
                             ),
                           ],

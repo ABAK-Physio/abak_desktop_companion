@@ -840,6 +840,56 @@ class S {
     );
   }
 
+  /// `Modifier le formulaire`
+  String get episodeFormEditor_title {
+    return Intl.message(
+      'Modifier le formulaire',
+      name: 'episodeFormEditor_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enregistrer`
+  String get episodeFormEditor_save {
+    return Intl.message(
+      'Enregistrer',
+      name: 'episodeFormEditor_save',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Le champ "{fieldName}" est obligatoire.`
+  String episodeFormEditor_requiredField(Object fieldName) {
+    return Intl.message(
+      'Le champ "$fieldName" est obligatoire.',
+      name: 'episodeFormEditor_requiredField',
+      desc: '',
+      args: [fieldName],
+    );
+  }
+
+  /// `Erreur`
+  String get episodeFormEditor_error {
+    return Intl.message(
+      'Erreur',
+      name: 'episodeFormEditor_error',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Aucun champ à afficher.`
+  String get episodeFormEditor_noField {
+    return Intl.message(
+      'Aucun champ à afficher.',
+      name: 'episodeFormEditor_noField',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Dossier d'échange réinitialisé`
   String get exchangeDirectoryReset {
     return Intl.message(
@@ -1045,6 +1095,636 @@ class S {
     return Intl.message(
       'Ajouter un document',
       name: 'episodeDocuments_addDocument',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Catégorie`
+  String get episodeForms_category {
+    return Intl.message(
+      'Catégorie',
+      name: 'episodeForms_category',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Modèle système`
+  String get episodeForms_systemTemplate {
+    return Intl.message(
+      'Modèle système',
+      name: 'episodeForms_systemTemplate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Modèle personnalisé`
+  String get episodeForms_customTemplate {
+    return Intl.message(
+      'Modèle personnalisé',
+      name: 'episodeForms_customTemplate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Créer`
+  String get episodeForms_create {
+    return Intl.message(
+      'Créer',
+      name: 'episodeForms_create',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Formulaire`
+  String get episodeForms_form {
+    return Intl.message(
+      'Formulaire',
+      name: 'episodeForms_form',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Créé le`
+  String get episodeForms_createdOn {
+    return Intl.message(
+      'Créé le',
+      name: 'episodeForms_createdOn',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `État`
+  String get episodeForms_state {
+    return Intl.message(
+      'État',
+      name: 'episodeForms_state',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `complété`
+  String get episodeForms_completed {
+    return Intl.message(
+      'complété',
+      name: 'episodeForms_completed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `en cours`
+  String get episodeForms_inProgress {
+    return Intl.message(
+      'en cours',
+      name: 'episodeForms_inProgress',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Formulaires créés`
+  String get episodeForms_createdForms {
+    return Intl.message(
+      'Formulaires créés',
+      name: 'episodeForms_createdForms',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Aucun formulaire créé pour cet épisode.`
+  String get episodeForms_noCreatedForm {
+    return Intl.message(
+      'Aucun formulaire créé pour cet épisode.',
+      name: 'episodeForms_noCreatedForm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Modèles disponibles`
+  String get episodeForms_availableTemplates {
+    return Intl.message(
+      'Modèles disponibles',
+      name: 'episodeForms_availableTemplates',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Aucun modèle de formulaire disponible.`
+  String get episodeForms_noAvailableTemplate {
+    return Intl.message(
+      'Aucun modèle de formulaire disponible.',
+      name: 'episodeForms_noAvailableTemplate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Formulaires`
+  String get episodeForms_title {
+    return Intl.message(
+      'Formulaires',
+      name: 'episodeForms_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Actualiser`
+  String get episodeForms_refresh {
+    return Intl.message(
+      'Actualiser',
+      name: 'episodeForms_refresh',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Erreur`
+  String get episodeForms_error {
+    return Intl.message(
+      'Erreur',
+      name: 'episodeForms_error',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Aucune donnée à afficher.`
+  String get episodeForms_noData {
+    return Intl.message(
+      'Aucune donnée à afficher.',
+      name: 'episodeForms_noData',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Notes`
+  String get episodeNotes_title {
+    return Intl.message(
+      'Notes',
+      name: 'episodeNotes_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Actualiser`
+  String get episodeNotes_refresh {
+    return Intl.message(
+      'Actualiser',
+      name: 'episodeNotes_refresh',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Modifiée le`
+  String get episodeNotes_modifiedOn {
+    return Intl.message(
+      'Modifiée le',
+      name: 'episodeNotes_modifiedOn',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Archiver la note ?`
+  String get episodeNotes_archiveTitle {
+    return Intl.message(
+      'Archiver la note ?',
+      name: 'episodeNotes_archiveTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `La note "{noteTitle}" ne sera plus affichée.`
+  String episodeNotes_archiveConfirmation(Object noteTitle) {
+    return Intl.message(
+      'La note "$noteTitle" ne sera plus affichée.',
+      name: 'episodeNotes_archiveConfirmation',
+      desc: '',
+      args: [noteTitle],
+    );
+  }
+
+  /// `Annuler`
+  String get episodeNotes_cancel {
+    return Intl.message(
+      'Annuler',
+      name: 'episodeNotes_cancel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Archiver`
+  String get episodeNotes_archive {
+    return Intl.message(
+      'Archiver',
+      name: 'episodeNotes_archive',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Erreur`
+  String get episodeNotes_error {
+    return Intl.message(
+      'Erreur',
+      name: 'episodeNotes_error',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Nouvelle note`
+  String get episodeNotes_newNote {
+    return Intl.message(
+      'Nouvelle note',
+      name: 'episodeNotes_newNote',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Aucune note associée à cet épisode.`
+  String get episodeNotes_noNote {
+    return Intl.message(
+      'Aucune note associée à cet épisode.',
+      name: 'episodeNotes_noNote',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Le titre est obligatoire.`
+  String get episodeNotes_titleRequired {
+    return Intl.message(
+      'Le titre est obligatoire.',
+      name: 'episodeNotes_titleRequired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Modifier la note`
+  String get episodeNotes_editNote {
+    return Intl.message(
+      'Modifier la note',
+      name: 'episodeNotes_editNote',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enregistrer`
+  String get episodeNotes_save {
+    return Intl.message(
+      'Enregistrer',
+      name: 'episodeNotes_save',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Titre`
+  String get episodeNotes_noteTitle {
+    return Intl.message(
+      'Titre',
+      name: 'episodeNotes_noteTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Contenu`
+  String get episodeNotes_content {
+    return Intl.message(
+      'Contenu',
+      name: 'episodeNotes_content',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Rapport`
+  String get episodeReport_title {
+    return Intl.message(
+      'Rapport',
+      name: 'episodeReport_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Actualiser`
+  String get episodeReport_refresh {
+    return Intl.message(
+      'Actualiser',
+      name: 'episodeReport_refresh',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Erreur`
+  String get episodeReport_error {
+    return Intl.message(
+      'Erreur',
+      name: 'episodeReport_error',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Aucune donnée à afficher.`
+  String get episodeReport_noData {
+    return Intl.message(
+      'Aucune donnée à afficher.',
+      name: 'episodeReport_noData',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Génération de l’aperçu texte...`
+  String get episodeReport_generatingPreview {
+    return Intl.message(
+      'Génération de l’aperçu texte...',
+      name: 'episodeReport_generatingPreview',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Aperçu du rapport généré`
+  String get episodeReport_generatedPreview {
+    return Intl.message(
+      'Aperçu du rapport généré',
+      name: 'episodeReport_generatedPreview',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Non renseigné`
+  String get episodeReport_notProvided {
+    return Intl.message(
+      'Non renseigné',
+      name: 'episodeReport_notProvided',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Patient`
+  String get episodeReport_patient {
+    return Intl.message(
+      'Patient',
+      name: 'episodeReport_patient',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Nom`
+  String get episodeReport_name {
+    return Intl.message(
+      'Nom',
+      name: 'episodeReport_name',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Téléphone`
+  String get episodeReport_phone {
+    return Intl.message(
+      'Téléphone',
+      name: 'episodeReport_phone',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Email`
+  String get episodeReport_email {
+    return Intl.message(
+      'Email',
+      name: 'episodeReport_email',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Côté dominant`
+  String get episodeReport_dominantSide {
+    return Intl.message(
+      'Côté dominant',
+      name: 'episodeReport_dominantSide',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Profession`
+  String get episodeReport_profession {
+    return Intl.message(
+      'Profession',
+      name: 'episodeReport_profession',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Activité sportive`
+  String get episodeReport_sportActivity {
+    return Intl.message(
+      'Activité sportive',
+      name: 'episodeReport_sportActivity',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Formulaires`
+  String get episodeReport_forms {
+    return Intl.message(
+      'Formulaires',
+      name: 'episodeReport_forms',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Aucun formulaire associé`
+  String get episodeReport_noForm {
+    return Intl.message(
+      'Aucun formulaire associé',
+      name: 'episodeReport_noForm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Résultats ABAK`
+  String get episodeReport_results {
+    return Intl.message(
+      'Résultats ABAK',
+      name: 'episodeReport_results',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Aucun résultat associé`
+  String get episodeReport_noResult {
+    return Intl.message(
+      'Aucun résultat associé',
+      name: 'episodeReport_noResult',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Score`
+  String get episodeReport_score {
+    return Intl.message(
+      'Score',
+      name: 'episodeReport_score',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Origine ABAK`
+  String get episodeReport_abakOrigin {
+    return Intl.message(
+      'Origine ABAK',
+      name: 'episodeReport_abakOrigin',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Documents`
+  String get episodeReport_documents {
+    return Intl.message(
+      'Documents',
+      name: 'episodeReport_documents',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Aucun document associé`
+  String get episodeReport_noDocument {
+    return Intl.message(
+      'Aucun document associé',
+      name: 'episodeReport_noDocument',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Type inconnu`
+  String get episodeReport_unknownType {
+    return Intl.message(
+      'Type inconnu',
+      name: 'episodeReport_unknownType',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Notes`
+  String get episodeReport_notes {
+    return Intl.message(
+      'Notes',
+      name: 'episodeReport_notes',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Aucune note associée`
+  String get episodeReport_noNote {
+    return Intl.message(
+      'Aucune note associée',
+      name: 'episodeReport_noNote',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Conclusion clinique`
+  String get episodeReport_clinicalConclusion {
+    return Intl.message(
+      'Conclusion clinique',
+      name: 'episodeReport_clinicalConclusion',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Aucune conclusion renseignée.`
+  String get episodeReport_noConclusion {
+    return Intl.message(
+      'Aucune conclusion renseignée.',
+      name: 'episodeReport_noConclusion',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Ajouter une conclusion`
+  String get episodeReport_addConclusion {
+    return Intl.message(
+      'Ajouter une conclusion',
+      name: 'episodeReport_addConclusion',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Modifier la conclusion`
+  String get episodeReport_editConclusion {
+    return Intl.message(
+      'Modifier la conclusion',
+      name: 'episodeReport_editConclusion',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `La conclusion ne peut pas être vide.`
+  String get episodeReport_conclusionRequired {
+    return Intl.message(
+      'La conclusion ne peut pas être vide.',
+      name: 'episodeReport_conclusionRequired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enregistrer`
+  String get episodeReport_save {
+    return Intl.message(
+      'Enregistrer',
+      name: 'episodeReport_save',
       desc: '',
       args: [],
     );
@@ -2720,6 +3400,246 @@ class S {
     );
   }
 
+  /// `Modifier les données cliniques`
+  String get patientClinicalDataEdit_title {
+    return Intl.message(
+      'Modifier les données cliniques',
+      name: 'patientClinicalDataEdit_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enregistrer`
+  String get patientClinicalDataEdit_save {
+    return Intl.message(
+      'Enregistrer',
+      name: 'patientClinicalDataEdit_save',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Identité administrative`
+  String get patientClinicalDataEdit_administrativeIdentity {
+    return Intl.message(
+      'Identité administrative',
+      name: 'patientClinicalDataEdit_administrativeIdentity',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Identifiant national de santé`
+  String get patientClinicalDataEdit_nationalHealthId {
+    return Intl.message(
+      'Identifiant national de santé',
+      name: 'patientClinicalDataEdit_nationalHealthId',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Exemple France : numéro de sécurité sociale`
+  String get patientClinicalDataEdit_nationalHealthIdHelper {
+    return Intl.message(
+      'Exemple France : numéro de sécurité sociale',
+      name: 'patientClinicalDataEdit_nationalHealthIdHelper',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pays du système de santé`
+  String get patientClinicalDataEdit_healthSystemCountry {
+    return Intl.message(
+      'Pays du système de santé',
+      name: 'patientClinicalDataEdit_healthSystemCountry',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Source de l’identité`
+  String get patientClinicalDataEdit_identitySource {
+    return Intl.message(
+      'Source de l’identité',
+      name: 'patientClinicalDataEdit_identitySource',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Saisie manuelle`
+  String get patientClinicalDataEdit_manualEntry {
+    return Intl.message(
+      'Saisie manuelle',
+      name: 'patientClinicalDataEdit_manualEntry',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Carte Vitale`
+  String get patientClinicalDataEdit_vitaleCard {
+    return Intl.message(
+      'Carte Vitale',
+      name: 'patientClinicalDataEdit_vitaleCard',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Téléphone`
+  String get patientClinicalDataEdit_phone {
+    return Intl.message(
+      'Téléphone',
+      name: 'patientClinicalDataEdit_phone',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Email`
+  String get patientClinicalDataEdit_email {
+    return Intl.message(
+      'Email',
+      name: 'patientClinicalDataEdit_email',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Adresse`
+  String get patientClinicalDataEdit_address {
+    return Intl.message(
+      'Adresse',
+      name: 'patientClinicalDataEdit_address',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Profil patient`
+  String get patientClinicalDataEdit_patientProfile {
+    return Intl.message(
+      'Profil patient',
+      name: 'patientClinicalDataEdit_patientProfile',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Côté dominant`
+  String get patientClinicalDataEdit_dominantSide {
+    return Intl.message(
+      'Côté dominant',
+      name: 'patientClinicalDataEdit_dominantSide',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Droite`
+  String get patientClinicalDataEdit_right {
+    return Intl.message(
+      'Droite',
+      name: 'patientClinicalDataEdit_right',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Gauche`
+  String get patientClinicalDataEdit_left {
+    return Intl.message(
+      'Gauche',
+      name: 'patientClinicalDataEdit_left',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Ambidextre`
+  String get patientClinicalDataEdit_ambidextrous {
+    return Intl.message(
+      'Ambidextre',
+      name: 'patientClinicalDataEdit_ambidextrous',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Non précisé`
+  String get patientClinicalDataEdit_unspecified {
+    return Intl.message(
+      'Non précisé',
+      name: 'patientClinicalDataEdit_unspecified',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Profession`
+  String get patientClinicalDataEdit_profession {
+    return Intl.message(
+      'Profession',
+      name: 'patientClinicalDataEdit_profession',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Activité sportive habituelle`
+  String get patientClinicalDataEdit_sportActivity {
+    return Intl.message(
+      'Activité sportive habituelle',
+      name: 'patientClinicalDataEdit_sportActivity',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Taille`
+  String get patientClinicalDataEdit_height {
+    return Intl.message(
+      'Taille',
+      name: 'patientClinicalDataEdit_height',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `En centimètres`
+  String get patientClinicalDataEdit_centimeters {
+    return Intl.message(
+      'En centimètres',
+      name: 'patientClinicalDataEdit_centimeters',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Poids`
+  String get patientClinicalDataEdit_weight {
+    return Intl.message(
+      'Poids',
+      name: 'patientClinicalDataEdit_weight',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `En kilogrammes`
+  String get patientClinicalDataEdit_kilograms {
+    return Intl.message(
+      'En kilogrammes',
+      name: 'patientClinicalDataEdit_kilograms',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Non renseignée`
   String get patientDetail_notProvidedFemale {
     return Intl.message(
@@ -3585,6 +4505,566 @@ class S {
     return Intl.message(
       'Liste des patients',
       name: 'patientList_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Nouveau patient`
+  String get patientNew_contextName {
+    return Intl.message(
+      'Nouveau patient',
+      name: 'patientNew_contextName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cet écran permet la création d’un nouveau patient par saisie ou lecture de la Carte Vitale.`
+  String get patientNew_contextComment {
+    return Intl.message(
+      'Cet écran permet la création d’un nouveau patient par saisie ou lecture de la Carte Vitale.',
+      name: 'patientNew_contextComment',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Patient déjà existant ?`
+  String get patientNew_existingPatientTitle {
+    return Intl.message(
+      'Patient déjà existant ?',
+      name: 'patientNew_existingPatientTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Un patient correspondant a été trouvé :`
+  String get patientNew_matchingPatientFound {
+    return Intl.message(
+      'Un patient correspondant a été trouvé :',
+      name: 'patientNew_matchingPatientFound',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Date de naissance`
+  String get patientNew_birthDate {
+    return Intl.message(
+      'Date de naissance',
+      name: 'patientNew_birthDate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `non renseignée`
+  String get patientNew_notProvidedFemale {
+    return Intl.message(
+      'non renseignée',
+      name: 'patientNew_notProvidedFemale',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Voulez-vous rattacher les informations de la Carte Vitale à ce patient ?`
+  String get patientNew_attachVitaleQuestion {
+    return Intl.message(
+      'Voulez-vous rattacher les informations de la Carte Vitale à ce patient ?',
+      name: 'patientNew_attachVitaleQuestion',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Non`
+  String get patientNew_no {
+    return Intl.message(
+      'Non',
+      name: 'patientNew_no',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Rattacher`
+  String get patientNew_attach {
+    return Intl.message(
+      'Rattacher',
+      name: 'patientNew_attach',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choisir le patient`
+  String get patientNew_choosePatient {
+    return Intl.message(
+      'Choisir le patient',
+      name: 'patientNew_choosePatient',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Annuler`
+  String get patientNew_cancel {
+    return Intl.message(
+      'Annuler',
+      name: 'patientNew_cancel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Patient trouvé dans les archives`
+  String get patientNew_archivedPatientFound {
+    return Intl.message(
+      'Patient trouvé dans les archives',
+      name: 'patientNew_archivedPatientFound',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cette Carte Vitale correspond au patient archivé :`
+  String get patientNew_archivedPatientMatch {
+    return Intl.message(
+      'Cette Carte Vitale correspond au patient archivé :',
+      name: 'patientNew_archivedPatientMatch',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Souhaitez-vous restaurer ce dossier plutôt que créer un nouveau patient ?`
+  String get patientNew_restoreInsteadOfCreate {
+    return Intl.message(
+      'Souhaitez-vous restaurer ce dossier plutôt que créer un nouveau patient ?',
+      name: 'patientNew_restoreInsteadOfCreate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Restaurer`
+  String get patientNew_restore {
+    return Intl.message(
+      'Restaurer',
+      name: 'patientNew_restore',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Impossible de restaurer le patient`
+  String get patientNew_restoreError {
+    return Intl.message(
+      'Impossible de restaurer le patient',
+      name: 'patientNew_restoreError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Le patient {patientName} a été restauré.`
+  String patientNew_restoreSuccess(Object patientName) {
+    return Intl.message(
+      'Le patient $patientName a été restauré.',
+      name: 'patientNew_restoreSuccess',
+      desc: '',
+      args: [patientName],
+    );
+  }
+
+  /// `Patient déjà enregistré`
+  String get patientNew_patientAlreadyRegistered {
+    return Intl.message(
+      'Patient déjà enregistré',
+      name: 'patientNew_patientAlreadyRegistered',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cette Carte Vitale correspond au patient :`
+  String get patientNew_vitaleMatchesPatient {
+    return Intl.message(
+      'Cette Carte Vitale correspond au patient :',
+      name: 'patientNew_vitaleMatchesPatient',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Aucun nouveau patient ne sera créé.`
+  String get patientNew_noNewPatientCreated {
+    return Intl.message(
+      'Aucun nouveau patient ne sera créé.',
+      name: 'patientNew_noNewPatientCreated',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Retour à la liste`
+  String get patientNew_backToList {
+    return Intl.message(
+      'Retour à la liste',
+      name: 'patientNew_backToList',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Impossible de rattacher la Carte Vitale`
+  String get patientNew_attachVitaleError {
+    return Intl.message(
+      'Impossible de rattacher la Carte Vitale',
+      name: 'patientNew_attachVitaleError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Carte Vitale rattachée au patient {patientName}.`
+  String patientNew_attachVitaleSuccess(Object patientName) {
+    return Intl.message(
+      'Carte Vitale rattachée au patient $patientName.',
+      name: 'patientNew_attachVitaleSuccess',
+      desc: '',
+      args: [patientName],
+    );
+  }
+
+  /// `Correspondance à vérifier`
+  String get patientNew_matchToReview {
+    return Intl.message(
+      'Correspondance à vérifier',
+      name: 'patientNew_matchToReview',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Un patient ayant les mêmes nom, prénom et date de naissance existe déjà.\n\nLes informations administratives ne correspondent pas complètement. Vérifiez le dossier avant de poursuivre.`
+  String get patientNew_matchToReviewMessage {
+    return Intl.message(
+      'Un patient ayant les mêmes nom, prénom et date de naissance existe déjà.\n\nLes informations administratives ne correspondent pas complètement. Vérifiez le dossier avant de poursuivre.',
+      name: 'patientNew_matchToReviewMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Fermer`
+  String get patientNew_close {
+    return Intl.message(
+      'Fermer',
+      name: 'patientNew_close',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Correspondance archivée à vérifier`
+  String get patientNew_archivedMatchToReview {
+    return Intl.message(
+      'Correspondance archivée à vérifier',
+      name: 'patientNew_archivedMatchToReview',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Un patient archivé ayant les mêmes nom, prénom et date de naissance existe déjà, mais ses informations administratives sont différentes.\n\nAucune restauration automatique ne sera effectuée. Vérifiez les dossiers avant de poursuivre.`
+  String get patientNew_archivedMatchToReviewMessage {
+    return Intl.message(
+      'Un patient archivé ayant les mêmes nom, prénom et date de naissance existe déjà, mais ses informations administratives sont différentes.\n\nAucune restauration automatique ne sera effectuée. Vérifiez les dossiers avant de poursuivre.',
+      name: 'patientNew_archivedMatchToReviewMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Module Carte Vitale non installé`
+  String get patientNew_vitaleModuleNotInstalled {
+    return Intl.message(
+      'Module Carte Vitale non installé',
+      name: 'patientNew_vitaleModuleNotInstalled',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Le module ABAK Carte Vitale n’est pas installé sur cet ordinateur.\n\nVous pouvez le télécharger gratuitement depuis le site ABAK.`
+  String get patientNew_vitaleModuleNotInstalledMessage {
+    return Intl.message(
+      'Le module ABAK Carte Vitale n’est pas installé sur cet ordinateur.\n\nVous pouvez le télécharger gratuitement depuis le site ABAK.',
+      name: 'patientNew_vitaleModuleNotInstalledMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Télécharger`
+  String get patientNew_download {
+    return Intl.message(
+      'Télécharger',
+      name: 'patientNew_download',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Lecteur de Carte Vitale non détecté`
+  String get patientNew_readerNotDetected {
+    return Intl.message(
+      'Lecteur de Carte Vitale non détecté',
+      name: 'patientNew_readerNotDetected',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `ABAK Desktop Companion n’a détecté aucun lecteur de Carte Vitale.\n\nPour utiliser cette fonction, vous devez disposer :\n\n• d’un lecteur de Carte Vitale compatible PC/SC, généralement connecté en USB ;\n• du module ABAK Carte Vitale, fourni gratuitement. Voir le site abak.care.\n\nUne fois le lecteur connecté, cliquez de nouveau sur « Lire Carte Vitale ».`
+  String get patientNew_readerNotDetectedMessage {
+    return Intl.message(
+      'ABAK Desktop Companion n’a détecté aucun lecteur de Carte Vitale.\n\nPour utiliser cette fonction, vous devez disposer :\n\n• d’un lecteur de Carte Vitale compatible PC/SC, généralement connecté en USB ;\n• du module ABAK Carte Vitale, fourni gratuitement. Voir le site abak.care.\n\nUne fois le lecteur connecté, cliquez de nouveau sur « Lire Carte Vitale ».',
+      name: 'patientNew_readerNotDetectedMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `La configuration du module Carte Vitale est absente ou incorrecte. Réinstallez le module puis réessayez.`
+  String get patientNew_vitaleModuleConfigurationError {
+    return Intl.message(
+      'La configuration du module Carte Vitale est absente ou incorrecte. Réinstallez le module puis réessayez.',
+      name: 'patientNew_vitaleModuleConfigurationError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `La lecture de la Carte Vitale a échoué.`
+  String get patientNew_vitaleReadFailed {
+    return Intl.message(
+      'La lecture de la Carte Vitale a échoué.',
+      name: 'patientNew_vitaleReadFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Informations patient préremplies depuis la Carte Vitale.`
+  String get patientNew_vitalePrefilled {
+    return Intl.message(
+      'Informations patient préremplies depuis la Carte Vitale.',
+      name: 'patientNew_vitalePrefilled',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Erreur lors de la création du patient`
+  String get patientNew_createError {
+    return Intl.message(
+      'Erreur lors de la création du patient',
+      name: 'patientNew_createError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Féminin`
+  String get patientNew_female {
+    return Intl.message(
+      'Féminin',
+      name: 'patientNew_female',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Masculin`
+  String get patientNew_male {
+    return Intl.message(
+      'Masculin',
+      name: 'patientNew_male',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Autre`
+  String get patientNew_other {
+    return Intl.message(
+      'Autre',
+      name: 'patientNew_other',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Non renseigné`
+  String get patientNew_notProvided {
+    return Intl.message(
+      'Non renseigné',
+      name: 'patientNew_notProvided',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Identité lue depuis la Carte Vitale`
+  String get patientNew_vitaleIdentityRead {
+    return Intl.message(
+      'Identité lue depuis la Carte Vitale',
+      name: 'patientNew_vitaleIdentityRead',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Nom`
+  String get patientNew_lastName {
+    return Intl.message(
+      'Nom',
+      name: 'patientNew_lastName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Prénom`
+  String get patientNew_firstName {
+    return Intl.message(
+      'Prénom',
+      name: 'patientNew_firstName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sexe`
+  String get patientNew_sex {
+    return Intl.message(
+      'Sexe',
+      name: 'patientNew_sex',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `NIR`
+  String get patientNew_nir {
+    return Intl.message(
+      'NIR',
+      name: 'patientNew_nir',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `non disponible`
+  String get patientNew_nirUnavailable {
+    return Intl.message(
+      'non disponible',
+      name: 'patientNew_nirUnavailable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `détecté et protégé`
+  String get patientNew_nirDetectedProtected {
+    return Intl.message(
+      'détecté et protégé',
+      name: 'patientNew_nirDetectedProtected',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Lecture effectuée le`
+  String get patientNew_readOn {
+    return Intl.message(
+      'Lecture effectuée le',
+      name: 'patientNew_readOn',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Identité du patient`
+  String get patientNew_patientIdentity {
+    return Intl.message(
+      'Identité du patient',
+      name: 'patientNew_patientIdentity',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Lecture en cours...`
+  String get patientNew_reading {
+    return Intl.message(
+      'Lecture en cours...',
+      name: 'patientNew_reading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Lire Carte Vitale`
+  String get patientNew_readVitale {
+    return Intl.message(
+      'Lire Carte Vitale',
+      name: 'patientNew_readVitale',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Le nom est obligatoire`
+  String get patientNew_lastNameRequired {
+    return Intl.message(
+      'Le nom est obligatoire',
+      name: 'patientNew_lastNameRequired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Le prénom est obligatoire`
+  String get patientNew_firstNameRequired {
+    return Intl.message(
+      'Le prénom est obligatoire',
+      name: 'patientNew_firstNameRequired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Créer le patient`
+  String get patientNew_createPatient {
+    return Intl.message(
+      'Créer le patient',
+      name: 'patientNew_createPatient',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Création...`
+  String get patientNew_creating {
+    return Intl.message(
+      'Création...',
+      name: 'patientNew_creating',
       desc: '',
       args: [],
     );

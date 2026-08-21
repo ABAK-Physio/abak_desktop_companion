@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import '../../../generated/l10n.dart';
 import '../data/episode_document_repository.dart';
 import '../data/episode_form_repository.dart';
 import '../data/episode_note_repository.dart';
@@ -110,6 +110,7 @@ class _EpisodeReportScreenState extends State<EpisodeReportScreen> {
   }
 
   Widget _buildGeneratedTextPreview() {
+    final s = S.of(context);
     final reportService = EpisodeReportService();
     final textBuilder = const EpisodeReportTextBuilder();
 
@@ -121,10 +122,10 @@ class _EpisodeReportScreenState extends State<EpisodeReportScreen> {
       ),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
-          return const Card(
+          return Card(
             child: Padding(
               padding: EdgeInsets.all(20),
-              child: Text('Génération de l’aperçu texte...'),
+              child: Text(s.episodeReport_generatingPreview),
             ),
           );
         }
@@ -136,7 +137,7 @@ class _EpisodeReportScreenState extends State<EpisodeReportScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Aperçu du rapport généré',
+              s.episodeReport_generatedPreview,
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 8),
@@ -180,12 +181,15 @@ class _EpisodeReportScreenState extends State<EpisodeReportScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final s = S.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text('Rapport — ${widget.caseLabel}'),
+        title: Text(
+          '${s.episodeReport_title} — ${widget.caseLabel}',
+        ),
         actions: [
           IconButton(
-            tooltip: 'Actualiser',
+            tooltip: s.episodeReport_refresh,
             onPressed: _refresh,
             icon: const Icon(Icons.refresh),
           ),
@@ -199,13 +203,13 @@ class _EpisodeReportScreenState extends State<EpisodeReportScreen> {
           }
 
           if (snapshot.hasError) {
-            return Center(child: Text('Erreur : ${snapshot.error}'));
+            return Center(child: Text('${s.episodeReport_error} ${snapshot.error}'));
           }
 
           final data = snapshot.data;
 
           if (data == null) {
-            return const Center(child: Text('Aucune donnée à afficher.'));
+            return Center(child: Text(s.episodeReport_noData));
           }
 
           return _buildContent(data);
@@ -277,20 +281,23 @@ class _ReportPatientCard extends StatelessWidget {
     required this.attributes,
   });
 
-  String _attributeValue(String key) {
+  String _attributeValue(String key, S s) {
     final matching = attributes.where((a) => a.attributeKey == key);
 
     if (matching.isEmpty) {
-      return 'Non renseigné';
+      return s.episodeReport_notProvided;
     }
 
     final value = matching.first.attributeValue?.trim();
 
-    return value == null || value.isEmpty ? 'Non renseigné' : value;
+    return value == null || value.isEmpty
+        ? s.episodeReport_notProvided
+        : value;
   }
 
   @override
   Widget build(BuildContext context) {
+    final s = S.of(context);
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(20),
@@ -301,30 +308,30 @@ class _ReportPatientCard extends StatelessWidget {
               children: [
                 const Icon(Icons.person_outline),
                 const SizedBox(width: 8),
-                Text('Patient', style: Theme.of(context).textTheme.titleLarge),
+                Text(s.episodeReport_patient, style: Theme.of(context).textTheme.titleLarge),
               ],
             ),
             const Divider(height: 28),
-            _ReportRow(label: 'Nom', value: patientDisplayName),
+            _ReportRow(label: s.episodeReport_name, value: patientDisplayName),
             _ReportRow(
-              label: 'Téléphone',
-              value: identity?.phone ?? 'Non renseigné',
+              label: s.episodeReport_phone,
+              value: identity?.phone ?? s.episodeReport_notProvided,
             ),
             _ReportRow(
-              label: 'Email',
-              value: identity?.email ?? 'Non renseigné',
+              label: s.episodeReport_email,
+              value: identity?.email ?? s.episodeReport_notProvided,
             ),
             _ReportRow(
-              label: 'Côté dominant',
-              value: _attributeValue('dominant_side'),
+              label: s.episodeReport_dominantSide,
+              value: _attributeValue('dominant_side',s),
             ),
             _ReportRow(
-              label: 'Profession',
-              value: _attributeValue('profession'),
+              label: s.episodeReport_profession,
+              value: _attributeValue('profession', s),
             ),
             _ReportRow(
-              label: 'Activité sportive',
-              value: _attributeValue('sport'),
+              label: s.episodeReport_sportActivity,
+              value: _attributeValue('sport',s),
             ),
           ],
         ),
@@ -367,10 +374,11 @@ class _ReportFormsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final s=S.of(context);
     if (formAnswers.isEmpty) {
-      return const _SectionCard(
-        title: 'Formulaires',
-        subtitle: 'Aucun formulaire associé',
+      return _SectionCard(
+        title: s.episodeReport_forms,
+        subtitle: s.episodeReport_noForm,
         icon: Icons.assignment_outlined,
       );
     }
@@ -386,7 +394,7 @@ class _ReportFormsCard extends StatelessWidget {
                 const Icon(Icons.assignment_outlined),
                 const SizedBox(width: 8),
                 Text(
-                  'Formulaires',
+                  s.episodeReport_forms,
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
               ],
@@ -398,7 +406,7 @@ class _ReportFormsCard extends StatelessWidget {
                   label: entry.key.label,
                   value: entry.value?.value?.trim().isNotEmpty == true
                       ? entry.value!.value!
-                      : 'Non renseigné',
+                      : s.episodeReport_notProvided,
                 ),
               const SizedBox(height: 12),
             ],
@@ -416,10 +424,11 @@ class _ReportResultsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final s = S.of(context);
     if (results.isEmpty) {
-      return const _SectionCard(
-        title: 'Résultats ABAK',
-        subtitle: 'Aucun résultat associé',
+      return _SectionCard(
+        title: s.episodeReport_results,
+        subtitle: s.episodeReport_noResult,
         icon: Icons.bar_chart_outlined,
       );
     }
@@ -435,7 +444,7 @@ class _ReportResultsCard extends StatelessWidget {
                 const Icon(Icons.bar_chart_outlined),
                 const SizedBox(width: 8),
                 Text(
-                  'Résultats ABAK',
+                  s.episodeReport_results,
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
               ],
@@ -451,11 +460,11 @@ class _ReportResultsCard extends StatelessWidget {
                     label: ClinicalActivityCatalog.displayLabel(result.exoId),
                     value: [
                       if (result.scoreTotal != null)
-                        'Score : ${result.scoreTotal!.toStringAsFixed(2)}',
+                        '${s.episodeReport_score} ${result.scoreTotal!.toStringAsFixed(2)}',
                       if (result.measureUnit != null) result.measureUnit!,
                       if (mobileOrigin != null &&
                           mobileOrigin.trim().isNotEmpty)
-                        'Origine ABAK : ${mobileOrigin.trim()}',
+                        '${s.episodeReport_abakOrigin} ${mobileOrigin.trim()}',
                     ].join(' · '),
                   );
                 },
@@ -475,10 +484,11 @@ class _ReportDocumentsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final s = S.of(context);
     if (documents.isEmpty) {
-      return const _SectionCard(
-        title: 'Documents',
-        subtitle: 'Aucun document associé',
+      return _SectionCard(
+        title: s.episodeReport_documents,
+        subtitle: s.episodeReport_noDocument,
         icon: Icons.attach_file_outlined,
       );
     }
@@ -494,7 +504,7 @@ class _ReportDocumentsCard extends StatelessWidget {
                 const Icon(Icons.attach_file_outlined),
                 const SizedBox(width: 8),
                 Text(
-                  'Documents',
+                  s.episodeReport_documents,
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
               ],
@@ -503,7 +513,7 @@ class _ReportDocumentsCard extends StatelessWidget {
             for (final document in documents)
               _ReportRow(
                 label: document.title,
-                value: document.mimeType ?? 'Type inconnu',
+                value: document.mimeType ?? s.episodeReport_unknownType,
               ),
           ],
         ),
@@ -519,10 +529,11 @@ class _ReportNotesCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final s = S.of(context);
     if (notes.isEmpty) {
-      return const _SectionCard(
-        title: 'Notes',
-        subtitle: 'Aucune note associée',
+      return _SectionCard(
+        title: s.episodeReport_notes,
+        subtitle: s.episodeReport_noNote,
         icon: Icons.notes_outlined,
       );
     }
@@ -537,7 +548,7 @@ class _ReportNotesCard extends StatelessWidget {
               children: [
                 const Icon(Icons.notes_outlined),
                 const SizedBox(width: 8),
-                Text('Notes', style: Theme.of(context).textTheme.titleLarge),
+                Text(s.episodeReport_notes, style: Theme.of(context).textTheme.titleLarge),
               ],
             ),
             const Divider(height: 28),
@@ -546,7 +557,7 @@ class _ReportNotesCard extends StatelessWidget {
               const SizedBox(height: 6),
               SelectableText(
                 note.content.trim().isEmpty
-                    ? 'Non renseigné'
+                    ? s.episodeReport_notProvided
                     : note.content.trim(),
               ),
               const SizedBox(height: 16),
@@ -586,6 +597,7 @@ class _ReportConclusionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final s=S.of(context);
     final content = conclusion?.content.trim();
 
     return Card(
@@ -599,14 +611,14 @@ class _ReportConclusionCard extends StatelessWidget {
                 const Icon(Icons.description_outlined),
                 const SizedBox(width: 8),
                 Text(
-                  'Conclusion clinique',
+                  s.episodeReport_clinicalConclusion,
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
               ],
             ),
             const Divider(height: 28),
             if (content == null || content.isEmpty)
-              const Text('Aucune conclusion renseignée.')
+              Text(s.episodeReport_noConclusion)
             else
               SelectableText(content),
             const SizedBox(height: 16),
@@ -617,8 +629,8 @@ class _ReportConclusionCard extends StatelessWidget {
                 icon: const Icon(Icons.edit_outlined),
                 label: Text(
                   content == null || content.isEmpty
-                      ? 'Ajouter une conclusion'
-                      : 'Modifier la conclusion',
+                      ? s.episodeReport_addConclusion
+                      : s.episodeReport_editConclusion,
                 ),
               ),
             ),
@@ -661,11 +673,12 @@ class _EpisodeConclusionEditorScreenState
   }
 
   Future<void> _save() async {
+    final s = S.of(context);
     final content = _controller.text.trim();
 
     if (content.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('La conclusion ne peut pas être vide.')),
+        SnackBar(content: Text(s.episodeReport_conclusionRequired)),
       );
 
       return;
@@ -684,18 +697,19 @@ class _EpisodeConclusionEditorScreenState
 
   @override
   Widget build(BuildContext context) {
+    final s=S.of(context);
     final isEditing = widget.conclusion != null;
 
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          isEditing ? 'Modifier la conclusion' : 'Ajouter une conclusion',
+          isEditing ? s.episodeReport_editConclusion : s.episodeReport_addConclusion,
         ),
         actions: [
           TextButton.icon(
             onPressed: _saving ? null : _save,
             icon: const Icon(Icons.save_outlined),
-            label: const Text('Enregistrer'),
+            label: Text(s.episodeReport_save),
           ),
         ],
       ),
@@ -706,9 +720,9 @@ class _EpisodeConclusionEditorScreenState
             controller: _controller,
             minLines: 10,
             maxLines: 20,
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               border: OutlineInputBorder(),
-              labelText: 'Conclusion clinique',
+              labelText: s.episodeReport_clinicalConclusion,
               alignLabelWithHint: true,
             ),
           ),

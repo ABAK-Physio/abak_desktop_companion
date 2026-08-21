@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
+import '../../../generated/l10n.dart';
 import '../data/episode_form_repository.dart';
 import '../models/contact_form_field.dart';
 import '../models/episode_form_answer.dart';
@@ -75,6 +77,7 @@ class _EpisodeFormEditorScreenState extends State<EpisodeFormEditorScreen> {
   }
 
   Future<void> _save(Map<ContactFormField, EpisodeFormAnswer?> data) async {
+    final s = S.of(context);
     for (final field in data.keys) {
       if (!field.required) {
         continue;
@@ -86,7 +89,11 @@ class _EpisodeFormEditorScreenState extends State<EpisodeFormEditorScreen> {
 
       if (value == null || value.isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Le champ "${field.label}" est obligatoire.')),
+          SnackBar(
+            content: Text(
+              s.episodeFormEditor_requiredField(field.label),
+            ),
+          ),
         );
 
         return;
@@ -171,6 +178,8 @@ class _EpisodeFormEditorScreenState extends State<EpisodeFormEditorScreen> {
 
   Widget _buildDateField(ContactFormField field) {
     final controller = _controllers[field.fieldId]!;
+    final locale = Localizations.localeOf(context).toLanguageTag();
+    final dateFormat = DateFormat.yMd(locale);
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
@@ -189,17 +198,9 @@ class _EpisodeFormEditorScreenState extends State<EpisodeFormEditorScreen> {
 
           if (currentValue.isNotEmpty) {
             try {
-              final parts = currentValue.split('/');
-
-              if (parts.length == 3) {
-                initialDate = DateTime(
-                  int.parse(parts[2]),
-                  int.parse(parts[1]),
-                  int.parse(parts[0]),
-                );
-              }
+              initialDate = dateFormat.parseStrict(currentValue);
             } catch (_) {
-              // ignore et conserve DateTime.now()
+              // Conserve DateTime.now() si la valeur existante est invalide.
             }
           }
 
@@ -214,11 +215,7 @@ class _EpisodeFormEditorScreenState extends State<EpisodeFormEditorScreen> {
             return;
           }
 
-          final day = selectedDate.day.toString().padLeft(2, '0');
-          final month = selectedDate.month.toString().padLeft(2, '0');
-          final year = selectedDate.year;
-
-          controller.text = '$day/$month/$year';
+          controller.text = dateFormat.format(selectedDate);
 
           setState(() {});
         },
@@ -249,6 +246,7 @@ class _EpisodeFormEditorScreenState extends State<EpisodeFormEditorScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final s = S.of(context);
     return FutureBuilder<Map<ContactFormField, EpisodeFormAnswer?>>(
       future: _futureData,
       builder: (context, snapshot) {
@@ -256,21 +254,25 @@ class _EpisodeFormEditorScreenState extends State<EpisodeFormEditorScreen> {
 
         return Scaffold(
           appBar: AppBar(
-            title: const Text('Modifier le formulaire'),
+            title: Text(s.episodeFormEditor_title),
             actions: [
               TextButton.icon(
                 onPressed: data == null || _saving ? null : () => _save(data),
                 icon: const Icon(Icons.save_outlined),
-                label: const Text('Enregistrer'),
+                label: Text(s.episodeFormEditor_save),
               ),
             ],
           ),
           body: snapshot.connectionState != ConnectionState.done
               ? const Center(child: CircularProgressIndicator())
               : snapshot.hasError
-              ? Center(child: Text('Erreur : ${snapshot.error}'))
+              ? Center(
+            child: Text(
+              '${s.episodeFormEditor_error} : ${snapshot.error}',
+            ),
+          )
               : data == null || data.isEmpty
-              ? const Center(child: Text('Aucun champ à afficher.'))
+              ? Center(child: Text(s.episodeFormEditor_noField))
               : _buildContent(data),
         );
       },

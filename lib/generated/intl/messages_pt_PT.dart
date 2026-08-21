@@ -24,42 +24,52 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m1(deviceName) => "Quer mesmo arquivar o ${deviceName}?";
 
-  static String m2(error) => "Erro ao guardar: ${error}";
+  static String m2(fieldName) => "O campo «${fieldName}» é obrigatório.";
 
-  static String m3(count) => "${count} outro(s) exercício(s)";
+  static String m3(noteTitle) =>
+      "A nota «${noteTitle}» deixará de ser apresentada.";
 
-  static String m4(count) => "${count} associação(ões) pendentes";
+  static String m4(error) => "Erro ao guardar: ${error}";
 
-  static String m5(count) => "${count} cópias de segurança";
+  static String m5(count) => "${count} outro(s) exercício(s)";
 
-  static String m6(size) => "Tamanho: ${size}";
+  static String m6(count) => "${count} associação(ões) pendentes";
 
-  static String m7(size) => "Dimensão total: ${size}";
+  static String m7(count) => "${count} cópias de segurança";
 
-  static String m8(version) => "Versão ${version}";
+  static String m8(size) => "Tamanho: ${size}";
 
-  static String m9(patientName) =>
+  static String m9(size) => "Dimensão total: ${size}";
+
+  static String m10(version) => "Versão ${version}";
+
+  static String m11(patientName) =>
       "Quer mesmo arquivar ${patientName}? Este já não será apresentado na lista ativa.";
 
-  static String m10(patientName) => "${patientName} arquivado.";
+  static String m12(patientName) => "${patientName} arquivado.";
 
-  static String m11(error) => "Erro: ${error}";
+  static String m13(error) => "Erro: ${error}";
 
-  static String m12(patientName) =>
+  static String m14(patientName) =>
       "${patientName} foi reposto na lista ativa.";
 
-  static String m13(practitionerName) =>
+  static String m15(patientName) =>
+      "Cartão Vitale associado ao doente ${patientName}.";
+
+  static String m16(patientName) => "O doente ${patientName} foi recuperado.";
+
+  static String m17(practitionerName) =>
       "Quer mesmo arquivar ${practitionerName}?";
 
-  static String m14(date) => "Arquivado em ${date}";
+  static String m18(date) => "Arquivado em ${date}";
 
-  static String m15(error) => "Erro: ${error}";
+  static String m19(error) => "Erro: ${error}";
 
-  static String m16(professionalId) => "ID profissional: ${professionalId}";
+  static String m20(professionalId) => "ID profissional: ${professionalId}";
 
-  static String m17(error) => "Erro: ${error}";
+  static String m21(error) => "Erro: ${error}";
 
-  static String m18(error) => "Erro durante a reinicialização: ${error}";
+  static String m22(error) => "Erro durante a reinicialização: ${error}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -253,6 +263,126 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Desenvolvimento do episódio"),
         "episodeEvolution_viewEvolution":
             MessageLookupByLibrary.simpleMessage("Ver a evolução"),
+        "episodeFormEditor_error": MessageLookupByLibrary.simpleMessage("Erro"),
+        "episodeFormEditor_noField": MessageLookupByLibrary.simpleMessage(
+            "Não há campos para apresentar."),
+        "episodeFormEditor_requiredField": m2,
+        "episodeFormEditor_save":
+            MessageLookupByLibrary.simpleMessage("Guardar"),
+        "episodeFormEditor_title":
+            MessageLookupByLibrary.simpleMessage("Editar o formulário"),
+        "episodeForms_availableTemplates":
+            MessageLookupByLibrary.simpleMessage("Modelos disponíveis"),
+        "episodeForms_category":
+            MessageLookupByLibrary.simpleMessage("Categoria"),
+        "episodeForms_completed":
+            MessageLookupByLibrary.simpleMessage("concluído"),
+        "episodeForms_create": MessageLookupByLibrary.simpleMessage("Criar"),
+        "episodeForms_createdForms":
+            MessageLookupByLibrary.simpleMessage("Formulários criados"),
+        "episodeForms_createdOn":
+            MessageLookupByLibrary.simpleMessage("Criado em"),
+        "episodeForms_customTemplate":
+            MessageLookupByLibrary.simpleMessage("Modelo personalizado"),
+        "episodeForms_error": MessageLookupByLibrary.simpleMessage("Erro"),
+        "episodeForms_form": MessageLookupByLibrary.simpleMessage("Formulário"),
+        "episodeForms_inProgress":
+            MessageLookupByLibrary.simpleMessage("em curso"),
+        "episodeForms_noAvailableTemplate":
+            MessageLookupByLibrary.simpleMessage(
+                "Não há nenhum modelo de formulário disponível."),
+        "episodeForms_noCreatedForm": MessageLookupByLibrary.simpleMessage(
+            "Não foi criado nenhum formulário para este episódio."),
+        "episodeForms_noData": MessageLookupByLibrary.simpleMessage(
+            "Não há dados para apresentar."),
+        "episodeForms_refresh":
+            MessageLookupByLibrary.simpleMessage("Atualizar"),
+        "episodeForms_state": MessageLookupByLibrary.simpleMessage("Estado"),
+        "episodeForms_systemTemplate":
+            MessageLookupByLibrary.simpleMessage("Modelo do sistema"),
+        "episodeForms_title":
+            MessageLookupByLibrary.simpleMessage("Formulários"),
+        "episodeNotes_archive":
+            MessageLookupByLibrary.simpleMessage("Arquivar"),
+        "episodeNotes_archiveConfirmation": m3,
+        "episodeNotes_archiveTitle":
+            MessageLookupByLibrary.simpleMessage("Arquivar a nota?"),
+        "episodeNotes_cancel": MessageLookupByLibrary.simpleMessage("Cancelar"),
+        "episodeNotes_content":
+            MessageLookupByLibrary.simpleMessage("Conteúdo"),
+        "episodeNotes_editNote":
+            MessageLookupByLibrary.simpleMessage("Alterar a nota"),
+        "episodeNotes_error": MessageLookupByLibrary.simpleMessage("Erro"),
+        "episodeNotes_modifiedOn":
+            MessageLookupByLibrary.simpleMessage("Alterado em"),
+        "episodeNotes_newNote":
+            MessageLookupByLibrary.simpleMessage("Nova nota"),
+        "episodeNotes_noNote": MessageLookupByLibrary.simpleMessage(
+            "Não há nenhuma nota associada a este episódio."),
+        "episodeNotes_noteTitle":
+            MessageLookupByLibrary.simpleMessage("Título"),
+        "episodeNotes_refresh":
+            MessageLookupByLibrary.simpleMessage("Atualizar"),
+        "episodeNotes_save": MessageLookupByLibrary.simpleMessage("Guardar"),
+        "episodeNotes_title": MessageLookupByLibrary.simpleMessage("Notas"),
+        "episodeNotes_titleRequired":
+            MessageLookupByLibrary.simpleMessage("O título é obrigatório."),
+        "episodeReport_abakOrigin":
+            MessageLookupByLibrary.simpleMessage("Origem ABAK"),
+        "episodeReport_addConclusion":
+            MessageLookupByLibrary.simpleMessage("Adicionar uma conclusão"),
+        "episodeReport_clinicalConclusion":
+            MessageLookupByLibrary.simpleMessage("Conclusão clínica"),
+        "episodeReport_conclusionRequired":
+            MessageLookupByLibrary.simpleMessage(
+                "A conclusão não pode ficar em branco."),
+        "episodeReport_documents":
+            MessageLookupByLibrary.simpleMessage("Documentos"),
+        "episodeReport_dominantSide":
+            MessageLookupByLibrary.simpleMessage("Lado dominante"),
+        "episodeReport_editConclusion":
+            MessageLookupByLibrary.simpleMessage("Alterar a conclusão"),
+        "episodeReport_email": MessageLookupByLibrary.simpleMessage("E-mail"),
+        "episodeReport_error": MessageLookupByLibrary.simpleMessage("Erro"),
+        "episodeReport_forms":
+            MessageLookupByLibrary.simpleMessage("Formulários"),
+        "episodeReport_generatedPreview": MessageLookupByLibrary.simpleMessage(
+            "Visão geral do relatório gerado"),
+        "episodeReport_generatingPreview": MessageLookupByLibrary.simpleMessage(
+            "A gerar a pré-visualização do texto..."),
+        "episodeReport_name": MessageLookupByLibrary.simpleMessage("Nome"),
+        "episodeReport_noConclusion": MessageLookupByLibrary.simpleMessage(
+            "Não foram indicadas quaisquer conclusões."),
+        "episodeReport_noData": MessageLookupByLibrary.simpleMessage(
+            "Não há dados para apresentar."),
+        "episodeReport_noDocument": MessageLookupByLibrary.simpleMessage(
+            "Não há documentos associados"),
+        "episodeReport_noForm": MessageLookupByLibrary.simpleMessage(
+            "Não há formulários associados"),
+        "episodeReport_noNote":
+            MessageLookupByLibrary.simpleMessage("Não há notas associadas"),
+        "episodeReport_noResult": MessageLookupByLibrary.simpleMessage(
+            "Não foram encontrados resultados relacionados"),
+        "episodeReport_notProvided":
+            MessageLookupByLibrary.simpleMessage("Não indicado"),
+        "episodeReport_notes": MessageLookupByLibrary.simpleMessage("Notas"),
+        "episodeReport_patient": MessageLookupByLibrary.simpleMessage("Doente"),
+        "episodeReport_phone": MessageLookupByLibrary.simpleMessage("Telefone"),
+        "episodeReport_profession":
+            MessageLookupByLibrary.simpleMessage("Profissão"),
+        "episodeReport_refresh":
+            MessageLookupByLibrary.simpleMessage("Atualizar"),
+        "episodeReport_results":
+            MessageLookupByLibrary.simpleMessage("Resultados da ABAK"),
+        "episodeReport_save": MessageLookupByLibrary.simpleMessage("Guardar"),
+        "episodeReport_score":
+            MessageLookupByLibrary.simpleMessage("Resultado"),
+        "episodeReport_sportActivity":
+            MessageLookupByLibrary.simpleMessage("Atividade desportiva"),
+        "episodeReport_title":
+            MessageLookupByLibrary.simpleMessage("Relatório"),
+        "episodeReport_unknownType":
+            MessageLookupByLibrary.simpleMessage("Tipo desconhecido"),
         "exchangeDirectoryReset":
             MessageLookupByLibrary.simpleMessage("Pasta de troca reiniciada"),
         "exchangeDirectoryUpdated": MessageLookupByLibrary.simpleMessage(
@@ -341,7 +471,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "home_date_not_specified":
             MessageLookupByLibrary.simpleMessage("Data não indicada"),
         "home_devices": MessageLookupByLibrary.simpleMessage("Aparelhos"),
-        "home_error_while_saving": m2,
+        "home_error_while_saving": m4,
         "home_everything_is_working_normally":
             MessageLookupByLibrary.simpleMessage(
                 "Tudo está a funcionar normalmente"),
@@ -395,13 +525,13 @@ class MessageLookup extends MessageLookupByLibrary {
             "Não há nenhuma cópia de segurança registada"),
         "home_not_specified": MessageLookupByLibrary.simpleMessage("informada"),
         "home_octets": MessageLookupByLibrary.simpleMessage("Oitetos"),
-        "home_other_exercises": m3,
+        "home_other_exercises": m5,
         "home_parameters": MessageLookupByLibrary.simpleMessage("Parâmetros"),
         "home_pathway": MessageLookupByLibrary.simpleMessage("Caminho"),
         "home_patient_abak":
             MessageLookupByLibrary.simpleMessage("Paciente ABAK"),
         "home_patients": MessageLookupByLibrary.simpleMessage("Pacientes"),
-        "home_pending_association": m4,
+        "home_pending_association": m6,
         "home_practitioners":
             MessageLookupByLibrary.simpleMessage("profissionais"),
         "home_quick_actions":
@@ -473,7 +603,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Resolução de problemas de importação"),
         "importResolutionAssistant_toReview":
             MessageLookupByLibrary.simpleMessage("a verificar"),
-        "information_backupCount": m5,
+        "information_backupCount": m7,
         "information_backups":
             MessageLookupByLibrary.simpleMessage("Cópias de segurança"),
         "information_configured":
@@ -497,12 +627,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "information_notProvided":
             MessageLookupByLibrary.simpleMessage("Não indicado"),
         "information_office": MessageLookupByLibrary.simpleMessage("Gabinete"),
-        "information_size": m6,
+        "information_size": m8,
         "information_system": MessageLookupByLibrary.simpleMessage("Sistema"),
         "information_title":
             MessageLookupByLibrary.simpleMessage("Informações"),
-        "information_totalSize": m7,
-        "information_version": m8,
+        "information_totalSize": m9,
+        "information_version": m10,
         "information_versionLoading":
             MessageLookupByLibrary.simpleMessage("Versão..."),
         "information_viewLicense":
@@ -562,6 +692,58 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Associar um telemóvel"),
         "pairPhoneInstructions": MessageLookupByLibrary.simpleMessage(
             "Digitalize este código QR a partir da aplicação ABAK Mobile para configurar automaticamente a ligação ao Desktop."),
+        "patientClinicalDataEdit_address":
+            MessageLookupByLibrary.simpleMessage("Morada"),
+        "patientClinicalDataEdit_administrativeIdentity":
+            MessageLookupByLibrary.simpleMessage("Identidade administrativa"),
+        "patientClinicalDataEdit_ambidextrous":
+            MessageLookupByLibrary.simpleMessage("Ambidestro"),
+        "patientClinicalDataEdit_centimeters":
+            MessageLookupByLibrary.simpleMessage("Em centímetros"),
+        "patientClinicalDataEdit_dominantSide":
+            MessageLookupByLibrary.simpleMessage("Lado dominante"),
+        "patientClinicalDataEdit_email":
+            MessageLookupByLibrary.simpleMessage("E-mail"),
+        "patientClinicalDataEdit_healthSystemCountry":
+            MessageLookupByLibrary.simpleMessage(
+                "Países com este sistema de saúde"),
+        "patientClinicalDataEdit_height":
+            MessageLookupByLibrary.simpleMessage("Tamanho"),
+        "patientClinicalDataEdit_identitySource":
+            MessageLookupByLibrary.simpleMessage("Fonte da identidade"),
+        "patientClinicalDataEdit_kilograms":
+            MessageLookupByLibrary.simpleMessage("Em quilogramas"),
+        "patientClinicalDataEdit_left":
+            MessageLookupByLibrary.simpleMessage("Esquerda"),
+        "patientClinicalDataEdit_manualEntry":
+            MessageLookupByLibrary.simpleMessage("Introdução manual"),
+        "patientClinicalDataEdit_nationalHealthId":
+            MessageLookupByLibrary.simpleMessage(
+                "Identificador Nacional de Saúde"),
+        "patientClinicalDataEdit_nationalHealthIdHelper":
+            MessageLookupByLibrary.simpleMessage(
+                "Exemplo da França: número da segurança social"),
+        "patientClinicalDataEdit_patientProfile":
+            MessageLookupByLibrary.simpleMessage("Perfil do doente"),
+        "patientClinicalDataEdit_phone":
+            MessageLookupByLibrary.simpleMessage("Telefone"),
+        "patientClinicalDataEdit_profession":
+            MessageLookupByLibrary.simpleMessage("Profissão"),
+        "patientClinicalDataEdit_right":
+            MessageLookupByLibrary.simpleMessage("Direita"),
+        "patientClinicalDataEdit_save":
+            MessageLookupByLibrary.simpleMessage("Guardar"),
+        "patientClinicalDataEdit_sportActivity":
+            MessageLookupByLibrary.simpleMessage(
+                "Atividade desportiva habitual"),
+        "patientClinicalDataEdit_title":
+            MessageLookupByLibrary.simpleMessage("Alterar os dados clínicos"),
+        "patientClinicalDataEdit_unspecified":
+            MessageLookupByLibrary.simpleMessage("Não especificado"),
+        "patientClinicalDataEdit_vitaleCard":
+            MessageLookupByLibrary.simpleMessage("Cartão de Saúde"),
+        "patientClinicalDataEdit_weight":
+            MessageLookupByLibrary.simpleMessage("Peso"),
         "patientDetail_address": MessageLookupByLibrary.simpleMessage("Morada"),
         "patientDetail_administrativeIdentity":
             MessageLookupByLibrary.simpleMessage("Identidade administrativa"),
@@ -671,8 +853,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Não especificado"),
         "patientList_active": MessageLookupByLibrary.simpleMessage("Ativos"),
         "patientList_archive": MessageLookupByLibrary.simpleMessage("Arquivar"),
-        "patientList_archiveConfirmation": m9,
-        "patientList_archiveSuccess": m10,
+        "patientList_archiveConfirmation": m11,
+        "patientList_archiveSuccess": m12,
         "patientList_archiveTitle":
             MessageLookupByLibrary.simpleMessage("Arquivar o doente"),
         "patientList_archived":
@@ -692,7 +874,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "patientList_contextName":
             MessageLookupByLibrary.simpleMessage("Lista de doentes"),
         "patientList_edit": MessageLookupByLibrary.simpleMessage("Editar"),
-        "patientList_error": m11,
+        "patientList_error": m13,
         "patientList_newPatient":
             MessageLookupByLibrary.simpleMessage("Novo doente"),
         "patientList_noArchivedPatients":
@@ -707,12 +889,115 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Pode ser restaurado até"),
         "patientList_restore":
             MessageLookupByLibrary.simpleMessage("Restaurar"),
-        "patientList_restoreSuccess": m12,
+        "patientList_restoreSuccess": m14,
         "patientList_searchPatient":
             MessageLookupByLibrary.simpleMessage("Pesquisar um doente"),
         "patientList_sex": MessageLookupByLibrary.simpleMessage("Sexo"),
         "patientList_title":
             MessageLookupByLibrary.simpleMessage("Lista de doentes"),
+        "patientNew_archivedMatchToReview":
+            MessageLookupByLibrary.simpleMessage(
+                "Correspondência arquivada a verificar"),
+        "patientNew_archivedMatchToReviewMessage":
+            MessageLookupByLibrary.simpleMessage(
+                "Já existe um doente arquivado com o mesmo apelido, nome próprio e data de nascimento, mas os seus dados administrativos são diferentes.\n\nNão será efetuada qualquer recuperação automática. Verifique os registos antes de continuar."),
+        "patientNew_archivedPatientFound": MessageLookupByLibrary.simpleMessage(
+            "Paciente encontrado nos arquivos"),
+        "patientNew_archivedPatientMatch": MessageLookupByLibrary.simpleMessage(
+            "Este Cartão Vitale corresponde ao doente arquivado:"),
+        "patientNew_attach": MessageLookupByLibrary.simpleMessage("Associar"),
+        "patientNew_attachVitaleError": MessageLookupByLibrary.simpleMessage(
+            "Não foi possível associar o Cartão de Saúde"),
+        "patientNew_attachVitaleQuestion": MessageLookupByLibrary.simpleMessage(
+            "Deseja associar os dados do Cartão de Saúde a este doente?"),
+        "patientNew_attachVitaleSuccess": m15,
+        "patientNew_backToList":
+            MessageLookupByLibrary.simpleMessage("Voltar à lista"),
+        "patientNew_birthDate":
+            MessageLookupByLibrary.simpleMessage("Data de nascimento"),
+        "patientNew_cancel": MessageLookupByLibrary.simpleMessage("Cancelar"),
+        "patientNew_choosePatient":
+            MessageLookupByLibrary.simpleMessage("Escolher o doente"),
+        "patientNew_close": MessageLookupByLibrary.simpleMessage("Fechar"),
+        "patientNew_contextComment": MessageLookupByLibrary.simpleMessage(
+            "Este ecrã permite criar um novo doente através da introdução manual dos dados ou da leitura do Cartão Vitale."),
+        "patientNew_contextName":
+            MessageLookupByLibrary.simpleMessage("Novo doente"),
+        "patientNew_createError":
+            MessageLookupByLibrary.simpleMessage("Erro ao criar o paciente"),
+        "patientNew_createPatient":
+            MessageLookupByLibrary.simpleMessage("Criar o doente"),
+        "patientNew_creating":
+            MessageLookupByLibrary.simpleMessage("Criação..."),
+        "patientNew_download":
+            MessageLookupByLibrary.simpleMessage("Descarregar"),
+        "patientNew_existingPatientTitle":
+            MessageLookupByLibrary.simpleMessage("Já é paciente?"),
+        "patientNew_female": MessageLookupByLibrary.simpleMessage("Feminino"),
+        "patientNew_firstName":
+            MessageLookupByLibrary.simpleMessage("Nome próprio"),
+        "patientNew_firstNameRequired": MessageLookupByLibrary.simpleMessage(
+            "O nome próprio é obrigatório"),
+        "patientNew_lastName": MessageLookupByLibrary.simpleMessage("Nome"),
+        "patientNew_lastNameRequired":
+            MessageLookupByLibrary.simpleMessage("O nome é obrigatório"),
+        "patientNew_male": MessageLookupByLibrary.simpleMessage("Masculino"),
+        "patientNew_matchToReview":
+            MessageLookupByLibrary.simpleMessage("Correspondência a verificar"),
+        "patientNew_matchToReviewMessage": MessageLookupByLibrary.simpleMessage(
+            "Já existe um doente com o mesmo nome, apelido e data de nascimento.\n\nOs dados administrativos não correspondem totalmente. Verifique o processo antes de continuar."),
+        "patientNew_matchingPatientFound": MessageLookupByLibrary.simpleMessage(
+            "Foi encontrado um doente correspondente:"),
+        "patientNew_nir": MessageLookupByLibrary.simpleMessage("NIR"),
+        "patientNew_nirDetectedProtected":
+            MessageLookupByLibrary.simpleMessage("detetado e protegido"),
+        "patientNew_nirUnavailable":
+            MessageLookupByLibrary.simpleMessage("indisponível"),
+        "patientNew_no": MessageLookupByLibrary.simpleMessage("Não"),
+        "patientNew_noNewPatientCreated": MessageLookupByLibrary.simpleMessage(
+            "Não será criado nenhum novo doente."),
+        "patientNew_notProvided":
+            MessageLookupByLibrary.simpleMessage("Não indicado"),
+        "patientNew_notProvidedFemale":
+            MessageLookupByLibrary.simpleMessage("não preenchido"),
+        "patientNew_other": MessageLookupByLibrary.simpleMessage("Outros"),
+        "patientNew_patientAlreadyRegistered":
+            MessageLookupByLibrary.simpleMessage("Paciente já registado"),
+        "patientNew_patientIdentity":
+            MessageLookupByLibrary.simpleMessage("Identidade do doente"),
+        "patientNew_readOn":
+            MessageLookupByLibrary.simpleMessage("Leitura realizada em"),
+        "patientNew_readVitale":
+            MessageLookupByLibrary.simpleMessage("Ler o Cartão Vitale"),
+        "patientNew_readerNotDetected": MessageLookupByLibrary.simpleMessage(
+            "Leitor do Cartão Vitale não detetado"),
+        "patientNew_readerNotDetectedMessage": MessageLookupByLibrary.simpleMessage(
+            "O ABAK Desktop Companion não detetou nenhum leitor de Cartão Vitale.\n\nPara utilizar esta função, é necessário dispor de:\n\n• um leitor de Cartão Vitale compatível com PC/SC, normalmente ligado por USB;\n• o módulo ABAK Cartão Vitale, fornecido gratuitamente. Consulte o site abak.care.\n\nAssim que o leitor estiver ligado, clique novamente em «Ler Cartão Vitale»."),
+        "patientNew_reading": MessageLookupByLibrary.simpleMessage("A ler..."),
+        "patientNew_restore": MessageLookupByLibrary.simpleMessage("Restaurar"),
+        "patientNew_restoreError": MessageLookupByLibrary.simpleMessage(
+            "Não foi possível reanimar o doente"),
+        "patientNew_restoreInsteadOfCreate": MessageLookupByLibrary.simpleMessage(
+            "Prefere recuperar este ficheiro em vez de criar um novo paciente?"),
+        "patientNew_restoreSuccess": m16,
+        "patientNew_sex": MessageLookupByLibrary.simpleMessage("Sexo"),
+        "patientNew_vitaleIdentityRead": MessageLookupByLibrary.simpleMessage(
+            "Identidade lida a partir do Cartão Vitale"),
+        "patientNew_vitaleMatchesPatient": MessageLookupByLibrary.simpleMessage(
+            "Este Cartão de Saúde pertence ao doente:"),
+        "patientNew_vitaleModuleConfigurationError":
+            MessageLookupByLibrary.simpleMessage(
+                "A configuração do módulo Carte Vitale está em falta ou está incorreta. Reinstale o módulo e tente novamente."),
+        "patientNew_vitaleModuleNotInstalled":
+            MessageLookupByLibrary.simpleMessage(
+                "Módulo da Cartão Vitale não instalado"),
+        "patientNew_vitaleModuleNotInstalledMessage":
+            MessageLookupByLibrary.simpleMessage(
+                "O módulo ABAK Carte Vitale não está instalado neste computador.\n\nPode descarregá-lo gratuitamente a partir do site da ABAK."),
+        "patientNew_vitalePrefilled": MessageLookupByLibrary.simpleMessage(
+            "Informações do doente pré-preenchidas a partir do Cartão Vitale."),
+        "patientNew_vitaleReadFailed": MessageLookupByLibrary.simpleMessage(
+            "A leitura do Cartão de Saúde falhou."),
         "practitionerList_active":
             MessageLookupByLibrary.simpleMessage("Ativos"),
         "practitionerList_addPractitionersHint":
@@ -720,14 +1005,14 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Adicione os fisioterapeutas do consultório para identificar os testes importados."),
         "practitionerList_archive":
             MessageLookupByLibrary.simpleMessage("Arquivar"),
-        "practitionerList_archiveConfirmation": m13,
+        "practitionerList_archiveConfirmation": m17,
         "practitionerList_archiveEmpty": MessageLookupByLibrary.simpleMessage(
             "O cesto dos fisioterapeutas está vazio, por enquanto."),
         "practitionerList_archivePractitioner":
             MessageLookupByLibrary.simpleMessage("Arquivar o fisioterapeuta"),
         "practitionerList_archived":
             MessageLookupByLibrary.simpleMessage("Arquivados"),
-        "practitionerList_archivedOn": m14,
+        "practitionerList_archivedOn": m18,
         "practitionerList_button_create":
             MessageLookupByLibrary.simpleMessage("Criar um profissional"),
         "practitionerList_cancel":
@@ -737,13 +1022,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "practitionerList_contextName":
             MessageLookupByLibrary.simpleMessage("Lista de profissionais"),
         "practitionerList_edit": MessageLookupByLibrary.simpleMessage("Editar"),
-        "practitionerList_error": m15,
+        "practitionerList_error": m19,
         "practitionerList_noArchivedPractitioner":
             MessageLookupByLibrary.simpleMessage(
                 "Não há fisioterapeutas arquivados"),
         "practitionerList_noPractitioner": MessageLookupByLibrary.simpleMessage(
             "Não há fisioterapeutas registados"),
-        "practitionerList_professionalId": m16,
+        "practitionerList_professionalId": m20,
         "practitionerList_restore":
             MessageLookupByLibrary.simpleMessage("Restaurar"),
         "practitionerList_showQrCode":
@@ -788,7 +1073,7 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Digitalize este código QR a partir da aplicação ABAK Mobile para adicionar automaticamente este perfil profissional."),
         "practitionerSelector_archived":
             MessageLookupByLibrary.simpleMessage("arquivado"),
-        "practitionerSelector_error": m17,
+        "practitionerSelector_error": m21,
         "practitionerSelector_noSelection":
             MessageLookupByLibrary.simpleMessage("Nenhuma seleção"),
         "preferences_archivedPatients":
@@ -888,7 +1173,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "settings_contextName":
             MessageLookupByLibrary.simpleMessage("Assistência"),
         "settings_continue": MessageLookupByLibrary.simpleMessage("Continuar"),
-        "settings_databaseResetError": m18,
+        "settings_databaseResetError": m22,
         "settings_databaseResetSuccess": MessageLookupByLibrary.simpleMessage(
             "Base reiniciada. Cópia de segurança automática criada."),
         "settings_diagnostic":
