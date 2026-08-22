@@ -101,6 +101,142 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("ABAK-resultaten"),
         "careEpisodeDetail_score":
             MessageLookupByLibrary.simpleMessage("Score"),
+        "careEpisodeReportsWorkspace_addFollowUpNote":
+            MessageLookupByLibrary.simpleMessage(
+                "Een opvolgingsnotitie toevoegen"),
+        "careEpisodeReportsWorkspace_archived":
+            MessageLookupByLibrary.simpleMessage("gearchiveerd"),
+        "careEpisodeReportsWorkspace_archivedDocuments":
+            MessageLookupByLibrary.simpleMessage("Gearchiveerde documenten"),
+        "careEpisodeReportsWorkspace_archivedDocumentsCount":
+            MessageLookupByLibrary.simpleMessage("Gearchiveerde documenten"),
+        "careEpisodeReportsWorkspace_assessment":
+            MessageLookupByLibrary.simpleMessage("met"),
+        "careEpisodeReportsWorkspace_assessmentCount":
+            MessageLookupByLibrary.simpleMessage("Aantal balansen"),
+        "careEpisodeReportsWorkspace_assessmentHistory":
+            MessageLookupByLibrary.simpleMessage("Overzicht van de balansen"),
+        "careEpisodeReportsWorkspace_assessmentsLoadError":
+            MessageLookupByLibrary.simpleMessage(
+                "De balansen kunnen niet worden geladen."),
+        "careEpisodeReportsWorkspace_cancel":
+            MessageLookupByLibrary.simpleMessage("Annuleren"),
+        "careEpisodeReportsWorkspace_cancelChanges":
+            MessageLookupByLibrary.simpleMessage("Wijzigingen ongedaan maken"),
+        "careEpisodeReportsWorkspace_createOrResumeAssessment":
+            MessageLookupByLibrary.simpleMessage(
+                "Een balans aanmaken of overnemen"),
+        "careEpisodeReportsWorkspace_createOrResumeReport":
+            MessageLookupByLibrary.simpleMessage(
+                "Een rapport aanmaken of openen"),
+        "careEpisodeReportsWorkspace_date":
+            MessageLookupByLibrary.simpleMessage("Gegevens"),
+        "careEpisodeReportsWorkspace_deletePermanently":
+            MessageLookupByLibrary.simpleMessage("Definitief verwijderen"),
+        "careEpisodeReportsWorkspace_duplicate":
+            MessageLookupByLibrary.simpleMessage("Dupliceren"),
+        "careEpisodeReportsWorkspace_edit":
+            MessageLookupByLibrary.simpleMessage("Wijzigen"),
+        "careEpisodeReportsWorkspace_editReferringPractitioner":
+            MessageLookupByLibrary.simpleMessage(
+                "De behandelende fysiotherapeut wijzigen"),
+        "careEpisodeReportsWorkspace_episodeDocuments":
+            MessageLookupByLibrary.simpleMessage(
+                "Documenten met betrekking tot de behandeling"),
+        "careEpisodeReportsWorkspace_episodeSummary":
+            MessageLookupByLibrary.simpleMessage(
+                "Samenvatting van de aflevering"),
+        "careEpisodeReportsWorkspace_expand":
+            MessageLookupByLibrary.simpleMessage("Vergroten"),
+        "careEpisodeReportsWorkspace_expandEditor":
+            MessageLookupByLibrary.simpleMessage("Het schrijfgebied vergroten"),
+        "careEpisodeReportsWorkspace_followUpNoteDefaultTitle":
+            MessageLookupByLibrary.simpleMessage("Volgnota"),
+        "careEpisodeReportsWorkspace_followUpNotes":
+            MessageLookupByLibrary.simpleMessage("Opvolgnota’s"),
+        "careEpisodeReportsWorkspace_followUpNotesLoadError":
+            MessageLookupByLibrary.simpleMessage(
+                "De follow-upnotities kunnen niet worden geladen."),
+        "careEpisodeReportsWorkspace_include":
+            MessageLookupByLibrary.simpleMessage("Opnemen"),
+        "careEpisodeReportsWorkspace_latestTests":
+            MessageLookupByLibrary.simpleMessage(
+                "Uitgevoerde tests (laatste resultaat)"),
+        "careEpisodeReportsWorkspace_loading":
+            MessageLookupByLibrary.simpleMessage("Bezig met laden…"),
+        "careEpisodeReportsWorkspace_moveToTrash":
+            MessageLookupByLibrary.simpleMessage(
+                "Naar de prullenbak verplaatsen"),
+        "careEpisodeReportsWorkspace_name":
+            MessageLookupByLibrary.simpleMessage("Naam"),
+        "careEpisodeReportsWorkspace_newAssessment":
+            MessageLookupByLibrary.simpleMessage("Overzicht (nieuw)"),
+        "careEpisodeReportsWorkspace_noAssessments":
+            MessageLookupByLibrary.simpleMessage(
+                "Er zijn geen resultaten geregistreerd."),
+        "careEpisodeReportsWorkspace_noDocument":
+            MessageLookupByLibrary.simpleMessage("Geen documenten"),
+        "careEpisodeReportsWorkspace_noFollowUpNotes":
+            MessageLookupByLibrary.simpleMessage("Geen vervolgopmerking."),
+        "careEpisodeReportsWorkspace_noReports":
+            MessageLookupByLibrary.simpleMessage(
+                "Er zijn geen rapporten geregistreerd."),
+        "careEpisodeReportsWorkspace_noTests":
+            MessageLookupByLibrary.simpleMessage(
+                "Voor deze aflevering zijn geen tests uitgevoerd."),
+        "careEpisodeReportsWorkspace_notProvided":
+            MessageLookupByLibrary.simpleMessage("Niet opgegeven"),
+        "careEpisodeReportsWorkspace_note":
+            MessageLookupByLibrary.simpleMessage("Opmerking"),
+        "careEpisodeReportsWorkspace_pathology":
+            MessageLookupByLibrary.simpleMessage("Pathologie"),
+        "careEpisodeReportsWorkspace_referringPractitioner":
+            MessageLookupByLibrary.simpleMessage(
+                "Verantwoordelijke fysiotherapeut"),
+        "careEpisodeReportsWorkspace_referringPractitionerHistory":
+            MessageLookupByLibrary.simpleMessage(
+                "Overzicht van de verwijzende kinesisten"),
+        "careEpisodeReportsWorkspace_report":
+            MessageLookupByLibrary.simpleMessage("Rapport"),
+        "careEpisodeReportsWorkspace_reportCount":
+            MessageLookupByLibrary.simpleMessage("Aantal rapporten"),
+        "careEpisodeReportsWorkspace_reportHistory":
+            MessageLookupByLibrary.simpleMessage("Rapportgeschiedenis"),
+        "careEpisodeReportsWorkspace_reportsLoadError":
+            MessageLookupByLibrary.simpleMessage(
+                "De rapporten kunnen niet worden geladen."),
+        "careEpisodeReportsWorkspace_restore":
+            MessageLookupByLibrary.simpleMessage("Herstellen"),
+        "careEpisodeReportsWorkspace_result":
+            MessageLookupByLibrary.simpleMessage("Resultaat"),
+        "careEpisodeReportsWorkspace_returnToDraft":
+            MessageLookupByLibrary.simpleMessage("Terug naar het concept"),
+        "careEpisodeReportsWorkspace_returnToReportDraft":
+            MessageLookupByLibrary.simpleMessage(
+                "Terug naar het conceptverslag"),
+        "careEpisodeReportsWorkspace_saveAssessment":
+            MessageLookupByLibrary.simpleMessage("De balans opslaan"),
+        "careEpisodeReportsWorkspace_saveReport":
+            MessageLookupByLibrary.simpleMessage("Het rapport opslaan"),
+        "careEpisodeReportsWorkspace_soapEditorHint":
+            MessageLookupByLibrary.simpleMessage(
+                "Vulveld voor het opstellen van het SOAP-verslag.\n\nS — Subjectief\n\nO — Objectief\n\nA — Analyse\n\nP — Plan"),
+        "careEpisodeReportsWorkspace_test":
+            MessageLookupByLibrary.simpleMessage("Test"),
+        "careEpisodeReportsWorkspace_testCount":
+            MessageLookupByLibrary.simpleMessage("Aantal tests"),
+        "careEpisodeReportsWorkspace_testsLoadError":
+            MessageLookupByLibrary.simpleMessage(
+                "De tests kunnen niet worden geladen."),
+        "careEpisodeReportsWorkspace_title":
+            MessageLookupByLibrary.simpleMessage("Titel"),
+        "careEpisodeReportsWorkspace_trashLoadError":
+            MessageLookupByLibrary.simpleMessage(
+                "De prullenbak kan niet worden geladen."),
+        "careEpisodeReportsWorkspace_updateAssessment":
+            MessageLookupByLibrary.simpleMessage("De balans bijwerken"),
+        "careEpisodeReportsWorkspace_updateReport":
+            MessageLookupByLibrary.simpleMessage("Het rapport bijwerken"),
         "close": MessageLookupByLibrary.simpleMessage("Sluiten"),
         "contactFormTemplateDiagnostic_category":
             MessageLookupByLibrary.simpleMessage("Categorie"),

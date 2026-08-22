@@ -103,6 +103,140 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("ABAK-Ergebnisse"),
         "careEpisodeDetail_score":
             MessageLookupByLibrary.simpleMessage("Ergebnis"),
+        "careEpisodeReportsWorkspace_addFollowUpNote":
+            MessageLookupByLibrary.simpleMessage(
+                "Eine Folgeanmerkung hinzufügen"),
+        "careEpisodeReportsWorkspace_archived":
+            MessageLookupByLibrary.simpleMessage("archiviert"),
+        "careEpisodeReportsWorkspace_archivedDocuments":
+            MessageLookupByLibrary.simpleMessage("Archivierte Dokumente"),
+        "careEpisodeReportsWorkspace_archivedDocumentsCount":
+            MessageLookupByLibrary.simpleMessage("Archivierte Dokumente"),
+        "careEpisodeReportsWorkspace_assessment":
+            MessageLookupByLibrary.simpleMessage("mit"),
+        "careEpisodeReportsWorkspace_assessmentCount":
+            MessageLookupByLibrary.simpleMessage("Anzahl der Bilanzen"),
+        "careEpisodeReportsWorkspace_assessmentHistory":
+            MessageLookupByLibrary.simpleMessage("Bilanzentwicklung"),
+        "careEpisodeReportsWorkspace_assessmentsLoadError":
+            MessageLookupByLibrary.simpleMessage(
+                "Die Bilanzen können nicht geladen werden."),
+        "careEpisodeReportsWorkspace_cancel":
+            MessageLookupByLibrary.simpleMessage("Abbrechen"),
+        "careEpisodeReportsWorkspace_cancelChanges":
+            MessageLookupByLibrary.simpleMessage("Änderungen verwerfen"),
+        "careEpisodeReportsWorkspace_createOrResumeAssessment":
+            MessageLookupByLibrary.simpleMessage(
+                "Eine Bilanz erstellen oder übernehmen"),
+        "careEpisodeReportsWorkspace_createOrResumeReport":
+            MessageLookupByLibrary.simpleMessage(
+                "Einen Bericht erstellen oder übernehmen"),
+        "careEpisodeReportsWorkspace_date":
+            MessageLookupByLibrary.simpleMessage("Daten"),
+        "careEpisodeReportsWorkspace_deletePermanently":
+            MessageLookupByLibrary.simpleMessage("Endgültig löschen"),
+        "careEpisodeReportsWorkspace_duplicate":
+            MessageLookupByLibrary.simpleMessage("Duplizieren"),
+        "careEpisodeReportsWorkspace_edit":
+            MessageLookupByLibrary.simpleMessage("Bearbeiten"),
+        "careEpisodeReportsWorkspace_editReferringPractitioner":
+            MessageLookupByLibrary.simpleMessage(
+                "Den zuständigen Physiotherapeuten ändern"),
+        "careEpisodeReportsWorkspace_episodeDocuments":
+            MessageLookupByLibrary.simpleMessage("Unterlagen zur Betreuung"),
+        "careEpisodeReportsWorkspace_episodeSummary":
+            MessageLookupByLibrary.simpleMessage("Zusammenfassung der Folge"),
+        "careEpisodeReportsWorkspace_expand":
+            MessageLookupByLibrary.simpleMessage("Vergrößern"),
+        "careEpisodeReportsWorkspace_expandEditor":
+            MessageLookupByLibrary.simpleMessage(
+                "Den Bearbeitungsbereich vergrößern"),
+        "careEpisodeReportsWorkspace_followUpNoteDefaultTitle":
+            MessageLookupByLibrary.simpleMessage("Folgebericht"),
+        "careEpisodeReportsWorkspace_followUpNotes":
+            MessageLookupByLibrary.simpleMessage("Folgeanmerkungen"),
+        "careEpisodeReportsWorkspace_followUpNotesLoadError":
+            MessageLookupByLibrary.simpleMessage(
+                "Die Nachverfolgungsnotizen können nicht geladen werden."),
+        "careEpisodeReportsWorkspace_include":
+            MessageLookupByLibrary.simpleMessage("Einfügen"),
+        "careEpisodeReportsWorkspace_latestTests":
+            MessageLookupByLibrary.simpleMessage(
+                "Durchgeführte Tests (letzter Befund)"),
+        "careEpisodeReportsWorkspace_loading":
+            MessageLookupByLibrary.simpleMessage("Wird geladen…"),
+        "careEpisodeReportsWorkspace_moveToTrash":
+            MessageLookupByLibrary.simpleMessage(
+                "In den Papierkorb verschieben"),
+        "careEpisodeReportsWorkspace_name":
+            MessageLookupByLibrary.simpleMessage("Name"),
+        "careEpisodeReportsWorkspace_newAssessment":
+            MessageLookupByLibrary.simpleMessage("Bilanz (neu)"),
+        "careEpisodeReportsWorkspace_noAssessments":
+            MessageLookupByLibrary.simpleMessage(
+                "Es wurde kein Ergebnis erfasst."),
+        "careEpisodeReportsWorkspace_noDocument":
+            MessageLookupByLibrary.simpleMessage("Keine Dokumente"),
+        "careEpisodeReportsWorkspace_noFollowUpNotes":
+            MessageLookupByLibrary.simpleMessage("Keine Folgeanmerkung."),
+        "careEpisodeReportsWorkspace_noReports":
+            MessageLookupByLibrary.simpleMessage(
+                "Es wurde kein Bericht erfasst."),
+        "careEpisodeReportsWorkspace_noTests":
+            MessageLookupByLibrary.simpleMessage(
+                "Für diese Folge wurden keine Tests durchgeführt."),
+        "careEpisodeReportsWorkspace_notProvided":
+            MessageLookupByLibrary.simpleMessage("Keine Angabe"),
+        "careEpisodeReportsWorkspace_note":
+            MessageLookupByLibrary.simpleMessage("Anmerkung"),
+        "careEpisodeReportsWorkspace_pathology":
+            MessageLookupByLibrary.simpleMessage("Pathologie"),
+        "careEpisodeReportsWorkspace_referringPractitioner":
+            MessageLookupByLibrary.simpleMessage(
+                "Behandelnder Physiotherapeut"),
+        "careEpisodeReportsWorkspace_referringPractitionerHistory":
+            MessageLookupByLibrary.simpleMessage(
+                "Übersicht über die zuständigen Physiotherapeuten"),
+        "careEpisodeReportsWorkspace_report":
+            MessageLookupByLibrary.simpleMessage("Bericht"),
+        "careEpisodeReportsWorkspace_reportCount":
+            MessageLookupByLibrary.simpleMessage("Anzahl der Berichte"),
+        "careEpisodeReportsWorkspace_reportHistory":
+            MessageLookupByLibrary.simpleMessage("Berichtsverlauf"),
+        "careEpisodeReportsWorkspace_reportsLoadError":
+            MessageLookupByLibrary.simpleMessage(
+                "Die Berichte können nicht geladen werden."),
+        "careEpisodeReportsWorkspace_restore":
+            MessageLookupByLibrary.simpleMessage("Wiederherstellen"),
+        "careEpisodeReportsWorkspace_result":
+            MessageLookupByLibrary.simpleMessage("Ergebnis"),
+        "careEpisodeReportsWorkspace_returnToDraft":
+            MessageLookupByLibrary.simpleMessage("Zurück zum Entwurf"),
+        "careEpisodeReportsWorkspace_returnToReportDraft":
+            MessageLookupByLibrary.simpleMessage("Zurück zum Berichtsentwurf"),
+        "careEpisodeReportsWorkspace_saveAssessment":
+            MessageLookupByLibrary.simpleMessage("Bilanz speichern"),
+        "careEpisodeReportsWorkspace_saveReport":
+            MessageLookupByLibrary.simpleMessage("Bericht speichern"),
+        "careEpisodeReportsWorkspace_soapEditorHint":
+            MessageLookupByLibrary.simpleMessage(
+                "Bereich zur Erstellung des SOAP-Berichts.\n\nS – Subjektiv\n\nO – Objektiv\n\nA – Analyse\n\nP – Plan"),
+        "careEpisodeReportsWorkspace_test":
+            MessageLookupByLibrary.simpleMessage("Test"),
+        "careEpisodeReportsWorkspace_testCount":
+            MessageLookupByLibrary.simpleMessage("Anzahl der Tests"),
+        "careEpisodeReportsWorkspace_testsLoadError":
+            MessageLookupByLibrary.simpleMessage(
+                "Die Tests können nicht geladen werden."),
+        "careEpisodeReportsWorkspace_title":
+            MessageLookupByLibrary.simpleMessage("Titel"),
+        "careEpisodeReportsWorkspace_trashLoadError":
+            MessageLookupByLibrary.simpleMessage(
+                "Der Papierkorb kann nicht geladen werden."),
+        "careEpisodeReportsWorkspace_updateAssessment":
+            MessageLookupByLibrary.simpleMessage("Bilanz aktualisieren"),
+        "careEpisodeReportsWorkspace_updateReport":
+            MessageLookupByLibrary.simpleMessage("Den Bericht aktualisieren"),
         "close": MessageLookupByLibrary.simpleMessage("Schließen"),
         "contactFormTemplateDiagnostic_category":
             MessageLookupByLibrary.simpleMessage("Kategorie"),

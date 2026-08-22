@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import '../../../../../generated/l10n.dart';
 import '../../../models/care_episode_assessment.dart';
 import '../../../models/care_episode_report.dart';
 import '../../../../results/models/desktop_result.dart';
@@ -18,6 +18,7 @@ class EpisodeSummaryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final s = S.of(context);
     return Card(
       clipBehavior: Clip.antiAlias,
       child: Padding(
@@ -45,7 +46,7 @@ class EpisodeSummaryCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         Text(
-                          'Résumé de l’épisode',
+                          s.careEpisodeReportsWorkspace_episodeSummary,
                           style: Theme.of(context)
                               .textTheme
                               .titleMedium
@@ -59,28 +60,22 @@ class EpisodeSummaryCard extends StatelessWidget {
                             child: Column(
                               children: [
                                 _SummaryLine(
-                                  label: 'Nombre de tests',
-                                  value:
-                                  resultsSnapshot.connectionState ==
-                                      ConnectionState.waiting
+                                  label: s.careEpisodeReportsWorkspace_testCount,
+                                  value: resultsSnapshot.connectionState == ConnectionState.waiting
                                       ? '…'
                                       : '$distinctTestCount',
                                 ),
                                 const Divider(),
                                 _SummaryLine(
-                                  label: 'Nombre de bilans',
-                                  value:
-                                  assessmentsSnapshot.connectionState ==
-                                      ConnectionState.waiting
+                                  label: s.careEpisodeReportsWorkspace_assessmentCount,
+                                  value: assessmentsSnapshot.connectionState == ConnectionState.waiting
                                       ? '…'
                                       : '$assessmentCount',
                                 ),
                                 const Divider(),
                                 _SummaryLine(
-                                  label: 'Nombre de rapports',
-                                  value:
-                                  reportsSnapshot.connectionState ==
-                                      ConnectionState.waiting
+                                  label: s.careEpisodeReportsWorkspace_reportCount,
+                                  value: reportsSnapshot.connectionState == ConnectionState.waiting
                                       ? '…'
                                       : '$reportCount',
                                 ),

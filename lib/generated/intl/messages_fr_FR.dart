@@ -101,6 +101,135 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Résultats ABAK"),
         "careEpisodeDetail_score":
             MessageLookupByLibrary.simpleMessage("Score"),
+        "careEpisodeReportsWorkspace_addFollowUpNote":
+            MessageLookupByLibrary.simpleMessage("Ajouter une note de suivi"),
+        "careEpisodeReportsWorkspace_archived":
+            MessageLookupByLibrary.simpleMessage("archivé"),
+        "careEpisodeReportsWorkspace_archivedDocuments":
+            MessageLookupByLibrary.simpleMessage("Documents archivés"),
+        "careEpisodeReportsWorkspace_archivedDocumentsCount":
+            MessageLookupByLibrary.simpleMessage("Documents archivés"),
+        "careEpisodeReportsWorkspace_assessment":
+            MessageLookupByLibrary.simpleMessage("Bilan"),
+        "careEpisodeReportsWorkspace_assessmentCount":
+            MessageLookupByLibrary.simpleMessage("Nombre de bilans"),
+        "careEpisodeReportsWorkspace_assessmentHistory":
+            MessageLookupByLibrary.simpleMessage("Historique des bilans"),
+        "careEpisodeReportsWorkspace_assessmentsLoadError":
+            MessageLookupByLibrary.simpleMessage(
+                "Impossible de charger les bilans."),
+        "careEpisodeReportsWorkspace_cancel":
+            MessageLookupByLibrary.simpleMessage("Annuler"),
+        "careEpisodeReportsWorkspace_cancelChanges":
+            MessageLookupByLibrary.simpleMessage("Annuler les modifications"),
+        "careEpisodeReportsWorkspace_createOrResumeAssessment":
+            MessageLookupByLibrary.simpleMessage("Créer ou reprendre un bilan"),
+        "careEpisodeReportsWorkspace_createOrResumeReport":
+            MessageLookupByLibrary.simpleMessage(
+                "Créer ou reprendre un rapport"),
+        "careEpisodeReportsWorkspace_date":
+            MessageLookupByLibrary.simpleMessage("Date"),
+        "careEpisodeReportsWorkspace_deletePermanently":
+            MessageLookupByLibrary.simpleMessage("Supprimer définitivement"),
+        "careEpisodeReportsWorkspace_duplicate":
+            MessageLookupByLibrary.simpleMessage("Dupliquer"),
+        "careEpisodeReportsWorkspace_edit":
+            MessageLookupByLibrary.simpleMessage("Modifier"),
+        "careEpisodeReportsWorkspace_editReferringPractitioner":
+            MessageLookupByLibrary.simpleMessage("Modifier le kiné référent"),
+        "careEpisodeReportsWorkspace_episodeDocuments":
+            MessageLookupByLibrary.simpleMessage(
+                "Documents de la prise en charge"),
+        "careEpisodeReportsWorkspace_episodeSummary":
+            MessageLookupByLibrary.simpleMessage("Résumé de l’épisode"),
+        "careEpisodeReportsWorkspace_expand":
+            MessageLookupByLibrary.simpleMessage("Agrandir"),
+        "careEpisodeReportsWorkspace_expandEditor":
+            MessageLookupByLibrary.simpleMessage(
+                "Agrandir la zone de rédaction"),
+        "careEpisodeReportsWorkspace_followUpNoteDefaultTitle":
+            MessageLookupByLibrary.simpleMessage("Note de suivi"),
+        "careEpisodeReportsWorkspace_followUpNotes":
+            MessageLookupByLibrary.simpleMessage("Notes de suivi"),
+        "careEpisodeReportsWorkspace_followUpNotesLoadError":
+            MessageLookupByLibrary.simpleMessage(
+                "Impossible de charger les notes de suivi."),
+        "careEpisodeReportsWorkspace_include":
+            MessageLookupByLibrary.simpleMessage("Inclure"),
+        "careEpisodeReportsWorkspace_latestTests":
+            MessageLookupByLibrary.simpleMessage(
+                "Tests réalisés (dernier résultat)"),
+        "careEpisodeReportsWorkspace_loading":
+            MessageLookupByLibrary.simpleMessage("Chargement…"),
+        "careEpisodeReportsWorkspace_moveToTrash":
+            MessageLookupByLibrary.simpleMessage("Mettre à la corbeille"),
+        "careEpisodeReportsWorkspace_name":
+            MessageLookupByLibrary.simpleMessage("Nom"),
+        "careEpisodeReportsWorkspace_newAssessment":
+            MessageLookupByLibrary.simpleMessage("Bilan (nouveau)"),
+        "careEpisodeReportsWorkspace_noAssessments":
+            MessageLookupByLibrary.simpleMessage("Aucun bilan enregistré."),
+        "careEpisodeReportsWorkspace_noDocument":
+            MessageLookupByLibrary.simpleMessage("Aucun document"),
+        "careEpisodeReportsWorkspace_noFollowUpNotes":
+            MessageLookupByLibrary.simpleMessage("Aucune note de suivi."),
+        "careEpisodeReportsWorkspace_noReports":
+            MessageLookupByLibrary.simpleMessage("Aucun rapport enregistré."),
+        "careEpisodeReportsWorkspace_noTests":
+            MessageLookupByLibrary.simpleMessage(
+                "Aucun test réalisé pour cet épisode."),
+        "careEpisodeReportsWorkspace_notProvided":
+            MessageLookupByLibrary.simpleMessage("Non renseigné"),
+        "careEpisodeReportsWorkspace_note":
+            MessageLookupByLibrary.simpleMessage("Note"),
+        "careEpisodeReportsWorkspace_pathology":
+            MessageLookupByLibrary.simpleMessage("Pathologie"),
+        "careEpisodeReportsWorkspace_referringPractitioner":
+            MessageLookupByLibrary.simpleMessage("Kiné référent"),
+        "careEpisodeReportsWorkspace_referringPractitionerHistory":
+            MessageLookupByLibrary.simpleMessage(
+                "Historique des kinés référents"),
+        "careEpisodeReportsWorkspace_report":
+            MessageLookupByLibrary.simpleMessage("Rapport"),
+        "careEpisodeReportsWorkspace_reportCount":
+            MessageLookupByLibrary.simpleMessage("Nombre de rapports"),
+        "careEpisodeReportsWorkspace_reportHistory":
+            MessageLookupByLibrary.simpleMessage("Historique des rapports"),
+        "careEpisodeReportsWorkspace_reportsLoadError":
+            MessageLookupByLibrary.simpleMessage(
+                "Impossible de charger les rapports."),
+        "careEpisodeReportsWorkspace_restore":
+            MessageLookupByLibrary.simpleMessage("Restaurer"),
+        "careEpisodeReportsWorkspace_result":
+            MessageLookupByLibrary.simpleMessage("Résultat"),
+        "careEpisodeReportsWorkspace_returnToDraft":
+            MessageLookupByLibrary.simpleMessage("Retour au brouillon"),
+        "careEpisodeReportsWorkspace_returnToReportDraft":
+            MessageLookupByLibrary.simpleMessage(
+                "Retour au brouillon du rapport"),
+        "careEpisodeReportsWorkspace_saveAssessment":
+            MessageLookupByLibrary.simpleMessage("Enregistrer le bilan"),
+        "careEpisodeReportsWorkspace_saveReport":
+            MessageLookupByLibrary.simpleMessage("Enregistrer le rapport"),
+        "careEpisodeReportsWorkspace_soapEditorHint":
+            MessageLookupByLibrary.simpleMessage(
+                "Zone de rédaction du bilan SOAP.\n\nS — Subjectif\n\nO — Objectif\n\nA — Analyse\n\nP — Plan"),
+        "careEpisodeReportsWorkspace_test":
+            MessageLookupByLibrary.simpleMessage("Test"),
+        "careEpisodeReportsWorkspace_testCount":
+            MessageLookupByLibrary.simpleMessage("Nombre de tests"),
+        "careEpisodeReportsWorkspace_testsLoadError":
+            MessageLookupByLibrary.simpleMessage(
+                "Impossible de charger les tests."),
+        "careEpisodeReportsWorkspace_title":
+            MessageLookupByLibrary.simpleMessage("Titre"),
+        "careEpisodeReportsWorkspace_trashLoadError":
+            MessageLookupByLibrary.simpleMessage(
+                "Impossible de charger la corbeille."),
+        "careEpisodeReportsWorkspace_updateAssessment":
+            MessageLookupByLibrary.simpleMessage("Mettre à jour le bilan"),
+        "careEpisodeReportsWorkspace_updateReport":
+            MessageLookupByLibrary.simpleMessage("Mettre à jour le rapport"),
         "close": MessageLookupByLibrary.simpleMessage("Fermer"),
         "contactFormTemplateDiagnostic_category":
             MessageLookupByLibrary.simpleMessage("Catégorie"),

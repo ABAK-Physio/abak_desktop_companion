@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../../generated/l10n.dart';
 
 class DocumentTitleDialog extends StatefulWidget {
   final String dialogTitle;
@@ -51,6 +52,7 @@ class _DocumentTitleDialogState extends State<DocumentTitleDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final s = S.of(context);
     return AlertDialog(
       title: Text(widget.dialogTitle),
       content: SizedBox(
@@ -72,7 +74,9 @@ class _DocumentTitleDialogState extends State<DocumentTitleDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Annuler'),
+          child: Text(
+            s.careEpisodeReportsWorkspace_cancel,
+          ),
         ),
         FilledButton(
           onPressed: _canSave ? _submit : null,

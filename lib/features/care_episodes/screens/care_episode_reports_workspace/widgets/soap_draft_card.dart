@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import '../../../../../generated/l10n.dart';
 import 'package:abak_desktop_companion/core/speech/speech_dictation_button.dart';
 import 'package:abak_desktop_companion/features/care_episodes/models/clinical_document_type.dart';
 
@@ -27,6 +27,7 @@ class SoapDraftCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final s = S.of(context);
     return Card(
       clipBehavior: Clip.antiAlias,
       child: Padding(
@@ -41,7 +42,7 @@ class SoapDraftCard extends StatelessWidget {
                     isEditing
                         ? documentType.editorTitle
                         : documentType == ClinicalDocumentType.assessment
-                        ? 'Bilan (nouveau)'
+                        ? s.careEpisodeReportsWorkspace_newAssessment
                         : documentType.editorTitle,
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.w600,
@@ -54,7 +55,7 @@ class SoapDraftCard extends StatelessWidget {
                 ),
                 IconButton(
                   onPressed: draftReady ? onExpand : null,
-                  tooltip: 'Agrandir la zone de rédaction',
+                  tooltip: s.careEpisodeReportsWorkspace_expandEditor,
                   icon: const Icon(Icons.zoom_out_map),
                 ),
                 const SizedBox(width: 8),
@@ -87,14 +88,9 @@ class SoapDraftCard extends StatelessWidget {
                 controller: controller,
                 focusNode: focusNode,
                 enabled: draftReady,
-                decoration: const InputDecoration(
-                  hintText:
-                  'Zone de rédaction du bilan SOAP.\n\n'
-                      'S — Subjectif\n\n'
-                      'O — Objectif\n\n'
-                      'A — Analyse\n\n'
-                      'P — Plan',
-                  border: OutlineInputBorder(),
+                decoration: InputDecoration(
+                  hintText: s.careEpisodeReportsWorkspace_soapEditorHint,
+                  border: const OutlineInputBorder(),
                   alignLabelWithHint: true,
                 ),
                 expands: true,

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import '../../../../../generated/l10n.dart';
 import 'package:abak_desktop_companion/core/utils/date_format_utils.dart';
 import 'package:abak_desktop_companion/features/care_episodes/models/care_episode_report.dart';
 
@@ -32,36 +32,37 @@ class ReportHistoryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final s = S.of(context);
     return ScrollableWorkspaceCard(
-      title: 'Historique des rapports',
+      title: s.careEpisodeReportsWorkspace_reportHistory,
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           if (onExpand != null)
             IconButton(
               onPressed: onExpand,
-              tooltip: 'Agrandir',
+              tooltip: s.careEpisodeReportsWorkspace_expand,
               icon: const Icon(Icons.zoom_out_map),
             ),
           IconButton(
             onPressed: onCreateReportPressed,
             tooltip: isEditingReport
-                ? 'Retour au brouillon du rapport'
-                : 'Créer ou reprendre un rapport',
+                ? s.careEpisodeReportsWorkspace_returnToReportDraft
+                : s.careEpisodeReportsWorkspace_createOrResumeReport,
             icon: const Icon(Icons.description_outlined),
           ),
           if (isEditingReport)
             IconButton(
               onPressed: onCancelReportChangesPressed,
-              tooltip: 'Annuler les modifications',
+              tooltip: s.careEpisodeReportsWorkspace_cancelChanges,
               icon: const Icon(Icons.undo),
             ),
           if (isEditingReport || onSaveReportPressed != null)
             IconButton(
               onPressed: onSaveReportPressed,
               tooltip: isEditingReport
-                  ? 'Mettre à jour le rapport'
-                  : 'Enregistrer le rapport',
+                  ? s.careEpisodeReportsWorkspace_updateReport
+                  : s.careEpisodeReportsWorkspace_saveReport,
               icon: const Icon(Icons.save_outlined),
             ),
         ],
@@ -76,28 +77,42 @@ class ReportHistoryCard extends StatelessWidget {
           }
 
           if (snapshot.hasError) {
-            return const Center(
-              child: Text('Impossible de charger les rapports.'),
+            return Center(
+              child: Text(
+                s.careEpisodeReportsWorkspace_reportsLoadError,
+              ),
             );
           }
 
           final reports = snapshot.data ?? [];
 
           if (reports.isEmpty) {
-            return const Center(
-              child: Text('Aucun rapport enregistré.'),
+            return Center(
+              child: Text(
+                s.careEpisodeReportsWorkspace_noReports,
+              ),
             );
           }
 
           return Column(
             children: [
-              const TableHeader(
+              TableHeader(
                 columns: [
-                  Expanded(flex: 5, child: Text('Nom')),
-                  Expanded(flex: 2, child: Text('Date')),
-                  SizedBox(width: 42),
-                  SizedBox(width: 42),
-                  SizedBox(width: 42),
+                  Expanded(
+                    flex: 5,
+                    child: Text(
+                      s.careEpisodeReportsWorkspace_name,
+                    ),
+                  ),
+                  Expanded(
+                    flex: 2,
+                    child: Text(
+                      s.careEpisodeReportsWorkspace_date,
+                    ),
+                  ),
+                  const SizedBox(width: 42),
+                  const SizedBox(width: 42),
+                  const SizedBox(width: 42),
                 ],
               ),
               const Divider(height: 1),
@@ -136,7 +151,7 @@ class ReportHistoryCard extends StatelessWidget {
                             width: 42,
                             child: IconButton(
                               onPressed: () => onEditReport(report),
-                              tooltip: 'Modifier',
+                              tooltip: s.careEpisodeReportsWorkspace_edit,
                               icon: const Icon(Icons.edit_outlined),
                             ),
                           ),
@@ -144,7 +159,7 @@ class ReportHistoryCard extends StatelessWidget {
                             width: 42,
                             child: IconButton(
                               onPressed: () => onDuplicateReport(report),
-                              tooltip: 'Dupliquer',
+                              tooltip: s.careEpisodeReportsWorkspace_duplicate,
                               icon: const Icon(Icons.copy_outlined),
                             ),
                           ),
@@ -152,7 +167,7 @@ class ReportHistoryCard extends StatelessWidget {
                             width: 42,
                             child: IconButton(
                               onPressed: () => onArchiveReport(report),
-                              tooltip: 'Mettre à la corbeille',
+                              tooltip: s.careEpisodeReportsWorkspace_moveToTrash,
                               icon: const Icon(Icons.delete_outline),
                             ),
                           ),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import '../../../../../generated/l10n.dart';
 import 'package:abak_desktop_companion/core/utils/date_format_utils.dart';
 import 'package:abak_desktop_companion/features/care_episodes/models/care_episode_assessment.dart';
 
@@ -35,6 +35,8 @@ class AssessmentHistoryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final s = S.of(context);
+
     return Card(
       clipBehavior: Clip.antiAlias,
       child: Padding(
@@ -46,7 +48,7 @@ class AssessmentHistoryCard extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    'Historique des bilans',
+                    s.careEpisodeReportsWorkspace_assessmentHistory,
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
@@ -55,32 +57,32 @@ class AssessmentHistoryCard extends StatelessWidget {
                 if (onExpand != null)
                   IconButton(
                     onPressed: onExpand,
-                    tooltip: 'Agrandir',
+                    tooltip: s.careEpisodeReportsWorkspace_expand,
                     icon: const Icon(Icons.zoom_out_map),
                   ),
                 if (showOpenAssessmentAction)
                   IconButton(
                     onPressed: onOpenAssessmentPressed,
-                    tooltip: 'Créer ou reprendre un bilan',
+                    tooltip: s.careEpisodeReportsWorkspace_createOrResumeAssessment,
                     icon: const Icon(Icons.note_add_outlined),
                   ),
                 if (isEditing) ...[
                   IconButton(
                     onPressed: onReturnToDraftPressed,
-                    tooltip: 'Retour au brouillon',
+                    tooltip: s.careEpisodeReportsWorkspace_returnToDraft,
                     icon: const Icon(Icons.note_add_outlined),
                   ),
                   IconButton(
                     onPressed: onCancelChangesPressed,
-                    tooltip: 'Annuler les modifications',
+                    tooltip: s.careEpisodeReportsWorkspace_cancelChanges,
                     icon: const Icon(Icons.undo),
                   ),
                 ],
                 IconButton(
                   onPressed: onSaveOrUpdatePressed,
                   tooltip: isEditing
-                      ? 'Mettre à jour le bilan'
-                      : 'Enregistrer le bilan',
+                      ? s.careEpisodeReportsWorkspace_updateAssessment
+                      : s.careEpisodeReportsWorkspace_saveAssessment,
                   icon: const Icon(Icons.save_outlined),
                 ),
               ],
@@ -98,34 +100,42 @@ class AssessmentHistoryCard extends StatelessWidget {
                   }
 
                   if (snapshot.hasError) {
-                    return const Center(
-                      child: Text('Impossible de charger les bilans.'),
+                    return Center(
+                      child: Text(
+                        s.careEpisodeReportsWorkspace_assessmentsLoadError,
+                      ),
                     );
                   }
 
                   final assessments = snapshot.data ?? [];
 
                   if (assessments.isEmpty) {
-                    return const Center(
-                      child: Text('Aucun bilan enregistré.'),
+                    return Center(
+                      child: Text(
+                        s.careEpisodeReportsWorkspace_noAssessments,
+                      ),
                     );
                   }
 
                   return Column(
                     children: [
-                      const TableHeader(
+                      TableHeader(
                         columns: [
                           Expanded(
                             flex: 5,
-                            child: Text('Nom'),
+                            child: Text(
+                              s.careEpisodeReportsWorkspace_name,
+                            ),
                           ),
                           Expanded(
                             flex: 2,
-                            child: Text('Date'),
+                            child: Text(
+                              s.careEpisodeReportsWorkspace_date,
+                            ),
                           ),
-                          SizedBox(width: 42),
-                          SizedBox(width: 42),
-                          SizedBox(width: 42),
+                          const SizedBox(width: 42),
+                          const SizedBox(width: 42),
+                          const SizedBox(width: 42),
                         ],
                       ),
                       const Divider(height: 1),
@@ -167,7 +177,7 @@ class AssessmentHistoryCard extends StatelessWidget {
                                     child: IconButton(
                                       onPressed: () =>
                                           onEditAssessment(assessment),
-                                      tooltip: 'Modifier',
+                                      tooltip: s.careEpisodeReportsWorkspace_edit,
                                       icon: const Icon(
                                         Icons.edit_outlined,
                                       ),
@@ -178,7 +188,7 @@ class AssessmentHistoryCard extends StatelessWidget {
                                     child: IconButton(
                                       onPressed: () =>
                                           onDuplicateAssessment(assessment),
-                                      tooltip: 'Dupliquer',
+                                      tooltip: s.careEpisodeReportsWorkspace_duplicate,
                                       icon: const Icon(
                                         Icons.copy_outlined,
                                       ),
@@ -189,7 +199,7 @@ class AssessmentHistoryCard extends StatelessWidget {
                                     child: IconButton(
                                       onPressed: () =>
                                           onArchiveAssessment(assessment),
-                                      tooltip: 'Mettre à la corbeille',
+                                      tooltip: s.careEpisodeReportsWorkspace_moveToTrash,
                                       icon: const Icon(
                                         Icons.delete_outline,
                                       ),

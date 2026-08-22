@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import '../../../../../generated/l10n.dart';
 import 'package:abak_desktop_companion/core/utils/date_format_utils.dart';
 import 'package:abak_desktop_companion/features/care_episodes/models/care_episode_assessment.dart';
 import 'package:abak_desktop_companion/features/care_episodes/models/care_episode_report.dart';
@@ -28,13 +28,14 @@ class ArchivedDocumentsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final s = S.of(context);
     return ScrollableWorkspaceCard(
-      title: 'Documents archivés',
+      title: s.careEpisodeReportsWorkspace_archivedDocuments,
       trailing: onExpand == null
           ? null
           : IconButton(
         onPressed: onExpand,
-        tooltip: 'Agrandir',
+        tooltip: s.careEpisodeReportsWorkspace_expand,
         icon: const Icon(Icons.zoom_out_map),
       ),
       child: FutureBuilder<List<CareEpisodeAssessment>>(
@@ -54,9 +55,9 @@ class ArchivedDocumentsCard extends StatelessWidget {
 
               if (assessmentsSnapshot.hasError ||
                   reportsSnapshot.hasError) {
-                return const Center(
+                return Center(
                   child: Text(
-                    'Impossible de charger la corbeille.',
+                    s.careEpisodeReportsWorkspace_trashLoadError,
                     textAlign: TextAlign.center,
                   ),
                 );
@@ -65,7 +66,7 @@ class ArchivedDocumentsCard extends StatelessWidget {
               final items = <_ArchivedDocumentItem>[
                 ...((assessmentsSnapshot.data ?? []).map(
                       (assessment) => _ArchivedDocumentItem(
-                    typeLabel: 'Bilan',
+                    typeLabel: s.careEpisodeReportsWorkspace_assessment,
                     title: assessment.title,
                     archivedAt: assessment.archivedAt ?? 0,
                     icon: Icons.assignment_outlined,
@@ -74,7 +75,7 @@ class ArchivedDocumentsCard extends StatelessWidget {
                 )),
                 ...((reportsSnapshot.data ?? []).map(
                       (report) => _ArchivedDocumentItem(
-                    typeLabel: 'Rapport',
+                    typeLabel: s.careEpisodeReportsWorkspace_report,
                     title: report.title,
                     archivedAt: report.archivedAt ?? 0,
                     icon: Icons.description_outlined,
@@ -86,17 +87,21 @@ class ArchivedDocumentsCard extends StatelessWidget {
               );
 
               if (items.isEmpty) {
-                return const Column(
+                return Column(
                   children: [
                     Expanded(
                       child: Center(
-                        child: Text('Aucun document'),
+                        child: Text(
+                          s.careEpisodeReportsWorkspace_noDocument,
+                        ),
                       ),
                     ),
-                    Divider(),
+                    const Divider(),
                     Align(
                       alignment: Alignment.centerLeft,
-                      child: Text('Documents archivés : 0'),
+                      child: Text(
+                        '${s.careEpisodeReportsWorkspace_archivedDocumentsCount} : 0',
+                      ),
                     ),
                   ],
                 );
@@ -161,7 +166,7 @@ class ArchivedDocumentsCard extends StatelessWidget {
                                     onRestoreReport(report);
                                   }
                                 },
-                                tooltip: 'Restaurer',
+                                tooltip: s.careEpisodeReportsWorkspace_restore,
                                 icon: const Icon(
                                   Icons.restore_from_trash_outlined,
                                 ),
@@ -180,7 +185,7 @@ class ArchivedDocumentsCard extends StatelessWidget {
                                     onDeleteReport(report);
                                   }
                                 },
-                                tooltip: 'Supprimer définitivement',
+                                tooltip: s.careEpisodeReportsWorkspace_deletePermanently,
                                 icon: const Icon(
                                   Icons.delete_forever_outlined,
                                 ),
@@ -195,7 +200,7 @@ class ArchivedDocumentsCard extends StatelessWidget {
                   Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      'Documents archivés : ${items.length}',
+                      '${s.careEpisodeReportsWorkspace_archivedDocumentsCount} : ${items.length}',
                       style: Theme.of(context).textTheme.bodySmall,
                     ),
                   ),

@@ -543,6 +543,7 @@ class _CareEpisodeReportsWorkspaceScreenState
       assessment.assessmentId,
     );
 
+
     if (!mounted) return;
 
     if (reloadedAssessment == null) {
@@ -595,61 +596,42 @@ class _CareEpisodeReportsWorkspaceScreenState
   Future<void> _duplicateAssessment(
       CareEpisodeAssessment assessment,
       ) async {
-    _draftSaveTimer?.cancel();
+    final title = await _showDocumentTitleDialog(
+      dialogTitle: 'Dupliquer le bilan',
+      fieldLabel: 'Titre du nouveau bilan',
+      actionLabel: 'Dupliquer',
+      initialTitle: 'Copie de ${assessment.title}',
+    );
+
+    if (title == null) {
+      return;
+    }
 
     try {
-      final draft = await _getOrCreateDraft();
+      final now = DateTime.now().millisecondsSinceEpoch;
 
-      if (!mounted) return;
-
-      if (draft.contentJson.trim().isNotEmpty) {
-        final confirmed = await showDialog<bool>(
-          context: context,
-          builder: (dialogContext) {
-            return AlertDialog(
-              title: const Text('Remplacer le brouillon ?'),
-              content: const Text(
-                'Le brouillon actuel contient déjà du texte. '
-                    'La duplication remplacera son contenu.',
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () =>
-                      Navigator.of(dialogContext).pop(false),
-                  child: const Text('Annuler'),
-                ),
-                FilledButton(
-                  onPressed: () =>
-                      Navigator.of(dialogContext).pop(true),
-                  child: const Text('Dupliquer'),
-                ),
-              ],
-            );
-          },
-        );
-
-        if (confirmed != true) {
-          return;
-        }
-      }
-
-      final updatedDraft = CareEpisodeAssessment(
-        assessmentId: draft.assessmentId,
-        careEpisodeId: draft.careEpisodeId,
-        title: '',
+      final duplicatedAssessment = CareEpisodeAssessment(
+        assessmentId: const Uuid().v4(),
+        careEpisodeId: assessment.careEpisodeId,
+        title: title,
         contentJson: assessment.contentJson,
-        status: 'draft',
-        assessmentDate: draft.assessmentDate,
-        createdAt: draft.createdAt,
-        updatedAt: DateTime.now().millisecondsSinceEpoch,
-        archivedAt: draft.archivedAt,
+        status: 'saved',
+        assessmentDate: now,
+        createdAt: now,
+        updatedAt: now,
       );
 
-      await _assessmentRepository.updateAssessment(updatedDraft);
+      await _assessmentRepository.insertAssessment(
+        duplicatedAssessment,
+      );
 
       if (!mounted) return;
 
-      await _showAssessment(updatedDraft);
+      setState(() {
+        _assessmentsFuture = _assessmentRepository.getSavedForEpisode(
+          widget.episode.careEpisodeId,
+        );
+      });
     } catch (_) {
       if (!mounted) return;
 
@@ -666,62 +648,43 @@ class _CareEpisodeReportsWorkspaceScreenState
   Future<void> _duplicateReport(
       CareEpisodeReport report,
       ) async {
-    _draftSaveTimer?.cancel();
+    final title = await _showDocumentTitleDialog(
+      dialogTitle: 'Dupliquer le rapport',
+      fieldLabel: 'Titre du nouveau rapport',
+      actionLabel: 'Dupliquer',
+      initialTitle: 'Copie de ${report.title}',
+    );
+
+    if (title == null) {
+      return;
+    }
 
     try {
-      final draft = await _getOrCreateReportDraft();
+      final now = DateTime.now().millisecondsSinceEpoch;
 
-      if (!mounted) return;
-
-      if (draft.contentJson.trim().isNotEmpty) {
-        final confirmed = await showDialog<bool>(
-          context: context,
-          builder: (dialogContext) {
-            return AlertDialog(
-              title: const Text('Remplacer le brouillon ?'),
-              content: const Text(
-                'Le brouillon actuel contient déjà du texte. '
-                    'La duplication remplacera son contenu.',
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () =>
-                      Navigator.of(dialogContext).pop(false),
-                  child: const Text('Annuler'),
-                ),
-                FilledButton(
-                  onPressed: () =>
-                      Navigator.of(dialogContext).pop(true),
-                  child: const Text('Dupliquer'),
-                ),
-              ],
-            );
-          },
-        );
-
-        if (confirmed != true) {
-          return;
-        }
-      }
-
-      final updatedDraft = CareEpisodeReport(
-        reportId: draft.reportId,
-        careEpisodeId: draft.careEpisodeId,
+      final duplicatedReport = CareEpisodeReport(
+        reportId: const Uuid().v4(),
+        careEpisodeId: report.careEpisodeId,
         sourceAssessmentId: report.sourceAssessmentId,
-        title: '',
+        title: title,
         contentJson: report.contentJson,
-        status: 'draft',
-        reportDate: draft.reportDate,
-        createdAt: draft.createdAt,
-        updatedAt: DateTime.now().millisecondsSinceEpoch,
-        archivedAt: draft.archivedAt,
+        status: 'saved',
+        reportDate: now,
+        createdAt: now,
+        updatedAt: now,
       );
 
-      await _reportRepository.updateReport(updatedDraft);
+      await _reportRepository.insertReport(
+        duplicatedReport,
+      );
 
       if (!mounted) return;
 
-      await _showReport(updatedDraft);
+      setState(() {
+        _reportsFuture = _reportRepository.getSavedForEpisode(
+          widget.episode.careEpisodeId,
+        );
+      });
     } catch (_) {
       if (!mounted) return;
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../../generated/l10n.dart';
 import '../../../models/care_episode.dart';
 import '../../../../practitioners/models/practitioner.dart';
 
@@ -21,6 +22,7 @@ class EpisodeHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final s = S.of(context);
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(16),
@@ -42,7 +44,7 @@ class EpisodeHeader extends StatelessWidget {
               children: [
                 Expanded(
                   child: _EpisodeHeaderInformation(
-                    label: 'Pathologie',
+                    label: s.careEpisodeReportsWorkspace_pathology,
                     value: episode.pathologyLabel,
                   ),
                 ),
@@ -55,15 +57,16 @@ class EpisodeHeader extends StatelessWidget {
 
                       final value =
                       snapshot.connectionState == ConnectionState.waiting
-                          ? 'Chargement…'
+                          ? s.careEpisodeReportsWorkspace_loading
                           : practitioner == null
-                          ? 'Non renseigné'
+                          ? s.careEpisodeReportsWorkspace_notProvided
                           : practitioner.isArchived
-                          ? '${practitioner.displayName} — archivé'
+                          ? '${practitioner.displayName} — '
+                          '${s.careEpisodeReportsWorkspace_archived}'
                           : practitioner.displayName;
 
                       return _EpisodeHeaderInformation(
-                        label: 'Kiné référent',
+                        label: s.careEpisodeReportsWorkspace_referringPractitioner,
                         value: value,
                       );
                     },
@@ -74,17 +77,17 @@ class EpisodeHeader extends StatelessWidget {
           ),
           IconButton(
             onPressed: onOpenDocuments,
-            tooltip: 'Documents de la prise en charge',
+            tooltip: s.careEpisodeReportsWorkspace_episodeDocuments,
             icon: const Icon(Icons.attach_file),
           ),
           IconButton(
             onPressed: onEditPractitioner,
-            tooltip: 'Modifier le kiné référent',
+            tooltip: s.careEpisodeReportsWorkspace_editReferringPractitioner,
             icon: const Icon(Icons.edit_outlined),
           ),
           IconButton(
             onPressed: onShowHistory,
-            tooltip: 'Historique des kinés référents',
+            tooltip: s.careEpisodeReportsWorkspace_referringPractitionerHistory,
             icon: const Icon(Icons.history),
           ),
         ],

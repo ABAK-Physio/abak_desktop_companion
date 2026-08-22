@@ -1,3 +1,4 @@
+import '../../../../../generated/l10n.dart';
 import 'package:abak_desktop_companion/core/utils/date_format_utils.dart';
 import 'package:abak_desktop_companion/features/results/models/desktop_result.dart';
 import 'package:abak_desktop_companion/features/results/result_detail_screen.dart';
@@ -76,13 +77,14 @@ class LatestTestsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final s = S.of(context);
     return ScrollableWorkspaceCard(
-      title: 'Tests réalisés (dernier résultat)',
+      title: s.careEpisodeReportsWorkspace_latestTests,
       trailing: onExpand == null
           ? null
           : IconButton(
         onPressed: onExpand,
-        tooltip: 'Agrandir',
+        tooltip: s.careEpisodeReportsWorkspace_expand,
         icon: const Icon(Icons.zoom_out_map),
       ),
       child: FutureBuilder<List<DesktopResult>>(
@@ -96,9 +98,9 @@ class LatestTestsCard extends StatelessWidget {
           }
 
           if (snapshot.hasError) {
-            return const Center(
+            return Center(
               child: Text(
-                'Impossible de charger les tests.',
+                s.careEpisodeReportsWorkspace_testsLoadError,
               ),
             );
           }
@@ -108,32 +110,40 @@ class LatestTestsCard extends StatelessWidget {
           );
 
           if (latestResults.isEmpty) {
-            return const Center(
+            return Center(
               child: Text(
-                'Aucun test réalisé pour cet épisode.',
+                s.careEpisodeReportsWorkspace_noTests,
               ),
             );
           }
 
           return Column(
             children: [
-              const TableHeader(
+              TableHeader(
                 columns: [
                   Expanded(
                     flex: 4,
-                    child: Text('Test'),
+                    child: Text(
+                      s.careEpisodeReportsWorkspace_test,
+                    ),
                   ),
                   Expanded(
                     flex: 2,
-                    child: Text('Date'),
+                    child: Text(
+                      s.careEpisodeReportsWorkspace_date,
+                    ),
                   ),
                   Expanded(
                     flex: 3,
-                    child: Text('Résultat'),
+                    child: Text(
+                      s.careEpisodeReportsWorkspace_result,
+                    ),
                   ),
                   SizedBox(
                     width: 72,
-                    child: Text('Inclure'),
+                    child: Text(
+                      s.careEpisodeReportsWorkspace_include,
+                    ),
                   ),
                 ],
               ),
