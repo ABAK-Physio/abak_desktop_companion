@@ -1,5 +1,4 @@
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
-import 'package:flutter/material.dart';
 import '../../../core/database/database_service.dart';
 import '../models/care_episode.dart';
 import '../models/care_episode_note.dart';
@@ -41,7 +40,7 @@ class CareEpisodeRepository {
       conflictAlgorithm: ConflictAlgorithm.abort,
     );
 
-    final rows = await db.query(
+    await db.query(
       'care_episode_notes',
       where: 'note_id = ?',
       whereArgs: [note.noteId],
