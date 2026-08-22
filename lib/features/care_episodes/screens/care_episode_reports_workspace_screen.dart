@@ -85,6 +85,7 @@ class _CareEpisodeReportsWorkspaceScreenState
 
   ClinicalDocumentType _documentType =
       ClinicalDocumentType.assessment;
+  bool _documentTypeSelected = false;
 
   CareEpisodeAssessment? _draft;
   CareEpisodeReport? _reportDraft;
@@ -128,65 +129,10 @@ class _CareEpisodeReportsWorkspaceScreenState
     );
 
     _draftController.addListener(_scheduleDraftSave);
-    _loadOrCreateDraft();
-  }
 
-
-  Future<void> _loadOrCreateDraft() async {
-    try {
-      var draft = await _assessmentRepository.getDraftForEpisode(
-        widget.episode.careEpisodeId,
-      );
-
-      if (draft == null) {
-        final now = DateTime.now().millisecondsSinceEpoch;
-
-        draft = CareEpisodeAssessment(
-          assessmentId: const Uuid().v4(),
-          careEpisodeId: widget.episode.careEpisodeId,
-          title: '',
-          contentJson: '',
-          status: 'draft',
-          assessmentDate: now,
-          createdAt: now,
-        );
-
-        await _assessmentRepository.insertAssessment(draft);
-      }
-
-      final selectedTestExoIds =
-      await _assessmentRepository.getSelectedTestExoIds(
-        draft.assessmentId,
-      );
-
-      final selectedNoteIds =
-      await _assessmentRepository.getSelectedNoteIds(
-        draft.assessmentId,
-      );
-
-      if (!mounted) return;
-
-      _setDraftContent(draft.contentJson);
-
-      setState(() {
-        _draft = draft;
-        _selectedTestExoIds = selectedTestExoIds;
-        _selectedNoteIds = selectedNoteIds;
-        _draftLoading = false;
-        _testSelectionLoading = false;
-        _noteSelectionLoading = false;
-        _draftLoadError = null;
-      });
-    } catch (_) {
-      if (!mounted) return;
-
-      setState(() {
-        _draftLoading = false;
-        _testSelectionLoading = false;
-        _noteSelectionLoading = false;
-        _draftLoadError = 'Impossible de charger le brouillon.';
-      });
-    }
+    _draftLoading = false;
+    _testSelectionLoading = false;
+    _noteSelectionLoading = false;
   }
 
   void _setDraftContent(String value) {
@@ -350,10 +296,12 @@ class _CareEpisodeReportsWorkspaceScreenState
   Future<void> _createOrOpenReportDraft() async {
     _draftSaveTimer?.cancel();
 
-    if (_documentType == ClinicalDocumentType.assessment) {
-      await _saveDraft();
-    } else {
-      await _saveReportDraft();
+    if (_documentTypeSelected) {
+      if (_documentType == ClinicalDocumentType.assessment) {
+        await _saveDraft();
+      } else {
+        await _saveReportDraft();
+      }
     }
 
     if (!mounted) return;
@@ -363,18 +311,72 @@ class _CareEpisodeReportsWorkspaceScreenState
 
       if (!mounted) return;
 
-      setState(() {
-        _documentType = ClinicalDocumentType.report;
-        _reportDraft = report;
-        _draftLoadError = null;
-      });
+      if (report.contentJson.trim().isNotEmpty) {
+        final choice = await showDialog<String>(
+          context: context,
+          builder: (dialogContext) {
+            return AlertDialog(
+              title: const Text('Un brouillon de rapport existe'),
+              content: const Text(
+                'Un travail en cours a déjà été sauvegardé automatiquement.\n\n'
+                    'Souhaitez-vous reprendre ce brouillon ou commencer un nouveau rapport ?',
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () =>
+                      Navigator.of(dialogContext).pop('cancel'),
+                  child: const Text('Annuler'),
+                ),
+                TextButton(
+                  onPressed: () =>
+                      Navigator.of(dialogContext).pop('resume'),
+                  child: const Text('Reprendre le brouillon'),
+                ),
+                FilledButton(
+                  onPressed: () =>
+                      Navigator.of(dialogContext).pop('new'),
+                  child: const Text('Nouveau rapport'),
+                ),
+              ],
+            );
+          },
+        );
 
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (!mounted) return;
+        if (choice == null || choice == 'cancel') {
+          return;
+        }
 
-        _setDraftContent(report.contentJson);
-        _draftFocusNode.requestFocus();
-      });
+        if (choice == 'resume') {
+          await _showReport(report);
+          return;
+        }
+
+        if (choice == 'new') {
+          final now = DateTime.now().millisecondsSinceEpoch;
+
+          final emptyReport = CareEpisodeReport(
+            reportId: report.reportId,
+            careEpisodeId: report.careEpisodeId,
+            sourceAssessmentId: report.sourceAssessmentId,
+            title: '',
+            contentJson: '',
+            status: 'draft',
+            reportDate: now,
+            createdAt: report.createdAt,
+            updatedAt: now,
+            archivedAt: report.archivedAt,
+          );
+
+          await _reportRepository.updateReport(emptyReport);
+
+          if (!mounted) return;
+
+          await _showReport(emptyReport);
+          return;
+        }
+      }
+
+      await _showReport(report);
     } catch (_) {
       if (!mounted) return;
 
@@ -839,6 +841,7 @@ class _CareEpisodeReportsWorkspaceScreenState
     if (!mounted) return;
 
     setState(() {
+      _documentTypeSelected = true;
       _documentType = ClinicalDocumentType.assessment;
       _draft = assessment;
       _selectedTestExoIds = selectedTestExoIds;
@@ -861,6 +864,73 @@ class _CareEpisodeReportsWorkspaceScreenState
 
     try {
       final draft = await _getOrCreateDraft();
+
+      if (!mounted) return;
+
+      if (draft.contentJson.trim().isNotEmpty) {
+        final choice = await showDialog<String>(
+          context: context,
+          builder: (dialogContext) {
+            return AlertDialog(
+              title: const Text('Un brouillon de bilan existe'),
+              content: const Text(
+                'Un travail en cours a déjà été sauvegardé automatiquement.\n\n'
+                    'Souhaitez-vous reprendre ce brouillon ou commencer un nouveau bilan ?',
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () =>
+                      Navigator.of(dialogContext).pop('cancel'),
+                  child: const Text('Annuler'),
+                ),
+                TextButton(
+                  onPressed: () =>
+                      Navigator.of(dialogContext).pop('resume'),
+                  child: const Text('Reprendre le brouillon'),
+                ),
+                FilledButton(
+                  onPressed: () =>
+                      Navigator.of(dialogContext).pop('new'),
+                  child: const Text('Nouveau bilan'),
+                ),
+              ],
+            );
+          },
+        );
+
+        if (choice == null || choice == 'cancel') {
+          return;
+        }
+
+        if (choice == 'resume') {
+          await _showAssessment(draft);
+          return;
+        }
+
+        if (choice == 'new') {
+          final now = DateTime.now().millisecondsSinceEpoch;
+
+          final emptyDraft = CareEpisodeAssessment(
+            assessmentId: draft.assessmentId,
+            careEpisodeId: draft.careEpisodeId,
+            title: '',
+            contentJson: '',
+            status: 'draft',
+            assessmentDate: now,
+            createdAt: draft.createdAt,
+            updatedAt: now,
+            archivedAt: draft.archivedAt,
+          );
+
+          await _assessmentRepository.updateAssessment(emptyDraft);
+
+          if (!mounted) return;
+
+          await _showAssessment(emptyDraft);
+          return;
+        }
+      }
+
       await _showAssessment(draft);
     } catch (_) {
       if (!mounted) return;
@@ -1826,24 +1896,38 @@ class _CareEpisodeReportsWorkspaceScreenState
                       children: [
                         Expanded(
                           flex: 2,
-                          child: SoapDraftCard(
-                            controller: _draftController,
-                            focusNode: _draftFocusNode,
-                            loading: _draftLoading,
-                            loadError: _draftLoadError,
-                            draftReady:
-                            _documentType ==
-                                ClinicalDocumentType.assessment
-                                ? _draft != null
-                                : _reportDraft != null,
-                            onExpand: _openExpandedSoapEditor,
-                            isEditing:
-                            _documentType ==
-                                ClinicalDocumentType.assessment
-                                ? _draft?.isSaved == true
-                                : true,
-                            documentType: _documentType,
-                          ),
+                            child: SoapDraftCard(
+                              controller: _draftController,
+                              focusNode: _draftFocusNode,
+                              loading: _draftLoading,
+                              loadError: _draftLoadError,
+                              draftReady:
+                              _documentType ==
+                                  ClinicalDocumentType.assessment
+                                  ? _draft != null
+                                  : _reportDraft != null,
+                              onExpand: _openExpandedSoapEditor,
+                              isEditing:
+                              _documentType ==
+                                  ClinicalDocumentType.assessment
+                                  ? _draft?.isSaved == true
+                                  : _reportDraft?.isSaved == true,
+                              documentType: _documentType,
+                              documentTypeSelected: _documentTypeSelected,
+                              documentTitle:
+                              _documentType == ClinicalDocumentType.assessment
+                                  ? _draft?.title
+                                  : _reportDraft?.title,
+                              onDocumentTypeChanged: (documentType) async {
+                                switch (documentType) {
+                                  case ClinicalDocumentType.assessment:
+                                    await _returnToDraft();
+
+                                  case ClinicalDocumentType.report:
+                                    await _createOrOpenReportDraft();
+                                }
+                              },
+                            ),
                         ),
                         const SizedBox(width: 16),
                         Expanded(
