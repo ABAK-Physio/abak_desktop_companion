@@ -1562,7 +1562,8 @@ class _CareEpisodeReportsWorkspaceScreenState
   }
 
   Future<void> _addFollowUpNote() async {
-    final controller = TextEditingController();
+    final titleController = TextEditingController();
+    final contentController = TextEditingController();
 
     final confirmed = await showDialog<bool>(
       context: context,
@@ -1571,15 +1572,29 @@ class _CareEpisodeReportsWorkspaceScreenState
           title: const Text('Nouvelle note de suivi'),
           content: SizedBox(
             width: 520,
-            child: TextField(
-              controller: controller,
-              decoration: const InputDecoration(
-                labelText: 'Note',
-                border: OutlineInputBorder(),
-                alignLabelWithHint: true,
-              ),
-              minLines: 5,
-              maxLines: 10,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: titleController,
+                  autofocus: true,
+                  decoration: const InputDecoration(
+                    labelText: 'Titre',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                TextField(
+                  controller: contentController,
+                  decoration: const InputDecoration(
+                    labelText: 'Note',
+                    border: OutlineInputBorder(),
+                    alignLabelWithHint: true,
+                  ),
+                  minLines: 5,
+                  maxLines: 10,
+                ),
+              ],
             ),
           ),
           actions: [
@@ -1596,10 +1611,13 @@ class _CareEpisodeReportsWorkspaceScreenState
       },
     );
 
-    final content = controller.text.trim();
-    controller.dispose();
+    final title = titleController.text.trim();
+    final content = contentController.text.trim();
 
-    if (confirmed != true || content.isEmpty) {
+    titleController.dispose();
+    contentController.dispose();
+
+    if (confirmed != true || title.isEmpty || content.isEmpty) {
       return;
     }
 
@@ -1609,11 +1627,107 @@ class _CareEpisodeReportsWorkspaceScreenState
       noteId: const Uuid().v4(),
       careEpisodeId: widget.episode.careEpisodeId,
       noteDate: now,
+      title: title,
       content: content,
       createdAt: now,
     );
 
+    debugPrint(
+      'INSERT NOTE: title="${note.title}" content="${note.content}"',
+    );
+
     await _careEpisodeRepository.insertNote(note);
+
+    if (!mounted) return;
+
+    setState(() {
+      _notesFuture = _careEpisodeRepository.getNotesForEpisode(
+        widget.episode.careEpisodeId,
+      );
+    });
+  }
+
+  Future<void> _editFollowUpNote(
+      CareEpisodeNote note,
+      ) async {
+    final titleController = TextEditingController(
+      text: note.title,
+    );
+
+    final contentController = TextEditingController(
+      text: note.content,
+    );
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: const Text('Modifier la note de suivi'),
+          content: SizedBox(
+            width: 520,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: titleController,
+                  autofocus: true,
+                  decoration: const InputDecoration(
+                    labelText: 'Titre',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                TextField(
+                  controller: contentController,
+                  decoration: const InputDecoration(
+                    labelText: 'Note',
+                    border: OutlineInputBorder(),
+                    alignLabelWithHint: true,
+                  ),
+                  minLines: 5,
+                  maxLines: 10,
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () =>
+                  Navigator.of(dialogContext).pop(false),
+              child: const Text('Annuler'),
+            ),
+            FilledButton(
+              onPressed: () =>
+                  Navigator.of(dialogContext).pop(true),
+              child: const Text('Enregistrer'),
+            ),
+          ],
+        );
+      },
+    );
+
+    final title = titleController.text.trim();
+    final content = contentController.text.trim();
+
+    titleController.dispose();
+    contentController.dispose();
+
+    if (confirmed != true || title.isEmpty || content.isEmpty) {
+      return;
+    }
+
+    final updatedNote = CareEpisodeNote(
+      noteId: note.noteId,
+      careEpisodeId: note.careEpisodeId,
+      noteDate: note.noteDate,
+      title: title,
+      content: content,
+      createdAt: note.createdAt,
+      updatedAt: DateTime.now().millisecondsSinceEpoch,
+      archivedAt: note.archivedAt,
+    );
+
+    await _careEpisodeRepository.updateNote(updatedNote);
 
     if (!mounted) return;
 
@@ -2124,6 +2238,7 @@ class _CareEpisodeReportsWorkspaceScreenState
                                 _draft != null &&
                                 !_noteSelectionLoading,
                             onAddNote: _addFollowUpNote,
+                            onEditNote: _editFollowUpNote,
                             onExpand: () {
                               _showExpandedWorkspaceContent(
                                 title: 'Notes de suivi',
@@ -2143,6 +2258,7 @@ class _CareEpisodeReportsWorkspaceScreenState
 
                                     navigator.pop();
                                   },
+                                  onEditNote: _editFollowUpNote,
                                   onExpand: null,
                                   onNoteIncludedChanged: ({
                                     required noteId,

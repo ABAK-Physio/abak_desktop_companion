@@ -1,5 +1,5 @@
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
-
+import 'package:flutter/material.dart';
 import '../../../core/database/database_service.dart';
 import '../models/care_episode.dart';
 import '../models/care_episode_note.dart';
@@ -32,10 +32,32 @@ class CareEpisodeRepository {
   Future<void> insertNote(CareEpisodeNote note) async {
     final db = await DatabaseService.database;
 
+    final map = note.toMap();
+
+
     await db.insert(
       'care_episode_notes',
-      note.toMap(),
+      map,
       conflictAlgorithm: ConflictAlgorithm.abort,
+    );
+
+    final rows = await db.query(
+      'care_episode_notes',
+      where: 'note_id = ?',
+      whereArgs: [note.noteId],
+      limit: 1,
+    );
+
+  }
+
+  Future<void> updateNote(CareEpisodeNote note) async {
+    final db = await DatabaseService.database;
+
+    await db.update(
+      'care_episode_notes',
+      note.toMap(),
+      where: 'note_id = ?',
+      whereArgs: [note.noteId],
     );
   }
 

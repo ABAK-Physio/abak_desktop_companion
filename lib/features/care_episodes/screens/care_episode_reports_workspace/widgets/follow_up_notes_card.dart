@@ -18,6 +18,7 @@ class FollowUpNotesCard extends StatelessWidget {
   final VoidCallback onAddNote;
   final VoidCallback? onExpand;
   final NoteIncludedChanged onNoteIncludedChanged;
+  final ValueChanged<CareEpisodeNote> onEditNote;
 
   const FollowUpNotesCard({
     super.key,
@@ -27,21 +28,8 @@ class FollowUpNotesCard extends StatelessWidget {
     required this.onAddNote,
     required this.onExpand,
     required this.onNoteIncludedChanged,
+    required this.onEditNote,
   });
-
-  String _noteTitle(String content, S s) {
-    final normalized = content.replaceAll(RegExp(r'\s+'), ' ').trim();
-
-    if (normalized.isEmpty) {
-      return s.careEpisodeReportsWorkspace_followUpNoteDefaultTitle;
-    }
-
-    if (normalized.length <= 40) {
-      return normalized;
-    }
-
-    return '${normalized.substring(0, 40)}…';
-  }
 
   String _notePreview(String content) {
     final normalized = content.replaceAll(RegExp(r'\s+'), ' ').trim();
@@ -125,6 +113,7 @@ class FollowUpNotesCard extends StatelessWidget {
                     width: 72,
                     child: Text(s.careEpisodeReportsWorkspace_include),
                   ),
+                  const SizedBox(width: 42),
                 ],
               ),
               const Divider(height: 1),
@@ -156,7 +145,9 @@ class FollowUpNotesCard extends StatelessWidget {
                           Expanded(
                             flex: 5,
                             child: Text(
-                              _noteTitle(note.content, s),
+                              note.title.isNotEmpty
+                                  ? note.title
+                                  : s.careEpisodeReportsWorkspace_followUpNoteDefaultTitle,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               softWrap: false,
@@ -187,6 +178,14 @@ class FollowUpNotesCard extends StatelessWidget {
                                 }
                                     : null,
                               ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: 42,
+                            child: IconButton(
+                              onPressed: () => onEditNote(note),
+                              tooltip: 'Modifier la note',
+                              icon: const Icon(Icons.edit_outlined),
                             ),
                           ),
                         ],

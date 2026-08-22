@@ -61,7 +61,7 @@ class DatabaseService {
 
     return openDatabase(
       path,
-      version: 18,  //////////////////////
+      version: 19,  //////////////////////
       onCreate: (db, version) async {
         await _createAllTables(db);
       },
@@ -206,6 +206,14 @@ class DatabaseService {
         }
         if (oldVersion < 18) {
           await _createCareEpisodeDocumentEditDraftsTable(db);
+        }
+        if (oldVersion < 19) {
+          await _addColumnIfMissing(
+            db,
+            'care_episode_notes',
+            'title',
+            "TEXT NOT NULL DEFAULT ''",
+          );
         }
       },
     );
@@ -647,19 +655,20 @@ class DatabaseService {
 
   static Future<void> _createCareEpisodeNoteTables(Database db) async {
     await db.execute('''
-      CREATE TABLE care_episode_notes (
-        note_id TEXT PRIMARY KEY,
-        care_episode_id TEXT NOT NULL,
-        note_date INTEGER NOT NULL,
-        content TEXT NOT NULL,
-        created_at INTEGER NOT NULL,
-        updated_at INTEGER NULL,
-        archived_at INTEGER NULL,
+CREATE TABLE care_episode_notes (
+  note_id TEXT PRIMARY KEY,
+  care_episode_id TEXT NOT NULL,
+  note_date INTEGER NOT NULL,
+  title TEXT NOT NULL DEFAULT '',
+  content TEXT NOT NULL,
+  created_at INTEGER NOT NULL,
+  updated_at INTEGER NULL,
+  archived_at INTEGER NULL,
 
-        FOREIGN KEY(care_episode_id)
-          REFERENCES care_episodes(care_episode_id)
-      )
-    ''');
+  FOREIGN KEY(care_episode_id)
+    REFERENCES care_episodes(care_episode_id)
+)
+''');
 
     await db.execute('''
       CREATE INDEX idx_care_episode_notes_episode_id
