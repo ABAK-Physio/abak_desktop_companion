@@ -17,6 +17,7 @@ class SoapDraftCard extends StatelessWidget {
       onDocumentTypeChanged;
   final String? documentTitle;
   final bool documentTypeSelected;
+  final VoidCallback? onOpenTemplateGuide;
 
   const SoapDraftCard({
     super.key,
@@ -31,11 +32,13 @@ class SoapDraftCard extends StatelessWidget {
     required this.onDocumentTypeChanged,
     required this.documentTitle,
     required this.documentTypeSelected,
+    required this.onOpenTemplateGuide,
   });
 
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
+
     return Card(
       clipBehavior: Clip.antiAlias,
       child: Padding(
@@ -151,15 +154,14 @@ class SoapDraftCard extends StatelessWidget {
                 const SizedBox(width: 8),
                 SizedBox(
                   width: 240,
-                  child: DropdownButtonFormField<String>(
-                    initialValue: null,
-                    decoration: InputDecoration(
-                      labelText: documentType.templateLabel,
-                      border: const OutlineInputBorder(),
-                      isDense: true,
-                    ),
-                    items: const [],
-                    onChanged: null,
+                  child: OutlinedButton.icon(
+                    onPressed:
+                    documentType == ClinicalDocumentType.assessment &&
+                        draftReady
+                        ? onOpenTemplateGuide
+                        : null,
+                    icon: const Icon(Icons.description_outlined),
+                    label: Text(documentType.templateLabel),
                   ),
                 ),
               ],

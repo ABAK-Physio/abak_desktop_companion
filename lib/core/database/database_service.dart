@@ -61,7 +61,7 @@ class DatabaseService {
 
     return openDatabase(
       path,
-      version: 19,  //////////////////////
+      version: 20,  //////////////////////
       onCreate: (db, version) async {
         await _createAllTables(db);
       },
@@ -214,6 +214,9 @@ class DatabaseService {
             'title',
             "TEXT NOT NULL DEFAULT ''",
           );
+        }
+        if (oldVersion < 20) {
+          await _createAssessmentTemplateDraftsTable(db);
         }
       },
     );
@@ -459,6 +462,7 @@ class DatabaseService {
     await _createBackupTables(db);
     await _createRestoreHistoryTables(db);
     await _createResultConflictTables(db);
+    await _createAssessmentTemplateDraftsTable(db);
   }
 
   static Future<void> _resetDatabase(Database db) async {
@@ -1075,6 +1079,32 @@ CREATE TABLE care_episode_notes (
         REFERENCES patients(patient_id),
 
       UNIQUE(patient_id, attribute_key)
+    )
+  ''');
+  }
+  static Future<void> _createAssessmentTemplateDraftsTable(
+      Database db,
+      ) async {
+    await db.execute('''
+    CREATE TABLE IF NOT EXISTS assessment_template_drafts (
+      draft_id TEXT PRIMARY KEY,
+      care_episode_id TEXT NOT NULL,
+      template_id TEXT NOT NULL,
+      answers_json TEXT NOT NULL,
+      created_at INTEGER NOT NULL,
+      updated_at INTEGER NOT NULL,
+
+      FOREIGN KEY(care_episode_id)
+        REFERENCES care_episodes(care_episode_id)
+    )
+  ''');
+
+    await db.execute('''
+    CREATE UNIQUE INDEX IF NOT EXISTS
+    idx_assessment_template_drafts_episode_template
+    ON assessment_template_drafts(
+      care_episode_id,
+      template_id
     )
   ''');
   }

@@ -8,6 +8,8 @@ import '../../results/models/desktop_result.dart';
 import '../data/care_episode_assessment_repository.dart';
 import '../data/care_episode_repository.dart';
 import '../data/care_episode_report_repository.dart';
+import '../models/assessment_templates/assessment_template.dart';
+import '../models/assessment_templates/default_assessment_templates.dart';
 import '../models/care_episode.dart';
 import '../models/care_episode_assessment.dart';
 import '../models/care_episode_note.dart';
@@ -21,6 +23,7 @@ import '../widgets/referring_practitioner_history_dialog.dart';
 import '../../patients/screens/episode_documents_screen.dart';
 
 import '../data/care_episode_document_edit_draft_repository.dart';
+import 'care_episode_reports_workspace/widgets/assessment_template_guide.dart';
 import 'care_episode_reports_workspace/widgets/episode_header.dart';
 import 'care_episode_reports_workspace/widgets/episode_summary_card.dart';
 import 'care_episode_reports_workspace/widgets/archived_documents_card.dart';
@@ -30,6 +33,11 @@ import 'care_episode_reports_workspace/widgets/assessment_history_card.dart';
 import 'care_episode_reports_workspace/widgets/report_history_card.dart';
 import 'care_episode_reports_workspace/widgets/soap_draft_card.dart';
 import 'care_episode_reports_workspace/widgets/document_title_dialog.dart';
+import 'package:abak_desktop_companion/features/patients/data/patient_attribute_repository.dart';
+import 'package:abak_desktop_companion/features/care_episodes/data/assessment_template_draft_repository.dart';
+import 'package:abak_desktop_companion/features/care_episodes/models/assessment_templates/assessment_template_answers.dart';
+import 'care_episode_reports_workspace/widgets/assessment_template_selector.dart';
+
 
 class CareEpisodeReportsWorkspaceScreen extends StatefulWidget {
   final CareEpisode episode;
@@ -71,9 +79,17 @@ class _CareEpisodeReportsWorkspaceScreenState
   final PractitionerRepository _practitionerRepository =
   PractitionerRepository();
 
+  final PatientAttributeRepository _patientAttributeRepository =
+  PatientAttributeRepository();
+
+  final AssessmentTemplateDraftRepository
+  _assessmentTemplateDraftRepository =
+  AssessmentTemplateDraftRepository();
+
   late Future<Practitioner?> _currentReferringPractitionerFuture;
 
   Timer? _draftSaveTimer;
+  Timer? _assessmentTemplateSaveTimer;
   bool _updatingDraftController = false;
 
   late Future<List<DesktopResult>> _resultsFuture;
@@ -398,6 +414,7 @@ class _CareEpisodeReportsWorkspaceScreenState
 
     setState(() {
       _documentType = ClinicalDocumentType.report;
+      _documentTypeSelected = true;
       _reportDraft = report;
       _draftLoadError = null;
     });
@@ -840,6 +857,7 @@ class _CareEpisodeReportsWorkspaceScreenState
 
     if (!mounted) return;
 
+
     setState(() {
       _documentTypeSelected = true;
       _documentType = ClinicalDocumentType.assessment;
@@ -850,7 +868,6 @@ class _CareEpisodeReportsWorkspaceScreenState
       _noteSelectionLoading = false;
       _draftLoadError = null;
     });
-
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
 
@@ -1632,9 +1649,6 @@ class _CareEpisodeReportsWorkspaceScreenState
       createdAt: now,
     );
 
-    debugPrint(
-      'INSERT NOTE: title="${note.title}" content="${note.content}"',
-    );
 
     await _careEpisodeRepository.insertNote(note);
 
@@ -1826,6 +1840,170 @@ class _CareEpisodeReportsWorkspaceScreenState
     expandedController.dispose();
   }
 
+  Future<bool> _insertAssessmentTemplateText(
+      String generatedText,
+      ) async {
+    final text = generatedText.trim();
+
+    if (text.isEmpty) {
+      return false;
+    }
+
+    if (_documentType != ClinicalDocumentType.assessment ||
+        _draft == null) {
+      return false;
+    }
+
+    final existingText = _draftController.text.trim();
+
+    if (existingText.isEmpty) {
+      _draftController.value = TextEditingValue(
+        text: text,
+        selection: TextSelection.collapsed(
+          offset: text.length,
+        ),
+      );
+
+      _draftFocusNode.requestFocus();
+      return true;
+    }
+
+    final choice = await showDialog<String>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: const Text(
+            'Le bilan contient déjà du texte',
+          ),
+          content: const Text(
+            'Souhaitez-vous ajouter le contenu généré '
+                'à la suite du bilan actuel ou remplacer '
+                'le contenu existant ?',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () =>
+                  Navigator.of(dialogContext).pop('cancel'),
+              child: const Text('Annuler'),
+            ),
+            TextButton(
+              onPressed: () =>
+                  Navigator.of(dialogContext).pop('append'),
+              child: const Text('Ajouter à la suite'),
+            ),
+            FilledButton(
+              onPressed: () =>
+                  Navigator.of(dialogContext).pop('replace'),
+              child: const Text('Remplacer'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (choice == null || choice == 'cancel') {
+      return false;
+    }
+
+    final newText = choice == 'replace'
+        ? text
+        : '${_draftController.text.trimRight()}\n\n$text';
+
+    _draftController.value = TextEditingValue(
+      text: newText,
+      selection: TextSelection.collapsed(
+        offset: newText.length,
+      ),
+    );
+
+    _draftFocusNode.requestFocus();
+
+    return true;
+  }
+
+  void _scheduleAssessmentTemplateSave(
+      AssessmentTemplateAnswers answers,
+      ) {
+    _assessmentTemplateSaveTimer?.cancel();
+
+    _assessmentTemplateSaveTimer = Timer(
+      const Duration(seconds: 1),
+          () async {
+        await _assessmentTemplateDraftRepository.saveDraft(
+          careEpisodeId: widget.episode.careEpisodeId,
+          answers: answers,
+        );
+      },
+    );
+  }
+
+  Future<void> _openAssessmentTemplateGuide() async {
+    final template = await showDialog<AssessmentTemplate>(
+      context: context,
+      builder: (dialogContext) {
+        return AssessmentTemplateSelector(
+          templates: const [
+            DefaultAssessmentTemplates.musculoskeletalGeneral,
+            DefaultAssessmentTemplates.musculoskeletalUpperLimb,
+          ],
+        );
+      },
+    );
+
+    if (template == null || !mounted) {
+      return;
+    }
+
+    await _openAssessmentTemplateGuideFor(template);
+  }
+
+  Future<void> _openAssessmentTemplateGuideFor(
+      AssessmentTemplate template,
+      ) async {
+
+    final profession = await _patientAttributeRepository.getOne(
+      patientId: widget.episode.patientId,
+      attributeKey: 'profession',
+    );
+
+    final sport = await _patientAttributeRepository.getOne(
+      patientId: widget.episode.patientId,
+      attributeKey: 'sport',
+    );
+
+    final savedAnswers =
+    await _assessmentTemplateDraftRepository.getDraft(
+      careEpisodeId: widget.episode.careEpisodeId,
+      templateId: template.id,
+    );
+
+    if (!mounted) return;
+
+    final initialValues = <String, String>{
+      'profession': profession?.attributeValue?.trim() ?? '',
+      'sports_activities': sport?.attributeValue?.trim() ?? '',
+    };
+
+    await showDialog<void>(
+      context: context,
+      builder: (dialogContext) {
+        return Dialog(
+          child: SizedBox(
+            width: 1100,
+            height: 760,
+            child: AssessmentTemplateGuide(
+              template: template,
+              initialValues: initialValues,
+              initialAnswers: savedAnswers,
+              onAnswersChanged: _scheduleAssessmentTemplateSave,
+              onInsertGeneratedText: _insertAssessmentTemplateText,
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   Future<void> _showExpandedWorkspaceContent({
     required String title,
     required Widget child,
@@ -1877,6 +2055,7 @@ class _CareEpisodeReportsWorkspaceScreenState
     _draftController.removeListener(_scheduleDraftSave);
     _draftController.dispose();
     _draftFocusNode.dispose();
+    _assessmentTemplateSaveTimer?.cancel();
     super.dispose();
   }
 
@@ -2028,6 +2207,7 @@ class _CareEpisodeReportsWorkspaceScreenState
                                   : _reportDraft?.isSaved == true,
                               documentType: _documentType,
                               documentTypeSelected: _documentTypeSelected,
+                              onOpenTemplateGuide: _openAssessmentTemplateGuide,
                               documentTitle:
                               _documentType == ClinicalDocumentType.assessment
                                   ? _draft?.title
