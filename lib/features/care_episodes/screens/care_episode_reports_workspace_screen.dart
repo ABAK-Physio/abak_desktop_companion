@@ -1,4 +1,7 @@
 import 'dart:async';
+import 'dart:io';
+import 'dart:typed_data';
+import 'package:file_picker/file_picker.dart';
 
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
@@ -37,7 +40,11 @@ import 'package:abak_desktop_companion/features/patients/data/patient_attribute_
 import 'package:abak_desktop_companion/features/care_episodes/data/assessment_template_draft_repository.dart';
 import 'package:abak_desktop_companion/features/care_episodes/models/assessment_templates/assessment_template_answers.dart';
 import 'care_episode_reports_workspace/widgets/assessment_template_selector.dart';
-
+import '../data/assessment_document_data_builder.dart';
+import '../services/assessment_docx_service.dart';
+import '../../episodes/report/services/episode_report_docx_export_service.dart';
+import '../services/assessment_chart_image_service.dart';
+import '../../../core/settings/application_settings_service.dart';
 
 class CareEpisodeReportsWorkspaceScreen extends StatefulWidget {
   final CareEpisode episode;
@@ -58,33 +65,30 @@ class CareEpisodeReportsWorkspaceScreen extends StatefulWidget {
 
 class _CareEpisodeReportsWorkspaceScreenState
     extends State<CareEpisodeReportsWorkspaceScreen> {
-  final CareEpisodeRepository _careEpisodeRepository =
-  CareEpisodeRepository();
+  final CareEpisodeRepository _careEpisodeRepository = CareEpisodeRepository();
   final CareEpisodeAssessmentRepository _assessmentRepository =
-  CareEpisodeAssessmentRepository();
+      CareEpisodeAssessmentRepository();
   final CareEpisodeReportRepository _reportRepository =
-  CareEpisodeReportRepository();
+      CareEpisodeReportRepository();
 
-  final CareEpisodeDocumentEditDraftRepository
-  _documentEditDraftRepository =
-  CareEpisodeDocumentEditDraftRepository();
+  final CareEpisodeDocumentEditDraftRepository _documentEditDraftRepository =
+      CareEpisodeDocumentEditDraftRepository();
 
   final TextEditingController _draftController = TextEditingController();
   final FocusNode _draftFocusNode = FocusNode();
 
   final CareEpisodeReferringPractitionerRepository
   _referringPractitionerRepository =
-  CareEpisodeReferringPractitionerRepository();
+      CareEpisodeReferringPractitionerRepository();
 
   final PractitionerRepository _practitionerRepository =
-  PractitionerRepository();
+      PractitionerRepository();
 
   final PatientAttributeRepository _patientAttributeRepository =
-  PatientAttributeRepository();
+      PatientAttributeRepository();
 
-  final AssessmentTemplateDraftRepository
-  _assessmentTemplateDraftRepository =
-  AssessmentTemplateDraftRepository();
+  final AssessmentTemplateDraftRepository _assessmentTemplateDraftRepository =
+      AssessmentTemplateDraftRepository();
 
   late Future<Practitioner?> _currentReferringPractitionerFuture;
 
@@ -99,8 +103,7 @@ class _CareEpisodeReportsWorkspaceScreenState
   late Future<List<CareEpisodeAssessment>> _archivedAssessmentsFuture;
   late Future<List<CareEpisodeReport>> _archivedReportsFuture;
 
-  ClinicalDocumentType _documentType =
-      ClinicalDocumentType.assessment;
+  ClinicalDocumentType _documentType = ClinicalDocumentType.assessment;
   bool _documentTypeSelected = false;
 
   CareEpisodeAssessment? _draft;
@@ -112,12 +115,162 @@ class _CareEpisodeReportsWorkspaceScreenState
   bool _noteSelectionLoading = true;
   String? _draftLoadError;
 
+  Future<void> _exportAssessmentDocx() async {
+    final assessment = _draft;
+
+    if (assessment == null) {
+      return;
+    }
+
+    bool createNewDocx = false;
+
+    if (assessment.docxFileName != null) {
+      final choice = await showDialog<String>(
+        context: context,
+        builder: (dialogContext) {
+          return AlertDialog(
+            title: const Text('Un DOCX existe déjà'),
+            content: const Text(
+              'Un DOCX est déjà associé à ce bilan. '
+              'Voulez-vous remplacer le fichier existant '
+              'ou créer un nouveau fichier ?',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(dialogContext).pop();
+                },
+                child: const Text('Annuler'),
+              ),
+              OutlinedButton(
+                onPressed: () {
+                  Navigator.of(dialogContext).pop('new');
+                },
+                child: const Text('Créer un nouveau'),
+              ),
+              FilledButton(
+                onPressed: () {
+                  Navigator.of(dialogContext).pop('replace');
+                },
+                child: const Text('Remplacer'),
+              ),
+            ],
+          );
+        },
+      );
+
+      if (choice == null) {
+        return;
+      }
+
+      createNewDocx = choice == 'new';
+    }
+
+    var selectedDirectory = await const ApplicationSettingsService().getString(
+      ApplicationSettingsService.assessmentDocumentsDirectoryKey,
+    );
+
+    if (selectedDirectory == null || selectedDirectory.trim().isEmpty) {
+      selectedDirectory = await FilePicker.platform.getDirectoryPath(
+        dialogTitle: 'Choisir le dossier de destination',
+      );
+
+      if (selectedDirectory == null) {
+        return;
+      }
+    }
+
+    try {
+      final data = await AssessmentDocumentDataBuilder().build(
+        assessment: assessment,
+        episode: widget.episode,
+      );
+
+      final chartPngBytes = <Uint8List>[];
+
+      for (final test in data.tests) {
+        for (final series in test.chartSeries) {
+          final pngBytes = await const AssessmentChartImageService().buildPng(
+            series: series,
+          );
+
+          chartPngBytes.add(pngBytes);
+
+          debugPrint(
+            '[DOCX] Graphique généré : '
+            '${test.title} / ${series.label}',
+          );
+        }
+      }
+
+      final bytes = await AssessmentDocxService().buildDocx(
+        data: data,
+        chartPngBytes: chartPngBytes,
+      );
+
+      final exportService = const EpisodeReportDocxExportService();
+
+      final file = assessment.docxFileName == null || createNewDocx
+          ? await exportService.exportToDocxFile(
+              bytes: bytes,
+              directory: Directory(selectedDirectory),
+              fileName: 'Bilan_${widget.patientName}_${assessment.title}',
+            )
+          : await exportService.overwriteDocxFile(
+              bytes: bytes,
+              directory: Directory(selectedDirectory),
+              fileName: assessment.docxFileName!,
+            );
+
+      final updatedAssessment = CareEpisodeAssessment(
+        assessmentId: assessment.assessmentId,
+        careEpisodeId: assessment.careEpisodeId,
+        title: assessment.title,
+        contentJson: assessment.contentJson,
+        status: assessment.status,
+        authorPractitionerId: assessment.authorPractitionerId,
+        recipientText: assessment.recipientText,
+        docxFileName: file.uri.pathSegments.last,
+        assessmentDate: assessment.assessmentDate,
+        createdAt: assessment.createdAt,
+        updatedAt: assessment.updatedAt,
+        archivedAt: assessment.archivedAt,
+      );
+
+      await CareEpisodeAssessmentRepository().updateAssessment(
+        updatedAssessment,
+      );
+
+      debugPrint('[DOCX] Fichier créé : ${file.path}');
+
+      if (!mounted) return;
+
+      setState(() {
+        _draft = updatedAssessment;
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Document Word créé : ${file.path}')),
+      );
+    } catch (e, stackTrace) {
+      debugPrint('[DOCX] Erreur : $e');
+      debugPrintStack(stackTrace: stackTrace);
+
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Erreur lors de la création du document Word : $e'),
+        ),
+      );
+    }
+  }
+
   @override
   void initState() {
     super.initState();
 
-    _currentReferringPractitionerFuture =
-        _loadCurrentReferringPractitioner();
+    _currentReferringPractitionerFuture = _loadCurrentReferringPractitioner();
 
     _resultsFuture = widget.resultRepository.getResultsForCareEpisode(
       widget.episode.careEpisodeId,
@@ -135,10 +288,9 @@ class _CareEpisodeReportsWorkspaceScreenState
       widget.episode.careEpisodeId,
     );
 
-    _archivedAssessmentsFuture =
-        _assessmentRepository.getArchivedForEpisode(
-          widget.episode.careEpisodeId,
-        );
+    _archivedAssessmentsFuture = _assessmentRepository.getArchivedForEpisode(
+      widget.episode.careEpisodeId,
+    );
 
     _archivedReportsFuture = _reportRepository.getArchivedForEpisode(
       widget.episode.careEpisodeId,
@@ -180,9 +332,7 @@ class _CareEpisodeReportsWorkspaceScreenState
         _draftSaveTimer?.cancel();
         _draftSaveTimer = Timer(
           const Duration(seconds: 1),
-          assessment.isDraft
-              ? _saveDraft
-              : _saveAssessmentEditDraft,
+          assessment.isDraft ? _saveDraft : _saveAssessmentEditDraft,
         );
 
       case ClinicalDocumentType.report:
@@ -195,9 +345,7 @@ class _CareEpisodeReportsWorkspaceScreenState
         _draftSaveTimer?.cancel();
         _draftSaveTimer = Timer(
           const Duration(seconds: 1),
-          report.isDraft
-              ? _saveReportDraft
-              : _saveReportEditDraft,
+          report.isDraft ? _saveReportDraft : _saveReportEditDraft,
         );
     }
   }
@@ -229,6 +377,8 @@ class _CareEpisodeReportsWorkspaceScreenState
       title: draft.title,
       contentJson: _draftController.text,
       status: draft.status,
+      authorPractitionerId: draft.authorPractitionerId,
+      recipientText: draft.recipientText,
       assessmentDate: draft.assessmentDate,
       createdAt: draft.createdAt,
       updatedAt: DateTime.now().millisecondsSinceEpoch,
@@ -240,6 +390,149 @@ class _CareEpisodeReportsWorkspaceScreenState
     if (!mounted) return;
 
     _draft = updatedDraft;
+  }
+
+  Future<void> _selectAssessmentAuthor() async {
+    final draft = _draft;
+
+    if (draft == null) {
+      return;
+    }
+
+    final selectedPractitionerId = await showDialog<String?>(
+      context: context,
+      builder: (dialogContext) {
+        String? practitionerId = draft.authorPractitionerId;
+
+        return AlertDialog(
+          title: const Text('Choisir le rédacteur'),
+          content: SizedBox(
+            width: 420,
+            child: PractitionerSelector(
+              label: 'Rédacteur',
+              selectedPractitionerId: practitionerId,
+              allowEmpty: false,
+              onChanged: (value) {
+                practitionerId = value;
+              },
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(dialogContext).pop();
+              },
+              child: const Text('Annuler'),
+            ),
+            FilledButton(
+              onPressed: () {
+                Navigator.of(dialogContext).pop(practitionerId);
+              },
+              child: const Text('Valider'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (selectedPractitionerId == null || !mounted) {
+      return;
+    }
+
+    final updatedDraft = CareEpisodeAssessment(
+      assessmentId: draft.assessmentId,
+      careEpisodeId: draft.careEpisodeId,
+      title: draft.title,
+      contentJson: draft.contentJson,
+      status: draft.status,
+      authorPractitionerId: selectedPractitionerId,
+      recipientText: draft.recipientText,
+      assessmentDate: draft.assessmentDate,
+      createdAt: draft.createdAt,
+      updatedAt: DateTime.now().millisecondsSinceEpoch,
+      archivedAt: draft.archivedAt,
+    );
+
+    await _assessmentRepository.updateAssessment(updatedDraft);
+
+    if (!mounted) return;
+
+    setState(() {
+      _draft = updatedDraft;
+    });
+  }
+
+  Future<void> _editAssessmentRecipient() async {
+    final draft = _draft;
+
+    if (draft == null) {
+      return;
+    }
+
+    final controller = TextEditingController(text: draft.recipientText ?? '');
+
+    final recipientText = await showDialog<String?>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: const Text('Destinataire(s)'),
+          content: SizedBox(
+            width: 420,
+            child: TextField(
+              controller: controller,
+              autofocus: true,
+              decoration: const InputDecoration(
+                labelText: 'Destinataire(s)',
+                border: OutlineInputBorder(),
+              ),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(dialogContext).pop();
+              },
+              child: const Text('Annuler'),
+            ),
+            FilledButton(
+              onPressed: () {
+                Navigator.of(dialogContext).pop(controller.text.trim());
+              },
+              child: const Text('Valider'),
+            ),
+          ],
+        );
+      },
+    );
+
+    controller.dispose();
+
+    if (recipientText == null || !mounted) {
+      return;
+    }
+
+    final updatedDraft = CareEpisodeAssessment(
+      assessmentId: draft.assessmentId,
+      careEpisodeId: draft.careEpisodeId,
+      title: draft.title,
+      contentJson: draft.contentJson,
+      status: draft.status,
+      authorPractitionerId: draft.authorPractitionerId,
+      recipientText: recipientText.isEmpty ? null : recipientText,
+      docxFileName: draft.docxFileName,
+      assessmentDate: draft.assessmentDate,
+      createdAt: draft.createdAt,
+      updatedAt: DateTime.now().millisecondsSinceEpoch,
+      archivedAt: draft.archivedAt,
+    );
+
+    await _assessmentRepository.updateAssessment(updatedDraft);
+
+    if (!mounted) return;
+
+    setState(() {
+      _draft = updatedDraft;
+    });
   }
 
   Future<void> _saveReportDraft() async {
@@ -335,22 +628,19 @@ class _CareEpisodeReportsWorkspaceScreenState
               title: const Text('Un brouillon de rapport existe'),
               content: const Text(
                 'Un travail en cours a déjà été sauvegardé automatiquement.\n\n'
-                    'Souhaitez-vous reprendre ce brouillon ou commencer un nouveau rapport ?',
+                'Souhaitez-vous reprendre ce brouillon ou commencer un nouveau rapport ?',
               ),
               actions: [
                 TextButton(
-                  onPressed: () =>
-                      Navigator.of(dialogContext).pop('cancel'),
+                  onPressed: () => Navigator.of(dialogContext).pop('cancel'),
                   child: const Text('Annuler'),
                 ),
                 TextButton(
-                  onPressed: () =>
-                      Navigator.of(dialogContext).pop('resume'),
+                  onPressed: () => Navigator.of(dialogContext).pop('resume'),
                   child: const Text('Reprendre le brouillon'),
                 ),
                 FilledButton(
-                  onPressed: () =>
-                      Navigator.of(dialogContext).pop('new'),
+                  onPressed: () => Navigator.of(dialogContext).pop('new'),
                   child: const Text('Nouveau rapport'),
                 ),
               ],
@@ -398,18 +688,16 @@ class _CareEpisodeReportsWorkspaceScreenState
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text(
-            'Impossible d’ouvrir le brouillon du rapport.',
-          ),
+          content: Text('Impossible d’ouvrir le brouillon du rapport.'),
         ),
       );
     }
   }
 
   Future<void> _showReport(
-      CareEpisodeReport report, {
-        String? contentOverride,
-      }) async {
+    CareEpisodeReport report, {
+    String? contentOverride,
+  }) async {
     if (!mounted) return;
 
     setState(() {
@@ -422,16 +710,12 @@ class _CareEpisodeReportsWorkspaceScreenState
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
 
-      _setDraftContent(
-        contentOverride ?? report.contentJson,
-      );
+      _setDraftContent(contentOverride ?? report.contentJson);
       _draftFocusNode.requestFocus();
     });
   }
 
-  Future<void> _editReport(
-      CareEpisodeReport report,
-      ) async {
+  Future<void> _editReport(CareEpisodeReport report) async {
     _draftSaveTimer?.cancel();
 
     if (_documentType == ClinicalDocumentType.assessment) {
@@ -451,32 +735,24 @@ class _CareEpisodeReportsWorkspaceScreenState
         if (!mounted) return;
 
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Le rapport est introuvable.'),
-          ),
+          const SnackBar(content: Text('Le rapport est introuvable.')),
         );
         return;
       }
 
-      final editDraftContent =
-      await _documentEditDraftRepository.getContent(
+      final editDraftContent = await _documentEditDraftRepository.getContent(
         documentType: 'report',
         documentId: reloadedReport.reportId,
       );
 
       if (!mounted) return;
 
-      await _showReport(
-        reloadedReport,
-        contentOverride: editDraftContent,
-      );
+      await _showReport(reloadedReport, contentOverride: editDraftContent);
     } catch (_) {
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Impossible d’ouvrir le rapport.'),
-        ),
+        const SnackBar(content: Text('Impossible d’ouvrir le rapport.')),
       );
     }
   }
@@ -492,9 +768,7 @@ class _CareEpisodeReportsWorkspaceScreenState
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text(
-            'Impossible de revenir au brouillon du rapport.',
-          ),
+          content: Text('Impossible de revenir au brouillon du rapport.'),
         ),
       );
     }
@@ -523,9 +797,7 @@ class _CareEpisodeReportsWorkspaceScreenState
         if (!mounted) return;
 
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Le rapport est introuvable.'),
-          ),
+          const SnackBar(content: Text('Le rapport est introuvable.')),
         );
         return;
       }
@@ -536,17 +808,13 @@ class _CareEpisodeReportsWorkspaceScreenState
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text(
-            'Impossible d’annuler les modifications du rapport.',
-          ),
+          content: Text('Impossible d’annuler les modifications du rapport.'),
         ),
       );
     }
   }
 
-  Future<void> _editAssessment(
-      CareEpisodeAssessment assessment,
-      ) async {
+  Future<void> _editAssessment(CareEpisodeAssessment assessment) async {
     _draftSaveTimer?.cancel();
 
     final currentAssessment = _draft;
@@ -557,35 +825,27 @@ class _CareEpisodeReportsWorkspaceScreenState
 
     if (!mounted) return;
 
-    final reloadedAssessment =
-    await _assessmentRepository.getAssessmentById(
+    final reloadedAssessment = await _assessmentRepository.getAssessmentById(
       assessment.assessmentId,
     );
-
 
     if (!mounted) return;
 
     if (reloadedAssessment == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Le bilan est introuvable.'),
-        ),
+        const SnackBar(content: Text('Le bilan est introuvable.')),
       );
       return;
     }
 
-    final selectedTestExoIds =
-    await _assessmentRepository.getSelectedTestExoIds(
+    final selectedTestExoIds = await _assessmentRepository
+        .getSelectedTestExoIds(reloadedAssessment.assessmentId);
+
+    final selectedNoteIds = await _assessmentRepository.getSelectedNoteIds(
       reloadedAssessment.assessmentId,
     );
 
-    final selectedNoteIds =
-    await _assessmentRepository.getSelectedNoteIds(
-      reloadedAssessment.assessmentId,
-    );
-
-    final editDraftContent =
-    await _documentEditDraftRepository.getContent(
+    final editDraftContent = await _documentEditDraftRepository.getContent(
       documentType: 'assessment',
       documentId: reloadedAssessment.assessmentId,
     );
@@ -605,16 +865,12 @@ class _CareEpisodeReportsWorkspaceScreenState
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
 
-      _setDraftContent(
-        editDraftContent ?? reloadedAssessment.contentJson,
-      );
+      _setDraftContent(editDraftContent ?? reloadedAssessment.contentJson);
       _draftFocusNode.requestFocus();
     });
   }
 
-  Future<void> _duplicateAssessment(
-      CareEpisodeAssessment assessment,
-      ) async {
+  Future<void> _duplicateAssessment(CareEpisodeAssessment assessment) async {
     final title = await _showDocumentTitleDialog(
       dialogTitle: 'Dupliquer le bilan',
       fieldLabel: 'Titre du nouveau bilan',
@@ -640,9 +896,7 @@ class _CareEpisodeReportsWorkspaceScreenState
         updatedAt: now,
       );
 
-      await _assessmentRepository.insertAssessment(
-        duplicatedAssessment,
-      );
+      await _assessmentRepository.insertAssessment(duplicatedAssessment);
 
       if (!mounted) return;
 
@@ -655,18 +909,12 @@ class _CareEpisodeReportsWorkspaceScreenState
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            'Impossible de dupliquer le bilan.',
-          ),
-        ),
+        const SnackBar(content: Text('Impossible de dupliquer le bilan.')),
       );
     }
   }
 
-  Future<void> _duplicateReport(
-      CareEpisodeReport report,
-      ) async {
+  Future<void> _duplicateReport(CareEpisodeReport report) async {
     final title = await _showDocumentTitleDialog(
       dialogTitle: 'Dupliquer le rapport',
       fieldLabel: 'Titre du nouveau rapport',
@@ -693,9 +941,7 @@ class _CareEpisodeReportsWorkspaceScreenState
         updatedAt: now,
       );
 
-      await _reportRepository.insertReport(
-        duplicatedReport,
-      );
+      await _reportRepository.insertReport(duplicatedReport);
 
       if (!mounted) return;
 
@@ -708,11 +954,7 @@ class _CareEpisodeReportsWorkspaceScreenState
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            'Impossible de dupliquer le rapport.',
-          ),
-        ),
+        const SnackBar(content: Text('Impossible de dupliquer le rapport.')),
       );
     }
   }
@@ -759,9 +1001,7 @@ class _CareEpisodeReportsWorkspaceScreenState
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text(
-            'Impossible d’enregistrer la sélection du test.',
-          ),
+          content: Text('Impossible d’enregistrer la sélection du test.'),
         ),
       );
     }
@@ -809,9 +1049,7 @@ class _CareEpisodeReportsWorkspaceScreenState
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text(
-            'Impossible d’enregistrer la sélection de la note.',
-          ),
+          content: Text('Impossible d’enregistrer la sélection de la note.'),
         ),
       );
     }
@@ -842,21 +1080,15 @@ class _CareEpisodeReportsWorkspaceScreenState
     return draft;
   }
 
-  Future<void> _showAssessment(
-      CareEpisodeAssessment assessment,
-      ) async {
-    final selectedTestExoIds =
-    await _assessmentRepository.getSelectedTestExoIds(
-      assessment.assessmentId,
-    );
+  Future<void> _showAssessment(CareEpisodeAssessment assessment) async {
+    final selectedTestExoIds = await _assessmentRepository
+        .getSelectedTestExoIds(assessment.assessmentId);
 
-    final selectedNoteIds =
-    await _assessmentRepository.getSelectedNoteIds(
+    final selectedNoteIds = await _assessmentRepository.getSelectedNoteIds(
       assessment.assessmentId,
     );
 
     if (!mounted) return;
-
 
     setState(() {
       _documentTypeSelected = true;
@@ -892,22 +1124,19 @@ class _CareEpisodeReportsWorkspaceScreenState
               title: const Text('Un brouillon de bilan existe'),
               content: const Text(
                 'Un travail en cours a déjà été sauvegardé automatiquement.\n\n'
-                    'Souhaitez-vous reprendre ce brouillon ou commencer un nouveau bilan ?',
+                'Souhaitez-vous reprendre ce brouillon ou commencer un nouveau bilan ?',
               ),
               actions: [
                 TextButton(
-                  onPressed: () =>
-                      Navigator.of(dialogContext).pop('cancel'),
+                  onPressed: () => Navigator.of(dialogContext).pop('cancel'),
                   child: const Text('Annuler'),
                 ),
                 TextButton(
-                  onPressed: () =>
-                      Navigator.of(dialogContext).pop('resume'),
+                  onPressed: () => Navigator.of(dialogContext).pop('resume'),
                   child: const Text('Reprendre le brouillon'),
                 ),
                 FilledButton(
-                  onPressed: () =>
-                      Navigator.of(dialogContext).pop('new'),
+                  onPressed: () => Navigator.of(dialogContext).pop('new'),
                   child: const Text('Nouveau bilan'),
                 ),
               ],
@@ -953,9 +1182,7 @@ class _CareEpisodeReportsWorkspaceScreenState
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Impossible de revenir au brouillon.'),
-        ),
+        const SnackBar(content: Text('Impossible de revenir au brouillon.')),
       );
     }
   }
@@ -975,8 +1202,7 @@ class _CareEpisodeReportsWorkspaceScreenState
     );
 
     try {
-      final reloadedAssessment =
-      await _assessmentRepository.getAssessmentById(
+      final reloadedAssessment = await _assessmentRepository.getAssessmentById(
         assessment.assessmentId,
       );
 
@@ -984,9 +1210,7 @@ class _CareEpisodeReportsWorkspaceScreenState
         if (!mounted) return;
 
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Le bilan est introuvable.'),
-          ),
+          const SnackBar(content: Text('Le bilan est introuvable.')),
         );
         return;
       }
@@ -997,17 +1221,13 @@ class _CareEpisodeReportsWorkspaceScreenState
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text(
-            'Impossible d’annuler les modifications.',
-          ),
+          content: Text('Impossible d’annuler les modifications.'),
         ),
       );
     }
   }
 
-  Future<void> _archiveAssessment(
-      CareEpisodeAssessment assessment,
-      ) async {
+  Future<void> _archiveAssessment(CareEpisodeAssessment assessment) async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (dialogContext) {
@@ -1015,7 +1235,7 @@ class _CareEpisodeReportsWorkspaceScreenState
           title: const Text('Mettre le bilan à la corbeille ?'),
           content: Text(
             'Le bilan « ${assessment.title} » ne sera plus affiché '
-                'dans l’historique.',
+            'dans l’historique.',
           ),
           actions: [
             TextButton(
@@ -1038,9 +1258,7 @@ class _CareEpisodeReportsWorkspaceScreenState
     _draftSaveTimer?.cancel();
 
     try {
-      await _assessmentRepository.archiveAssessment(
-        assessment.assessmentId,
-      );
+      await _assessmentRepository.archiveAssessment(assessment.assessmentId);
 
       CareEpisodeAssessment? activeDraft = _draft;
 
@@ -1069,14 +1287,14 @@ class _CareEpisodeReportsWorkspaceScreenState
       final selectedTestExoIds = activeDraft == null
           ? <String>{}
           : await _assessmentRepository.getSelectedTestExoIds(
-        activeDraft.assessmentId,
-      );
+              activeDraft.assessmentId,
+            );
 
       final selectedNoteIds = activeDraft == null
           ? <String>{}
           : await _assessmentRepository.getSelectedNoteIds(
-        activeDraft.assessmentId,
-      );
+              activeDraft.assessmentId,
+            );
 
       if (!mounted) return;
 
@@ -1090,10 +1308,8 @@ class _CareEpisodeReportsWorkspaceScreenState
         _assessmentsFuture = _assessmentRepository.getSavedForEpisode(
           widget.episode.careEpisodeId,
         );
-        _archivedAssessmentsFuture =
-            _assessmentRepository.getArchivedForEpisode(
-              widget.episode.careEpisodeId,
-            );
+        _archivedAssessmentsFuture = _assessmentRepository
+            .getArchivedForEpisode(widget.episode.careEpisodeId);
       });
     } catch (_) {
       if (!mounted) return;
@@ -1106,9 +1322,7 @@ class _CareEpisodeReportsWorkspaceScreenState
     }
   }
 
-  Future<void> _archiveReport(
-      CareEpisodeReport report,
-      ) async {
+  Future<void> _archiveReport(CareEpisodeReport report) async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (dialogContext) {
@@ -1116,7 +1330,7 @@ class _CareEpisodeReportsWorkspaceScreenState
           title: const Text('Mettre le rapport à la corbeille ?'),
           content: Text(
             'Le rapport « ${report.title} » sera placé dans la corbeille. '
-                'Il pourra être restauré ultérieurement.',
+            'Il pourra être restauré ultérieurement.',
           ),
           actions: [
             TextButton(
@@ -1145,31 +1359,24 @@ class _CareEpisodeReportsWorkspaceScreenState
         _reportsFuture = _reportRepository.getSavedForEpisode(
           widget.episode.careEpisodeId,
         );
-        _archivedReportsFuture =
-            _reportRepository.getArchivedForEpisode(
-              widget.episode.careEpisodeId,
-            );
+        _archivedReportsFuture = _reportRepository.getArchivedForEpisode(
+          widget.episode.careEpisodeId,
+        );
       });
     } catch (_) {
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text(
-            'Impossible de mettre le rapport à la corbeille.',
-          ),
+          content: Text('Impossible de mettre le rapport à la corbeille.'),
         ),
       );
     }
   }
 
-  Future<void> _restoreAssessment(
-      CareEpisodeAssessment assessment,
-      ) async {
+  Future<void> _restoreAssessment(CareEpisodeAssessment assessment) async {
     try {
-      await _assessmentRepository.restoreAssessment(
-        assessment.assessmentId,
-      );
+      await _assessmentRepository.restoreAssessment(assessment.assessmentId);
 
       if (!mounted) return;
 
@@ -1177,29 +1384,21 @@ class _CareEpisodeReportsWorkspaceScreenState
         _assessmentsFuture = _assessmentRepository.getSavedForEpisode(
           widget.episode.careEpisodeId,
         );
-        _archivedAssessmentsFuture =
-            _assessmentRepository.getArchivedForEpisode(
-              widget.episode.careEpisodeId,
-            );
+        _archivedAssessmentsFuture = _assessmentRepository
+            .getArchivedForEpisode(widget.episode.careEpisodeId);
       });
     } catch (_) {
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Impossible de restaurer le bilan.'),
-        ),
+        const SnackBar(content: Text('Impossible de restaurer le bilan.')),
       );
     }
   }
 
-  Future<void> _restoreReport(
-      CareEpisodeReport report,
-      ) async {
+  Future<void> _restoreReport(CareEpisodeReport report) async {
     try {
-      await _reportRepository.restoreReport(
-        report.reportId,
-      );
+      await _reportRepository.restoreReport(report.reportId);
 
       if (!mounted) return;
 
@@ -1207,25 +1406,22 @@ class _CareEpisodeReportsWorkspaceScreenState
         _reportsFuture = _reportRepository.getSavedForEpisode(
           widget.episode.careEpisodeId,
         );
-        _archivedReportsFuture =
-            _reportRepository.getArchivedForEpisode(
-              widget.episode.careEpisodeId,
-            );
+        _archivedReportsFuture = _reportRepository.getArchivedForEpisode(
+          widget.episode.careEpisodeId,
+        );
       });
     } catch (_) {
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Impossible de restaurer le rapport.'),
-        ),
+        const SnackBar(content: Text('Impossible de restaurer le rapport.')),
       );
     }
   }
 
   Future<void> _deleteAssessmentPermanently(
-      CareEpisodeAssessment assessment,
-      ) async {
+    CareEpisodeAssessment assessment,
+  ) async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (dialogContext) {
@@ -1233,7 +1429,7 @@ class _CareEpisodeReportsWorkspaceScreenState
           title: const Text('Supprimer définitivement le bilan ?'),
           content: Text(
             'Le bilan « ${assessment.title} » sera définitivement supprimé. '
-                'Cette action est irréversible.',
+            'Cette action est irréversible.',
           ),
           actions: [
             TextButton(
@@ -1254,34 +1450,26 @@ class _CareEpisodeReportsWorkspaceScreenState
     }
 
     try {
-      await _assessmentRepository.deleteAssessment(
-        assessment.assessmentId,
-      );
+      await _assessmentRepository.deleteAssessment(assessment.assessmentId);
 
       if (!mounted) return;
 
       setState(() {
-        _archivedAssessmentsFuture =
-            _assessmentRepository.getArchivedForEpisode(
-              widget.episode.careEpisodeId,
-            );
+        _archivedAssessmentsFuture = _assessmentRepository
+            .getArchivedForEpisode(widget.episode.careEpisodeId);
       });
     } catch (_) {
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text(
-            'Impossible de supprimer définitivement le bilan.',
-          ),
+          content: Text('Impossible de supprimer définitivement le bilan.'),
         ),
       );
     }
   }
 
-  Future<void> _deleteReportPermanently(
-      CareEpisodeReport report,
-      ) async {
+  Future<void> _deleteReportPermanently(CareEpisodeReport report) async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (dialogContext) {
@@ -1289,7 +1477,7 @@ class _CareEpisodeReportsWorkspaceScreenState
           title: const Text('Supprimer définitivement le rapport ?'),
           content: Text(
             'Le rapport « ${report.title} » sera définitivement supprimé. '
-                'Cette action est irréversible.',
+            'Cette action est irréversible.',
           ),
           actions: [
             TextButton(
@@ -1310,26 +1498,21 @@ class _CareEpisodeReportsWorkspaceScreenState
     }
 
     try {
-      await _reportRepository.deleteReport(
-        report.reportId,
-      );
+      await _reportRepository.deleteReport(report.reportId);
 
       if (!mounted) return;
 
       setState(() {
-        _archivedReportsFuture =
-            _reportRepository.getArchivedForEpisode(
-              widget.episode.careEpisodeId,
-            );
+        _archivedReportsFuture = _reportRepository.getArchivedForEpisode(
+          widget.episode.careEpisodeId,
+        );
       });
     } catch (_) {
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text(
-            'Impossible de supprimer définitivement le rapport.',
-          ),
+          content: Text('Impossible de supprimer définitivement le rapport.'),
         ),
       );
     }
@@ -1364,8 +1547,9 @@ class _CareEpisodeReportsWorkspaceScreenState
     final isEditing = assessment.isSaved;
 
     final title = await _showDocumentTitleDialog(
-      dialogTitle:
-      isEditing ? 'Mettre à jour le bilan' : 'Enregistrer le bilan',
+      dialogTitle: isEditing
+          ? 'Mettre à jour le bilan'
+          : 'Enregistrer le bilan',
       fieldLabel: 'Titre du bilan',
       actionLabel: isEditing ? 'Mettre à jour' : 'Enregistrer',
       initialTitle: isEditing ? assessment.title : '',
@@ -1385,8 +1569,10 @@ class _CareEpisodeReportsWorkspaceScreenState
       title: title,
       contentJson: _draftController.text,
       status: 'saved',
-      assessmentDate:
-      isEditing ? assessment.assessmentDate : now,
+      authorPractitionerId: assessment.authorPractitionerId,
+      recipientText: assessment.recipientText,
+      docxFileName: assessment.docxFileName,
+      assessmentDate: isEditing ? assessment.assessmentDate : now,
       createdAt: assessment.createdAt,
       updatedAt: now,
       archivedAt: assessment.archivedAt,
@@ -1482,8 +1668,9 @@ class _CareEpisodeReportsWorkspaceScreenState
     final isEditing = report.isSaved;
 
     final title = await _showDocumentTitleDialog(
-      dialogTitle:
-      isEditing ? 'Mettre à jour le rapport' : 'Enregistrer le rapport',
+      dialogTitle: isEditing
+          ? 'Mettre à jour le rapport'
+          : 'Enregistrer le rapport',
       fieldLabel: 'Titre du rapport',
       actionLabel: isEditing ? 'Mettre à jour' : 'Enregistrer',
       initialTitle: isEditing ? report.title : '',
@@ -1649,7 +1836,6 @@ class _CareEpisodeReportsWorkspaceScreenState
       createdAt: now,
     );
 
-
     await _careEpisodeRepository.insertNote(note);
 
     if (!mounted) return;
@@ -1661,16 +1847,10 @@ class _CareEpisodeReportsWorkspaceScreenState
     });
   }
 
-  Future<void> _editFollowUpNote(
-      CareEpisodeNote note,
-      ) async {
-    final titleController = TextEditingController(
-      text: note.title,
-    );
+  Future<void> _editFollowUpNote(CareEpisodeNote note) async {
+    final titleController = TextEditingController(text: note.title);
 
-    final contentController = TextEditingController(
-      text: note.content,
-    );
+    final contentController = TextEditingController(text: note.content);
 
     final confirmed = await showDialog<bool>(
       context: context,
@@ -1706,13 +1886,11 @@ class _CareEpisodeReportsWorkspaceScreenState
           ),
           actions: [
             TextButton(
-              onPressed: () =>
-                  Navigator.of(dialogContext).pop(false),
+              onPressed: () => Navigator.of(dialogContext).pop(false),
               child: const Text('Annuler'),
             ),
             FilledButton(
-              onPressed: () =>
-                  Navigator.of(dialogContext).pop(true),
+              onPressed: () => Navigator.of(dialogContext).pop(true),
               child: const Text('Enregistrer'),
             ),
           ],
@@ -1791,9 +1969,7 @@ class _CareEpisodeReportsWorkspaceScreenState
                       Expanded(
                         child: Text(
                           _documentType.editorTitle,
-                          style: Theme.of(
-                            dialogContext,
-                          ).textTheme.titleLarge,
+                          style: Theme.of(dialogContext).textTheme.titleLarge,
                         ),
                       ),
                       IconButton(
@@ -1808,13 +1984,12 @@ class _CareEpisodeReportsWorkspaceScreenState
                     child: TextField(
                       controller: expandedController,
                       autofocus: true,
-                      enabled:
-                      _documentType == ClinicalDocumentType.assessment
+                      enabled: _documentType == ClinicalDocumentType.assessment
                           ? _draft != null
                           : _reportDraft != null,
                       decoration: const InputDecoration(
                         hintText:
-                        'Zone de rédaction du bilan SOAP.\n\n'
+                            'Zone de rédaction du bilan SOAP.\n\n'
                             'S — Subjectif\n\n'
                             'O — Objectif\n\n'
                             'A — Analyse\n\n'
@@ -1840,17 +2015,14 @@ class _CareEpisodeReportsWorkspaceScreenState
     expandedController.dispose();
   }
 
-  Future<bool> _insertAssessmentTemplateText(
-      String generatedText,
-      ) async {
+  Future<bool> _insertAssessmentTemplateText(String generatedText) async {
     final text = generatedText.trim();
 
     if (text.isEmpty) {
       return false;
     }
 
-    if (_documentType != ClinicalDocumentType.assessment ||
-        _draft == null) {
+    if (_documentType != ClinicalDocumentType.assessment || _draft == null) {
       return false;
     }
 
@@ -1859,9 +2031,7 @@ class _CareEpisodeReportsWorkspaceScreenState
     if (existingText.isEmpty) {
       _draftController.value = TextEditingValue(
         text: text,
-        selection: TextSelection.collapsed(
-          offset: text.length,
-        ),
+        selection: TextSelection.collapsed(offset: text.length),
       );
 
       _draftFocusNode.requestFocus();
@@ -1872,28 +2042,23 @@ class _CareEpisodeReportsWorkspaceScreenState
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
-          title: const Text(
-            'Le bilan contient déjà du texte',
-          ),
+          title: const Text('Le bilan contient déjà du texte'),
           content: const Text(
             'Souhaitez-vous ajouter le contenu généré '
-                'à la suite du bilan actuel ou remplacer '
-                'le contenu existant ?',
+            'à la suite du bilan actuel ou remplacer '
+            'le contenu existant ?',
           ),
           actions: [
             TextButton(
-              onPressed: () =>
-                  Navigator.of(dialogContext).pop('cancel'),
+              onPressed: () => Navigator.of(dialogContext).pop('cancel'),
               child: const Text('Annuler'),
             ),
             TextButton(
-              onPressed: () =>
-                  Navigator.of(dialogContext).pop('append'),
+              onPressed: () => Navigator.of(dialogContext).pop('append'),
               child: const Text('Ajouter à la suite'),
             ),
             FilledButton(
-              onPressed: () =>
-                  Navigator.of(dialogContext).pop('replace'),
+              onPressed: () => Navigator.of(dialogContext).pop('replace'),
               child: const Text('Remplacer'),
             ),
           ],
@@ -1911,9 +2076,7 @@ class _CareEpisodeReportsWorkspaceScreenState
 
     _draftController.value = TextEditingValue(
       text: newText,
-      selection: TextSelection.collapsed(
-        offset: newText.length,
-      ),
+      selection: TextSelection.collapsed(offset: newText.length),
     );
 
     _draftFocusNode.requestFocus();
@@ -1921,20 +2084,15 @@ class _CareEpisodeReportsWorkspaceScreenState
     return true;
   }
 
-  void _scheduleAssessmentTemplateSave(
-      AssessmentTemplateAnswers answers,
-      ) {
+  void _scheduleAssessmentTemplateSave(AssessmentTemplateAnswers answers) {
     _assessmentTemplateSaveTimer?.cancel();
 
-    _assessmentTemplateSaveTimer = Timer(
-      const Duration(seconds: 1),
-          () async {
-        await _assessmentTemplateDraftRepository.saveDraft(
-          careEpisodeId: widget.episode.careEpisodeId,
-          answers: answers,
-        );
-      },
-    );
+    _assessmentTemplateSaveTimer = Timer(const Duration(seconds: 1), () async {
+      await _assessmentTemplateDraftRepository.saveDraft(
+        careEpisodeId: widget.episode.careEpisodeId,
+        answers: answers,
+      );
+    });
   }
 
   Future<void> _openAssessmentTemplateGuide() async {
@@ -1958,9 +2116,8 @@ class _CareEpisodeReportsWorkspaceScreenState
   }
 
   Future<void> _openAssessmentTemplateGuideFor(
-      AssessmentTemplate template,
-      ) async {
-
+    AssessmentTemplate template,
+  ) async {
     final profession = await _patientAttributeRepository.getOne(
       patientId: widget.episode.patientId,
       attributeKey: 'profession',
@@ -1971,8 +2128,7 @@ class _CareEpisodeReportsWorkspaceScreenState
       attributeKey: 'sport',
     );
 
-    final savedAnswers =
-    await _assessmentTemplateDraftRepository.getDraft(
+    final savedAnswers = await _assessmentTemplateDraftRepository.getDraft(
       careEpisodeId: widget.episode.careEpisodeId,
       templateId: template.id,
     );
@@ -2026,9 +2182,7 @@ class _CareEpisodeReportsWorkspaceScreenState
                       Expanded(
                         child: Text(
                           title,
-                          style: Theme.of(
-                            dialogContext,
-                          ).textTheme.titleLarge,
+                          style: Theme.of(dialogContext).textTheme.titleLarge,
                         ),
                       ),
                       IconButton(
@@ -2061,9 +2215,7 @@ class _CareEpisodeReportsWorkspaceScreenState
 
   Future<Practitioner?> _loadCurrentReferringPractitioner() async {
     final assignment = await _referringPractitionerRepository
-        .getCurrentReferringPractitioner(
-      widget.episode.careEpisodeId,
-    );
+        .getCurrentReferringPractitioner(widget.episode.careEpisodeId);
 
     if (assignment == null) {
       return null;
@@ -2074,11 +2226,22 @@ class _CareEpisodeReportsWorkspaceScreenState
     );
   }
 
+  Future<Practitioner?> _loadAssessmentAuthor(
+    CareEpisodeAssessment assessment,
+  ) async {
+    final authorPractitionerId = assessment.authorPractitionerId;
+
+    if (authorPractitionerId != null &&
+        authorPractitionerId.trim().isNotEmpty) {
+      return _practitionerRepository.getPractitionerById(authorPractitionerId);
+    }
+
+    return _loadCurrentReferringPractitioner();
+  }
+
   Future<void> _editReferringPractitioner() async {
     final currentAssignment = await _referringPractitionerRepository
-        .getCurrentReferringPractitioner(
-      widget.episode.careEpisodeId,
-    );
+        .getCurrentReferringPractitioner(widget.episode.careEpisodeId);
 
     if (!mounted) return;
 
@@ -2120,13 +2283,10 @@ class _CareEpisodeReportsWorkspaceScreenState
     if (selectedPractitionerId == null) {
       if (previousPractitionerId != null) {
         await _referringPractitionerRepository
-            .clearCurrentReferringPractitioner(
-          widget.episode.careEpisodeId,
-        );
+            .clearCurrentReferringPractitioner(widget.episode.careEpisodeId);
       }
     } else if (selectedPractitionerId != previousPractitionerId) {
-      await _referringPractitionerRepository
-          .changeReferringPractitioner(
+      await _referringPractitionerRepository.changeReferringPractitioner(
         careEpisodeId: widget.episode.careEpisodeId,
         practitionerId: selectedPractitionerId!,
       );
@@ -2135,8 +2295,7 @@ class _CareEpisodeReportsWorkspaceScreenState
     if (!mounted) return;
 
     setState(() {
-      _currentReferringPractitionerFuture =
-          _loadCurrentReferringPractitioner();
+      _currentReferringPractitionerFuture = _loadCurrentReferringPractitioner();
     });
   }
 
@@ -2145,8 +2304,7 @@ class _CareEpisodeReportsWorkspaceScreenState
       MaterialPageRoute(
         builder: (_) => EpisodeDocumentsScreen(
           caseId: widget.episode.careEpisodeId,
-          caseLabel:
-          '${widget.patientName} — ${widget.episode.pathologyLabel}',
+          caseLabel: '${widget.patientName} — ${widget.episode.pathologyLabel}',
         ),
       ),
     );
@@ -2155,9 +2313,7 @@ class _CareEpisodeReportsWorkspaceScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('${widget.patientName} — Bilans et rapports'),
-      ),
+      appBar: AppBar(title: Text('${widget.patientName} — Bilans et rapports')),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -2189,41 +2345,96 @@ class _CareEpisodeReportsWorkspaceScreenState
                       children: [
                         Expanded(
                           flex: 2,
-                            child: SoapDraftCard(
-                              controller: _draftController,
-                              focusNode: _draftFocusNode,
-                              loading: _draftLoading,
-                              loadError: _draftLoadError,
-                              draftReady:
-                              _documentType ==
-                                  ClinicalDocumentType.assessment
-                                  ? _draft != null
-                                  : _reportDraft != null,
-                              onExpand: _openExpandedSoapEditor,
-                              isEditing:
-                              _documentType ==
-                                  ClinicalDocumentType.assessment
-                                  ? _draft?.isSaved == true
-                                  : _reportDraft?.isSaved == true,
-                              documentType: _documentType,
-                              documentTypeSelected: _documentTypeSelected,
-                              onOpenTemplateGuide: _openAssessmentTemplateGuide,
-                              documentTitle:
-                              _documentType == ClinicalDocumentType.assessment
-                                  ? _draft?.title
-                                  : _reportDraft?.title,
-                              onDocumentTypeChanged: (documentType) async {
-                                switch (documentType) {
-                                  case ClinicalDocumentType.assessment:
-                                    await _returnToDraft();
+                          child: Column(
+                            children: [
+                              Expanded(
+                                child: SoapDraftCard(
+                                  controller: _draftController,
+                                  focusNode: _draftFocusNode,
+                                  loading: _draftLoading,
+                                  loadError: _draftLoadError,
+                                  draftReady:
+                                      _documentType ==
+                                          ClinicalDocumentType.assessment
+                                      ? _draft != null
+                                      : _reportDraft != null,
+                                  onExpand: _openExpandedSoapEditor,
+                                  isEditing:
+                                      _documentType ==
+                                          ClinicalDocumentType.assessment
+                                      ? _draft?.isSaved == true
+                                      : _reportDraft?.isSaved == true,
+                                  documentType: _documentType,
+                                  documentTypeSelected: _documentTypeSelected,
+                                  onOpenTemplateGuide:
+                                      _openAssessmentTemplateGuide,
+                                  documentTitle:
+                                      _documentType ==
+                                          ClinicalDocumentType.assessment
+                                      ? _draft?.title
+                                      : _reportDraft?.title,
+                                  assessmentAuthorFuture:
+                                      _documentType ==
+                                              ClinicalDocumentType.assessment &&
+                                          _draft != null
+                                      ? _loadAssessmentAuthor(_draft!)
+                                      : null,
+                                  onAssessmentAuthorPressed:
+                                      _selectAssessmentAuthor,
+                                  assessmentRecipientText:
+                                      _documentType ==
+                                          ClinicalDocumentType.assessment
+                                      ? _draft?.recipientText
+                                      : null,
+                                  onAssessmentRecipientPressed:
+                                      _editAssessmentRecipient,
+                                  onDocumentTypeChanged: (documentType) async {
+                                    switch (documentType) {
+                                      case ClinicalDocumentType.assessment:
+                                        await _returnToDraft();
 
-                                  case ClinicalDocumentType.report:
-                                    await _createOrOpenReportDraft();
-                                }
-                              },
-                            ),
+                                      case ClinicalDocumentType.report:
+                                        await _createOrOpenReportDraft();
+                                    }
+                                  },
+                                ),
+                              ),
+
+                              const SizedBox(height: 8),
+
+                              if (_documentType ==
+                                      ClinicalDocumentType.assessment &&
+                                  _draft?.isSaved == true)
+                                Align(
+                                  alignment: Alignment.centerRight,
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          'Votre bilan est prêt. Le DOCX regroupera les informations '
+                                          'saisies et les éléments sélectionnés.',
+                                          style: Theme.of(
+                                            context,
+                                          ).textTheme.bodySmall,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 16),
+                                      FilledButton.icon(
+                                        onPressed: _exportAssessmentDocx,
+                                        icon: const Icon(
+                                          Icons.description_outlined,
+                                        ),
+                                        label: const Text('Générer le DOCX'),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                            ],
+                          ),
                         ),
+
                         const SizedBox(width: 16),
+
                         Expanded(
                           child: Column(
                             children: [
@@ -2232,68 +2443,91 @@ class _CareEpisodeReportsWorkspaceScreenState
                                   resultsFuture: _resultsFuture,
                                   selectedTestExoIds: _selectedTestExoIds,
                                   selectionEnabled:
-                                  _documentType == ClinicalDocumentType.assessment &&
+                                      _documentType ==
+                                          ClinicalDocumentType.assessment &&
                                       _draft != null &&
                                       !_testSelectionLoading,
                                   onExpand: () {
                                     _showExpandedWorkspaceContent(
                                       title: 'Tests réalisés',
-                                      child: LatestTestsCard(
-                                        resultsFuture: _resultsFuture,
-                                        selectedTestExoIds: _selectedTestExoIds,
-                                        selectionEnabled:
-                                        _documentType == ClinicalDocumentType.assessment &&
-                                            _draft != null &&
-                                            !_testSelectionLoading,
-                                        onExpand: null,
-                                        onTestIncludedChanged: ({
-                                          required exoId,
-                                          required included,
-                                        }) {
-                                          _setTestIncluded(
-                                            exoId: exoId,
-                                            included: included,
-                                          );
-                                        },
+                                      child: StatefulBuilder(
+                                        builder:
+                                            (dialogContext, setDialogState) {
+                                              return LatestTestsCard(
+                                                resultsFuture: _resultsFuture,
+                                                selectedTestExoIds:
+                                                    _selectedTestExoIds,
+                                                selectionEnabled:
+                                                    _documentType ==
+                                                        ClinicalDocumentType
+                                                            .assessment &&
+                                                    _draft != null &&
+                                                    !_testSelectionLoading,
+                                                onExpand: null,
+                                                onTestIncludedChanged:
+                                                    ({
+                                                      required exoId,
+                                                      required included,
+                                                    }) async {
+                                                      await _setTestIncluded(
+                                                        exoId: exoId,
+                                                        included: included,
+                                                      );
+
+                                                      if (!dialogContext
+                                                          .mounted) {
+                                                        return;
+                                                      }
+
+                                                      setDialogState(() {});
+                                                    },
+                                              );
+                                            },
                                       ),
                                     );
                                   },
-                                  onTestIncludedChanged: ({
-                                    required exoId,
-                                    required included,
-                                  }) {
-                                    _setTestIncluded(
-                                      exoId: exoId,
-                                      included: included,
-                                    );
-                                  },
+                                  onTestIncludedChanged:
+                                      ({required exoId, required included}) {
+                                        _setTestIncluded(
+                                          exoId: exoId,
+                                          included: included,
+                                        );
+                                      },
                                 ),
                               ),
+
                               const SizedBox(height: 12),
+
                               Expanded(
                                 child: AssessmentHistoryCard(
                                   assessmentsFuture: _assessmentsFuture,
                                   isEditing:
-                                  _documentType == ClinicalDocumentType.assessment &&
+                                      _documentType ==
+                                          ClinicalDocumentType.assessment &&
                                       _draft?.isSaved == true,
                                   showOpenAssessmentAction:
-                                  _documentType == ClinicalDocumentType.report,
+                                      _documentType ==
+                                      ClinicalDocumentType.report,
                                   onOpenAssessmentPressed: _returnToDraft,
                                   onSaveOrUpdatePressed:
-                                  _documentType == ClinicalDocumentType.assessment &&
-                                      _draft != null
+                                      _documentType ==
+                                              ClinicalDocumentType.assessment &&
+                                          _draft != null
                                       ? _saveOrUpdateAssessment
                                       : null,
                                   onCancelChangesPressed:
-                                  _documentType == ClinicalDocumentType.assessment &&
-                                      _draft?.isSaved == true
+                                      _documentType ==
+                                              ClinicalDocumentType.assessment &&
+                                          _draft?.isSaved == true
                                       ? _cancelAssessmentChanges
                                       : null,
                                   onReturnToDraftPressed:
-                                  _documentType == ClinicalDocumentType.assessment &&
-                                      _draft?.isSaved == true
+                                      _documentType ==
+                                              ClinicalDocumentType.assessment &&
+                                          _draft?.isSaved == true
                                       ? _returnToDraft
-                                      : null,onEditAssessment: _editAssessment,
+                                      : null,
+                                  onEditAssessment: _editAssessment,
                                   onDuplicateAssessment: _duplicateAssessment,
                                   onArchiveAssessment: _archiveAssessment,
                                   onExpand: () {
@@ -2302,99 +2536,124 @@ class _CareEpisodeReportsWorkspaceScreenState
                                       child: AssessmentHistoryCard(
                                         assessmentsFuture: _assessmentsFuture,
                                         isEditing:
-                                        _documentType == ClinicalDocumentType.assessment &&
+                                            _documentType ==
+                                                ClinicalDocumentType
+                                                    .assessment &&
                                             _draft?.isSaved == true,
                                         showOpenAssessmentAction:
-                                        _documentType == ClinicalDocumentType.report,
+                                            _documentType ==
+                                            ClinicalDocumentType.report,
                                         onOpenAssessmentPressed: _returnToDraft,
                                         onSaveOrUpdatePressed:
-                                        _documentType == ClinicalDocumentType.assessment &&
-                                            _draft != null
+                                            _documentType ==
+                                                    ClinicalDocumentType
+                                                        .assessment &&
+                                                _draft != null
                                             ? _saveOrUpdateAssessment
                                             : null,
                                         onCancelChangesPressed:
-                                        _documentType == ClinicalDocumentType.assessment &&
-                                            _draft?.isSaved == true
+                                            _documentType ==
+                                                    ClinicalDocumentType
+                                                        .assessment &&
+                                                _draft?.isSaved == true
                                             ? _cancelAssessmentChanges
                                             : null,
                                         onReturnToDraftPressed:
-                                        _documentType == ClinicalDocumentType.assessment &&
-                                            _draft?.isSaved == true
+                                            _documentType ==
+                                                    ClinicalDocumentType
+                                                        .assessment &&
+                                                _draft?.isSaved == true
                                             ? _returnToDraft
                                             : null,
-                                          onEditAssessment: _editAssessment,
-                                          onDuplicateAssessment: _duplicateAssessment,
-                                          onArchiveAssessment: _archiveAssessment,
+                                        onEditAssessment: _editAssessment,
+                                        onDuplicateAssessment:
+                                            _duplicateAssessment,
+                                        onArchiveAssessment: _archiveAssessment,
                                         onExpand: null,
                                       ),
                                     );
                                   },
                                 ),
                               ),
+
                               const SizedBox(height: 12),
+
                               Expanded(
-                                  child: ReportHistoryCard(
-                                    reportsFuture: _reportsFuture,
-                                    isEditingReport:
-                                    _documentType == ClinicalDocumentType.report &&
-                                        _reportDraft?.isSaved == true,
-                                    onCreateReportPressed:
-                                    _documentType == ClinicalDocumentType.report &&
-                                        _reportDraft?.isSaved == true
-                                        ? _returnToReportDraft
-                                        : _createOrOpenReportDraft,
-                                    onSaveReportPressed:
-                                    _documentType == ClinicalDocumentType.report &&
-                                        _reportDraft != null
-                                        ? _saveReport
-                                        : null,
-                                    onCancelReportChangesPressed:
-                                    _documentType == ClinicalDocumentType.report &&
-                                        _reportDraft?.isSaved == true
-                                        ? _cancelReportChanges
-                                        : null,
-                                    onEditReport: _editReport,
-                                    onDuplicateReport: _duplicateReport,
-                                    onArchiveReport: _archiveReport,
-                                    onExpand: () {
-                                      _showExpandedWorkspaceContent(
-                                        title: 'Historique des rapports',
-                                        child: ReportHistoryCard(
-                                          reportsFuture: _reportsFuture,
-                                          isEditingReport:
-                                          _documentType == ClinicalDocumentType.report &&
-                                              _reportDraft?.isSaved == true,
-                                          onCreateReportPressed:
-                                          _documentType == ClinicalDocumentType.report &&
-                                              _reportDraft?.isSaved == true
-                                              ? _returnToReportDraft
-                                              : _createOrOpenReportDraft,
-                                          onSaveReportPressed:
-                                          _documentType == ClinicalDocumentType.report &&
-                                              _reportDraft != null
-                                              ? _saveReport
-                                              : null,
-                                          onCancelReportChangesPressed:
-                                          _documentType == ClinicalDocumentType.report &&
-                                              _reportDraft?.isSaved == true
-                                              ? _cancelReportChanges
-                                              : null,
-                                          onEditReport: _editReport,
-                                          onDuplicateReport: _duplicateReport,
-                                          onArchiveReport: (report) async {
-                                            final navigator = Navigator.of(context);
+                                child: ReportHistoryCard(
+                                  reportsFuture: _reportsFuture,
+                                  isEditingReport:
+                                      _documentType ==
+                                          ClinicalDocumentType.report &&
+                                      _reportDraft?.isSaved == true,
+                                  onCreateReportPressed:
+                                      _documentType ==
+                                              ClinicalDocumentType.report &&
+                                          _reportDraft?.isSaved == true
+                                      ? _returnToReportDraft
+                                      : _createOrOpenReportDraft,
+                                  onSaveReportPressed:
+                                      _documentType ==
+                                              ClinicalDocumentType.report &&
+                                          _reportDraft != null
+                                      ? _saveReport
+                                      : null,
+                                  onCancelReportChangesPressed:
+                                      _documentType ==
+                                              ClinicalDocumentType.report &&
+                                          _reportDraft?.isSaved == true
+                                      ? _cancelReportChanges
+                                      : null,
+                                  onEditReport: _editReport,
+                                  onDuplicateReport: _duplicateReport,
+                                  onArchiveReport: _archiveReport,
+                                  onExpand: () {
+                                    _showExpandedWorkspaceContent(
+                                      title: 'Historique des rapports',
+                                      child: ReportHistoryCard(
+                                        reportsFuture: _reportsFuture,
+                                        isEditingReport:
+                                            _documentType ==
+                                                ClinicalDocumentType.report &&
+                                            _reportDraft?.isSaved == true,
+                                        onCreateReportPressed:
+                                            _documentType ==
+                                                    ClinicalDocumentType
+                                                        .report &&
+                                                _reportDraft?.isSaved == true
+                                            ? _returnToReportDraft
+                                            : _createOrOpenReportDraft,
+                                        onSaveReportPressed:
+                                            _documentType ==
+                                                    ClinicalDocumentType
+                                                        .report &&
+                                                _reportDraft != null
+                                            ? _saveReport
+                                            : null,
+                                        onCancelReportChangesPressed:
+                                            _documentType ==
+                                                    ClinicalDocumentType
+                                                        .report &&
+                                                _reportDraft?.isSaved == true
+                                            ? _cancelReportChanges
+                                            : null,
+                                        onEditReport: _editReport,
+                                        onDuplicateReport: _duplicateReport,
+                                        onArchiveReport: (report) async {
+                                          final navigator = Navigator.of(
+                                            context,
+                                          );
 
-                                            await _archiveReport(report);
+                                          await _archiveReport(report);
 
-                                            if (!mounted) return;
+                                          if (!mounted) return;
 
-                                            navigator.pop();
-                                          },
-                                          onExpand: null,
-                                        ),
-                                      );
-                                    },
-                                  ),
+                                          navigator.pop();
+                                        },
+                                        onExpand: null,
+                                      ),
+                                    );
+                                  },
+                                ),
                               ),
                             ],
                           ),
@@ -2402,7 +2661,9 @@ class _CareEpisodeReportsWorkspaceScreenState
                       ],
                     ),
                   ),
+
                   const SizedBox(height: 12),
+
                   Expanded(
                     flex: 3,
                     child: Row(
@@ -2414,7 +2675,8 @@ class _CareEpisodeReportsWorkspaceScreenState
                             notesFuture: _notesFuture,
                             selectedNoteIds: _selectedNoteIds,
                             selectionEnabled:
-                            _documentType == ClinicalDocumentType.assessment &&
+                                _documentType ==
+                                    ClinicalDocumentType.assessment &&
                                 _draft != null &&
                                 !_noteSelectionLoading,
                             onAddNote: _addFollowUpNote,
@@ -2426,7 +2688,8 @@ class _CareEpisodeReportsWorkspaceScreenState
                                   notesFuture: _notesFuture,
                                   selectedNoteIds: _selectedNoteIds,
                                   selectionEnabled:
-                                  _documentType == ClinicalDocumentType.assessment &&
+                                      _documentType ==
+                                          ClinicalDocumentType.assessment &&
                                       _draft != null &&
                                       !_noteSelectionLoading,
                                   onAddNote: () async {
@@ -2440,34 +2703,33 @@ class _CareEpisodeReportsWorkspaceScreenState
                                   },
                                   onEditNote: _editFollowUpNote,
                                   onExpand: null,
-                                  onNoteIncludedChanged: ({
-                                    required noteId,
-                                    required included,
-                                  }) {
-                                    _setNoteIncluded(
-                                      noteId: noteId,
-                                      included: included,
-                                    );
-                                  },
+                                  onNoteIncludedChanged:
+                                      ({required noteId, required included}) {
+                                        _setNoteIncluded(
+                                          noteId: noteId,
+                                          included: included,
+                                        );
+                                      },
                                 ),
                               );
                             },
-                            onNoteIncludedChanged: ({
-                              required noteId,
-                              required included,
-                            }) {
-                              _setNoteIncluded(
-                                noteId: noteId,
-                                included: included,
-                              );
-                            },
+                            onNoteIncludedChanged:
+                                ({required noteId, required included}) {
+                                  _setNoteIncluded(
+                                    noteId: noteId,
+                                    included: included,
+                                  );
+                                },
                           ),
                         ),
+
                         const SizedBox(width: 16),
+
                         Expanded(
                           flex: 2,
                           child: ArchivedDocumentsCard(
-                            archivedAssessmentsFuture: _archivedAssessmentsFuture,
+                            archivedAssessmentsFuture:
+                                _archivedAssessmentsFuture,
                             archivedReportsFuture: _archivedReportsFuture,
                             onRestoreAssessment: _restoreAssessment,
                             onRestoreReport: _restoreReport,
@@ -2477,7 +2739,8 @@ class _CareEpisodeReportsWorkspaceScreenState
                               _showExpandedWorkspaceContent(
                                 title: 'Documents archivés',
                                 child: ArchivedDocumentsCard(
-                                  archivedAssessmentsFuture: _archivedAssessmentsFuture,
+                                  archivedAssessmentsFuture:
+                                      _archivedAssessmentsFuture,
                                   archivedReportsFuture: _archivedReportsFuture,
                                   onRestoreAssessment: (assessment) async {
                                     final navigator = Navigator.of(context);
@@ -2500,7 +2763,9 @@ class _CareEpisodeReportsWorkspaceScreenState
                                   onDeleteAssessment: (assessment) async {
                                     final navigator = Navigator.of(context);
 
-                                    await _deleteAssessmentPermanently(assessment);
+                                    await _deleteAssessmentPermanently(
+                                      assessment,
+                                    );
 
                                     if (!mounted) return;
 
@@ -2521,7 +2786,9 @@ class _CareEpisodeReportsWorkspaceScreenState
                             },
                           ),
                         ),
+
                         const SizedBox(width: 16),
+
                         Expanded(
                           flex: 4,
                           child: EpisodeSummaryCard(

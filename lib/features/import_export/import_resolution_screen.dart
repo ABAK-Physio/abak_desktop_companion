@@ -224,6 +224,9 @@ class _ImportResolutionScreenState extends State<ImportResolutionScreen> {
             FilledButton(
               onPressed: () async {
                 final now = DateTime.now().millisecondsSinceEpoch;
+                final openedAt = int.tryParse(
+                  widget.package.clinicalEpisode?.createdAt ?? '',
+                );
 
                 final episode = CareEpisode(
                   careEpisodeId: const Uuid().v4(),
@@ -236,6 +239,7 @@ class _ImportResolutionScreenState extends State<ImportResolutionScreen> {
                       : pathologyController.text.trim(),
                   initialReport: null,
                   finalConclusion: null,
+                  openedAt: openedAt,
                   createdAt: now,
                   updatedAt: now,
                   archivedAt: null,

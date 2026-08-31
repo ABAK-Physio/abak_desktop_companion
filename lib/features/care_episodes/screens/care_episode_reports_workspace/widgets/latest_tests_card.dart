@@ -7,11 +7,11 @@ import 'package:flutter/material.dart';
 
 import 'scrollable_workspace_card.dart';
 import 'table_header.dart';
+import 'package:fl_chart/fl_chart.dart';
+import 'package:abak_desktop_companion/features/results/desktop_result_grouping.dart';
 
-typedef TestIncludedChanged = void Function({
-required String exoId,
-required bool included,
-});
+typedef TestIncludedChanged =
+    void Function({required String exoId, required bool included});
 
 class LatestTestsCard extends StatelessWidget {
   final Future<List<DesktopResult>> resultsFuture;
@@ -29,19 +29,34 @@ class LatestTestsCard extends StatelessWidget {
     required this.onExpand,
   });
 
-  List<DesktopResult> _latestResultsByTest(
-      List<DesktopResult> results,
-      ) {
+  List<DesktopResult> _latestResultsByTest(List<DesktopResult> results) {
     final sortedResults = [...results]
-      ..sort(
-            (a, b) => b.createdAt.compareTo(a.createdAt),
-      );
+      ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
 
     final latestByTest = <String, DesktopResult>{};
 
     for (final result in sortedResults) {
-      latestByTest.putIfAbsent(
+      final definition = ClinicalActivityCatalog.infoFor(
         result.exoId,
+      );
+
+      final followUpGroupPath = definition.followUpGroupPath;
+
+      String groupKey = result.exoId;
+
+      if (followUpGroupPath != null) {
+        final groupCode = _readStructuredString(
+          result,
+          followUpGroupPath,
+        );
+
+        if (groupCode != null) {
+          groupKey = '${result.exoId}::$groupCode';
+        }
+      }
+
+      latestByTest.putIfAbsent(
+        groupKey,
             () => result,
       );
     }
@@ -75,6 +90,228 @@ class LatestTestsCard extends StatelessWidget {
     return '$score $unit';
   }
 
+  String _testDisplayLabel(DesktopResult result) {
+    return desktopResultDisplayLabel(result);
+  }
+
+  String _testSelectionKey(DesktopResult result) {
+    return desktopResultSelectionKey(result);
+  }
+
+  double? _readMetricValueWithFallbacks(
+      DesktopResult result,
+      ExerciseMetricDefinition metric,
+      ) {
+    return readDesktopResultMetricValueWithFallbacks(
+      result,
+      metric,
+    );
+  }
+
+  String? _readStructuredString(
+      DesktopResult result,
+      String path,
+      ) {
+    return readDesktopResultStructuredString(
+      result,
+      path,
+    );
+  }
+
+  Widget _buildEvolutionChart(
+      BuildContext context,
+      List<DesktopResult> results,
+      ) {
+    if (results.isEmpty) {
+      return const Center(
+        child: Text(
+          'Aucun résultat disponible.',
+          textAlign: TextAlign.center,
+        ),
+      );
+    }
+
+    final definition = ClinicalActivityCatalog.infoFor(
+      results.first.exoId,
+    );
+
+    final chartMetrics = definition.metrics
+        .where((metric) => metric.showOnEvolutionChart)
+        .toList();
+
+    if (chartMetrics.isEmpty) {
+      return const Center(
+        child: Text(
+          'Aucune donnée d’évolution disponible pour ce test.',
+          textAlign: TextAlign.center,
+        ),
+      );
+    }
+
+    final chronologicalResults = [...results]
+      ..sort(
+            (a, b) => a.createdAt.compareTo(b.createdAt),
+      );
+
+    final colorScheme = Theme.of(context).colorScheme;
+
+    final chartColors = [
+      colorScheme.primary,
+      colorScheme.secondary,
+      colorScheme.tertiary,
+      colorScheme.error,
+      colorScheme.primaryContainer,
+      colorScheme.secondaryContainer,
+    ];
+
+    final lineBars = <LineChartBarData>[];
+    final legendItems = <Widget>[];
+
+    for (var metricIndex = 0;
+    metricIndex < chartMetrics.length;
+    metricIndex++) {
+      final metric = chartMetrics[metricIndex];
+
+      final spots = <FlSpot>[];
+
+      for (var resultIndex = 0;
+      resultIndex < chronologicalResults.length;
+      resultIndex++) {
+        final value = _readMetricValueWithFallbacks(
+          chronologicalResults[resultIndex],
+          metric,
+        );
+
+        if (value != null) {
+          spots.add(
+            FlSpot(
+              resultIndex.toDouble(),
+              value,
+            ),
+          );
+        }
+      }
+
+      if (spots.length < 2) {
+        continue;
+      }
+
+      final color =
+      chartColors[metricIndex % chartColors.length];
+
+      lineBars.add(
+        LineChartBarData(
+          spots: spots,
+          isCurved: false,
+          color: color,
+          dotData: const FlDotData(
+            show: true,
+          ),
+        ),
+      );
+
+      legendItems.add(
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 16,
+              height: 3,
+              color: color,
+            ),
+            const SizedBox(width: 6),
+            Text(
+              metric.fallbackLabel,
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+          ],
+        ),
+      );
+    }
+
+    if (lineBars.isEmpty) {
+      return const Center(
+        child: Text(
+          'Au moins deux résultats sont nécessaires pour afficher l’évolution.',
+          textAlign: TextAlign.center,
+        ),
+      );
+    }
+
+    return Padding(
+      padding: const EdgeInsets.all(24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          if (legendItems.length > 1) ...[
+            Wrap(
+              spacing: 20,
+              runSpacing: 8,
+              children: legendItems,
+            ),
+            const SizedBox(height: 16),
+          ],
+          Expanded(
+            child: LineChart(
+              LineChartData(
+                lineBarsData: lineBars,
+                titlesData: FlTitlesData(
+                  topTitles: const AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: false,
+                    ),
+                  ),
+                  rightTitles: const AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: false,
+                    ),
+                  ),
+                  leftTitles: const AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: true,
+                      reservedSize: 48,
+                    ),
+                  ),
+                  bottomTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: true,
+                      reservedSize: 40,
+                      interval: 1,
+                      getTitlesWidget: (value, meta) {
+                        final index = value.round();
+
+                        if (index < 0 ||
+                            index >=
+                                chronologicalResults.length) {
+                          return const SizedBox.shrink();
+                        }
+
+                        return SideTitleWidget(
+                          meta: meta,
+                          child: Text(
+                            DateFormatUtils
+                                .formatTimestampForDisplay(
+                              context,
+                              chronologicalResults[index]
+                                  .createdAt,
+                            ),
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodySmall,
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Future<void> _showAllResults(BuildContext context) async {
     final results = await resultsFuture;
 
@@ -82,9 +319,12 @@ class LatestTestsCard extends StatelessWidget {
 
     final sortedResults = [...results]
       ..sort((a, b) {
-        final labelComparison =
-        ClinicalActivityCatalog.displayLabel(a.exoId).compareTo(
-          ClinicalActivityCatalog.displayLabel(b.exoId),
+        final labelComparison = ClinicalActivityCatalog.displayLabel(
+          a.exoId,
+        ).compareTo(
+          ClinicalActivityCatalog.displayLabel(
+            b.exoId,
+          ),
         );
 
         if (labelComparison != 0) {
@@ -95,14 +335,53 @@ class LatestTestsCard extends StatelessWidget {
       });
 
     final groupedResults = <String, List<DesktopResult>>{};
+    final groupLabels = <String, String>{};
 
     for (final result in sortedResults) {
+      final definition = ClinicalActivityCatalog.infoFor(
+        result.exoId,
+      );
+
+      final followUpGroupPath = definition.followUpGroupPath;
+
+      String groupKey = result.exoId;
+      String groupLabel = ClinicalActivityCatalog.displayLabel(
+        result.exoId,
+      );
+
+      if (followUpGroupPath != null) {
+        final groupCode = _readStructuredString(
+          result,
+          followUpGroupPath,
+        );
+
+        if (groupCode != null) {
+          groupKey = '${result.exoId}::$groupCode';
+
+          final followUpGroupLabelPath =
+              definition.followUpGroupLabelPath;
+
+          final groupValueLabel = followUpGroupLabelPath == null
+              ? null
+              : _readStructuredString(
+            result,
+            followUpGroupLabelPath,
+          );
+
+          groupLabel =
+          '${ClinicalActivityCatalog.displayLabel(result.exoId)} — '
+              '${groupValueLabel ?? groupCode}';
+        }
+      }
+
       groupedResults
           .putIfAbsent(
-        result.exoId,
+        groupKey,
             () => <DesktopResult>[],
       )
           .add(result);
+
+      groupLabels[groupKey] = groupLabel;
     }
 
     if (!context.mounted) return;
@@ -110,94 +389,201 @@ class LatestTestsCard extends StatelessWidget {
     await showDialog<void>(
       context: context,
       builder: (dialogContext) {
-        return Dialog(
-          insetPadding: const EdgeInsets.all(32),
-          child: SizedBox(
-            width: MediaQuery.of(dialogContext).size.width * 0.80,
-            height: MediaQuery.of(dialogContext).size.height * 0.80,
-            child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Row(
+        String? selectedExoId;
+
+        return StatefulBuilder(
+          builder: (dialogContext, setDialogState) {
+            return Dialog(
+              insetPadding: const EdgeInsets.all(32),
+              child: SizedBox(
+                width:
+                MediaQuery.of(dialogContext).size.width * 0.80,
+                height:
+                MediaQuery.of(dialogContext).size.height * 0.80,
+                child: Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    crossAxisAlignment:
+                    CrossAxisAlignment.stretch,
                     children: [
-                      Expanded(
-                        child: Text(
-                          'Tous les résultats des tests',
-                          style: Theme.of(
-                            dialogContext,
-                          ).textTheme.titleLarge,
-                        ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              'Tous les résultats des tests',
+                              style: Theme.of(
+                                dialogContext,
+                              ).textTheme.titleLarge,
+                            ),
+                          ),
+                          IconButton(
+                            onPressed: () =>
+                                Navigator.of(
+                                  dialogContext,
+                                ).pop(),
+                            tooltip: 'Fermer',
+                            icon: const Icon(Icons.close),
+                          ),
+                        ],
                       ),
-                      IconButton(
-                        onPressed: () =>
-                            Navigator.of(dialogContext).pop(),
-                        tooltip: 'Fermer',
-                        icon: const Icon(Icons.close),
+                      const SizedBox(height: 16),
+                      Expanded(
+                        child: groupedResults.isEmpty
+                            ? const Center(
+                          child: Text(
+                            'Aucun résultat disponible.',
+                          ),
+                        )
+                            : Row(
+                          crossAxisAlignment:
+                          CrossAxisAlignment.stretch,
+                          children: [
+                            Expanded(
+                              flex: 1,
+                              child: ListView(
+                                children: [
+                                  for (final entry
+                                  in groupedResults
+                                      .entries) ...[
+                                    InkWell(
+                                      onTap: () {
+                                        setDialogState(() {
+                                          selectedExoId =
+                                              entry.key;
+                                        });
+                                      },
+                                      child: Padding(
+                                        padding:
+                                        const EdgeInsets
+                                            .symmetric(
+                                          vertical: 8,
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            if (selectedExoId ==
+                                                entry.key)
+                                              const Padding(
+                                                padding:
+                                                EdgeInsets
+                                                    .only(
+                                                  right: 6,
+                                                ),
+                                                child: Icon(
+                                                  Icons
+                                                      .chevron_right,
+                                                  size: 18,
+                                                ),
+                                              ),
+                                            Expanded(
+                                              child: Text(
+                                                groupLabels[entry.key] ?? entry.key,
+                                                style: Theme.of(
+                                                  dialogContext,
+                                                )
+                                                    .textTheme
+                                                    .titleMedium
+                                                    ?.copyWith(
+                                                  fontWeight:
+                                                  selectedExoId ==
+                                                      entry.key
+                                                      ? FontWeight
+                                                      .bold
+                                                      : FontWeight
+                                                      .w600,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 8),
+                                    for (final result
+                                    in entry.value)
+                                      ListTile(
+                                        contentPadding:
+                                        EdgeInsets.zero,
+                                        title: Text(
+                                          DateFormatUtils
+                                              .formatTimestampForDisplay(
+                                            dialogContext,
+                                            result.createdAt,
+                                          ),
+                                        ),
+                                        subtitle: Text(
+                                          _resultLabel(
+                                            result,
+                                          ),
+                                        ),
+                                        trailing:
+                                        const Icon(
+                                          Icons
+                                              .chevron_right,
+                                        ),
+                                        onTap: () {
+                                          Navigator.of(
+                                            dialogContext,
+                                          ).push(
+                                            MaterialPageRoute(
+                                              builder: (_) =>
+                                                  ResultDetailScreen(
+                                                    result:
+                                                    result,
+                                                  ),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    const Divider(
+                                      height: 24,
+                                    ),
+                                  ],
+                                ],
+                              ),
+                            ),
+                            const VerticalDivider(
+                              width: 32,
+                            ),
+                            Expanded(
+                              flex: 2,
+                              child: selectedExoId == null
+                                  ? const Center(
+                                child: Text(
+                                  'Sélectionnez un test pour afficher son évolution.',
+                                  textAlign: TextAlign.center,
+                                ),
+                              )
+                                  : Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  Text(
+                                    groupLabels[selectedExoId!] ?? selectedExoId!,
+                                    style: Theme.of(dialogContext)
+                                        .textTheme
+                                        .titleMedium
+                                        ?.copyWith(
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 16),
+                                  Expanded(
+                                    child: _buildEvolutionChart(
+                                      dialogContext,
+                                      groupedResults[selectedExoId!] ?? [],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 16),
-                  Expanded(
-                    child: groupedResults.isEmpty
-                        ? const Center(
-                      child: Text(
-                        'Aucun résultat disponible.',
-                      ),
-                    )
-                        : ListView(
-                      children: [
-                        for (final entry
-                        in groupedResults.entries) ...[
-                          Text(
-                            ClinicalActivityCatalog.displayLabel(
-                              entry.key,
-                            ),
-                            style: Theme.of(dialogContext)
-                                .textTheme
-                                .titleMedium
-                                ?.copyWith(
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          for (final result in entry.value)
-                            ListTile(
-                              contentPadding: EdgeInsets.zero,
-                              title: Text(
-                                DateFormatUtils
-                                    .formatTimestampForDisplay(
-                                  dialogContext,
-                                  result.createdAt,
-                                ),
-                              ),
-                              subtitle: Text(
-                                _resultLabel(result),
-                              ),
-                              trailing: const Icon(
-                                Icons.chevron_right,
-                              ),
-                              onTap: () {
-                                Navigator.of(dialogContext).push(
-                                  MaterialPageRoute(
-                                    builder: (_) =>
-                                        ResultDetailScreen(
-                                          result: result,
-                                        ),
-                                  ),
-                                );
-                              },
-                            ),
-                          const Divider(height: 24),
-                        ],
-                      ],
-                    ),
-                  ),
-                ],
+                ),
               ),
-            ),
-          ),
+            );
+          },
         );
       },
     );
@@ -227,31 +613,20 @@ class LatestTestsCard extends StatelessWidget {
       child: FutureBuilder<List<DesktopResult>>(
         future: resultsFuture,
         builder: (context, snapshot) {
-          if (snapshot.connectionState ==
-              ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
           }
 
           if (snapshot.hasError) {
             return Center(
-              child: Text(
-                s.careEpisodeReportsWorkspace_testsLoadError,
-              ),
+              child: Text(s.careEpisodeReportsWorkspace_testsLoadError),
             );
           }
 
-          final latestResults = _latestResultsByTest(
-            snapshot.data ?? [],
-          );
+          final latestResults = _latestResultsByTest(snapshot.data ?? []);
 
           if (latestResults.isEmpty) {
-            return Center(
-              child: Text(
-                s.careEpisodeReportsWorkspace_noTests,
-              ),
-            );
+            return Center(child: Text(s.careEpisodeReportsWorkspace_noTests));
           }
 
           return Column(
@@ -260,27 +635,19 @@ class LatestTestsCard extends StatelessWidget {
                 columns: [
                   Expanded(
                     flex: 4,
-                    child: Text(
-                      s.careEpisodeReportsWorkspace_test,
-                    ),
+                    child: Text(s.careEpisodeReportsWorkspace_test),
                   ),
                   Expanded(
                     flex: 2,
-                    child: Text(
-                      s.careEpisodeReportsWorkspace_date,
-                    ),
+                    child: Text(s.careEpisodeReportsWorkspace_date),
                   ),
                   Expanded(
                     flex: 3,
-                    child: Text(
-                      s.careEpisodeReportsWorkspace_result,
-                    ),
+                    child: Text(s.careEpisodeReportsWorkspace_result),
                   ),
                   SizedBox(
                     width: 72,
-                    child: Text(
-                      s.careEpisodeReportsWorkspace_include,
-                    ),
+                    child: Text(s.careEpisodeReportsWorkspace_include),
                   ),
                 ],
               ),
@@ -288,8 +655,7 @@ class LatestTestsCard extends StatelessWidget {
               Expanded(
                 child: ListView.separated(
                   itemCount: latestResults.length,
-                  separatorBuilder: (_, _) =>
-                  const Divider(height: 1),
+                  separatorBuilder: (_, _) => const Divider(height: 1),
                   itemBuilder: (context, index) {
                     final result = latestResults[index];
 
@@ -297,10 +663,7 @@ class LatestTestsCard extends StatelessWidget {
                       onTap: () {
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (_) =>
-                                ResultDetailScreen(
-                                  result: result,
-                                ),
+                            builder: (_) => ResultDetailScreen(result: result),
                           ),
                         );
                       },
@@ -314,20 +677,15 @@ class LatestTestsCard extends StatelessWidget {
                             Expanded(
                               flex: 4,
                               child: Text(
-                                ClinicalActivityCatalog
-                                    .displayLabel(
-                                  result.exoId,
-                                ),
+                                _testDisplayLabel(result),
                                 maxLines: 2,
-                                overflow:
-                                TextOverflow.ellipsis,
+                                overflow: TextOverflow.ellipsis,
                               ),
                             ),
                             Expanded(
                               flex: 2,
                               child: Text(
-                                DateFormatUtils
-                                    .formatTimestampForDisplay(
+                                DateFormatUtils.formatTimestampForDisplay(
                                   context,
                                   result.createdAt,
                                 ),
@@ -338,28 +696,38 @@ class LatestTestsCard extends StatelessWidget {
                               child: Text(
                                 _resultLabel(result),
                                 maxLines: 2,
-                                overflow:
-                                TextOverflow.ellipsis,
+                                overflow: TextOverflow.ellipsis,
                               ),
                             ),
                             SizedBox(
                               width: 72,
-                              child: Center(
-                                child: Checkbox(
-                                  value:
-                                  selectedTestExoIds.contains(
-                                    result.exoId,
+                              child: GestureDetector(
+                                behavior: HitTestBehavior.opaque,
+                                onTap: selectionEnabled
+                                    ? null
+                                    : () {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text(
+                                        'Sélectionnez d’abord « Bilan » pour pouvoir inclure des tests.',
+                                      ),
+                                    ),
+                                  );
+                                },
+                                child: Center(
+                                  child: Checkbox(
+                                    value: selectedTestExoIds.contains(
+                                      _testSelectionKey(result),
+                                    ),
+                                    onChanged: selectionEnabled
+                                        ? (value) {
+                                      onTestIncludedChanged(
+                                        exoId: _testSelectionKey(result),
+                                        included: value ?? false,
+                                      );
+                                    }
+                                        : null,
                                   ),
-                                  onChanged: selectionEnabled
-                                      ? (value) {
-                                    onTestIncludedChanged(
-                                      exoId:
-                                      result.exoId,
-                                      included:
-                                      value ?? false,
-                                    );
-                                  }
-                                      : null,
                                 ),
                               ),
                             ),

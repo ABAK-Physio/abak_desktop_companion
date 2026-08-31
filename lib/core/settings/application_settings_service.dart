@@ -11,6 +11,9 @@ class ApplicationSettingsService {
 
   static const String expertModeEnabledKey = 'expert_mode_enabled';
 
+  static const String assessmentDocumentsDirectoryKey =
+      'assessment_documents_directory';
+
   Future<String?> getString(String key) async {
     final db = await DatabaseService.database;
 

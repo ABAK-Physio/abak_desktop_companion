@@ -6,6 +6,10 @@ class CareEpisodeAssessment {
   final String contentJson;
   final String status;
 
+  final String? authorPractitionerId;
+  final String? recipientText;
+  final String? docxFileName;
+
   final int assessmentDate;
   final int createdAt;
   final int? updatedAt;
@@ -17,6 +21,9 @@ class CareEpisodeAssessment {
     required this.title,
     required this.contentJson,
     required this.status,
+    this.authorPractitionerId,
+    this.recipientText,
+    this.docxFileName,
     required this.assessmentDate,
     required this.createdAt,
     this.updatedAt,
@@ -30,6 +37,9 @@ class CareEpisodeAssessment {
       title: map['title']?.toString() ?? '',
       contentJson: map['content_json']?.toString() ?? '',
       status: map['status']?.toString() ?? 'draft',
+      authorPractitionerId: map['author_practitioner_id']?.toString(),
+      recipientText: map['recipient_text']?.toString(),
+      docxFileName: map['docx_file_name']?.toString(),
       assessmentDate: (map['assessment_date'] as num?)?.toInt() ?? 0,
       createdAt: (map['created_at'] as num?)?.toInt() ?? 0,
       updatedAt: (map['updated_at'] as num?)?.toInt(),
@@ -44,6 +54,9 @@ class CareEpisodeAssessment {
       'title': title,
       'content_json': contentJson,
       'status': status,
+      'author_practitioner_id': authorPractitionerId,
+      'recipient_text': recipientText,
+      'docx_file_name': docxFileName,
       'assessment_date': assessmentDate,
       'created_at': createdAt,
       'updated_at': updatedAt,

@@ -3,6 +3,7 @@ import '../../../../../generated/l10n.dart';
 import 'package:abak_desktop_companion/core/speech/speech_dictation_button.dart';
 import 'package:abak_desktop_companion/features/care_episodes/models/clinical_document_type.dart';
 import 'package:abak_shared/abak_shared.dart';
+import 'package:abak_desktop_companion/features/practitioners/models/practitioner.dart';
 
 class SoapDraftCard extends StatelessWidget {
   final TextEditingController controller;
@@ -14,10 +15,15 @@ class SoapDraftCard extends StatelessWidget {
   final ClinicalDocumentType documentType;
   final VoidCallback onExpand;
   final Future<void> Function(ClinicalDocumentType documentType)
-      onDocumentTypeChanged;
+  onDocumentTypeChanged;
   final String? documentTitle;
   final bool documentTypeSelected;
   final VoidCallback? onOpenTemplateGuide;
+  final Future<Practitioner?>? assessmentAuthorFuture;
+  final VoidCallback onAssessmentAuthorPressed;
+  final String? assessmentRecipientText;
+  final VoidCallback onAssessmentRecipientPressed;
+
 
   const SoapDraftCard({
     super.key,
@@ -33,6 +39,10 @@ class SoapDraftCard extends StatelessWidget {
     required this.documentTitle,
     required this.documentTypeSelected,
     required this.onOpenTemplateGuide,
+    required this.assessmentAuthorFuture,
+    required this.onAssessmentAuthorPressed,
+    required this.assessmentRecipientText,
+    required this.onAssessmentRecipientPressed,
   });
 
   @override
@@ -46,42 +56,100 @@ class SoapDraftCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Align(
-              alignment: Alignment.centerLeft,
-              child: SegmentedButton<ClinicalDocumentType>(
-                segments: [
-                  ButtonSegment<ClinicalDocumentType>(
-                    value: ClinicalDocumentType.assessment,
-                    label: const Text('Bilan'),
-                    icon: const Icon(Icons.assignment_outlined),
+            Row(
+              children: [
+                SegmentedButton<ClinicalDocumentType>(
+                  segments: [
+                    ButtonSegment<ClinicalDocumentType>(
+                      value: ClinicalDocumentType.assessment,
+                      label: const Text('Bilan'),
+                      icon: const Icon(Icons.assignment_outlined),
+                    ),
+                    ButtonSegment<ClinicalDocumentType>(
+                      value: ClinicalDocumentType.report,
+                      label: const Text('Rapport'),
+                      icon: const Icon(Icons.description_outlined),
+                    ),
+                  ],
+                  selected: documentTypeSelected
+                      ? <ClinicalDocumentType>{documentType}
+                      : <ClinicalDocumentType>{},
+                  emptySelectionAllowed: true,
+                  showSelectedIcon: false,
+                  onSelectionChanged: (selection) async {
+                    if (selection.isEmpty) {
+                      return;
+                    }
+
+                    final selectedType = selection.first;
+
+                    if (documentTypeSelected && selectedType == documentType) {
+                      return;
+                    }
+
+                    await onDocumentTypeChanged(selectedType);
+                  },
+                ),
+                if (documentType == ClinicalDocumentType.assessment &&
+                    assessmentAuthorFuture != null) ...[
+                  const Spacer(),
+                  FutureBuilder<Practitioner?>(
+                    future: assessmentAuthorFuture,
+                    builder: (context, snapshot) {
+                      final authorName =
+                          snapshot.data?.displayName ?? 'Non renseigné';
+
+                      return TextButton(
+                        onPressed: onAssessmentAuthorPressed,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(
+                              Icons.person_outline,
+                              size: 20,
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              'Rédacteur : $authorName',
+                            ),
+                            const SizedBox(width: 6),
+                            const Icon(
+                              Icons.edit_outlined,
+                              size: 16,
+                            ),
+                          ],
+                        ),
+                      );
+                    },
                   ),
-                  ButtonSegment<ClinicalDocumentType>(
-                    value: ClinicalDocumentType.report,
-                    label: const Text('Rapport'),
-                    icon: const Icon(Icons.description_outlined),
+                  const SizedBox(width: 8),
+                  TextButton(
+                    onPressed: onAssessmentRecipientPressed,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(
+                          Icons.send_outlined,
+                          size: 20,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          assessmentRecipientText == null ||
+                              assessmentRecipientText!.trim().isEmpty
+                              ? 'Destinataire(s) : Non renseigné'
+                              : 'Destinataire(s) : $assessmentRecipientText',
+                        ),
+                        const SizedBox(width: 6),
+                        const Icon(
+                          Icons.edit_outlined,
+                          size: 16,
+                        ),
+                      ],
+                    ),
                   ),
                 ],
-                selected: documentTypeSelected
-                    ? <ClinicalDocumentType>{documentType}
-                    : <ClinicalDocumentType>{},
-                emptySelectionAllowed: true,
-                showSelectedIcon: false,
-                onSelectionChanged: (selection) async {
-                  if (selection.isEmpty) {
-                    return;
-                  }
-
-                  final selectedType = selection.first;
-
-                  if (documentTypeSelected && selectedType == documentType) {
-                    return;
-                  }
-
-                  await onDocumentTypeChanged(selectedType);
-                },
-              ),
+              ],
             ),
-            const SizedBox(height: 12),
             const SizedBox(height: 12),
             Row(
               children: [
@@ -124,15 +192,18 @@ class SoapDraftCard extends StatelessWidget {
                               ),
                               if (!isEditing)
                                 ContextHelpButton(
-                                  title: documentType ==
+                                  title:
+                                  documentType ==
                                       ClinicalDocumentType.assessment
                                       ? 'Comprendre le brouillon du bilan'
                                       : 'Comprendre le brouillon du rapport',
-                                  content: documentType ==
+                                  content:
+                                  documentType ==
                                       ClinicalDocumentType.assessment
                                       ? 'Le texte affiché correspond à un travail en cours sauvegardé automatiquement. Vous pouvez le conserver, le modifier ou le supprimer avant d’enregistrer votre bilan.'
                                       : 'Le texte affiché correspond à un travail en cours sauvegardé automatiquement. Vous pouvez le conserver, le modifier ou le supprimer avant d’enregistrer votre rapport.',
-                                  technicalInformationLabel: 'Comprendre l’écran',
+                                  technicalInformationLabel:
+                                  'Comprendre l’écran',
                                   iconSize: 20,
                                 ),
                             ],

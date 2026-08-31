@@ -8,11 +8,14 @@ import '../patients/services/patient_archive_settings_service.dart';
 import '../organization/organization_screen.dart';
 import '../../core/expert/expert_context_info.dart';
 import '../../core/expert/expert_info_button.dart';
+import 'package:file_picker/file_picker.dart';
 
 class PreferencesScreen extends StatefulWidget {
   final VoidCallback onLanguageChanged;
 
   const PreferencesScreen({super.key, required this.onLanguageChanged});
+
+
 
   @override
   State<PreferencesScreen> createState() => _PreferencesScreenState();
@@ -26,6 +29,10 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
 
   final PatientArchiveSettingsService _archiveSettingsService =
   PatientArchiveSettingsService();
+
+  String? _assessmentDocumentsDirectoryPath;
+
+
 
   ExpertContextInfo _expertInfo(S s) {
     return ExpertContextInfo(
@@ -66,11 +73,18 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
 
   Future<void> _loadPreferences() async {
     final languageCode =
-        await _languageService.getLanguageCode();
+    await _languageService.getLanguageCode();
+
     final retentionDays =
-        await _archiveSettingsService.getRetentionDays();
+    await _archiveSettingsService.getRetentionDays();
+
     final expertModeEnabled =
-        await _applicationSettingsService.isExpertModeEnabled();
+    await _applicationSettingsService.isExpertModeEnabled();
+
+    final assessmentDocumentsDirectoryPath =
+    await _applicationSettingsService.getString(
+      ApplicationSettingsService.assessmentDocumentsDirectoryKey,
+    );
 
     if (!mounted) return;
 
@@ -78,6 +92,8 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
       _languageCode = languageCode;
       _retentionDays = retentionDays;
       _expertModeEnabled = expertModeEnabled;
+      _assessmentDocumentsDirectoryPath =
+          assessmentDocumentsDirectoryPath;
       _loading = false;
     });
   }
@@ -135,6 +151,35 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
       SnackBar(
         content: Text(
           s.preferences_expertModeSaved,
+        ),
+      ),
+    );
+  }
+
+  Future<void> _chooseAssessmentDocumentsDirectory() async {
+    final selectedPath = await FilePicker.platform.getDirectoryPath(
+      dialogTitle: 'Choisir le dossier des documents générés',
+    );
+
+    if (selectedPath == null) {
+      return;
+    }
+
+    await _applicationSettingsService.setString(
+      ApplicationSettingsService.assessmentDocumentsDirectoryKey,
+      selectedPath,
+    );
+
+    if (!mounted) return;
+
+    setState(() {
+      _assessmentDocumentsDirectoryPath = selectedPath;
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text(
+          'Dossier des documents générés mis à jour',
         ),
       ),
     );
@@ -267,6 +312,22 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
                         ),
                       );
                     },
+                  ),
+                ),
+                const SizedBox(height: 16),
+
+                Card(
+                  child: ListTile(
+                    leading: const Icon(Icons.description_outlined),
+                    title: const Text('Dossier des documents générés'),
+                    subtitle: Text(
+                      _assessmentDocumentsDirectoryPath ??
+                          'Aucun dossier défini',
+                    ),
+                    trailing: OutlinedButton(
+                      onPressed: _chooseAssessmentDocumentsDirectory,
+                      child: const Text('Modifier'),
+                    ),
                   ),
                 ),
               ],

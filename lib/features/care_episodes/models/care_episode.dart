@@ -10,7 +10,7 @@ class CareEpisode {
   final String? assessmentData;
   final String? treatmentPlan;
   final String? finalConclusion;
-
+  final int? openedAt;
   final int createdAt;
   final int? updatedAt;
   final int? archivedAt;
@@ -25,6 +25,7 @@ class CareEpisode {
     this.objectiveData,
     this.assessmentData,
     this.treatmentPlan,
+    this.openedAt,
     required this.createdAt,
     this.updatedAt,
     this.archivedAt,
@@ -42,6 +43,7 @@ class CareEpisode {
       objectiveData: map['objective_data']?.toString(),
       assessmentData: map['assessment_data']?.toString(),
       treatmentPlan: map['treatment_plan']?.toString(),
+      openedAt: (map['opened_at'] as num?)?.toInt(),
       createdAt: (map['created_at'] as num?)?.toInt() ?? 0,
       updatedAt: (map['updated_at'] as num?)?.toInt(),
       archivedAt: (map['archived_at'] as num?)?.toInt(),
@@ -60,6 +62,7 @@ class CareEpisode {
       'objective_data': objectiveData,
       'assessment_data': assessmentData,
       'treatment_plan': treatmentPlan,
+      'opened_at': openedAt,
       'created_at': createdAt,
       'updated_at': updatedAt,
       'archived_at': archivedAt,

@@ -163,6 +163,7 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
       title: episode.title,
       pathologyLabel: pathology,
       initialReport: initialReport.isEmpty ? null : initialReport,
+      openedAt: episode.openedAt,
       createdAt: episode.createdAt,
       updatedAt: now,
       archivedAt: episode.archivedAt,
@@ -276,6 +277,7 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
       title: '${s.patientDetail_careEpisodeOpenedIn} $monthYear',
       pathologyLabel: pathology,
       initialReport: initialReport.isEmpty ? null : initialReport,
+      openedAt: now,
       createdAt: now,
     );
 

@@ -61,7 +61,7 @@ class DatabaseService {
 
     return openDatabase(
       path,
-      version: 20,  //////////////////////
+      version: 23, //////////////////////
       onCreate: (db, version) async {
         await _createAllTables(db);
       },
@@ -143,12 +143,7 @@ class DatabaseService {
           );
         }
         if (oldVersion < 10) {
-          await _addColumnIfMissing(
-            db,
-            'patients',
-            'nir',
-            'TEXT NULL',
-          );
+          await _addColumnIfMissing(db, 'patients', 'nir', 'TEXT NULL');
         }
 
         if (oldVersion < 11) {
@@ -180,26 +175,26 @@ class DatabaseService {
         }
         if (oldVersion < 16) {
           await db.execute('''
-    CREATE TABLE IF NOT EXISTS episode_documents (
-      document_id TEXT PRIMARY KEY,
-      case_id TEXT NOT NULL,
-      title TEXT NOT NULL,
-      file_path TEXT NOT NULL,
-      mime_type TEXT NULL,
-      source TEXT NULL,
-      created_at INTEGER NOT NULL,
-      updated_at INTEGER NULL,
-      archived_at INTEGER NULL,
-      FOREIGN KEY(case_id)
-        REFERENCES care_episodes(care_episode_id)
-        ON DELETE CASCADE
-    )
-  ''');
+          CREATE TABLE IF NOT EXISTS episode_documents (
+            document_id TEXT PRIMARY KEY,
+            case_id TEXT NOT NULL,
+            title TEXT NOT NULL,
+            file_path TEXT NOT NULL,
+            mime_type TEXT NULL,
+            source TEXT NULL,
+            created_at INTEGER NOT NULL,
+            updated_at INTEGER NULL,
+            archived_at INTEGER NULL,
+            FOREIGN KEY(case_id)
+              REFERENCES care_episodes(care_episode_id)
+              ON DELETE CASCADE
+           )
+          ''');
 
           await db.execute('''
-    CREATE INDEX IF NOT EXISTS idx_episode_documents_case_id
-    ON episode_documents(case_id)
-  ''');
+          CREATE INDEX IF NOT EXISTS idx_episode_documents_case_id
+          ON episode_documents(case_id)
+          ''');
         }
         if (oldVersion < 17) {
           await _createPatientFrHealthIdentityTable(db);
@@ -218,16 +213,45 @@ class DatabaseService {
         if (oldVersion < 20) {
           await _createAssessmentTemplateDraftsTable(db);
         }
+        if (oldVersion < 21) {
+          await _addColumnIfMissing(
+            db,
+            'care_episodes',
+            'opened_at',
+            'INTEGER NULL',
+          );
+        }
+        if (oldVersion < 22) {
+          await _addColumnIfMissing(
+            db,
+            'care_episode_assessments',
+            'author_practitioner_id',
+            'TEXT NULL',
+          );
+
+          await _addColumnIfMissing(
+            db,
+            'care_episode_assessments',
+            'recipient_text',
+            'TEXT NULL',
+          );
+        }
+        if (oldVersion < 23) {
+          await db.execute(
+            'ALTER TABLE care_episode_assessments '
+            'ADD COLUMN docx_file_name TEXT NULL',
+          );
+        }
       },
     );
   }
 
   static Future<void> _addColumnIfMissing(
-      Database db,
-      String tableName,
-      String columnName,
-      String columnDefinition,
-      ) async {
+    Database db,
+    String tableName,
+    String columnName,
+    String columnDefinition,
+  ) async {
     final columns = await db.rawQuery('PRAGMA table_info($tableName)');
 
     final exists = columns.any((column) => column['name'] == columnName);
@@ -551,9 +575,7 @@ class DatabaseService {
     ''');
   }
 
-  static Future<void> _createPatientFrHealthIdentityTable(
-      Database db,
-      ) async {
+  static Future<void> _createPatientFrHealthIdentityTable(Database db) async {
     await db.execute('''
     CREATE TABLE IF NOT EXISTS patient_fr_health_identity (
       patient_id TEXT PRIMARY KEY,
@@ -610,6 +632,10 @@ class DatabaseService {
     assessment_data TEXT NULL,
     treatment_plan TEXT NULL,
     final_conclusion TEXT NULL,
+    opened_at INTEGER NULL,
+    created_at INTEGER NOT NULL,
+    updated_at INTEGER NULL,
+    archived_at INTEGER NULL,
     created_at INTEGER NOT NULL,
     updated_at INTEGER NULL,
     archived_at INTEGER NULL,
@@ -626,8 +652,8 @@ class DatabaseService {
   }
 
   static Future<void> _createCareEpisodeReferringPractitionerTables(
-      Database db,
-      ) async {
+    Database db,
+  ) async {
     await db.execute('''
     CREATE TABLE care_episode_referring_practitioners (
       assignment_id TEXT PRIMARY KEY,
@@ -680,9 +706,7 @@ CREATE TABLE care_episode_notes (
     ''');
   }
 
-  static Future<void> _createCareEpisodeAssessmentTables(
-      Database db,
-      ) async {
+  static Future<void> _createCareEpisodeAssessmentTables(Database db) async {
     await db.execute('''
       CREATE TABLE care_episode_assessments (
         assessment_id TEXT PRIMARY KEY,
@@ -692,6 +716,10 @@ CREATE TABLE care_episode_notes (
         content_json TEXT NOT NULL,
 
         status TEXT NOT NULL DEFAULT 'draft',
+        
+        author_practitioner_id TEXT NULL,
+        recipient_text TEXT NULL,
+        docx_file_name TEXT NULL,
 
         assessment_date INTEGER NOT NULL,
         created_at INTEGER NOT NULL,
@@ -742,8 +770,8 @@ CREATE TABLE care_episode_notes (
   }
 
   static Future<void> _createCareEpisodeDocumentEditDraftsTable(
-      Database db,
-      ) async {
+    Database db,
+  ) async {
     await db.execute('''
     CREATE TABLE IF NOT EXISTS care_episode_document_edit_drafts (
       document_type TEXT NOT NULL,
@@ -1082,9 +1110,8 @@ CREATE TABLE care_episode_notes (
     )
   ''');
   }
-  static Future<void> _createAssessmentTemplateDraftsTable(
-      Database db,
-      ) async {
+
+  static Future<void> _createAssessmentTemplateDraftsTable(Database db) async {
     await db.execute('''
     CREATE TABLE IF NOT EXISTS assessment_template_drafts (
       draft_id TEXT PRIMARY KEY,
