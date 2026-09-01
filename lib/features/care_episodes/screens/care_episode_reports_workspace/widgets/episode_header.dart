@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import '../../../../../generated/l10n.dart';
 import '../../../models/care_episode.dart';
 import '../../../../practitioners/models/practitioner.dart';
+import '../../../../external_correspondents/models/external_correspondent.dart';
 
 class EpisodeHeader extends StatelessWidget {
   final CareEpisode episode;
   final Future<Practitioner?> practitionerFuture;
+  final Future<ExternalCorrespondent?> prescribingCorrespondentFuture;
   final VoidCallback onEditPractitioner;
   final VoidCallback onShowHistory;
   final VoidCallback onOpenDocuments;
@@ -15,6 +17,7 @@ class EpisodeHeader extends StatelessWidget {
     super.key,
     required this.episode,
     required this.practitionerFuture,
+    required this.prescribingCorrespondentFuture,
     required this.onEditPractitioner,
     required this.onShowHistory,
     required this.onOpenDocuments,
@@ -67,6 +70,27 @@ class EpisodeHeader extends StatelessWidget {
 
                       return _EpisodeHeaderInformation(
                         label: s.careEpisodeReportsWorkspace_referringPractitioner,
+                        value: value,
+                      );
+                    },
+                  ),
+                ),
+                const SizedBox(width: 32),
+                Expanded(
+                  child: FutureBuilder<ExternalCorrespondent?>(
+                    future: prescribingCorrespondentFuture,
+                    builder: (context, snapshot) {
+                      final correspondent = snapshot.data;
+
+                      final value =
+                      snapshot.connectionState == ConnectionState.waiting
+                          ? s.careEpisodeReportsWorkspace_loading
+                          : correspondent == null
+                          ? s.careEpisodeReportsWorkspace_notProvided
+                          : correspondent.displayName;
+
+                      return _EpisodeHeaderInformation(
+                        label: 'Médecin prescripteur',
                         value: value,
                       );
                     },

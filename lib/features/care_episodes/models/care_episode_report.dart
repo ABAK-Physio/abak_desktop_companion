@@ -2,6 +2,8 @@ class CareEpisodeReport {
   final String reportId;
   final String careEpisodeId;
   final String? sourceAssessmentId;
+  final String? authorPractitionerId;
+  final String? docxFileName;
 
   final String title;
   final String contentJson;
@@ -16,6 +18,8 @@ class CareEpisodeReport {
     required this.reportId,
     required this.careEpisodeId,
     required this.sourceAssessmentId,
+    this.authorPractitionerId,
+    this.docxFileName,
     required this.title,
     required this.contentJson,
     required this.status,
@@ -30,6 +34,8 @@ class CareEpisodeReport {
       reportId: map['report_id']?.toString() ?? '',
       careEpisodeId: map['care_episode_id']?.toString() ?? '',
       sourceAssessmentId: map['source_assessment_id']?.toString(),
+      authorPractitionerId: map['author_practitioner_id']?.toString(),
+      docxFileName: map['docx_file_name']?.toString(),
       title: map['title']?.toString() ?? '',
       contentJson: map['content_json']?.toString() ?? '',
       status: map['status']?.toString() ?? 'draft',
@@ -45,6 +51,8 @@ class CareEpisodeReport {
       'report_id': reportId,
       'care_episode_id': careEpisodeId,
       'source_assessment_id': sourceAssessmentId,
+      'author_practitioner_id': authorPractitionerId,
+      'docx_file_name': docxFileName,
       'title': title,
       'content_json': contentJson,
       'status': status,

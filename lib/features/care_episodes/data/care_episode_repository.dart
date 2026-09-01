@@ -88,6 +88,23 @@ class CareEpisodeRepository {
     );
   }
 
+  Future<void> updatePrescribingCorrespondent({
+    required String careEpisodeId,
+    required String? correspondentId,
+  }) async {
+    final db = await DatabaseService.database;
+
+    await db.update(
+      'care_episodes',
+      {
+        'prescribing_correspondent_id': correspondentId,
+        'updated_at': DateTime.now().millisecondsSinceEpoch,
+      },
+      where: 'care_episode_id = ?',
+      whereArgs: [careEpisodeId],
+    );
+  }
+
   Future<void> archiveCareEpisode(String careEpisodeId) async {
     final db = await DatabaseService.database;
 
@@ -156,6 +173,9 @@ class CareEpisodeRepository {
       ce.*,
       COUNT(DISTINCT cen.note_id) AS notes_count,
       p.display_name AS referring_practitioner_display_name,
+      TRIM(
+       COALESCE(ec.first_name || ' ', '') || ec.last_name
+     ) AS prescribing_correspondent_display_name,
       CASE
         WHEN p.archived_at IS NOT NULL THEN 1
         ELSE 0
@@ -172,6 +192,9 @@ class CareEpisodeRepository {
 
     LEFT JOIN practitioners p
       ON p.practitioner_id = cerp.practitioner_id
+      
+    LEFT JOIN external_correspondents ec
+     ON ec.correspondent_id = ce.prescribing_correspondent_id
 
     WHERE ce.patient_id = ?
       AND ce.archived_at IS NULL

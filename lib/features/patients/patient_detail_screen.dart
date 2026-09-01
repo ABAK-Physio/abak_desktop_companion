@@ -21,6 +21,7 @@ import '../results/data/desktop_result_repository.dart';
 
 import 'data/patient_fr_health_identity_repository.dart';
 import 'models/patient_fr_health_identity.dart';
+import '../external_correspondents/widgets/external_correspondent_selector.dart';
 
 class PatientDetailScreen extends StatefulWidget {
   final Patient patient;
@@ -86,6 +87,9 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
 
     String? selectedPractitionerId = currentAssignment?.practitionerId;
 
+    String? selectedPrescribingCorrespondentId =
+        episode.prescribingCorrespondentId;
+
     final pathologyController = TextEditingController(
       text: episode.pathologyLabel,
     );
@@ -130,6 +134,15 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
                     selectedPractitionerId = practitionerId;
                   },
                 ),
+                const SizedBox(height: 16),
+                ExternalCorrespondentSelector(
+                  label: 'Médecin prescripteur',
+                  selectedCorrespondentId: selectedPrescribingCorrespondentId,
+                  allowEmpty: true,
+                  onChanged: (correspondentId) {
+                    selectedPrescribingCorrespondentId = correspondentId;
+                  },
+                ),
               ],
             ),
           ),
@@ -167,6 +180,7 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
       createdAt: episode.createdAt,
       updatedAt: now,
       archivedAt: episode.archivedAt,
+      prescribingCorrespondentId: selectedPrescribingCorrespondentId,
     );
 
     await _careEpisodeRepository.updateCareEpisode(updatedEpisode);
@@ -853,6 +867,8 @@ class _CareEpisodesSection extends StatelessWidget {
                       '${s.patientDetail_pathology} : ${episode.pathologyLabel}',
                       '${s.patientDetail_referringPractitioner} : '
                           '${_referringPractitionerLabel(summary, s)}',
+                      'Médecin prescripteur : '
+                          '${summary.prescribingCorrespondentDisplayName ?? s.patientDetail_notProvided}',
                     ].join('\n'),
                   ),
                   trailing: IconButton(

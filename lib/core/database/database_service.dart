@@ -61,7 +61,7 @@ class DatabaseService {
 
     return openDatabase(
       path,
-      version: 23, //////////////////////
+      version: 26, //////////////////////
       onCreate: (db, version) async {
         await _createAllTables(db);
       },
@@ -174,27 +174,7 @@ class DatabaseService {
           await _migrateResultTablesToVersion15(db);
         }
         if (oldVersion < 16) {
-          await db.execute('''
-          CREATE TABLE IF NOT EXISTS episode_documents (
-            document_id TEXT PRIMARY KEY,
-            case_id TEXT NOT NULL,
-            title TEXT NOT NULL,
-            file_path TEXT NOT NULL,
-            mime_type TEXT NULL,
-            source TEXT NULL,
-            created_at INTEGER NOT NULL,
-            updated_at INTEGER NULL,
-            archived_at INTEGER NULL,
-            FOREIGN KEY(case_id)
-              REFERENCES care_episodes(care_episode_id)
-              ON DELETE CASCADE
-           )
-          ''');
-
-          await db.execute('''
-          CREATE INDEX IF NOT EXISTS idx_episode_documents_case_id
-          ON episode_documents(case_id)
-          ''');
+          await _createEpisodeDocumentsTable(db);
         }
         if (oldVersion < 17) {
           await _createPatientFrHealthIdentityTable(db);
@@ -240,6 +220,26 @@ class DatabaseService {
           await db.execute(
             'ALTER TABLE care_episode_assessments '
             'ADD COLUMN docx_file_name TEXT NULL',
+          );
+        }
+        if (oldVersion < 24) {
+          await _createExternalCorrespondentsTable(db);
+
+          await db.execute(
+            'ALTER TABLE care_episodes '
+            'ADD COLUMN prescribing_correspondent_id TEXT NULL',
+          );
+        }
+        if (oldVersion < 25) {
+          await db.execute(
+            'ALTER TABLE care_episode_reports '
+                'ADD COLUMN author_practitioner_id TEXT NULL',
+          );
+        }
+        if (oldVersion < 26) {
+          await db.execute(
+            'ALTER TABLE care_episode_reports '
+                'ADD COLUMN docx_file_name TEXT NULL',
           );
         }
       },
@@ -476,6 +476,8 @@ class DatabaseService {
     await _createApplicationSettingsTable(db);
     await _createPatientClinicalTables(db);
     await _createCareEpisodeTables(db);
+    await _createEpisodeDocumentsTable(db);
+    await _createExternalCorrespondentsTable(db);
     await _createCareEpisodeReferringPractitionerTables(db);
     await _createCareEpisodeNoteTables(db);
     await _createCareEpisodeAssessmentTables(db);
@@ -633,9 +635,7 @@ class DatabaseService {
     treatment_plan TEXT NULL,
     final_conclusion TEXT NULL,
     opened_at INTEGER NULL,
-    created_at INTEGER NOT NULL,
-    updated_at INTEGER NULL,
-    archived_at INTEGER NULL,
+    prescribing_correspondent_id TEXT NULL,
     created_at INTEGER NOT NULL,
     updated_at INTEGER NULL,
     archived_at INTEGER NULL,
@@ -649,6 +649,29 @@ class DatabaseService {
       CREATE INDEX idx_care_episodes_patient_id
       ON care_episodes(patient_id)
     ''');
+  }
+
+  static Future<void> _createExternalCorrespondentsTable(
+      Database db,
+      ) async {
+    await db.execute('''
+    CREATE TABLE external_correspondents (
+      correspondent_id TEXT PRIMARY KEY,
+      last_name TEXT NOT NULL,
+      first_name TEXT NULL,
+      profession TEXT NULL,
+      specialty TEXT NULL,
+      address_line1 TEXT NULL,
+      address_line2 TEXT NULL,
+      postal_code TEXT NULL,
+      city TEXT NULL,
+      email TEXT NULL,
+      phone TEXT NULL,
+      archived_at INTEGER NULL,
+      created_at INTEGER NOT NULL,
+      updated_at INTEGER NULL
+    )
+  ''');
   }
 
   static Future<void> _createCareEpisodeReferringPractitionerTables(
@@ -790,6 +813,8 @@ CREATE TABLE care_episode_notes (
         report_id TEXT PRIMARY KEY,
         care_episode_id TEXT NOT NULL,
         source_assessment_id TEXT NULL,
+        author_practitioner_id TEXT NULL,
+        docx_file_name TEXT NULL,
 
         title TEXT NOT NULL,
         content_json TEXT NOT NULL,
@@ -887,28 +912,6 @@ CREATE TABLE care_episode_notes (
     ''');
 
     await db.execute('''
-  CREATE TABLE episode_documents (
-    document_id TEXT PRIMARY KEY,
-    case_id TEXT NOT NULL,
-    title TEXT NOT NULL,
-    file_path TEXT NOT NULL,
-    mime_type TEXT NULL,
-    source TEXT NULL,
-    created_at INTEGER NOT NULL,
-    updated_at INTEGER NULL,
-    archived_at INTEGER NULL,
-    FOREIGN KEY(case_id)
-      REFERENCES care_episodes(care_episode_id)
-      ON DELETE CASCADE
-  )
-''');
-
-    await db.execute('''
-  CREATE INDEX idx_episode_documents_case_id
-  ON episode_documents(case_id)
-''');
-
-    await db.execute('''
       CREATE INDEX idx_desktop_results_care_episode_id
       ON desktop_results(care_episode_id)
     ''');
@@ -943,6 +946,32 @@ CREATE TABLE care_episode_notes (
       CREATE INDEX idx_desktop_result_metrics_result_id
       ON desktop_result_metrics(result_id)
     ''');
+  }
+
+  static Future<void> _createEpisodeDocumentsTable(
+      Database db,
+      ) async {
+    await db.execute('''
+    CREATE TABLE IF NOT EXISTS episode_documents (
+      document_id TEXT PRIMARY KEY,
+      case_id TEXT NOT NULL,
+      title TEXT NOT NULL,
+      file_path TEXT NOT NULL,
+      mime_type TEXT NULL,
+      source TEXT NULL,
+      created_at INTEGER NOT NULL,
+      updated_at INTEGER NULL,
+      archived_at INTEGER NULL,
+      FOREIGN KEY(case_id)
+        REFERENCES care_episodes(care_episode_id)
+        ON DELETE CASCADE
+    )
+  ''');
+
+    await db.execute('''
+    CREATE INDEX IF NOT EXISTS idx_episode_documents_case_id
+    ON episode_documents(case_id)
+  ''');
   }
 
   static Future<void> _createImportHistoryTables(Database db) async {

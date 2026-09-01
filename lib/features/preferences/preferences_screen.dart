@@ -9,6 +9,7 @@ import '../organization/organization_screen.dart';
 import '../../core/expert/expert_context_info.dart';
 import '../../core/expert/expert_info_button.dart';
 import 'package:file_picker/file_picker.dart';
+import '../external_correspondents/screens/external_correspondents_screen.dart';
 
 class PreferencesScreen extends StatefulWidget {
   final VoidCallback onLanguageChanged;
@@ -309,6 +310,24 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
                       Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (_) => const OrganizationScreen(),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Card(
+                  child: ListTile(
+                    leading: const Icon(Icons.contact_page_outlined),
+                    title: const Text('Correspondants externes'),
+                    subtitle: const Text(
+                      'Médecins prescripteurs et autres correspondants.',
+                    ),
+                    trailing: const Icon(Icons.chevron_right),
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => const ExternalCorrespondentsScreen(),
                         ),
                       );
                     },

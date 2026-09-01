@@ -19,8 +19,8 @@ class SoapDraftCard extends StatelessWidget {
   final String? documentTitle;
   final bool documentTypeSelected;
   final VoidCallback? onOpenTemplateGuide;
-  final Future<Practitioner?>? assessmentAuthorFuture;
-  final VoidCallback onAssessmentAuthorPressed;
+  final Future<Practitioner?>? documentAuthorFuture;
+  final VoidCallback onDocumentAuthorPressed;
   final String? assessmentRecipientText;
   final VoidCallback onAssessmentRecipientPressed;
 
@@ -39,8 +39,8 @@ class SoapDraftCard extends StatelessWidget {
     required this.documentTitle,
     required this.documentTypeSelected,
     required this.onOpenTemplateGuide,
-    required this.assessmentAuthorFuture,
-    required this.onAssessmentAuthorPressed,
+    required this.documentAuthorFuture,
+    required this.onDocumentAuthorPressed,
     required this.assessmentRecipientText,
     required this.onAssessmentRecipientPressed,
   });
@@ -90,17 +90,16 @@ class SoapDraftCard extends StatelessWidget {
                     await onDocumentTypeChanged(selectedType);
                   },
                 ),
-                if (documentType == ClinicalDocumentType.assessment &&
-                    assessmentAuthorFuture != null) ...[
+                if (documentAuthorFuture != null) ...[
                   const Spacer(),
                   FutureBuilder<Practitioner?>(
-                    future: assessmentAuthorFuture,
+                    future: documentAuthorFuture,
                     builder: (context, snapshot) {
                       final authorName =
                           snapshot.data?.displayName ?? 'Non renseigné';
 
                       return TextButton(
-                        onPressed: onAssessmentAuthorPressed,
+                        onPressed: onDocumentAuthorPressed,
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [

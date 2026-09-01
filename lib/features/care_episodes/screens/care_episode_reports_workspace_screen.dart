@@ -1,11 +1,13 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:abak_shared/abak_shared.dart';
 import 'package:file_picker/file_picker.dart';
 
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../external_correspondents/widgets/external_correspondent_selector.dart';
 import '../../results/data/desktop_result_repository.dart';
 import '../../results/models/desktop_result.dart';
 import '../data/care_episode_assessment_repository.dart';
@@ -41,10 +43,14 @@ import 'package:abak_desktop_companion/features/care_episodes/data/assessment_te
 import 'package:abak_desktop_companion/features/care_episodes/models/assessment_templates/assessment_template_answers.dart';
 import 'care_episode_reports_workspace/widgets/assessment_template_selector.dart';
 import '../data/assessment_document_data_builder.dart';
+import '../data/report_document_data_builder.dart';
+import '../services/report_docx_service.dart';
 import '../services/assessment_docx_service.dart';
 import '../../episodes/report/services/episode_report_docx_export_service.dart';
 import '../services/assessment_chart_image_service.dart';
 import '../../../core/settings/application_settings_service.dart';
+import '../../external_correspondents/data/external_correspondent_repository.dart';
+import '../../external_correspondents/models/external_correspondent.dart';
 
 class CareEpisodeReportsWorkspaceScreen extends StatefulWidget {
   final CareEpisode episode;
@@ -84,6 +90,9 @@ class _CareEpisodeReportsWorkspaceScreenState
   final PractitionerRepository _practitionerRepository =
       PractitionerRepository();
 
+  final ExternalCorrespondentRepository _externalCorrespondentRepository =
+  ExternalCorrespondentRepository();
+
   final PatientAttributeRepository _patientAttributeRepository =
       PatientAttributeRepository();
 
@@ -91,6 +100,8 @@ class _CareEpisodeReportsWorkspaceScreenState
       AssessmentTemplateDraftRepository();
 
   late Future<Practitioner?> _currentReferringPractitionerFuture;
+
+  late Future<ExternalCorrespondent?> _prescribingCorrespondentFuture;
 
   Timer? _draftSaveTimer;
   Timer? _assessmentTemplateSaveTimer;
@@ -266,12 +277,149 @@ class _CareEpisodeReportsWorkspaceScreenState
     }
   }
 
+  Future<void> _exportReportDocx() async {
+    final report = _reportDraft;
+
+    if (report == null || report.status != 'saved') {
+      return;
+    }
+
+    bool createNewDocx = false;
+
+    if (report.docxFileName != null) {
+      final choice = await showDialog<String>(
+        context: context,
+        builder: (dialogContext) {
+          return AlertDialog(
+            title: const Text('Un DOCX existe déjà'),
+            content: const Text(
+              'Un DOCX est déjà associé à ce rapport. '
+                  'Voulez-vous remplacer le fichier existant '
+                  'ou créer un nouveau fichier ?',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(dialogContext).pop();
+                },
+                child: const Text('Annuler'),
+              ),
+              OutlinedButton(
+                onPressed: () {
+                  Navigator.of(dialogContext).pop('new');
+                },
+                child: const Text('Créer un nouveau'),
+              ),
+              FilledButton(
+                onPressed: () {
+                  Navigator.of(dialogContext).pop('replace');
+                },
+                child: const Text('Remplacer'),
+              ),
+            ],
+          );
+        },
+      );
+
+      if (choice == null) {
+        return;
+      }
+
+      createNewDocx = choice == 'new';
+    }
+
+    var selectedDirectory = await const ApplicationSettingsService().getString(
+      ApplicationSettingsService.assessmentDocumentsDirectoryKey,
+    );
+
+    if (selectedDirectory == null || selectedDirectory.trim().isEmpty) {
+      selectedDirectory = await FilePicker.platform.getDirectoryPath(
+        dialogTitle: 'Choisir le dossier de destination',
+      );
+
+      if (selectedDirectory == null) {
+        return;
+      }
+    }
+
+    try {
+      final data = await ReportDocumentDataBuilder().build(
+        report: report,
+        episode: widget.episode,
+      );
+
+      final bytes = await ReportDocxService().buildDocx(
+        data: data,
+      );
+
+      final exportService = const EpisodeReportDocxExportService();
+
+      final file = report.docxFileName == null || createNewDocx
+          ? await exportService.exportToDocxFile(
+        bytes: bytes,
+        directory: Directory(selectedDirectory),
+        fileName: 'Rapport_${widget.patientName}_${report.title}',
+      )
+          : await exportService.overwriteDocxFile(
+        bytes: bytes,
+        directory: Directory(selectedDirectory),
+        fileName: report.docxFileName!,
+      );
+
+      final updatedReport = CareEpisodeReport(
+        reportId: report.reportId,
+        careEpisodeId: report.careEpisodeId,
+        sourceAssessmentId: report.sourceAssessmentId,
+        authorPractitionerId: report.authorPractitionerId,
+        docxFileName: file.uri.pathSegments.last,
+        title: report.title,
+        contentJson: report.contentJson,
+        status: report.status,
+        reportDate: report.reportDate,
+        createdAt: report.createdAt,
+        updatedAt: report.updatedAt,
+        archivedAt: report.archivedAt,
+      );
+
+      await _reportRepository.updateReport(updatedReport);
+
+      debugPrint('[DOCX RAPPORT] Fichier créé : ${file.path}');
+
+      if (!mounted) return;
+
+      setState(() {
+        _reportDraft = updatedReport;
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Document Word créé : ${file.path}',
+          ),
+        ),
+      );
+    } catch (e, stackTrace) {
+      debugPrint('[DOCX RAPPORT] Erreur : $e');
+      debugPrintStack(stackTrace: stackTrace);
+
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Erreur lors de la création du document Word : $e',
+          ),
+        ),
+      );
+    }
+  }
+
   @override
   void initState() {
     super.initState();
 
     _currentReferringPractitionerFuture = _loadCurrentReferringPractitioner();
-
+    _prescribingCorrespondentFuture = _loadPrescribingCorrespondent();
     _resultsFuture = widget.resultRepository.getResultsForCareEpisode(
       widget.episode.careEpisodeId,
     );
@@ -462,6 +610,77 @@ class _CareEpisodeReportsWorkspaceScreenState
     });
   }
 
+  Future<void> _selectReportAuthor() async {
+    final report = _reportDraft;
+
+    if (report == null) {
+      return;
+    }
+
+    final selectedPractitionerId = await showDialog<String?>(
+      context: context,
+      builder: (dialogContext) {
+        String? practitionerId = report.authorPractitionerId;
+
+        return AlertDialog(
+          title: const Text('Choisir le rédacteur'),
+          content: SizedBox(
+            width: 420,
+            child: PractitionerSelector(
+              label: 'Rédacteur',
+              selectedPractitionerId: practitionerId,
+              allowEmpty: false,
+              onChanged: (value) {
+                practitionerId = value;
+              },
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(dialogContext).pop();
+              },
+              child: const Text('Annuler'),
+            ),
+            FilledButton(
+              onPressed: () {
+                Navigator.of(dialogContext).pop(practitionerId);
+              },
+              child: const Text('Valider'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (selectedPractitionerId == null || !mounted) {
+      return;
+    }
+
+    final updatedReport = CareEpisodeReport(
+      reportId: report.reportId,
+      careEpisodeId: report.careEpisodeId,
+      sourceAssessmentId: report.sourceAssessmentId,
+      authorPractitionerId: selectedPractitionerId,
+      docxFileName: report.docxFileName,
+      title: report.title,
+      contentJson: report.contentJson,
+      status: report.status,
+      reportDate: report.reportDate,
+      createdAt: report.createdAt,
+      updatedAt: DateTime.now().millisecondsSinceEpoch,
+      archivedAt: report.archivedAt,
+    );
+
+    await _reportRepository.updateReport(updatedReport);
+
+    if (!mounted) return;
+
+    setState(() {
+      _reportDraft = updatedReport;
+    });
+  }
+
   Future<void> _editAssessmentRecipient() async {
     final draft = _draft;
 
@@ -546,6 +765,8 @@ class _CareEpisodeReportsWorkspaceScreenState
       reportId: report.reportId,
       careEpisodeId: report.careEpisodeId,
       sourceAssessmentId: report.sourceAssessmentId,
+      authorPractitionerId: report.authorPractitionerId,
+      docxFileName: report.docxFileName,
       title: report.title,
       contentJson: _draftController.text,
       status: report.status,
@@ -590,6 +811,7 @@ class _CareEpisodeReportsWorkspaceScreenState
     report = CareEpisodeReport(
       reportId: const Uuid().v4(),
       careEpisodeId: widget.episode.careEpisodeId,
+      docxFileName: null,
       sourceAssessmentId: null,
       title: '',
       contentJson: '',
@@ -664,6 +886,8 @@ class _CareEpisodeReportsWorkspaceScreenState
             reportId: report.reportId,
             careEpisodeId: report.careEpisodeId,
             sourceAssessmentId: report.sourceAssessmentId,
+            authorPractitionerId: report.authorPractitionerId,
+            docxFileName: report.docxFileName,
             title: '',
             contentJson: '',
             status: 'draft',
@@ -933,6 +1157,8 @@ class _CareEpisodeReportsWorkspaceScreenState
         reportId: const Uuid().v4(),
         careEpisodeId: report.careEpisodeId,
         sourceAssessmentId: report.sourceAssessmentId,
+        authorPractitionerId: report.authorPractitionerId,
+        docxFileName: null,
         title: title,
         contentJson: report.contentJson,
         status: 'saved',
@@ -1684,10 +1910,17 @@ class _CareEpisodeReportsWorkspaceScreenState
 
     final now = DateTime.now().millisecondsSinceEpoch;
 
+    final currentReferringPractitioner =
+    await _loadCurrentReferringPractitioner();
+
     final savedReport = CareEpisodeReport(
       reportId: report.reportId,
       careEpisodeId: report.careEpisodeId,
       sourceAssessmentId: report.sourceAssessmentId,
+      authorPractitionerId:
+      report.authorPractitionerId ??
+          currentReferringPractitioner?.practitionerId,
+      docxFileName: report.docxFileName,
       title: title,
       contentJson: _draftController.text,
       status: 'saved',
@@ -2226,6 +2459,16 @@ class _CareEpisodeReportsWorkspaceScreenState
     );
   }
 
+  Future<ExternalCorrespondent?> _loadPrescribingCorrespondent() async {
+    final correspondentId = widget.episode.prescribingCorrespondentId;
+
+    if (correspondentId == null) {
+      return null;
+    }
+
+    return _externalCorrespondentRepository.getById(correspondentId);
+  }
+
   Future<Practitioner?> _loadAssessmentAuthor(
     CareEpisodeAssessment assessment,
   ) async {
@@ -2239,6 +2482,21 @@ class _CareEpisodeReportsWorkspaceScreenState
     return _loadCurrentReferringPractitioner();
   }
 
+  Future<Practitioner?> _loadReportAuthor(
+      CareEpisodeReport report,
+      ) async {
+    final authorPractitionerId = report.authorPractitionerId;
+
+    if (authorPractitionerId != null &&
+        authorPractitionerId.trim().isNotEmpty) {
+      return _practitionerRepository.getPractitionerById(
+        authorPractitionerId,
+      );
+    }
+
+    return _loadCurrentReferringPractitioner();
+  }
+
   Future<void> _editReferringPractitioner() async {
     final currentAssignment = await _referringPractitionerRepository
         .getCurrentReferringPractitioner(widget.episode.careEpisodeId);
@@ -2247,21 +2505,39 @@ class _CareEpisodeReportsWorkspaceScreenState
 
     final previousPractitionerId = currentAssignment?.practitionerId;
     String? selectedPractitionerId = previousPractitionerId;
+    final previousCorrespondentId =
+        widget.episode.prescribingCorrespondentId;
+
+    String? selectedCorrespondentId = previousCorrespondentId;
 
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
-          title: const Text('Modifier le kiné référent'),
+          title: const Text('Modifier les référents'),
           content: SizedBox(
             width: 480,
-            child: PractitionerSelector(
-              label: 'Kiné référent',
-              selectedPractitionerId: selectedPractitionerId,
-              allowEmpty: true,
-              onChanged: (practitionerId) {
-                selectedPractitionerId = practitionerId;
-              },
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                PractitionerSelector(
+                  label: 'Kiné référent',
+                  selectedPractitionerId: selectedPractitionerId,
+                  allowEmpty: true,
+                  onChanged: (practitionerId) {
+                    selectedPractitionerId = practitionerId;
+                  },
+                ),
+                const SizedBox(height: 16),
+                ExternalCorrespondentSelector(
+                  label: 'Médecin prescripteur',
+                  selectedCorrespondentId: selectedCorrespondentId,
+                  allowEmpty: true,
+                  onChanged: (correspondentId) {
+                    selectedCorrespondentId = correspondentId;
+                  },
+                ),
+              ],
             ),
           ),
           actions: [
@@ -2280,6 +2556,7 @@ class _CareEpisodeReportsWorkspaceScreenState
 
     if (confirmed != true) return;
 
+// Mise à jour du kiné référent.
     if (selectedPractitionerId == null) {
       if (previousPractitionerId != null) {
         await _referringPractitionerRepository
@@ -2292,10 +2569,25 @@ class _CareEpisodeReportsWorkspaceScreenState
       );
     }
 
+// Mise à jour du médecin prescripteur.
+    if (selectedCorrespondentId != previousCorrespondentId) {
+      await _careEpisodeRepository.updatePrescribingCorrespondent(
+        careEpisodeId: widget.episode.careEpisodeId,
+        correspondentId: selectedCorrespondentId,
+      );
+    }
+
     if (!mounted) return;
 
     setState(() {
       _currentReferringPractitionerFuture = _loadCurrentReferringPractitioner();
+
+      _prescribingCorrespondentFuture =
+      selectedCorrespondentId == null
+          ? Future<ExternalCorrespondent?>.value(null)
+          : _externalCorrespondentRepository.getById(
+        selectedCorrespondentId!,
+      );
     });
   }
 
@@ -2313,7 +2605,22 @@ class _CareEpisodeReportsWorkspaceScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('${widget.patientName} — Bilans et rapports')),
+        appBar: AppBar(
+          title: Text('${widget.patientName} — Bilans et rapports'),
+          actions: [
+            ContextHelpButton(
+              title: 'Bilans et rapports',
+              content:
+              'Cet écran permet de préparer et d’enregistrer les bilans et rapports liés à la prise en charge.\n\n'
+                  'Pour un bilan, vous pouvez rédiger le texte principal, sélectionner les résultats de tests et les notes de suivi à inclure, puis générer un document DOCX une fois le bilan enregistré.\n\n'
+                  'Les brouillons sont sauvegardés automatiquement tant qu’ils ne sont pas enregistrés comme bilan ou rapport.\n\n'
+                  'L’historique permet de retrouver les bilans et rapports déjà enregistrés.',
+              technicalInformationLabel: 'Comprendre l’écran',
+              iconSize: 20,
+            ),
+            const SizedBox(width: 8),
+          ],
+        ),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -2321,6 +2628,7 @@ class _CareEpisodeReportsWorkspaceScreenState
             EpisodeHeader(
               episode: widget.episode,
               practitionerFuture: _currentReferringPractitionerFuture,
+              prescribingCorrespondentFuture: _prescribingCorrespondentFuture,
               onEditPractitioner: _editReferringPractitioner,
               onShowHistory: () {
                 showDialog<void>(
@@ -2354,40 +2662,44 @@ class _CareEpisodeReportsWorkspaceScreenState
                                   loading: _draftLoading,
                                   loadError: _draftLoadError,
                                   draftReady:
-                                      _documentType ==
-                                          ClinicalDocumentType.assessment
+                                  _documentType ==
+                                      ClinicalDocumentType.assessment
                                       ? _draft != null
                                       : _reportDraft != null,
                                   onExpand: _openExpandedSoapEditor,
                                   isEditing:
-                                      _documentType ==
-                                          ClinicalDocumentType.assessment
+                                  _documentType ==
+                                      ClinicalDocumentType.assessment
                                       ? _draft?.isSaved == true
                                       : _reportDraft?.isSaved == true,
                                   documentType: _documentType,
                                   documentTypeSelected: _documentTypeSelected,
                                   onOpenTemplateGuide:
-                                      _openAssessmentTemplateGuide,
+                                  _openAssessmentTemplateGuide,
                                   documentTitle:
-                                      _documentType ==
-                                          ClinicalDocumentType.assessment
+                                  _documentType ==
+                                      ClinicalDocumentType.assessment
                                       ? _draft?.title
                                       : _reportDraft?.title,
-                                  assessmentAuthorFuture:
-                                      _documentType ==
-                                              ClinicalDocumentType.assessment &&
-                                          _draft != null
+                                  documentAuthorFuture:
+                                  _documentType == ClinicalDocumentType.assessment
+                                      ? (_draft != null
                                       ? _loadAssessmentAuthor(_draft!)
-                                      : null,
-                                  onAssessmentAuthorPressed:
-                                      _selectAssessmentAuthor,
+                                      : null)
+                                      : (_reportDraft != null
+                                      ? _loadReportAuthor(_reportDraft!)
+                                      : null),
+                                  onDocumentAuthorPressed:
+                                  _documentType == ClinicalDocumentType.assessment
+                                      ? _selectAssessmentAuthor
+                                      : _selectReportAuthor,
                                   assessmentRecipientText:
-                                      _documentType ==
-                                          ClinicalDocumentType.assessment
+                                  _documentType ==
+                                      ClinicalDocumentType.assessment
                                       ? _draft?.recipientText
                                       : null,
                                   onAssessmentRecipientPressed:
-                                      _editAssessmentRecipient,
+                                  _editAssessmentRecipient,
                                   onDocumentTypeChanged: (documentType) async {
                                     switch (documentType) {
                                       case ClinicalDocumentType.assessment:
@@ -2403,7 +2715,7 @@ class _CareEpisodeReportsWorkspaceScreenState
                               const SizedBox(height: 8),
 
                               if (_documentType ==
-                                      ClinicalDocumentType.assessment &&
+                                  ClinicalDocumentType.assessment &&
                                   _draft?.isSaved == true)
                                 Align(
                                   alignment: Alignment.centerRight,
@@ -2412,7 +2724,7 @@ class _CareEpisodeReportsWorkspaceScreenState
                                       Expanded(
                                         child: Text(
                                           'Votre bilan est prêt. Le DOCX regroupera les informations '
-                                          'saisies et les éléments sélectionnés.',
+                                              'saisies et les éléments sélectionnés.',
                                           style: Theme.of(
                                             context,
                                           ).textTheme.bodySmall,
@@ -2421,6 +2733,34 @@ class _CareEpisodeReportsWorkspaceScreenState
                                       const SizedBox(width: 16),
                                       FilledButton.icon(
                                         onPressed: _exportAssessmentDocx,
+                                        icon: const Icon(
+                                          Icons.description_outlined,
+                                        ),
+                                        label: const Text('Générer le DOCX'),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+
+                              if (_documentType ==
+                                  ClinicalDocumentType.report &&
+                                  _reportDraft?.isSaved == true)
+                                Align(
+                                  alignment: Alignment.centerRight,
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          'Votre rapport est prêt. Le DOCX regroupera les informations '
+                                              'du patient, du rédacteur et du correspondant.',
+                                          style: Theme.of(
+                                            context,
+                                          ).textTheme.bodySmall,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 16),
+                                      FilledButton.icon(
+                                        onPressed: _exportReportDocx,
                                         icon: const Icon(
                                           Icons.description_outlined,
                                         ),

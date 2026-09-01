@@ -6,12 +6,14 @@ class CareEpisodeSummary {
 
   final String? referringPractitionerDisplayName;
   final bool referringPractitionerArchived;
+  final String? prescribingCorrespondentDisplayName;
 
   const CareEpisodeSummary({
     required this.episode,
     required this.notesCount,
     this.referringPractitionerDisplayName,
     this.referringPractitionerArchived = false,
+    this.prescribingCorrespondentDisplayName,
   });
 
   factory CareEpisodeSummary.fromMap(Map<String, dynamic> map) {
@@ -22,6 +24,8 @@ class CareEpisodeSummary {
       map['referring_practitioner_display_name']?.toString(),
       referringPractitionerArchived:
       (map['referring_practitioner_archived'] as num?)?.toInt() == 1,
+      prescribingCorrespondentDisplayName:
+      map['prescribing_correspondent_display_name']?.toString(),
     );
   }
 

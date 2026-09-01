@@ -14,6 +14,7 @@ class CareEpisode {
   final int createdAt;
   final int? updatedAt;
   final int? archivedAt;
+  final String? prescribingCorrespondentId;
 
   const CareEpisode({
     required this.careEpisodeId,
@@ -30,6 +31,7 @@ class CareEpisode {
     this.updatedAt,
     this.archivedAt,
     this.finalConclusion,
+    this.prescribingCorrespondentId,
   });
 
   factory CareEpisode.fromMap(Map<String, dynamic> map) {
@@ -48,6 +50,8 @@ class CareEpisode {
       updatedAt: (map['updated_at'] as num?)?.toInt(),
       archivedAt: (map['archived_at'] as num?)?.toInt(),
       finalConclusion: map['final_conclusion']?.toString(),
+      prescribingCorrespondentId:
+      map['prescribing_correspondent_id']?.toString(),
     );
   }
 
@@ -67,6 +71,7 @@ class CareEpisode {
       'updated_at': updatedAt,
       'archived_at': archivedAt,
       'final_conclusion': finalConclusion,
+      'prescribing_correspondent_id': prescribingCorrespondentId,
     };
   }
 
