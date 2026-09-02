@@ -20,6 +20,24 @@ class _OrganizationScreenState extends State<OrganizationScreen> {
   final TextEditingController _cabinetNameController =
   TextEditingController();
 
+  final TextEditingController _addressLine1Controller =
+  TextEditingController();
+
+  final TextEditingController _addressLine2Controller =
+  TextEditingController();
+
+  final TextEditingController _postalCodeController =
+  TextEditingController();
+
+  final TextEditingController _cityController =
+  TextEditingController();
+
+  final TextEditingController _phoneController =
+  TextEditingController();
+
+  final TextEditingController _emailController =
+  TextEditingController();
+
   String? _cabinetLogoPath;
   bool _loading = true;
 
@@ -32,6 +50,12 @@ class _OrganizationScreenState extends State<OrganizationScreen> {
   @override
   void dispose() {
     _cabinetNameController.dispose();
+    _addressLine1Controller.dispose();
+    _addressLine2Controller.dispose();
+    _postalCodeController.dispose();
+    _cityController.dispose();
+    _phoneController.dispose();
+    _emailController.dispose();
     super.dispose();
   }
 
@@ -39,20 +63,63 @@ class _OrganizationScreenState extends State<OrganizationScreen> {
     final cabinetName = await _cabinetIdentityService.getCabinetName();
     final cabinetLogoPath =
     await _cabinetIdentityService.getCabinetLogoPath();
+    final addressLine1 =
+    await _cabinetIdentityService.getCabinetAddressLine1();
+    final addressLine2 =
+    await _cabinetIdentityService.getCabinetAddressLine2();
+    final postalCode =
+    await _cabinetIdentityService.getCabinetPostalCode();
+    final city =
+    await _cabinetIdentityService.getCabinetCity();
+    final phone =
+    await _cabinetIdentityService.getCabinetPhone();
+    final email =
+    await _cabinetIdentityService.getCabinetEmail();
 
     if (!mounted) return;
 
     setState(() {
       _cabinetNameController.text = cabinetName ?? '';
+      _addressLine1Controller.text = addressLine1 ?? '';
+      _addressLine2Controller.text = addressLine2 ?? '';
+      _postalCodeController.text = postalCode ?? '';
+      _cityController.text = city ?? '';
+      _phoneController.text = phone ?? '';
+      _emailController.text = email ?? '';
       _cabinetLogoPath = cabinetLogoPath;
       _loading = false;
     });
   }
 
-  Future<void> _saveCabinetName() async {
-    final s=S.of(context);
+  Future<void> _saveCabinetIdentity() async {
+    final s = S.of(context);
+
     await _cabinetIdentityService.setCabinetName(
       _cabinetNameController.text,
+    );
+
+    await _cabinetIdentityService.setCabinetAddressLine1(
+      _addressLine1Controller.text,
+    );
+
+    await _cabinetIdentityService.setCabinetAddressLine2(
+      _addressLine2Controller.text,
+    );
+
+    await _cabinetIdentityService.setCabinetPostalCode(
+      _postalCodeController.text,
+    );
+
+    await _cabinetIdentityService.setCabinetCity(
+      _cityController.text,
+    );
+
+    await _cabinetIdentityService.setCabinetPhone(
+      _phoneController.text,
+    );
+
+    await _cabinetIdentityService.setCabinetEmail(
+      _emailController.text,
     );
 
     if (!mounted) return;
@@ -131,24 +198,98 @@ class _OrganizationScreenState extends State<OrganizationScreen> {
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
                   const SizedBox(height: 24),
+
                   TextField(
                     controller: _cabinetNameController,
                     decoration: InputDecoration(
                       labelText: s.organization_nameLabel,
-                      border: OutlineInputBorder(),
+                      border: const OutlineInputBorder(),
                     ),
-                    onSubmitted: (_) => _saveCabinetName(),
                   ),
                   const SizedBox(height: 12),
+
+                  TextField(
+                    controller: _addressLine1Controller,
+                    decoration: const InputDecoration(
+                      labelText: 'Adresse',
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+
+                  TextField(
+                    controller: _addressLine2Controller,
+                    decoration: const InputDecoration(
+                      labelText: 'Complément d’adresse',
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+
+                  Row(
+                    children: [
+                      SizedBox(
+                        width: 180,
+                        child: TextField(
+                          controller: _postalCodeController,
+                          decoration: const InputDecoration(
+                            labelText: 'Code postal',
+                            border: OutlineInputBorder(),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: TextField(
+                          controller: _cityController,
+                          decoration: const InputDecoration(
+                            labelText: 'Ville',
+                            border: OutlineInputBorder(),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: _phoneController,
+                          decoration: const InputDecoration(
+                            labelText: 'Téléphone',
+                            border: OutlineInputBorder(),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: TextField(
+                          controller: _emailController,
+                          decoration: const InputDecoration(
+                            labelText: 'E-mail',
+                            border: OutlineInputBorder(),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+
                   Align(
                     alignment: Alignment.centerRight,
                     child: FilledButton.icon(
-                      onPressed: _saveCabinetName,
+                      onPressed: _saveCabinetIdentity,
                       icon: const Icon(Icons.save_outlined),
-                      label: Text(s.organization_saveName),
+                      label: const Text(
+                        'Enregistrer les coordonnées',
+                      ),
                     ),
                   ),
+
                   const SizedBox(height: 24),
+
                   Row(
                     children: [
                       _LogoPreview(path: _cabinetLogoPath),
@@ -161,13 +302,19 @@ class _OrganizationScreenState extends State<OrganizationScreen> {
                             OutlinedButton.icon(
                               onPressed: _chooseLogo,
                               icon: const Icon(Icons.image_outlined),
-                              label: Text(s.organization_chooseLogo),
+                              label: Text(
+                                s.organization_chooseLogo,
+                              ),
                             ),
                             if (_cabinetLogoPath != null)
                               TextButton.icon(
                                 onPressed: _removeLogo,
-                                icon: const Icon(Icons.delete_outline),
-                                label: Text(s.organization_removeLogo),
+                                icon: const Icon(
+                                  Icons.delete_outline,
+                                ),
+                                label: Text(
+                                  s.organization_removeLogo,
+                                ),
                               ),
                           ],
                         ),

@@ -168,4 +168,144 @@ class CareEpisodeReportRepository {
 
     return (result.first['count'] as int?) ?? 0;
   }
+
+  Future<Set<String>> getSelectedTestExoIds(
+      String reportId,
+      ) async {
+    final db = await DatabaseService.database;
+
+    final rows = await db.query(
+      'care_episode_report_tests',
+      columns: ['exo_id'],
+      where: 'report_id = ?',
+      whereArgs: [reportId],
+    );
+
+    return rows
+        .map((row) => row['exo_id']?.toString() ?? '')
+        .where((exoId) => exoId.isNotEmpty)
+        .toSet();
+  }
+
+  Future<void> setTestIncluded({
+    required String reportId,
+    required String exoId,
+    required bool included,
+  }) async {
+    final db = await DatabaseService.database;
+
+    if (included) {
+      await db.insert(
+        'care_episode_report_tests',
+        {
+          'report_id': reportId,
+          'exo_id': exoId,
+        },
+        conflictAlgorithm: ConflictAlgorithm.ignore,
+      );
+      return;
+    }
+
+    await db.delete(
+      'care_episode_report_tests',
+      where: 'report_id = ? AND exo_id = ?',
+      whereArgs: [reportId, exoId],
+    );
+  }
+
+  Future<void> replaceSelectedTests({
+    required String reportId,
+    required Set<String> exoIds,
+  }) async {
+    final db = await DatabaseService.database;
+
+    await db.transaction((transaction) async {
+      await transaction.delete(
+        'care_episode_report_tests',
+        where: 'report_id = ?',
+        whereArgs: [reportId],
+      );
+
+      for (final exoId in exoIds) {
+        await transaction.insert(
+          'care_episode_report_tests',
+          {
+            'report_id': reportId,
+            'exo_id': exoId,
+          },
+          conflictAlgorithm: ConflictAlgorithm.ignore,
+        );
+      }
+    });
+  }
+
+  Future<Set<String>> getSelectedNoteIds(
+      String reportId,
+      ) async {
+    final db = await DatabaseService.database;
+
+    final rows = await db.query(
+      'care_episode_report_notes',
+      columns: ['note_id'],
+      where: 'report_id = ?',
+      whereArgs: [reportId],
+    );
+
+    return rows
+        .map((row) => row['note_id']?.toString() ?? '')
+        .where((noteId) => noteId.isNotEmpty)
+        .toSet();
+  }
+
+  Future<void> setNoteIncluded({
+    required String reportId,
+    required String noteId,
+    required bool included,
+  }) async {
+    final db = await DatabaseService.database;
+
+    if (included) {
+      await db.insert(
+        'care_episode_report_notes',
+        {
+          'report_id': reportId,
+          'note_id': noteId,
+        },
+        conflictAlgorithm: ConflictAlgorithm.ignore,
+      );
+      return;
+    }
+
+    await db.delete(
+      'care_episode_report_notes',
+      where: 'report_id = ? AND note_id = ?',
+      whereArgs: [reportId, noteId],
+    );
+  }
+
+  Future<void> replaceSelectedNotes({
+    required String reportId,
+    required Set<String> noteIds,
+  }) async {
+    final db = await DatabaseService.database;
+
+    await db.transaction((transaction) async {
+      await transaction.delete(
+        'care_episode_report_notes',
+        where: 'report_id = ?',
+        whereArgs: [reportId],
+      );
+
+      for (final noteId in noteIds) {
+        await transaction.insert(
+          'care_episode_report_notes',
+          {
+            'report_id': reportId,
+            'note_id': noteId,
+          },
+          conflictAlgorithm: ConflictAlgorithm.ignore,
+        );
+      }
+    });
+  }
 }

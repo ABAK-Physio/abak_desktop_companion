@@ -348,8 +348,52 @@ class _CareEpisodeReportsWorkspaceScreenState
         episode: widget.episode,
       );
 
+      Uint8List? establishmentLogoBytes;
+      String? establishmentLogoExtension;
+
+      final logoPath = data.establishmentLogoPath;
+
+      if (logoPath != null && logoPath.trim().isNotEmpty) {
+        final logoFile = File(logoPath);
+
+        if (await logoFile.exists()) {
+          final lowerPath = logoPath.toLowerCase();
+
+          if (lowerPath.endsWith('.png')) {
+            establishmentLogoExtension = 'png';
+          } else if (lowerPath.endsWith('.jpg') ||
+              lowerPath.endsWith('.jpeg')) {
+            establishmentLogoExtension = 'jpg';
+          }
+
+          if (establishmentLogoExtension != null) {
+            establishmentLogoBytes = await logoFile.readAsBytes();
+          }
+        }
+      }
+
+      final chartPngBytes = <Uint8List>[];
+
+      for (final test in data.tests) {
+        for (final series in test.chartSeries) {
+          final pngBytes = await const AssessmentChartImageService().buildPng(
+            series: series,
+          );
+
+          chartPngBytes.add(pngBytes);
+
+          debugPrint(
+            '[RAPPORT DOCX] Graphique généré : '
+                '${test.title} / ${series.label}',
+          );
+        }
+      }
+
       final bytes = await ReportDocxService().buildDocx(
         data: data,
+        chartPngBytes: chartPngBytes,
+        establishmentLogoBytes: establishmentLogoBytes,
+        establishmentLogoExtension: establishmentLogoExtension,
       );
 
       final exportService = const EpisodeReportDocxExportService();
@@ -919,15 +963,31 @@ class _CareEpisodeReportsWorkspaceScreenState
   }
 
   Future<void> _showReport(
-    CareEpisodeReport report, {
-    String? contentOverride,
-  }) async {
+      CareEpisodeReport report, {
+        String? contentOverride,
+      }) async {
+    setState(() {
+      _testSelectionLoading = true;
+      _noteSelectionLoading = true;
+    });
+
+    final selectedTestExoIds = await _reportRepository
+        .getSelectedTestExoIds(report.reportId);
+
+    final selectedNoteIds = await _reportRepository.getSelectedNoteIds(
+      report.reportId,
+    );
+
     if (!mounted) return;
 
     setState(() {
       _documentType = ClinicalDocumentType.report;
       _documentTypeSelected = true;
       _reportDraft = report;
+      _selectedTestExoIds = selectedTestExoIds;
+      _selectedNoteIds = selectedNoteIds;
+      _testSelectionLoading = false;
+      _noteSelectionLoading = false;
       _draftLoadError = null;
     });
 
@@ -1189,9 +1249,7 @@ class _CareEpisodeReportsWorkspaceScreenState
     required String exoId,
     required bool included,
   }) async {
-    final assessment = _draft;
-
-    if (assessment == null || _testSelectionLoading) {
+    if (_testSelectionLoading) {
       return;
     }
 
@@ -1208,16 +1266,42 @@ class _CareEpisodeReportsWorkspaceScreenState
       _selectedTestExoIds = nextSelection;
     });
 
-    if (assessment.isSaved) {
-      return;
-    }
-
     try {
-      await _assessmentRepository.setTestIncluded(
-        assessmentId: assessment.assessmentId,
-        exoId: exoId,
-        included: included,
-      );
+      switch (_documentType) {
+        case ClinicalDocumentType.assessment:
+          final assessment = _draft;
+
+          if (assessment == null) {
+            return;
+          }
+
+          if (assessment.isSaved) {
+            return;
+          }
+
+          await _assessmentRepository.setTestIncluded(
+            assessmentId: assessment.assessmentId,
+            exoId: exoId,
+            included: included,
+          );
+
+        case ClinicalDocumentType.report:
+          final report = _reportDraft;
+
+          if (report == null) {
+            return;
+          }
+
+          if (report.isSaved) {
+            return;
+          }
+
+          await _reportRepository.setTestIncluded(
+            reportId: report.reportId,
+            exoId: exoId,
+            included: included,
+          );
+      }
     } catch (_) {
       if (!mounted) return;
 
@@ -1237,9 +1321,7 @@ class _CareEpisodeReportsWorkspaceScreenState
     required String noteId,
     required bool included,
   }) async {
-    final assessment = _draft;
-
-    if (assessment == null || _noteSelectionLoading) {
+    if (_noteSelectionLoading) {
       return;
     }
 
@@ -1256,16 +1338,42 @@ class _CareEpisodeReportsWorkspaceScreenState
       _selectedNoteIds = nextSelection;
     });
 
-    if (assessment.isSaved) {
-      return;
-    }
-
     try {
-      await _assessmentRepository.setNoteIncluded(
-        assessmentId: assessment.assessmentId,
-        noteId: noteId,
-        included: included,
-      );
+      switch (_documentType) {
+        case ClinicalDocumentType.assessment:
+          final assessment = _draft;
+
+          if (assessment == null) {
+            return;
+          }
+
+          if (assessment.isSaved) {
+            return;
+          }
+
+          await _assessmentRepository.setNoteIncluded(
+            assessmentId: assessment.assessmentId,
+            noteId: noteId,
+            included: included,
+          );
+
+        case ClinicalDocumentType.report:
+          final report = _reportDraft;
+
+          if (report == null) {
+            return;
+          }
+
+          if (report.isSaved) {
+            return;
+          }
+
+          await _reportRepository.setNoteIncluded(
+            reportId: report.reportId,
+            noteId: noteId,
+            included: included,
+          );
+      }
     } catch (_) {
       if (!mounted) return;
 
@@ -1940,6 +2048,16 @@ class _CareEpisodeReportsWorkspaceScreenState
         );
       }
 
+      await _reportRepository.replaceSelectedTests(
+        reportId: savedReport.reportId,
+        exoIds: _selectedTestExoIds,
+      );
+
+      await _reportRepository.replaceSelectedNotes(
+        reportId: savedReport.reportId,
+        noteIds: _selectedNoteIds,
+      );
+
       if (isEditing) {
         if (!mounted) return;
 
@@ -1973,6 +2091,8 @@ class _CareEpisodeReportsWorkspaceScreenState
       setState(() {
         _documentType = ClinicalDocumentType.report;
         _reportDraft = newDraft;
+        _selectedTestExoIds = <String>{};
+        _selectedNoteIds = <String>{};
         _reportsFuture = _reportRepository.getSavedForEpisode(
           widget.episode.careEpisodeId,
         );
@@ -2783,9 +2903,10 @@ class _CareEpisodeReportsWorkspaceScreenState
                                   resultsFuture: _resultsFuture,
                                   selectedTestExoIds: _selectedTestExoIds,
                                   selectionEnabled:
-                                      _documentType ==
-                                          ClinicalDocumentType.assessment &&
-                                      _draft != null &&
+                                  ((_documentType == ClinicalDocumentType.assessment &&
+                                      _draft != null) ||
+                                      (_documentType == ClinicalDocumentType.report &&
+                                          _reportDraft != null)) &&
                                       !_testSelectionLoading,
                                   onExpand: () {
                                     _showExpandedWorkspaceContent(
@@ -2798,10 +2919,10 @@ class _CareEpisodeReportsWorkspaceScreenState
                                                 selectedTestExoIds:
                                                     _selectedTestExoIds,
                                                 selectionEnabled:
-                                                    _documentType ==
-                                                        ClinicalDocumentType
-                                                            .assessment &&
-                                                    _draft != null &&
+                                                ((_documentType == ClinicalDocumentType.assessment &&
+                                                    _draft != null) ||
+                                                    (_documentType == ClinicalDocumentType.report &&
+                                                        _reportDraft != null)) &&
                                                     !_testSelectionLoading,
                                                 onExpand: null,
                                                 onTestIncludedChanged:
@@ -3015,9 +3136,10 @@ class _CareEpisodeReportsWorkspaceScreenState
                             notesFuture: _notesFuture,
                             selectedNoteIds: _selectedNoteIds,
                             selectionEnabled:
-                                _documentType ==
-                                    ClinicalDocumentType.assessment &&
-                                _draft != null &&
+                            ((_documentType == ClinicalDocumentType.assessment &&
+                                _draft != null) ||
+                                (_documentType == ClinicalDocumentType.report &&
+                                    _reportDraft != null)) &&
                                 !_noteSelectionLoading,
                             onAddNote: _addFollowUpNote,
                             onEditNote: _editFollowUpNote,
@@ -3028,9 +3150,10 @@ class _CareEpisodeReportsWorkspaceScreenState
                                   notesFuture: _notesFuture,
                                   selectedNoteIds: _selectedNoteIds,
                                   selectionEnabled:
-                                      _documentType ==
-                                          ClinicalDocumentType.assessment &&
-                                      _draft != null &&
+                                  ((_documentType == ClinicalDocumentType.assessment &&
+                                      _draft != null) ||
+                                      (_documentType == ClinicalDocumentType.report &&
+                                          _reportDraft != null)) &&
                                       !_noteSelectionLoading,
                                   onAddNote: () async {
                                     final navigator = Navigator.of(context);

@@ -61,7 +61,7 @@ class DatabaseService {
 
     return openDatabase(
       path,
-      version: 26, //////////////////////
+      version: 27, //////////////////////
       onCreate: (db, version) async {
         await _createAllTables(db);
       },
@@ -241,6 +241,9 @@ class DatabaseService {
             'ALTER TABLE care_episode_reports '
                 'ADD COLUMN docx_file_name TEXT NULL',
           );
+        }
+        if (oldVersion < 27) {
+          await _createCareEpisodeReportSelectionTables(db);
         }
       },
     );
@@ -482,6 +485,7 @@ class DatabaseService {
     await _createCareEpisodeNoteTables(db);
     await _createCareEpisodeAssessmentTables(db);
     await _createCareEpisodeReportTables(db);
+    await _createCareEpisodeReportSelectionTables(db);
     await _createCareEpisodeDocumentEditDraftsTable(db);
     await _createResultTables(db);
     await _createImportHistoryTables(db);
@@ -498,6 +502,8 @@ class DatabaseService {
 
     await db.execute('DROP TABLE IF EXISTS care_episode_assessment_notes');
     await db.execute('DROP TABLE IF EXISTS care_episode_assessment_tests');
+    await db.execute('DROP TABLE IF EXISTS care_episode_report_notes');
+    await db.execute('DROP TABLE IF EXISTS care_episode_report_tests');
     await db.execute('DROP TABLE IF EXISTS care_episode_reports');
     await db.execute('DROP TABLE IF EXISTS care_episode_assessments');
     await db.execute('DROP TABLE IF EXISTS care_episode_notes');
@@ -838,6 +844,37 @@ CREATE TABLE care_episode_notes (
       CREATE INDEX idx_care_episode_reports_episode_id
       ON care_episode_reports(care_episode_id)
     ''');
+  }
+
+  static Future<void> _createCareEpisodeReportSelectionTables(
+      Database db,
+      ) async {
+    await db.execute('''
+    CREATE TABLE IF NOT EXISTS care_episode_report_tests (
+      report_id TEXT NOT NULL,
+      exo_id TEXT NOT NULL,
+
+      PRIMARY KEY(report_id, exo_id),
+
+      FOREIGN KEY(report_id)
+        REFERENCES care_episode_reports(report_id)
+    )
+  ''');
+
+    await db.execute('''
+    CREATE TABLE IF NOT EXISTS care_episode_report_notes (
+      report_id TEXT NOT NULL,
+      note_id TEXT NOT NULL,
+
+      PRIMARY KEY(report_id, note_id),
+
+      FOREIGN KEY(report_id)
+        REFERENCES care_episode_reports(report_id),
+
+      FOREIGN KEY(note_id)
+        REFERENCES care_episode_notes(note_id)
+    )
+  ''');
   }
 
   static Future<void> _createResultTables(Database db) async {
