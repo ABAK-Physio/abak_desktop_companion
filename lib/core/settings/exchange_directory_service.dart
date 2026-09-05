@@ -4,6 +4,8 @@ import 'package:file_picker/file_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../generated/l10n.dart';
+
 class ExchangeDirectoryService {
   static const String _preferenceKey = 'exchange_directory_path';
 
@@ -16,7 +18,7 @@ class ExchangeDirectoryService {
   /// Permet au kiné de choisir un dossier d'échange.
   Future<String?> chooseDirectory() async {
     final selectedPath = await FilePicker.platform.getDirectoryPath(
-      dialogTitle: 'Choisir le dossier d’échange ABAK',
+      dialogTitle: S.current.exchangeDirectoryService_choose,
     );
 
     if (selectedPath == null || selectedPath.isEmpty) {

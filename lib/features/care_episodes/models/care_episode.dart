@@ -1,3 +1,5 @@
+import 'package:abak_desktop_companion/generated/l10n.dart';
+
 class CareEpisode {
   final String careEpisodeId;
   final String patientId;
@@ -88,13 +90,13 @@ class CareEpisode {
       return cleanedPathology;
     }
 
-    return 'Prise en charge';
+    return S.current.careEpisode_title;
   }
 
   String get displayInitialReport {
     final cleaned = initialReport?.trim();
     if (cleaned == null || cleaned.isEmpty) {
-      return 'Aucun compte rendu initial.';
+      return S.current.careEpisode_report;
     }
 
     return cleaned;
@@ -104,7 +106,7 @@ class CareEpisode {
     final cleaned = objectiveData?.trim();
 
     if (cleaned == null || cleaned.isEmpty) {
-      return 'Aucune évaluation clinique.';
+      return S.current.careEpisode_evaluation;
     }
 
     return cleaned;
@@ -114,7 +116,7 @@ class CareEpisode {
     final cleaned = assessmentData?.trim();
 
     if (cleaned == null || cleaned.isEmpty) {
-      return 'Aucune analyse clinique.';
+      return S.current.careEpisode_assessment;
     }
 
     return cleaned;
@@ -124,7 +126,7 @@ class CareEpisode {
     final cleaned = treatmentPlan?.trim();
 
     if (cleaned == null || cleaned.isEmpty) {
-      return 'Aucun plan de traitement.';
+      return S.current.careEpisode_treatment;
     }
 
     return cleaned;

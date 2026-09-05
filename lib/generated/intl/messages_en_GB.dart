@@ -20,65 +20,149 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'en_GB';
 
-  static String m0(size) => "${size}";
+  static String m0(careEpisodeId) =>
+      "No patient found for care episode ${careEpisodeId}.";
 
-  static String m1(deviceName) =>
+  static String m1(height) => "${height} cm";
+
+  static String m2(weight) => "${weight} kg";
+
+  static String m3(age) => "${age} years old";
+
+  static String m4(size) => "${size}";
+
+  static String m5(deviceName) =>
       "Are you sure you want to archive ${deviceName}?";
 
-  static String m2(fieldName) => "The \"${fieldName}\" field is required.";
+  static String m6(fieldName) => "The \"${fieldName}\" field is required.";
 
-  static String m3(noteTitle) =>
+  static String m7(noteTitle) =>
       "The note \"${noteTitle}\" will no longer be displayed.";
 
-  static String m4(error) => "Error while saving: ${error}";
+  static String m8(error) => "Error while saving: ${error}";
 
-  static String m5(count) => "${count} other exercise(s)";
+  static String m9(count) => "${count} other exercise(s)";
 
-  static String m6(count) => "${count} pending association(s)";
+  static String m10(count) => "${count} pending association(s)";
 
-  static String m7(count) => "${count} backups";
+  static String m11(count) => "${count} backups";
 
-  static String m8(size) => "Size: ${size}";
+  static String m12(size) => "Size: ${size}";
 
-  static String m9(size) => "Total size: ${size}";
+  static String m13(size) => "Total size: ${size}";
 
-  static String m10(version) => "Version ${version}";
+  static String m14(version) => "Version ${version}";
 
-  static String m11(patientName) =>
+  static String m15(integrityStatus) =>
+      "The restored database shows an anomaly: ${integrityStatus}";
+
+  static String m16(error) => "Restore failed: ${error}";
+
+  static String m17(integrityStatus) =>
+      "Restoration completed, but integrity_check returned: ${integrityStatus}";
+
+  static String m18(patientName) =>
       "Are you sure you want to archive ${patientName}? They will no longer appear in the active list.";
 
-  static String m12(patientName) => "${patientName} has been archived.";
+  static String m19(patientName) => "${patientName} has been archived.";
 
-  static String m13(error) => "Error: ${error}";
+  static String m20(error) => "Error: ${error}";
 
-  static String m14(patientName) =>
+  static String m21(patientName) =>
       "${patientName} has been restored to the active list.";
 
-  static String m15(patientName) =>
+  static String m22(patientName) =>
       "Vitale Card associated with patient ${patientName}.";
 
-  static String m16(patientName) =>
+  static String m23(patientName) =>
       "The patient ${patientName} has been restored.";
 
-  static String m17(practitionerName) =>
+  static String m24(practitionerName) =>
       "Are you sure you want to archive ${practitionerName}?";
 
-  static String m18(date) => "Archived on ${date}";
+  static String m25(date) => "Archived on ${date}";
 
-  static String m19(error) => "Error: ${error}";
+  static String m26(error) => "Error: ${error}";
 
-  static String m20(professionalId) => "ID pro: ${professionalId}";
+  static String m27(professionalId) => "ID pro: ${professionalId}";
 
-  static String m21(error) => "Error: ${error}";
+  static String m28(error) => "Error: ${error}";
 
-  static String m22(error) => "Error during reset: ${error}";
+  static String m29(error) => "Error during reset: ${error}";
+
+  static String m30(error) => "Voice dictation failed: ${error}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+        "abakWhisperSpeechProvider_name":
+            MessageLookupByLibrary.simpleMessage("ABAK Voice Dictation"),
+        "assessmentDocumentDataBuilder_female":
+            MessageLookupByLibrary.simpleMessage("Feminine"),
+        "assessmentDocumentDataBuilder_male":
+            MessageLookupByLibrary.simpleMessage("Male"),
+        "assessmentDocumentDataBuilder_patient": m0,
+        "assessmentDocxService_age":
+            MessageLookupByLibrary.simpleMessage("Age"),
+        "assessmentDocxService_assessment":
+            MessageLookupByLibrary.simpleMessage("with"),
+        "assessmentDocxService_attachment":
+            MessageLookupByLibrary.simpleMessage(
+                "Pathology During Reattachment"),
+        "assessmentDocxService_author":
+            MessageLookupByLibrary.simpleMessage("Writer"),
+        "assessmentDocxService_centimetres": m1,
+        "assessmentDocxService_chart":
+            MessageLookupByLibrary.simpleMessage("Graph"),
+        "assessmentDocxService_declared": MessageLookupByLibrary.simpleMessage(
+            "Age reported at the time of the test"),
+        "assessmentDocxService_diagnosis": MessageLookupByLibrary.simpleMessage(
+            "Abnormal Findings During the Test"),
+        "assessmentDocxService_dominance":
+            MessageLookupByLibrary.simpleMessage("Dominant side"),
+        "assessmentDocxService_establishment":
+            MessageLookupByLibrary.simpleMessage("Establishment"),
+        "assessmentDocxService_firstname":
+            MessageLookupByLibrary.simpleMessage("First Name"),
+        "assessmentDocxService_height":
+            MessageLookupByLibrary.simpleMessage("Size"),
+        "assessmentDocxService_information":
+            MessageLookupByLibrary.simpleMessage("Patient Information"),
+        "assessmentDocxService_kilograms": m2,
+        "assessmentDocxService_notes":
+            MessageLookupByLibrary.simpleMessage("Selected Follow-Up Notes"),
+        "assessmentDocxService_opened": MessageLookupByLibrary.simpleMessage(
+            "Care services available starting on"),
+        "assessmentDocxService_pathology":
+            MessageLookupByLibrary.simpleMessage("Pathology"),
+        "assessmentDocxService_patient":
+            MessageLookupByLibrary.simpleMessage("Patient"),
+        "assessmentDocxService_performed":
+            MessageLookupByLibrary.simpleMessage("Created on"),
+        "assessmentDocxService_practitioner":
+            MessageLookupByLibrary.simpleMessage("Primary Physical Therapist"),
+        "assessmentDocxService_printed":
+            MessageLookupByLibrary.simpleMessage("Printed on"),
+        "assessmentDocxService_profession":
+            MessageLookupByLibrary.simpleMessage("Occupation"),
+        "assessmentDocxService_recipients":
+            MessageLookupByLibrary.simpleMessage("Recipient(s)"),
+        "assessmentDocxService_results":
+            MessageLookupByLibrary.simpleMessage("Selected Test Results"),
+        "assessmentDocxService_sex":
+            MessageLookupByLibrary.simpleMessage("Sex"),
+        "assessmentDocxService_sport":
+            MessageLookupByLibrary.simpleMessage("Sports Activity"),
+        "assessmentDocxService_surname":
+            MessageLookupByLibrary.simpleMessage("Last Name"),
+        "assessmentDocxService_title":
+            MessageLookupByLibrary.simpleMessage("with"),
+        "assessmentDocxService_weight":
+            MessageLookupByLibrary.simpleMessage("Weight"),
+        "assessmentDocxService_years": m3,
         "backupHistory_cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
         "backupHistory_empty":
             MessageLookupByLibrary.simpleMessage("No backups have been saved."),
-        "backupHistory_fileSize": m0,
+        "backupHistory_fileSize": m4,
         "backupHistory_restore":
             MessageLookupByLibrary.simpleMessage("Restore"),
         "backupHistory_restoreTitle":
@@ -229,6 +313,15 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Update the balance sheet"),
         "careEpisodeReportsWorkspace_updateReport":
             MessageLookupByLibrary.simpleMessage("Update the report"),
+        "careEpisode_assessment":
+            MessageLookupByLibrary.simpleMessage("No clinical analysis."),
+        "careEpisode_evaluation":
+            MessageLookupByLibrary.simpleMessage("No clinical evaluation."),
+        "careEpisode_report":
+            MessageLookupByLibrary.simpleMessage("No initial report."),
+        "careEpisode_title": MessageLookupByLibrary.simpleMessage("Coverage"),
+        "careEpisode_treatment":
+            MessageLookupByLibrary.simpleMessage("No treatment plan."),
         "close": MessageLookupByLibrary.simpleMessage("Close"),
         "contactFormTemplateDiagnostic_category":
             MessageLookupByLibrary.simpleMessage("Category"),
@@ -294,7 +387,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("None / shared device"),
         "deviceList_active": MessageLookupByLibrary.simpleMessage("Assets"),
         "deviceList_archive": MessageLookupByLibrary.simpleMessage("Archive"),
-        "deviceList_archiveConfirmation": m1,
+        "deviceList_archiveConfirmation": m5,
         "deviceList_archiveTitle":
             MessageLookupByLibrary.simpleMessage("Archive the device"),
         "deviceList_archived": MessageLookupByLibrary.simpleMessage("Archived"),
@@ -402,7 +495,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Error"),
         "episodeFormEditor_noField":
             MessageLookupByLibrary.simpleMessage("No fields to display."),
-        "episodeFormEditor_requiredField": m2,
+        "episodeFormEditor_requiredField": m6,
         "episodeFormEditor_save": MessageLookupByLibrary.simpleMessage("Save"),
         "episodeFormEditor_title":
             MessageLookupByLibrary.simpleMessage("Edit the form"),
@@ -436,7 +529,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("System Model"),
         "episodeForms_title": MessageLookupByLibrary.simpleMessage("Forms"),
         "episodeNotes_archive": MessageLookupByLibrary.simpleMessage("Archive"),
-        "episodeNotes_archiveConfirmation": m3,
+        "episodeNotes_archiveConfirmation": m7,
         "episodeNotes_archiveTitle":
             MessageLookupByLibrary.simpleMessage("Archive this note?"),
         "episodeNotes_cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
@@ -513,8 +606,24 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Unknown type"),
         "exchangeDirectoryReset":
             MessageLookupByLibrary.simpleMessage("Exchange Folder Reset"),
+        "exchangeDirectoryService_choose": MessageLookupByLibrary.simpleMessage(
+            "Select the ABAK exchange folder"),
         "exchangeDirectoryUpdated":
             MessageLookupByLibrary.simpleMessage("Updated ABAK Exchange File"),
+        "externalSpeechToTextProvider_empty":
+            MessageLookupByLibrary.simpleMessage(
+                "The add-on did not return any response."),
+        "externalSpeechToTextProvider_failure":
+            MessageLookupByLibrary.simpleMessage(
+                "The speech recognition add-on failed."),
+        "externalSpeechToTextProvider_invalid":
+            MessageLookupByLibrary.simpleMessage(
+                "Invalid response from the speech recognition add-on."),
+        "externalSpeechToTextProvider_noText":
+            MessageLookupByLibrary.simpleMessage(
+                "The add-on did not return any text."),
+        "externalSpeechToTextProvider_transcription":
+            MessageLookupByLibrary.simpleMessage("The transcription failed."),
         "g_arb_prefix": MessageLookupByLibrary.simpleMessage("ARB prefix"),
         "g_close": MessageLookupByLibrary.simpleMessage("Close"),
         "g_comment": MessageLookupByLibrary.simpleMessage("Comment"),
@@ -598,7 +707,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "home_date_not_specified":
             MessageLookupByLibrary.simpleMessage("Date not provided"),
         "home_devices": MessageLookupByLibrary.simpleMessage("Devices"),
-        "home_error_while_saving": m4,
+        "home_error_while_saving": m8,
         "home_everything_is_working_normally":
             MessageLookupByLibrary.simpleMessage(
                 "Everything is working normally"),
@@ -650,13 +759,13 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("No backups saved"),
         "home_not_specified": MessageLookupByLibrary.simpleMessage("informed"),
         "home_octets": MessageLookupByLibrary.simpleMessage("Octets"),
-        "home_other_exercises": m5,
+        "home_other_exercises": m9,
         "home_parameters": MessageLookupByLibrary.simpleMessage("Settings"),
         "home_pathway": MessageLookupByLibrary.simpleMessage("Path"),
         "home_patient_abak":
             MessageLookupByLibrary.simpleMessage("Patient ABAK"),
         "home_patients": MessageLookupByLibrary.simpleMessage("Patients"),
-        "home_pending_association": m6,
+        "home_pending_association": m10,
         "home_practitioners":
             MessageLookupByLibrary.simpleMessage("practitioners"),
         "home_quick_actions":
@@ -725,7 +834,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Troubleshooting Import Issues"),
         "importResolutionAssistant_toReview":
             MessageLookupByLibrary.simpleMessage("to be verified"),
-        "information_backupCount": m7,
+        "information_backupCount": m11,
         "information_backups": MessageLookupByLibrary.simpleMessage("Backups"),
         "information_configured":
             MessageLookupByLibrary.simpleMessage("Configured"),
@@ -749,16 +858,21 @@ class MessageLookup extends MessageLookupByLibrary {
         "information_notProvided":
             MessageLookupByLibrary.simpleMessage("Not specified"),
         "information_office": MessageLookupByLibrary.simpleMessage("Office"),
-        "information_size": m8,
+        "information_size": m12,
         "information_system": MessageLookupByLibrary.simpleMessage("System"),
         "information_title":
             MessageLookupByLibrary.simpleMessage("Information"),
-        "information_totalSize": m9,
-        "information_version": m10,
+        "information_totalSize": m13,
+        "information_version": m14,
         "information_versionLoading":
             MessageLookupByLibrary.simpleMessage("Version..."),
         "information_viewLicense":
             MessageLookupByLibrary.simpleMessage("View the license"),
+        "initialReportDocumentService_associate":
+            MessageLookupByLibrary.simpleMessage(
+                "Attach an Initial Assessment in Word"),
+        "initialReportDocumentService_unsupported":
+            MessageLookupByLibrary.simpleMessage("Unsupported platform"),
         "languageSaved":
             MessageLookupByLibrary.simpleMessage("Language saved."),
         "language_choice":
@@ -779,6 +893,15 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("SQLite database not found."),
         "localDatabaseReset_backupFailed": MessageLookupByLibrary.simpleMessage(
             "Preliminary backup not possible"),
+        "localDatabaseRestoreService_anomaly": m15,
+        "localDatabaseRestoreService_failure": m16,
+        "localDatabaseRestoreService_integrity": m17,
+        "localDatabaseRestoreService_missing":
+            MessageLookupByLibrary.simpleMessage(
+                "The backup file cannot be found."),
+        "localDatabaseRestoreService_success":
+            MessageLookupByLibrary.simpleMessage(
+                "Restoration completed successfully."),
         "main_alreadyRunningMessage": MessageLookupByLibrary.simpleMessage(
             "Only one instance can be open at a time.\n\nUse the Companion window that is already open."),
         "main_alreadyRunningTitle": MessageLookupByLibrary.simpleMessage(
@@ -968,8 +1091,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Not specified"),
         "patientList_active": MessageLookupByLibrary.simpleMessage("Assets"),
         "patientList_archive": MessageLookupByLibrary.simpleMessage("Archive"),
-        "patientList_archiveConfirmation": m11,
-        "patientList_archiveSuccess": m12,
+        "patientList_archiveConfirmation": m18,
+        "patientList_archiveSuccess": m19,
         "patientList_archiveTitle":
             MessageLookupByLibrary.simpleMessage("Archive the patient"),
         "patientList_archived":
@@ -989,7 +1112,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "patientList_contextName":
             MessageLookupByLibrary.simpleMessage("List of Patients"),
         "patientList_edit": MessageLookupByLibrary.simpleMessage("Edit"),
-        "patientList_error": m13,
+        "patientList_error": m20,
         "patientList_newPatient":
             MessageLookupByLibrary.simpleMessage("New Patient"),
         "patientList_noArchivedPatients":
@@ -1003,7 +1126,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "patientList_restorableUntil":
             MessageLookupByLibrary.simpleMessage("Can be restored until"),
         "patientList_restore": MessageLookupByLibrary.simpleMessage("Restore"),
-        "patientList_restoreSuccess": m14,
+        "patientList_restoreSuccess": m21,
         "patientList_searchPatient":
             MessageLookupByLibrary.simpleMessage("Search for a patient"),
         "patientList_sex": MessageLookupByLibrary.simpleMessage("Sex"),
@@ -1024,7 +1147,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Unable to link the Carte Vitale"),
         "patientNew_attachVitaleQuestion": MessageLookupByLibrary.simpleMessage(
             "Would you like to link the Carte Vitale information to this patient?"),
-        "patientNew_attachVitaleSuccess": m15,
+        "patientNew_attachVitaleSuccess": m22,
         "patientNew_backToList":
             MessageLookupByLibrary.simpleMessage("Back to the list"),
         "patientNew_birthDate":
@@ -1094,7 +1217,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Unable to resuscitate the patient"),
         "patientNew_restoreInsteadOfCreate": MessageLookupByLibrary.simpleMessage(
             "Would you like to restore this file instead of creating a new patient?"),
-        "patientNew_restoreSuccess": m16,
+        "patientNew_restoreSuccess": m23,
         "patientNew_sex": MessageLookupByLibrary.simpleMessage("Sex"),
         "patientNew_vitaleIdentityRead": MessageLookupByLibrary.simpleMessage(
             "Identity retrieved from the Carte Vitale"),
@@ -1120,7 +1243,7 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Add the physical therapists from the practice to identify the imported tests."),
         "practitionerList_archive":
             MessageLookupByLibrary.simpleMessage("Archive"),
-        "practitionerList_archiveConfirmation": m17,
+        "practitionerList_archiveConfirmation": m24,
         "practitionerList_archiveEmpty": MessageLookupByLibrary.simpleMessage(
             "The physical therapists\' trash can is empty right now."),
         "practitionerList_archivePractitioner":
@@ -1128,7 +1251,7 @@ class MessageLookup extends MessageLookupByLibrary {
                 "File away the physical therapist"),
         "practitionerList_archived":
             MessageLookupByLibrary.simpleMessage("Archived"),
-        "practitionerList_archivedOn": m18,
+        "practitionerList_archivedOn": m25,
         "practitionerList_button_create":
             MessageLookupByLibrary.simpleMessage("Create a practitioner"),
         "practitionerList_cancel":
@@ -1138,13 +1261,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "practitionerList_contextName":
             MessageLookupByLibrary.simpleMessage("List of Practitioners"),
         "practitionerList_edit": MessageLookupByLibrary.simpleMessage("Edit"),
-        "practitionerList_error": m19,
+        "practitionerList_error": m26,
         "practitionerList_noArchivedPractitioner":
             MessageLookupByLibrary.simpleMessage(
                 "No physical therapists on file"),
         "practitionerList_noPractitioner": MessageLookupByLibrary.simpleMessage(
             "No physical therapists listed"),
-        "practitionerList_professionalId": m20,
+        "practitionerList_professionalId": m27,
         "practitionerList_restore":
             MessageLookupByLibrary.simpleMessage("Restore"),
         "practitionerList_showQrCode":
@@ -1187,7 +1310,7 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Scan this QR code using ABAK Mobile to automatically add this professional profile."),
         "practitionerSelector_archived":
             MessageLookupByLibrary.simpleMessage("archived"),
-        "practitionerSelector_error": m21,
+        "practitionerSelector_error": m28,
         "practitionerSelector_noSelection":
             MessageLookupByLibrary.simpleMessage("No selection"),
         "preferences_archivedPatients":
@@ -1283,7 +1406,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "settings_contextName":
             MessageLookupByLibrary.simpleMessage("Assistance"),
         "settings_continue": MessageLookupByLibrary.simpleMessage("Continue"),
-        "settings_databaseResetError": m22,
+        "settings_databaseResetError": m29,
         "settings_databaseResetSuccess": MessageLookupByLibrary.simpleMessage(
             "Database reset. Automatic backup created."),
         "settings_diagnostic":
@@ -1327,6 +1450,24 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Vitale Card Diagnosis"),
         "smartCardDiagnostic":
             MessageLookupByLibrary.simpleMessage("Vitale Card Diagnosis"),
+        "speechDictationButton_audio": MessageLookupByLibrary.simpleMessage(
+            "No audio recording is available."),
+        "speechDictationButton_close":
+            MessageLookupByLibrary.simpleMessage("Close"),
+        "speechDictationButton_dictate":
+            MessageLookupByLibrary.simpleMessage("Anger"),
+        "speechDictationButton_download":
+            MessageLookupByLibrary.simpleMessage("Download the module"),
+        "speechDictationButton_failure": m30,
+        "speechDictationButton_information": MessageLookupByLibrary.simpleMessage(
+            "Voice dictation requires the installation of the optional ABAK Voice Dictation module.\n\nThis module is free and runs locally on your computer, without sending voice recordings over the Internet.\n\nThe download is approximately 1.5 GB."),
+        "speechDictationButton_stop":
+            MessageLookupByLibrary.simpleMessage("Stop the dictation"),
+        "speechDictationButton_title":
+            MessageLookupByLibrary.simpleMessage("Voice Dictation"),
+        "speechRecordingService_permission":
+            MessageLookupByLibrary.simpleMessage(
+                "Access to the microphone is not permitted."),
         "systemOverviewBar_active_patients":
             MessageLookupByLibrary.simpleMessage("Active Patients"),
         "systemOverviewBar_alert":
@@ -1381,7 +1522,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "vitaleIdentity_title":
             MessageLookupByLibrary.simpleMessage("Read Carte Vitale ID"),
         "vitaleIdentity_unavailable":
-            MessageLookupByLibrary.simpleMessage("not available"),
+            MessageLookupByLibrary.simpleMessage("Not available"),
         "vitaleIdentity_useForPatientCreation":
             MessageLookupByLibrary.simpleMessage("Use this to create a patient")
       };

@@ -14,6 +14,10 @@ class ApplicationSettingsService {
   static const String assessmentDocumentsDirectoryKey =
       'assessment_documents_directory';
 
+  static const String openGeneratedDocumentKey =
+      'open_generated_document';
+
+
   Future<String?> getString(String key) async {
     final db = await DatabaseService.database;
 
@@ -103,6 +107,20 @@ class ApplicationSettingsService {
   Future<void> setExpertModeEnabled(bool enabled) async {
     await setBool(
       expertModeEnabledKey,
+      enabled,
+    );
+  }
+
+  Future<bool> isOpenGeneratedDocumentEnabled() async {
+    return getBool(
+      openGeneratedDocumentKey,
+      defaultValue: true,
+    );
+  }
+
+  Future<void> setOpenGeneratedDocumentEnabled(bool enabled) async {
+    await setBool(
+      openGeneratedDocumentKey,
       enabled,
     );
   }

@@ -32,6 +32,7 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
   PatientArchiveSettingsService();
 
   String? _assessmentDocumentsDirectoryPath;
+  bool _openGeneratedDocument = true;
 
 
 
@@ -82,6 +83,9 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
     final expertModeEnabled =
     await _applicationSettingsService.isExpertModeEnabled();
 
+    final openGeneratedDocument =
+    await _applicationSettingsService.isOpenGeneratedDocumentEnabled();
+
     final assessmentDocumentsDirectoryPath =
     await _applicationSettingsService.getString(
       ApplicationSettingsService.assessmentDocumentsDirectoryKey,
@@ -93,6 +97,7 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
       _languageCode = languageCode;
       _retentionDays = retentionDays;
       _expertModeEnabled = expertModeEnabled;
+      _openGeneratedDocument = openGeneratedDocument;
       _assessmentDocumentsDirectoryPath =
           assessmentDocumentsDirectoryPath;
       _loading = false;
@@ -152,6 +157,25 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
       SnackBar(
         content: Text(
           s.preferences_expertModeSaved,
+        ),
+      ),
+    );
+  }
+
+  Future<void> _changeOpenGeneratedDocument(bool enabled) async {
+    await _applicationSettingsService
+        .setOpenGeneratedDocumentEnabled(enabled);
+
+    if (!mounted) return;
+
+    setState(() {
+      _openGeneratedDocument = enabled;
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text(
+          'Préférence d’ouverture des documents mise à jour',
         ),
       ),
     );
@@ -336,16 +360,55 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
                 const SizedBox(height: 16),
 
                 Card(
-                  child: ListTile(
-                    leading: const Icon(Icons.description_outlined),
-                    title: const Text('Dossier des documents générés'),
-                    subtitle: Text(
-                      _assessmentDocumentsDirectoryPath ??
-                          'Aucun dossier défini',
-                    ),
-                    trailing: OutlinedButton(
-                      onPressed: _chooseAssessmentDocumentsDirectory,
-                      child: const Text('Modifier'),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            const Icon(Icons.settings_outlined),
+                            const SizedBox(width: 8),
+                            Text(
+                              'Paramètres généraux',
+                              style: Theme.of(context).textTheme.titleMedium,
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 16),
+
+                        ListTile(
+                          contentPadding: EdgeInsets.zero,
+                          leading: const Icon(Icons.folder_outlined),
+                          title: const Text(
+                            'Dossier des documents générés',
+                          ),
+                          subtitle: Text(
+                            _assessmentDocumentsDirectoryPath ??
+                                'Aucun dossier défini',
+                          ),
+                          trailing: OutlinedButton(
+                            onPressed: _chooseAssessmentDocumentsDirectory,
+                            child: const Text('Modifier'),
+                          ),
+                        ),
+
+                        const Divider(),
+
+                        SwitchListTile(
+                          contentPadding: EdgeInsets.zero,
+                          secondary: const Icon(Icons.open_in_new_outlined),
+                          title: const Text(
+                            'Ouvrir automatiquement le document généré',
+                          ),
+                          subtitle: const Text(
+                            'S’applique aux bilans et aux rapports.',
+                          ),
+                          value: _openGeneratedDocument,
+                          onChanged:
+                          _loading ? null : _changeOpenGeneratedDocument,
+                        ),
+                      ],
                     ),
                   ),
                 ),

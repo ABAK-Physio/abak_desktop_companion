@@ -566,4 +566,267 @@ class DefaultAssessmentTemplates {
       ),
     ],
   );
+  static const hyperventilation = AssessmentTemplate(
+    id: 'hyperventilation',
+    name: 'Bilan hyperventilation',
+    description:
+    'Guide de saisie pour l’évaluation d’un dysfonctionnement respiratoire de type hyperventilation.',
+    sections: [
+      AssessmentTemplateSection(
+        id: 'medical_context',
+        title: 'Contexte médical',
+        fields: [
+          AssessmentTemplateField(
+            id: 'general_practitioner',
+            label: 'Médecin généraliste',
+            type: AssessmentTemplateFieldType.shortText,
+          ),
+          AssessmentTemplateField(
+            id: 'pulmonologist',
+            label: 'Pneumologue',
+            type: AssessmentTemplateFieldType.shortText,
+          ),
+          AssessmentTemplateField(
+            id: 'hypocapnia',
+            label: 'Hypocapnie',
+            type: AssessmentTemplateFieldType.singleChoice,
+            options: [
+              'Oui',
+              'Non',
+            ],
+          ),
+          AssessmentTemplateField(
+            id: 'pulmonary_function_test',
+            label: 'EFR',
+            type: AssessmentTemplateFieldType.singleChoice,
+            options: [
+              'Oui',
+              'Non',
+            ],
+          ),
+          AssessmentTemplateField(
+            id: 'exercise_test',
+            label: 'EFXi',
+            type: AssessmentTemplateFieldType.singleChoice,
+            options: [
+              'Oui',
+              'Non',
+            ],
+          ),
+          AssessmentTemplateField(
+            id: 'other_examinations',
+            label: 'Autre examen complémentaire',
+            type: AssessmentTemplateFieldType.shortText,
+          ),
+          AssessmentTemplateField(
+            id: 'professional_activity',
+            label:
+            'Activité professionnelle, niveau scolaire, mode de vie, sport',
+            type: AssessmentTemplateFieldType.longText,
+          ),
+          AssessmentTemplateField(
+            id: 'pulmonary_history',
+            label: 'Pathologies pulmonaires et antécédents médicaux',
+            type: AssessmentTemplateFieldType.longText,
+          ),
+        ],
+      ),
+
+      AssessmentTemplateSection(
+        id: 'interview',
+        title: 'Entretien',
+        fields: [
+          AssessmentTemplateField(
+            id: 'patient_understanding',
+            label: 'Que savez-vous de ce qui vous arrive ?',
+            type: AssessmentTemplateFieldType.longText,
+          ),
+          AssessmentTemplateField(
+            id: 'symptom_duration',
+            label: 'Depuis quand êtes-vous gêné ?',
+            type: AssessmentTemplateFieldType.shortText,
+          ),
+          AssessmentTemplateField(
+            id: 'symptom_onset_context',
+            label:
+            'Circonstances particulières au moment de l’apparition des symptômes',
+            type: AssessmentTemplateFieldType.longText,
+          ),
+          AssessmentTemplateField(
+            id: 'crisis_sensations',
+            label: 'Que ressentez-vous lors des crises ?',
+            type: AssessmentTemplateFieldType.longText,
+          ),
+          AssessmentTemplateField(
+            id: 'main_discomfort',
+            label: 'Quelle est votre gêne principale ?',
+            type: AssessmentTemplateFieldType.longText,
+          ),
+          AssessmentTemplateField(
+            id: 'symptom_circumstances',
+            label: 'Circonstances de survenue',
+            type: AssessmentTemplateFieldType.longText,
+          ),
+        ],
+      ),
+
+      AssessmentTemplateSection(
+        id: 'symptom_intensity',
+        title: 'Intensité et fréquence',
+        fields: [
+          AssessmentTemplateField(
+            id: 'eva_max',
+            label: 'EVA maximale',
+            type: AssessmentTemplateFieldType.shortText,
+          ),
+          AssessmentTemplateField(
+            id: 'eva_average',
+            label: 'EVA moyenne',
+            type: AssessmentTemplateFieldType.shortText,
+          ),
+          AssessmentTemplateField(
+            id: 'eva_reevaluation',
+            label: 'RE-EVAL EVA',
+            type: AssessmentTemplateFieldType.shortText,
+          ),
+          AssessmentTemplateField(
+            id: 'acute_episode_frequency',
+            label: 'Fréquence des épisodes aigus',
+            type: AssessmentTemplateFieldType.singleChoice,
+            options: [
+              'Presque tout le temps',
+              'Au moins une fois par jour',
+              'Quelques fois dans la semaine',
+              'Jamais',
+            ],
+          ),
+          AssessmentTemplateField(
+            id: 'acute_episode_reevaluation',
+            label: 'RE-EVAL épisodes aigus',
+            type: AssessmentTemplateFieldType.shortText,
+          ),
+          AssessmentTemplateField(
+            id: 'overall_symptom_frequency',
+            label: 'Fréquence de l’ensemble des symptômes',
+            type: AssessmentTemplateFieldType.singleChoice,
+            options: [
+              'Presque tout le temps',
+              'Au moins une fois par jour',
+              'Quelques fois dans la semaine',
+              'Jamais',
+            ],
+          ),
+          AssessmentTemplateField(
+            id: 'overall_symptom_reevaluation',
+            label: 'RE-EVAL ensemble des symptômes',
+            type: AssessmentTemplateFieldType.shortText,
+          ),
+        ],
+      ),
+
+      AssessmentTemplateSection(
+        id: 'scores',
+        title: 'Scores',
+        fields: [
+          AssessmentTemplateField(
+            id: 'nq_score',
+            label: 'Score NQ',
+            type: AssessmentTemplateFieldType.shortText,
+          ),
+          AssessmentTemplateField(
+            id: 'nq_reevaluation',
+            label: 'RE-EVAL NQ',
+            type: AssessmentTemplateFieldType.shortText,
+          ),
+          AssessmentTemplateField(
+            id: 'had_score',
+            label: 'Score HAD',
+            type: AssessmentTemplateFieldType.shortText,
+          ),
+          AssessmentTemplateField(
+            id: 'had_reevaluation',
+            label: 'RE-EVAL HAD',
+            type: AssessmentTemplateFieldType.shortText,
+          ),
+          AssessmentTemplateField(
+            id: 'other_score_1',
+            label: 'Autre score',
+            type: AssessmentTemplateFieldType.shortText,
+          ),
+          AssessmentTemplateField(
+            id: 'other_score_1_reevaluation',
+            label: 'RE-EVAL autre score',
+            type: AssessmentTemplateFieldType.shortText,
+          ),
+          AssessmentTemplateField(
+            id: 'other_score_2',
+            label: 'Autre score',
+            type: AssessmentTemplateFieldType.shortText,
+          ),
+          AssessmentTemplateField(
+            id: 'other_score_2_reevaluation',
+            label: 'RE-EVAL autre score',
+            type: AssessmentTemplateFieldType.shortText,
+          ),
+        ],
+      ),
+
+      AssessmentTemplateSection(
+        id: 'respiratory_exam',
+        title: 'Examen respiratoire',
+        fields: [
+          AssessmentTemplateField(
+            id: 'spontaneous_breathing_pattern',
+            label: 'Observation des mouvements respiratoires spontanés',
+            type: AssessmentTemplateFieldType.singleChoice,
+            options: [
+              'Abdominal (diaphragmatique)',
+              'Thoracique',
+              'Mixte',
+            ],
+          ),
+          AssessmentTemplateField(
+            id: 'respiratory_rate',
+            label: 'Fréquence respiratoire',
+            type: AssessmentTemplateFieldType.shortText,
+          ),
+          AssessmentTemplateField(
+            id: 'respiratory_rate_reevaluation',
+            label: 'RE-EVAL fréquence respiratoire',
+            type: AssessmentTemplateFieldType.shortText,
+          ),
+          AssessmentTemplateField(
+            id: 'max_apnea_time',
+            label: 'Temps d’apnée maximal',
+            type: AssessmentTemplateFieldType.shortText,
+          ),
+          AssessmentTemplateField(
+            id: 'max_apnea_time_reevaluation',
+            label: 'RE-EVAL temps d’apnée maximal',
+            type: AssessmentTemplateFieldType.shortText,
+          ),
+          AssessmentTemplateField(
+            id: 'provoked_hyperventilation',
+            label:
+            'Une hyperventilation provoquée provoque au moins un des symptômes',
+            type: AssessmentTemplateFieldType.singleChoice,
+            options: [
+              'Oui',
+              'Non',
+            ],
+          ),
+          AssessmentTemplateField(
+            id: 'provoked_hyperventilation_details',
+            label: 'Temps et symptômes',
+            type: AssessmentTemplateFieldType.longText,
+          ),
+          AssessmentTemplateField(
+            id: 'provoked_hyperventilation_reevaluation',
+            label: 'RE-EVAL hyperventilation provoquée',
+            type: AssessmentTemplateFieldType.shortText,
+          ),
+        ],
+      ),
+    ],
+  );
 }

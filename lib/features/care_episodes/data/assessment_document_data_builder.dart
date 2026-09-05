@@ -12,6 +12,7 @@ import 'package:abak_desktop_companion/features/results/data/desktop_result_repo
 import 'package:abak_desktop_companion/features/results/desktop_result_grouping.dart';
 import 'package:abak_shared/abak_shared.dart';
 import 'package:abak_desktop_companion/features/results/models/desktop_result.dart';
+import 'package:abak_desktop_companion/generated/l10n.dart';
 
 class AssessmentDocumentDataBuilder {
   final CabinetIdentityService _cabinetIdentityService =
@@ -45,8 +46,9 @@ class AssessmentDocumentDataBuilder {
 
     if (patient == null) {
       throw StateError(
-        'Patient introuvable pour la prise en charge '
-            '${episode.careEpisodeId}.',
+        S.current.assessmentDocumentDataBuilder_patient(
+          episode.careEpisodeId,
+        ),
       );
     }
 
@@ -284,9 +286,9 @@ class AssessmentDocumentDataBuilder {
   String? _sexLabel(String sexCode) {
     switch (sexCode.trim().toUpperCase()) {
       case 'M':
-        return 'Masculin';
+        return S.current.assessmentDocumentDataBuilder_male;
       case 'F':
-        return 'Féminin';
+        return S.current.assessmentDocumentDataBuilder_female;
       default:
         return null;
     }

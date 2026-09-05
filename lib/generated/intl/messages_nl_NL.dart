@@ -20,64 +20,149 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'nl_NL';
 
-  static String m0(size) => "${size}";
+  static String m0(careEpisodeId) =>
+      "Patiënt niet gevonden voor de zorgafhandeling ${careEpisodeId}.";
 
-  static String m1(deviceName) => "Wilt u ${deviceName} echt archiveren?";
+  static String m1(height) => "${height} cm";
 
-  static String m2(fieldName) => "Het veld \"${fieldName}\" is verplicht.";
+  static String m2(weight) => "${weight} kg";
 
-  static String m3(noteTitle) =>
+  static String m3(age) => "${age} jaar";
+
+  static String m4(size) => "${size}";
+
+  static String m5(deviceName) => "Wilt u ${deviceName} echt archiveren?";
+
+  static String m6(fieldName) => "Het veld \"${fieldName}\" is verplicht.";
+
+  static String m7(noteTitle) =>
       "De notitie \"${noteTitle}\" wordt niet meer weergegeven.";
 
-  static String m4(error) => "Fout bij het opslaan: ${error}";
+  static String m8(error) => "Fout bij het opslaan: ${error}";
 
-  static String m5(count) => "${count} andere oefening(en)";
+  static String m9(count) => "${count} andere oefening(en)";
 
-  static String m6(count) => "${count} vereniging(en) in afwachting";
+  static String m10(count) => "${count} vereniging(en) in afwachting";
 
-  static String m7(count) => "${count} back-ups";
+  static String m11(count) => "${count} back-ups";
 
-  static String m8(size) => "Maat: ${size}";
+  static String m12(size) => "Maat: ${size}";
 
-  static String m9(size) => "Totale afmeting: ${size}";
+  static String m13(size) => "Totale afmeting: ${size}";
 
-  static String m10(version) => "Versie ${version}";
+  static String m14(version) => "Versie ${version}";
 
-  static String m11(patientName) =>
+  static String m15(integrityStatus) =>
+      "De gerestaureerde database vertoont een afwijking: ${integrityStatus}";
+
+  static String m16(error) => "Herstel mislukt: ${error}";
+
+  static String m17(integrityStatus) =>
+      "Het herstel is voltooid, maar integrity_check heeft het volgende geretourneerd: ${integrityStatus}";
+
+  static String m18(patientName) =>
       "Wilt u ${patientName} echt archiveren? Hij/zij wordt dan niet meer in de actieve lijst weergegeven.";
 
-  static String m12(patientName) => "${patientName} gearchiveerd.";
+  static String m19(patientName) => "${patientName} gearchiveerd.";
 
-  static String m13(error) => "Fout: ${error}";
+  static String m20(error) => "Fout: ${error}";
 
-  static String m14(patientName) =>
+  static String m21(patientName) =>
       "${patientName} is weer toegevoegd aan de actieve lijst.";
 
-  static String m15(patientName) =>
+  static String m22(patientName) =>
       "Vitale-kaart gekoppeld aan de patiënt ${patientName}.";
 
-  static String m16(patientName) => "De patiënt ${patientName} is hersteld.";
+  static String m23(patientName) => "De patiënt ${patientName} is hersteld.";
 
-  static String m17(practitionerName) =>
+  static String m24(practitionerName) =>
       "Wilt u ${practitionerName} echt archiveren?";
 
-  static String m18(date) => "Gearchiveerd op ${date}";
+  static String m25(date) => "Gearchiveerd op ${date}";
 
-  static String m19(error) => "Fout: ${error}";
+  static String m26(error) => "Fout: ${error}";
 
-  static String m20(professionalId) => "ID pro: ${professionalId}";
+  static String m27(professionalId) => "ID pro: ${professionalId}";
 
-  static String m21(error) => "Fout: ${error}";
+  static String m28(error) => "Fout: ${error}";
 
-  static String m22(error) => "Fout bij het resetten: ${error}";
+  static String m29(error) => "Fout bij het resetten: ${error}";
+
+  static String m30(error) => "Het spraakdictee is mislukt: ${error}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+        "abakWhisperSpeechProvider_name":
+            MessageLookupByLibrary.simpleMessage("ABAK Spraakgestuurd dictee"),
+        "assessmentDocumentDataBuilder_female":
+            MessageLookupByLibrary.simpleMessage("Vrouwelijk"),
+        "assessmentDocumentDataBuilder_male":
+            MessageLookupByLibrary.simpleMessage("Mannelijk"),
+        "assessmentDocumentDataBuilder_patient": m0,
+        "assessmentDocxService_age":
+            MessageLookupByLibrary.simpleMessage("Leeftijd"),
+        "assessmentDocxService_assessment":
+            MessageLookupByLibrary.simpleMessage("met"),
+        "assessmentDocxService_attachment":
+            MessageLookupByLibrary.simpleMessage(
+                "Pathologie bij de aansluiting"),
+        "assessmentDocxService_author":
+            MessageLookupByLibrary.simpleMessage("Redacteur"),
+        "assessmentDocxService_centimetres": m1,
+        "assessmentDocxService_chart":
+            MessageLookupByLibrary.simpleMessage("Grafiek"),
+        "assessmentDocxService_declared": MessageLookupByLibrary.simpleMessage(
+            "Leeftijd opgegeven bij de test"),
+        "assessmentDocxService_diagnosis":
+            MessageLookupByLibrary.simpleMessage("Afwijkingen tijdens de test"),
+        "assessmentDocxService_dominance":
+            MessageLookupByLibrary.simpleMessage("Dominante kant"),
+        "assessmentDocxService_establishment":
+            MessageLookupByLibrary.simpleMessage("Vestiging"),
+        "assessmentDocxService_firstname":
+            MessageLookupByLibrary.simpleMessage("Voornaam"),
+        "assessmentDocxService_height":
+            MessageLookupByLibrary.simpleMessage("Grootte"),
+        "assessmentDocxService_information":
+            MessageLookupByLibrary.simpleMessage("Informatie over de patiënt"),
+        "assessmentDocxService_kilograms": m2,
+        "assessmentDocxService_notes": MessageLookupByLibrary.simpleMessage(
+            "Geselecteerde opvolgingsnotities"),
+        "assessmentDocxService_opened": MessageLookupByLibrary.simpleMessage(
+            "Ondersteuning beschikbaar vanaf"),
+        "assessmentDocxService_pathology":
+            MessageLookupByLibrary.simpleMessage("Pathologie"),
+        "assessmentDocxService_patient":
+            MessageLookupByLibrary.simpleMessage("Patiënt"),
+        "assessmentDocxService_performed":
+            MessageLookupByLibrary.simpleMessage("Gemaakt op"),
+        "assessmentDocxService_practitioner":
+            MessageLookupByLibrary.simpleMessage(
+                "Verantwoordelijke fysiotherapeut"),
+        "assessmentDocxService_printed":
+            MessageLookupByLibrary.simpleMessage("Afgedrukt op"),
+        "assessmentDocxService_profession":
+            MessageLookupByLibrary.simpleMessage("Beroep"),
+        "assessmentDocxService_recipients":
+            MessageLookupByLibrary.simpleMessage("Ontvanger(s)"),
+        "assessmentDocxService_results": MessageLookupByLibrary.simpleMessage(
+            "Resultaten van de geselecteerde tests"),
+        "assessmentDocxService_sex":
+            MessageLookupByLibrary.simpleMessage("Seks"),
+        "assessmentDocxService_sport":
+            MessageLookupByLibrary.simpleMessage("Sportactiviteit"),
+        "assessmentDocxService_surname":
+            MessageLookupByLibrary.simpleMessage("Naam"),
+        "assessmentDocxService_title":
+            MessageLookupByLibrary.simpleMessage("met"),
+        "assessmentDocxService_weight":
+            MessageLookupByLibrary.simpleMessage("Gewicht"),
+        "assessmentDocxService_years": m3,
         "backupHistory_cancel":
             MessageLookupByLibrary.simpleMessage("Annuleren"),
         "backupHistory_empty": MessageLookupByLibrary.simpleMessage(
             "Er is geen back-up opgeslagen."),
-        "backupHistory_fileSize": m0,
+        "backupHistory_fileSize": m4,
         "backupHistory_restore":
             MessageLookupByLibrary.simpleMessage("Herstellen"),
         "backupHistory_restoreTitle":
@@ -237,6 +322,16 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("De balans bijwerken"),
         "careEpisodeReportsWorkspace_updateReport":
             MessageLookupByLibrary.simpleMessage("Het rapport bijwerken"),
+        "careEpisode_assessment":
+            MessageLookupByLibrary.simpleMessage("Geen klinische analyse."),
+        "careEpisode_evaluation":
+            MessageLookupByLibrary.simpleMessage("Geen klinische evaluatie."),
+        "careEpisode_report":
+            MessageLookupByLibrary.simpleMessage("Geen eerste verslag."),
+        "careEpisode_title":
+            MessageLookupByLibrary.simpleMessage("Ondersteuning"),
+        "careEpisode_treatment":
+            MessageLookupByLibrary.simpleMessage("Geen behandelplan."),
         "close": MessageLookupByLibrary.simpleMessage("Sluiten"),
         "contactFormTemplateDiagnostic_category":
             MessageLookupByLibrary.simpleMessage("Categorie"),
@@ -305,7 +400,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "deviceList_active": MessageLookupByLibrary.simpleMessage("Activa"),
         "deviceList_archive":
             MessageLookupByLibrary.simpleMessage("Archiveren"),
-        "deviceList_archiveConfirmation": m1,
+        "deviceList_archiveConfirmation": m5,
         "deviceList_archiveTitle":
             MessageLookupByLibrary.simpleMessage("Het apparaat archiveren"),
         "deviceList_archived":
@@ -418,7 +513,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "episodeFormEditor_error": MessageLookupByLibrary.simpleMessage("Fout"),
         "episodeFormEditor_noField": MessageLookupByLibrary.simpleMessage(
             "Er zijn geen velden om weer te geven."),
-        "episodeFormEditor_requiredField": m2,
+        "episodeFormEditor_requiredField": m6,
         "episodeFormEditor_save":
             MessageLookupByLibrary.simpleMessage("Opslaan"),
         "episodeFormEditor_title":
@@ -456,7 +551,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Formulieren"),
         "episodeNotes_archive":
             MessageLookupByLibrary.simpleMessage("Archiveren"),
-        "episodeNotes_archiveConfirmation": m3,
+        "episodeNotes_archiveConfirmation": m7,
         "episodeNotes_archiveTitle":
             MessageLookupByLibrary.simpleMessage("De notitie archiveren?"),
         "episodeNotes_cancel":
@@ -537,8 +632,24 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Onbekend type"),
         "exchangeDirectoryReset": MessageLookupByLibrary.simpleMessage(
             "Uitwisselingsdossier gereset"),
+        "exchangeDirectoryService_choose": MessageLookupByLibrary.simpleMessage(
+            "Kies het ABAK-uitwisselingsdossier"),
         "exchangeDirectoryUpdated": MessageLookupByLibrary.simpleMessage(
             "Bijgewerkt ABAK-uitwisselingsdossier"),
+        "externalSpeechToTextProvider_empty":
+            MessageLookupByLibrary.simpleMessage(
+                "De add-on heeft geen reactie gegeven."),
+        "externalSpeechToTextProvider_failure":
+            MessageLookupByLibrary.simpleMessage(
+                "De spraakherkennings-add-on werkt niet."),
+        "externalSpeechToTextProvider_invalid":
+            MessageLookupByLibrary.simpleMessage(
+                "Ongeldig antwoord van de add-on voor spraakherkenning."),
+        "externalSpeechToTextProvider_noText":
+            MessageLookupByLibrary.simpleMessage(
+                "De add-on heeft geen tekst teruggegeven."),
+        "externalSpeechToTextProvider_transcription":
+            MessageLookupByLibrary.simpleMessage("De transcriptie is mislukt."),
         "g_arb_prefix": MessageLookupByLibrary.simpleMessage("Voorvoegsel ARB"),
         "g_close": MessageLookupByLibrary.simpleMessage("Sluiten"),
         "g_comment": MessageLookupByLibrary.simpleMessage("Commentaar"),
@@ -624,7 +735,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "home_date_not_specified":
             MessageLookupByLibrary.simpleMessage("Datum niet opgegeven"),
         "home_devices": MessageLookupByLibrary.simpleMessage("Apparaten"),
-        "home_error_while_saving": m4,
+        "home_error_while_saving": m8,
         "home_everything_is_working_normally":
             MessageLookupByLibrary.simpleMessage("Alles werkt normaal"),
         "home_expert_comment": MessageLookupByLibrary.simpleMessage(
@@ -677,13 +788,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "home_not_specified":
             MessageLookupByLibrary.simpleMessage("geïnformeerd"),
         "home_octets": MessageLookupByLibrary.simpleMessage("Octetten"),
-        "home_other_exercises": m5,
+        "home_other_exercises": m9,
         "home_parameters": MessageLookupByLibrary.simpleMessage("Instellingen"),
         "home_pathway": MessageLookupByLibrary.simpleMessage("Pad"),
         "home_patient_abak":
             MessageLookupByLibrary.simpleMessage("Patiënt ABAK"),
         "home_patients": MessageLookupByLibrary.simpleMessage("Patiënten"),
-        "home_pending_association": m6,
+        "home_pending_association": m10,
         "home_practitioners":
             MessageLookupByLibrary.simpleMessage("beoefenaars"),
         "home_quick_actions":
@@ -756,7 +867,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Oplossen van importproblemen"),
         "importResolutionAssistant_toReview":
             MessageLookupByLibrary.simpleMessage("te controleren"),
-        "information_backupCount": m7,
+        "information_backupCount": m11,
         "information_backups": MessageLookupByLibrary.simpleMessage("Back-ups"),
         "information_configured":
             MessageLookupByLibrary.simpleMessage("Geconfigureerd"),
@@ -779,15 +890,21 @@ class MessageLookup extends MessageLookupByLibrary {
         "information_notProvided":
             MessageLookupByLibrary.simpleMessage("Niet opgegeven"),
         "information_office": MessageLookupByLibrary.simpleMessage("Kantoor"),
-        "information_size": m8,
+        "information_size": m12,
         "information_system": MessageLookupByLibrary.simpleMessage("Systeem"),
         "information_title": MessageLookupByLibrary.simpleMessage("Informatie"),
-        "information_totalSize": m9,
-        "information_version": m10,
+        "information_totalSize": m13,
+        "information_version": m14,
         "information_versionLoading":
             MessageLookupByLibrary.simpleMessage("Versie..."),
         "information_viewLicense":
             MessageLookupByLibrary.simpleMessage("De licentie raadplegen"),
+        "initialReportDocumentService_associate":
+            MessageLookupByLibrary.simpleMessage(
+                "Een eerste balans in Word toevoegen"),
+        "initialReportDocumentService_unsupported":
+            MessageLookupByLibrary.simpleMessage(
+                "Platform wordt niet ondersteund"),
         "languageSaved":
             MessageLookupByLibrary.simpleMessage("Taal opgeslagen."),
         "language_choice":
@@ -809,6 +926,14 @@ class MessageLookup extends MessageLookupByLibrary {
                 "SQLite-database niet gevonden."),
         "localDatabaseReset_backupFailed": MessageLookupByLibrary.simpleMessage(
             "Back-up vooraf niet mogelijk"),
+        "localDatabaseRestoreService_anomaly": m15,
+        "localDatabaseRestoreService_failure": m16,
+        "localDatabaseRestoreService_integrity": m17,
+        "localDatabaseRestoreService_missing":
+            MessageLookupByLibrary.simpleMessage(
+                "Het back-upbestand kan niet worden gevonden."),
+        "localDatabaseRestoreService_success":
+            MessageLookupByLibrary.simpleMessage("Herstel succesvol voltooid."),
         "main_alreadyRunningMessage": MessageLookupByLibrary.simpleMessage(
             "Er kan slechts één venster tegelijk worden geopend.\n\nGebruik het reeds geopende Companion-venster."),
         "main_alreadyRunningTitle": MessageLookupByLibrary.simpleMessage(
@@ -1002,8 +1127,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "patientList_active": MessageLookupByLibrary.simpleMessage("Activa"),
         "patientList_archive":
             MessageLookupByLibrary.simpleMessage("Archiveren"),
-        "patientList_archiveConfirmation": m11,
-        "patientList_archiveSuccess": m12,
+        "patientList_archiveConfirmation": m18,
+        "patientList_archiveSuccess": m19,
         "patientList_archiveTitle":
             MessageLookupByLibrary.simpleMessage("De patiënt archiveren"),
         "patientList_archived":
@@ -1022,7 +1147,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "patientList_contextName":
             MessageLookupByLibrary.simpleMessage("Lijst van patiënten"),
         "patientList_edit": MessageLookupByLibrary.simpleMessage("Wijzigen"),
-        "patientList_error": m13,
+        "patientList_error": m20,
         "patientList_newPatient":
             MessageLookupByLibrary.simpleMessage("Nieuwe patiënt"),
         "patientList_noArchivedPatients": MessageLookupByLibrary.simpleMessage(
@@ -1038,7 +1163,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Kan worden hersteld tot"),
         "patientList_restore":
             MessageLookupByLibrary.simpleMessage("Herstellen"),
-        "patientList_restoreSuccess": m14,
+        "patientList_restoreSuccess": m21,
         "patientList_searchPatient":
             MessageLookupByLibrary.simpleMessage("Een patiënt zoeken"),
         "patientList_sex": MessageLookupByLibrary.simpleMessage("Seks"),
@@ -1059,7 +1184,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "De Carte Vitale kan niet worden gekoppeld"),
         "patientNew_attachVitaleQuestion": MessageLookupByLibrary.simpleMessage(
             "Wilt u de gegevens van de Carte Vitale aan deze patiënt koppelen?"),
-        "patientNew_attachVitaleSuccess": m15,
+        "patientNew_attachVitaleSuccess": m22,
         "patientNew_backToList":
             MessageLookupByLibrary.simpleMessage("Terug naar de lijst"),
         "patientNew_birthDate":
@@ -1129,7 +1254,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "De patiënt kan niet worden gereanimeerd"),
         "patientNew_restoreInsteadOfCreate": MessageLookupByLibrary.simpleMessage(
             "Wilt u deze map herstellen in plaats van een nieuwe patiënt aan te maken?"),
-        "patientNew_restoreSuccess": m16,
+        "patientNew_restoreSuccess": m23,
         "patientNew_sex": MessageLookupByLibrary.simpleMessage("Seks"),
         "patientNew_vitaleIdentityRead": MessageLookupByLibrary.simpleMessage(
             "Identiteitsgegevens afgelezen van de Carte Vitale"),
@@ -1155,7 +1280,7 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Voeg de fysiotherapeuten van de praktijk toe om de geïmporteerde tests te identificeren."),
         "practitionerList_archive":
             MessageLookupByLibrary.simpleMessage("Archiveren"),
-        "practitionerList_archiveConfirmation": m17,
+        "practitionerList_archiveConfirmation": m24,
         "practitionerList_archiveEmpty": MessageLookupByLibrary.simpleMessage(
             "De prullenbak van de fysiotherapeuten is op dit moment leeg."),
         "practitionerList_archivePractitioner":
@@ -1163,7 +1288,7 @@ class MessageLookup extends MessageLookupByLibrary {
                 "De fysiotherapeut archiveren"),
         "practitionerList_archived":
             MessageLookupByLibrary.simpleMessage("Gearchiveerd"),
-        "practitionerList_archivedOn": m18,
+        "practitionerList_archivedOn": m25,
         "practitionerList_button_create":
             MessageLookupByLibrary.simpleMessage("Een behandelaar aanmaken"),
         "practitionerList_cancel":
@@ -1174,13 +1299,13 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Lijst van behandelaars"),
         "practitionerList_edit":
             MessageLookupByLibrary.simpleMessage("Wijzigen"),
-        "practitionerList_error": m19,
+        "practitionerList_error": m26,
         "practitionerList_noArchivedPractitioner":
             MessageLookupByLibrary.simpleMessage(
                 "Geen fysiotherapeuten in het archief"),
         "practitionerList_noPractitioner": MessageLookupByLibrary.simpleMessage(
             "Er zijn geen fysiotherapeuten geregistreerd"),
-        "practitionerList_professionalId": m20,
+        "practitionerList_professionalId": m27,
         "practitionerList_restore":
             MessageLookupByLibrary.simpleMessage("Herstellen"),
         "practitionerList_showQrCode":
@@ -1225,7 +1350,7 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Scan deze QR-code via ABAK Mobile om dit professionele profiel automatisch toe te voegen."),
         "practitionerSelector_archived":
             MessageLookupByLibrary.simpleMessage("gearchiveerd"),
-        "practitionerSelector_error": m21,
+        "practitionerSelector_error": m28,
         "practitionerSelector_noSelection":
             MessageLookupByLibrary.simpleMessage("Geen selectie"),
         "preferences_archivedPatients":
@@ -1325,7 +1450,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Op dit scherm zijn de installatie-, diagnose- en onderhoudsfuncties van Companion gebundeld."),
         "settings_contextName": MessageLookupByLibrary.simpleMessage("Hulp"),
         "settings_continue": MessageLookupByLibrary.simpleMessage("Doorgaan"),
-        "settings_databaseResetError": m22,
+        "settings_databaseResetError": m29,
         "settings_databaseResetSuccess": MessageLookupByLibrary.simpleMessage(
             "Database gereset. Automatische back-up aangemaakt."),
         "settings_diagnostic": MessageLookupByLibrary.simpleMessage("Diagnose"),
@@ -1372,6 +1497,24 @@ class MessageLookup extends MessageLookupByLibrary {
             "Diagnose van de Carte Vitale"),
         "smartCardDiagnostic": MessageLookupByLibrary.simpleMessage(
             "Diagnose van de Carte Vitale"),
+        "speechDictationButton_audio": MessageLookupByLibrary.simpleMessage(
+            "Er is geen geluidsopname beschikbaar."),
+        "speechDictationButton_close":
+            MessageLookupByLibrary.simpleMessage("Sluiten"),
+        "speechDictationButton_dictate":
+            MessageLookupByLibrary.simpleMessage("Woede"),
+        "speechDictationButton_download":
+            MessageLookupByLibrary.simpleMessage("De module downloaden"),
+        "speechDictationButton_failure": m30,
+        "speechDictationButton_information": MessageLookupByLibrary.simpleMessage(
+            "Voor spraakdictee moet de optionele module ABAK Spraakdictee worden geïnstalleerd.\n\nDeze module is gratis en werkt lokaal op uw computer, zonder dat de spraakopnames via internet worden verzonden.\n\nDe download is ongeveer 1,5 GB groot."),
+        "speechDictationButton_stop":
+            MessageLookupByLibrary.simpleMessage("Het dictee stoppen"),
+        "speechDictationButton_title":
+            MessageLookupByLibrary.simpleMessage("Spraakdictee"),
+        "speechRecordingService_permission":
+            MessageLookupByLibrary.simpleMessage(
+                "Toegang tot de microfoon is niet toegestaan."),
         "systemOverviewBar_active_patients":
             MessageLookupByLibrary.simpleMessage("Actieve patiënten"),
         "systemOverviewBar_alert":
@@ -1428,7 +1571,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "vitaleIdentity_title": MessageLookupByLibrary.simpleMessage(
             "Identiteit van de Carte Vitale lezen"),
         "vitaleIdentity_unavailable":
-            MessageLookupByLibrary.simpleMessage("niet beschikbaar"),
+            MessageLookupByLibrary.simpleMessage("Niet beschikbaar"),
         "vitaleIdentity_useForPatientCreation":
             MessageLookupByLibrary.simpleMessage(
                 "Gebruik dit om een patiënt aan te maken")

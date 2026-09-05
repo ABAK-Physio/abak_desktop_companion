@@ -51,6 +51,7 @@ import '../services/assessment_chart_image_service.dart';
 import '../../../core/settings/application_settings_service.dart';
 import '../../external_correspondents/data/external_correspondent_repository.dart';
 import '../../external_correspondents/models/external_correspondent.dart';
+import '../../documents/services/initial_report_document_service.dart';
 
 class CareEpisodeReportsWorkspaceScreen extends StatefulWidget {
   final CareEpisode episode;
@@ -254,6 +255,14 @@ class _CareEpisodeReportsWorkspaceScreenState
 
       debugPrint('[DOCX] Fichier créé : ${file.path}');
 
+      final openGeneratedDocument =
+      await const ApplicationSettingsService()
+          .isOpenGeneratedDocumentEnabled();
+
+      if (openGeneratedDocument) {
+        await const InitialReportDocumentService().open(file.path);
+      }
+
       if (!mounted) return;
 
       setState(() {
@@ -428,6 +437,14 @@ class _CareEpisodeReportsWorkspaceScreenState
       await _reportRepository.updateReport(updatedReport);
 
       debugPrint('[DOCX RAPPORT] Fichier créé : ${file.path}');
+
+      final openGeneratedDocument =
+      await const ApplicationSettingsService()
+          .isOpenGeneratedDocumentEnabled();
+
+      if (openGeneratedDocument) {
+        await const InitialReportDocumentService().open(file.path);
+      }
 
       if (!mounted) return;
 
@@ -2456,7 +2473,8 @@ class _CareEpisodeReportsWorkspaceScreenState
           templates: const [
             DefaultAssessmentTemplates.musculoskeletalGeneral,
             DefaultAssessmentTemplates.musculoskeletalUpperLimb,
-          ],
+            DefaultAssessmentTemplates.hyperventilation,
+          ]
         );
       },
     );

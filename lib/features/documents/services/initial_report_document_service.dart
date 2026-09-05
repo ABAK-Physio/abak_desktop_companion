@@ -3,12 +3,14 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:path/path.dart' as p;
 
+import '../../../generated/l10n.dart';
+
 class InitialReportDocumentService {
   const InitialReportDocumentService();
 
   Future<String?> pickExistingDocx() async {
     final result = await FilePicker.platform.pickFiles(
-      dialogTitle: 'Associer un bilan initial Word',
+      dialogTitle: S.current.initialReportDocumentService_associate,
       type: FileType.custom,
       allowedExtensions: ['docx'],
       allowMultiple: false,
@@ -46,6 +48,6 @@ class InitialReportDocumentService {
       return;
     }
 
-    throw UnsupportedError('Plateforme non supportée');
+    throw UnsupportedError(S.current.initialReportDocumentService_unsupported);
   }
 }

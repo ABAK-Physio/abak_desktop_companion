@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import '../../generated/l10n.dart';
 
 import 'speech_recording_service.dart';
 import 'speech_to_text_provider.dart';
@@ -107,9 +108,13 @@ class _SpeechDictationButtonState extends State<SpeechDictationButton> {
     try {
       final audioPath = await _recordingService.stop();
 
+      if (!mounted) {
+        return;
+      }
+
       if (audioPath == null) {
         throw StateError(
-          'Aucun enregistrement audio disponible.',
+          S.of(context).speechDictationButton_audio,
         );
       }
 
@@ -143,22 +148,19 @@ class _SpeechDictationButtonState extends State<SpeechDictationButton> {
     await showDialog<void>(
       context: context,
       builder: (context) {
+        final s = S.of(context);
+
         return AlertDialog(
-          title: const Text('Dictée vocale'),
-          content: const Text(
-            'La dictée vocale nécessite l’installation du module '
-                'optionnel ABAK Dictée vocale.\n\n'
-                'Ce module est gratuit et fonctionne localement sur '
-                'votre ordinateur, sans envoyer les enregistrements '
-                'vocaux sur Internet.\n\n'
-                'Le téléchargement représente environ 1,5 Go.',
+          title: Text(s.speechDictationButton_title),
+          content: Text(
+            s.speechDictationButton_information,
           ),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: const Text('Fermer'),
+              child: Text(s.speechDictationButton_close),
             ),
             FilledButton(
               onPressed: () async {
@@ -173,7 +175,7 @@ class _SpeechDictationButtonState extends State<SpeechDictationButton> {
                   mode: LaunchMode.externalApplication,
                 );
               },
-              child: const Text('Télécharger le module'),
+              child: Text(s.speechDictationButton_download),
             ),
           ],
         );
@@ -224,7 +226,7 @@ class _SpeechDictationButtonState extends State<SpeechDictationButton> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          'La dictée vocale a échoué : $error',
+          S.of(context).speechDictationButton_failure(error),
         ),
       ),
     );
@@ -238,6 +240,7 @@ class _SpeechDictationButtonState extends State<SpeechDictationButton> {
 
   @override
   Widget build(BuildContext context) {
+    final s = S.of(context);
 
     if (_isTranscribing) {
       return const SizedBox(
@@ -255,8 +258,8 @@ class _SpeechDictationButtonState extends State<SpeechDictationButton> {
     return IconButton(
       onPressed: _toggleDictation,
       tooltip: _isRecording
-          ? 'Arrêter la dictée'
-          : 'Dicter',
+          ? s.speechDictationButton_stop
+          : s.speechDictationButton_dictate,
       icon: Icon(
         _isRecording
             ? Icons.stop_circle_outlined

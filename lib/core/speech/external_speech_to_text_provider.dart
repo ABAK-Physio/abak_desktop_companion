@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
+import '../../generated/l10n.dart';
+
 import 'speech_to_text_provider.dart';
 
 class ExternalSpeechToTextProvider implements SpeechToTextProvider {
@@ -69,7 +71,7 @@ class ExternalSpeechToTextProvider implements SpeechToTextProvider {
 
     if (result.exitCode != 0) {
       throw StateError(
-        'Échec de l’add-on de reconnaissance vocale.',
+        S.current.externalSpeechToTextProvider_failure,
       );
     }
 
@@ -77,15 +79,15 @@ class ExternalSpeechToTextProvider implements SpeechToTextProvider {
 
     if (output.isEmpty) {
       throw StateError(
-        'L’add-on n’a retourné aucune réponse.',
+        S.current.externalSpeechToTextProvider_empty,
       );
     }
 
     final json = jsonDecode(output);
 
     if (json is! Map<String, dynamic>) {
-      throw const FormatException(
-        'Réponse invalide de l’add-on de reconnaissance vocale.',
+      throw FormatException(
+        S.current.externalSpeechToTextProvider_invalid,
       );
     }
 
@@ -93,7 +95,7 @@ class ExternalSpeechToTextProvider implements SpeechToTextProvider {
       final message = json['message']?.toString();
 
       throw StateError(
-        message ?? 'La transcription a échoué.',
+        message ?? S.current.externalSpeechToTextProvider_transcription,
       );
     }
 
@@ -101,7 +103,7 @@ class ExternalSpeechToTextProvider implements SpeechToTextProvider {
 
     if (text == null || text.trim().isEmpty) {
       throw StateError(
-        'L’add-on n’a retourné aucun texte.',
+        S.current.externalSpeechToTextProvider_noText,
       );
     }
 

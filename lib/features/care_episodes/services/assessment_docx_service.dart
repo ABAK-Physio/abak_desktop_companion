@@ -3,6 +3,8 @@ import 'dart:typed_data';
 
 import 'package:archive/archive.dart';
 
+import '../../../generated/l10n.dart';
+
 import '../models/assessment_document_data.dart';
 
 class AssessmentDocxService {
@@ -60,58 +62,58 @@ class AssessmentDocxService {
   <w:body>
 ''');
 
-    buffer.write(_paragraph('BILAN', style: 'Title'));
+    buffer.write(_paragraph(S.current.assessmentDocxService_title, style: 'Title'));
 
-    _writeOptionalLine(buffer, 'Établissement', data.establishmentName);
+    _writeOptionalLine(buffer, S.current.assessmentDocxService_establishment, data.establishmentName);
 
-    _writeLine(buffer, 'Réalisé le', _formatDate(data.assessmentDate));
+    _writeLine(buffer, S.current.assessmentDocxService_performed, _formatDate(data.assessmentDate));
 
-    _writeLine(buffer, 'Imprimé le', _formatDate(data.printedAt));
+    _writeLine(buffer, S.current.assessmentDocxService_printed, _formatDate(data.printedAt));
 
-    _writeOptionalLine(buffer, 'Rédacteur', data.authorName);
+    _writeOptionalLine(buffer, S.current.assessmentDocxService_author, data.authorName);
 
-    _writeOptionalLine(buffer, 'Destinataire(s)', data.recipientText);
+    _writeOptionalLine(buffer, S.current.assessmentDocxService_recipients, data.recipientText);
 
-    buffer.write(_paragraph('Patient', style: 'Heading1'));
+    buffer.write(_paragraph(S.current.assessmentDocxService_patient, style: 'Heading1'));
 
-    _writeLine(buffer, 'Nom', data.patientLastName);
-    _writeLine(buffer, 'Prénom', data.patientFirstName);
+    _writeLine(buffer, S.current.assessmentDocxService_surname, data.patientLastName);
+    _writeLine(buffer, S.current.assessmentDocxService_firstname, data.patientFirstName);
 
-    _writeOptionalLine(buffer, 'Sexe', data.patientSex);
+    _writeOptionalLine(buffer, S.current.assessmentDocxService_sex, data.patientSex);
 
     if (data.patientAgeYears != null) {
-      _writeLine(buffer, 'Âge', '${data.patientAgeYears} ans');
+      _writeLine(buffer, S.current.assessmentDocxService_age, S.current.assessmentDocxService_years(data.patientAgeYears!));
     }
 
-    _writeOptionalLine(buffer, 'Pathologie', data.pathologyLabel);
+    _writeOptionalLine(buffer, S.current.assessmentDocxService_pathology, data.pathologyLabel);
 
     if (data.careEpisodeOpenedAt != null) {
       _writeLine(
         buffer,
-        'Prise en charge ouverte le',
+        S.current.assessmentDocxService_opened,
         _formatDate(data.careEpisodeOpenedAt!),
       );
     }
 
-    _writeOptionalLine(buffer, 'Kiné référent', data.referringPractitionerName);
+    _writeOptionalLine(buffer, S.current.assessmentDocxService_practitioner, data.referringPractitionerName);
 
-    buffer.write(_paragraph('Informations sur le patient', style: 'Heading1'));
+    buffer.write(_paragraph(S.current.assessmentDocxService_information, style: 'Heading1'));
 
-    _writeOptionalLine(buffer, 'Côté dominant', data.dominantSide);
+    _writeOptionalLine(buffer, S.current.assessmentDocxService_dominance, data.dominantSide);
 
-    _writeOptionalLine(buffer, 'Profession', data.profession);
+    _writeOptionalLine(buffer, S.current.assessmentDocxService_profession, data.profession);
 
-    _writeOptionalLine(buffer, 'Activité sportive', data.sport);
+    _writeOptionalLine(buffer, S.current.assessmentDocxService_sport, data.sport);
 
     if (_hasValue(data.heightCm)) {
-      _writeLine(buffer, 'Taille', '${data.heightCm!.trim()} cm');
+      _writeLine(buffer, S.current.assessmentDocxService_height, S.current.assessmentDocxService_centimetres(data.heightCm!.trim()));
     }
 
     if (_hasValue(data.weightKg)) {
-      _writeLine(buffer, 'Poids', '${data.weightKg!.trim()} kg');
+      _writeLine(buffer, S.current.assessmentDocxService_weight, S.current.assessmentDocxService_kilograms(data.weightKg!.trim()));
     }
 
-    buffer.write(_paragraph('Bilan', style: 'Heading1'));
+    buffer.write(_paragraph(S.current.assessmentDocxService_assessment, style: 'Heading1'));
 
     if (_hasValue(data.assessmentText)) {
       buffer.write(_paragraph(data.assessmentText));
@@ -121,14 +123,14 @@ class AssessmentDocxService {
 
     if (data.tests.isNotEmpty) {
       buffer.write(
-        _paragraph('Résultats des tests sélectionnés', style: 'Heading1'),
+        _paragraph(S.current.assessmentDocxService_results, style: 'Heading1'),
       );
 
       for (final test in data.tests) {
         buffer.write(_paragraph(test.title, style: 'Heading2'));
 
         if (test.testDate != null) {
-          _writeLine(buffer, 'Réalisé le', _formatDate(test.testDate!));
+          _writeLine(buffer, S.current.assessmentDocxService_performed, _formatDate(test.testDate!));
         }
 
         final dossierAge = data.patientAgeYears;
@@ -136,7 +138,7 @@ class AssessmentDocxService {
 
         if (testAge != null) {
           if (dossierAge == null || testAge != dossierAge) {
-            _writeLine(buffer, 'Âge déclaré lors du test', '$testAge ans');
+            _writeLine(buffer, S.current.assessmentDocxService_declared, S.current.assessmentDocxService_years(testAge));
           }
         }
 
@@ -150,12 +152,12 @@ class AssessmentDocxService {
               dossierPathology.toLowerCase() == testPathology.toLowerCase();
 
           if (!samePathology) {
-            _writeLine(buffer, 'Pathologie lors du test', testPathology);
+            _writeLine(buffer, S.current.assessmentDocxService_diagnosis, testPathology);
 
             if (dossierPathology != null && dossierPathology.isNotEmpty) {
               _writeLine(
                 buffer,
-                'Pathologie lors du rattachement',
+                S.current.assessmentDocxService_attachment,
                 dossierPathology,
               );
             }
@@ -182,7 +184,7 @@ class AssessmentDocxService {
 
     if (data.notes.isNotEmpty) {
       buffer.write(
-        _paragraph('Notes de suivi sélectionnées', style: 'Heading1'),
+        _paragraph(S.current.assessmentDocxService_notes, style: 'Heading1'),
       );
 
       for (final note in data.notes) {
@@ -251,7 +253,7 @@ class AssessmentDocxService {
     <w:drawing>
       <wp:inline distT="0" distB="0" distL="0" distR="0">
         <wp:extent cx="$widthEmu" cy="$heightEmu"/>
-        <wp:docPr id="1" name="Graphique"/>
+        <wp:docPr id="1" name="${_escapeXml(S.current.assessmentDocxService_chart)}"/>
         <wp:cNvGraphicFramePr>
           <a:graphicFrameLocks noChangeAspect="1"/>
         </wp:cNvGraphicFramePr>

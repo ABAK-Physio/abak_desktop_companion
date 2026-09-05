@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import '../../generated/l10n.dart';
+
 import 'external_speech_to_text_provider.dart';
 
 class AbakWhisperSpeechProvider extends ExternalSpeechToTextProvider {
@@ -7,10 +9,13 @@ class AbakWhisperSpeechProvider extends ExternalSpeechToTextProvider {
       : super(
     executablePath: _executablePath,
     id: 'abak_whisper',
-    displayName: 'ABAK Dictée vocale',
+    displayName: '',
     isLocal: true,
     requiresInternet: false,
   );
+
+  @override
+  String get displayName => S.current.abakWhisperSpeechProvider_name;
 
   static String get _executablePath {
     if (Platform.isMacOS) {

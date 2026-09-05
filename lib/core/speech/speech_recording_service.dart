@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:record/record.dart';
 
+import '../../generated/l10n.dart';
+
 class SpeechRecordingService {
   final AudioRecorder _recorder = AudioRecorder();
 
@@ -12,7 +14,7 @@ class SpeechRecordingService {
 
     if (!hasPermission) {
       throw StateError(
-        'L’accès au microphone n’est pas autorisé.',
+        S.current.speechRecordingService_permission,
       );
     }
 

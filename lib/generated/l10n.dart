@@ -50,6 +50,316 @@ class S {
     return Localizations.of<S>(context, S);
   }
 
+  /// `ABAK Dictée vocale`
+  String get abakWhisperSpeechProvider_name {
+    return Intl.message(
+      'ABAK Dictée vocale',
+      name: 'abakWhisperSpeechProvider_name',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Âge`
+  String get assessmentDocxService_age {
+    return Intl.message(
+      'Âge',
+      name: 'assessmentDocxService_age',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Bilan`
+  String get assessmentDocxService_assessment {
+    return Intl.message(
+      'Bilan',
+      name: 'assessmentDocxService_assessment',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pathologie lors du rattachement`
+  String get assessmentDocxService_attachment {
+    return Intl.message(
+      'Pathologie lors du rattachement',
+      name: 'assessmentDocxService_attachment',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Rédacteur`
+  String get assessmentDocxService_author {
+    return Intl.message(
+      'Rédacteur',
+      name: 'assessmentDocxService_author',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{height} cm`
+  String assessmentDocxService_centimetres(Object height) {
+    return Intl.message(
+      '$height cm',
+      name: 'assessmentDocxService_centimetres',
+      desc: '',
+      args: [height],
+    );
+  }
+
+  /// `Graphique`
+  String get assessmentDocxService_chart {
+    return Intl.message(
+      'Graphique',
+      name: 'assessmentDocxService_chart',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Âge déclaré lors du test`
+  String get assessmentDocxService_declared {
+    return Intl.message(
+      'Âge déclaré lors du test',
+      name: 'assessmentDocxService_declared',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pathologie lors du test`
+  String get assessmentDocxService_diagnosis {
+    return Intl.message(
+      'Pathologie lors du test',
+      name: 'assessmentDocxService_diagnosis',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Côté dominant`
+  String get assessmentDocxService_dominance {
+    return Intl.message(
+      'Côté dominant',
+      name: 'assessmentDocxService_dominance',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Établissement`
+  String get assessmentDocxService_establishment {
+    return Intl.message(
+      'Établissement',
+      name: 'assessmentDocxService_establishment',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Prénom`
+  String get assessmentDocxService_firstname {
+    return Intl.message(
+      'Prénom',
+      name: 'assessmentDocxService_firstname',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Taille`
+  String get assessmentDocxService_height {
+    return Intl.message(
+      'Taille',
+      name: 'assessmentDocxService_height',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Informations sur le patient`
+  String get assessmentDocxService_information {
+    return Intl.message(
+      'Informations sur le patient',
+      name: 'assessmentDocxService_information',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{weight} kg`
+  String assessmentDocxService_kilograms(Object weight) {
+    return Intl.message(
+      '$weight kg',
+      name: 'assessmentDocxService_kilograms',
+      desc: '',
+      args: [weight],
+    );
+  }
+
+  /// `Notes de suivi sélectionnées`
+  String get assessmentDocxService_notes {
+    return Intl.message(
+      'Notes de suivi sélectionnées',
+      name: 'assessmentDocxService_notes',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Prise en charge ouverte le`
+  String get assessmentDocxService_opened {
+    return Intl.message(
+      'Prise en charge ouverte le',
+      name: 'assessmentDocxService_opened',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pathologie`
+  String get assessmentDocxService_pathology {
+    return Intl.message(
+      'Pathologie',
+      name: 'assessmentDocxService_pathology',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Patient`
+  String get assessmentDocxService_patient {
+    return Intl.message(
+      'Patient',
+      name: 'assessmentDocxService_patient',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Réalisé le`
+  String get assessmentDocxService_performed {
+    return Intl.message(
+      'Réalisé le',
+      name: 'assessmentDocxService_performed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Kiné référent`
+  String get assessmentDocxService_practitioner {
+    return Intl.message(
+      'Kiné référent',
+      name: 'assessmentDocxService_practitioner',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Imprimé le`
+  String get assessmentDocxService_printed {
+    return Intl.message(
+      'Imprimé le',
+      name: 'assessmentDocxService_printed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Profession`
+  String get assessmentDocxService_profession {
+    return Intl.message(
+      'Profession',
+      name: 'assessmentDocxService_profession',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Destinataire(s)`
+  String get assessmentDocxService_recipients {
+    return Intl.message(
+      'Destinataire(s)',
+      name: 'assessmentDocxService_recipients',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Résultats des tests sélectionnés`
+  String get assessmentDocxService_results {
+    return Intl.message(
+      'Résultats des tests sélectionnés',
+      name: 'assessmentDocxService_results',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sexe`
+  String get assessmentDocxService_sex {
+    return Intl.message(
+      'Sexe',
+      name: 'assessmentDocxService_sex',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Activité sportive`
+  String get assessmentDocxService_sport {
+    return Intl.message(
+      'Activité sportive',
+      name: 'assessmentDocxService_sport',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Nom`
+  String get assessmentDocxService_surname {
+    return Intl.message(
+      'Nom',
+      name: 'assessmentDocxService_surname',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `BILAN`
+  String get assessmentDocxService_title {
+    return Intl.message(
+      'BILAN',
+      name: 'assessmentDocxService_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Poids`
+  String get assessmentDocxService_weight {
+    return Intl.message(
+      'Poids',
+      name: 'assessmentDocxService_weight',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{age} ans`
+  String assessmentDocxService_years(Object age) {
+    return Intl.message(
+      '$age ans',
+      name: 'assessmentDocxService_years',
+      desc: '',
+      args: [age],
+    );
+  }
+
   /// `Annuler`
   String get backupHistory_cancel {
     return Intl.message(
@@ -120,41 +430,11 @@ class S {
     );
   }
 
-  /// `Fermer`
-  String get close {
+  /// `Origine ABAK`
+  String get careEpisodeDetail_abakOrigin {
     return Intl.message(
-      'Fermer',
-      name: 'close',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Nouvelle interface bilans et rapports`
-  String get careEpisodeDetail_reportsWorkspaceTooltip {
-    return Intl.message(
-      'Nouvelle interface bilans et rapports',
-      name: 'careEpisodeDetail_reportsWorkspaceTooltip',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Pathologie`
-  String get careEpisodeDetail_pathology {
-    return Intl.message(
-      'Pathologie',
-      name: 'careEpisodeDetail_pathology',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Résultats ABAK`
-  String get careEpisodeDetail_results {
-    return Intl.message(
-      'Résultats ABAK',
-      name: 'careEpisodeDetail_results',
+      'Origine ABAK',
+      name: 'careEpisodeDetail_abakOrigin',
       desc: '',
       args: [],
     );
@@ -180,6 +460,36 @@ class S {
     );
   }
 
+  /// `Pathologie`
+  String get careEpisodeDetail_pathology {
+    return Intl.message(
+      'Pathologie',
+      name: 'careEpisodeDetail_pathology',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Nouvelle interface bilans et rapports`
+  String get careEpisodeDetail_reportsWorkspaceTooltip {
+    return Intl.message(
+      'Nouvelle interface bilans et rapports',
+      name: 'careEpisodeDetail_reportsWorkspaceTooltip',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Résultats ABAK`
+  String get careEpisodeDetail_results {
+    return Intl.message(
+      'Résultats ABAK',
+      name: 'careEpisodeDetail_results',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Score`
   String get careEpisodeDetail_score {
     return Intl.message(
@@ -190,41 +500,11 @@ class S {
     );
   }
 
-  /// `Origine ABAK`
-  String get careEpisodeDetail_abakOrigin {
+  /// `Ajouter une note de suivi`
+  String get careEpisodeReportsWorkspace_addFollowUpNote {
     return Intl.message(
-      'Origine ABAK',
-      name: 'careEpisodeDetail_abakOrigin',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Pathologie`
-  String get careEpisodeReportsWorkspace_pathology {
-    return Intl.message(
-      'Pathologie',
-      name: 'careEpisodeReportsWorkspace_pathology',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Chargement…`
-  String get careEpisodeReportsWorkspace_loading {
-    return Intl.message(
-      'Chargement…',
-      name: 'careEpisodeReportsWorkspace_loading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Non renseigné`
-  String get careEpisodeReportsWorkspace_notProvided {
-    return Intl.message(
-      'Non renseigné',
-      name: 'careEpisodeReportsWorkspace_notProvided',
+      'Ajouter une note de suivi',
+      name: 'careEpisodeReportsWorkspace_addFollowUpNote',
       desc: '',
       args: [],
     );
@@ -240,86 +520,6 @@ class S {
     );
   }
 
-  /// `Kiné référent`
-  String get careEpisodeReportsWorkspace_referringPractitioner {
-    return Intl.message(
-      'Kiné référent',
-      name: 'careEpisodeReportsWorkspace_referringPractitioner',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Documents de la prise en charge`
-  String get careEpisodeReportsWorkspace_episodeDocuments {
-    return Intl.message(
-      'Documents de la prise en charge',
-      name: 'careEpisodeReportsWorkspace_episodeDocuments',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Modifier le kiné référent`
-  String get careEpisodeReportsWorkspace_editReferringPractitioner {
-    return Intl.message(
-      'Modifier le kiné référent',
-      name: 'careEpisodeReportsWorkspace_editReferringPractitioner',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Historique des kinés référents`
-  String get careEpisodeReportsWorkspace_referringPractitionerHistory {
-    return Intl.message(
-      'Historique des kinés référents',
-      name: 'careEpisodeReportsWorkspace_referringPractitionerHistory',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Résumé de l’épisode`
-  String get careEpisodeReportsWorkspace_episodeSummary {
-    return Intl.message(
-      'Résumé de l’épisode',
-      name: 'careEpisodeReportsWorkspace_episodeSummary',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Nombre de tests`
-  String get careEpisodeReportsWorkspace_testCount {
-    return Intl.message(
-      'Nombre de tests',
-      name: 'careEpisodeReportsWorkspace_testCount',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Nombre de bilans`
-  String get careEpisodeReportsWorkspace_assessmentCount {
-    return Intl.message(
-      'Nombre de bilans',
-      name: 'careEpisodeReportsWorkspace_assessmentCount',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Nombre de rapports`
-  String get careEpisodeReportsWorkspace_reportCount {
-    return Intl.message(
-      'Nombre de rapports',
-      name: 'careEpisodeReportsWorkspace_reportCount',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Documents archivés`
   String get careEpisodeReportsWorkspace_archivedDocuments {
     return Intl.message(
@@ -330,21 +530,11 @@ class S {
     );
   }
 
-  /// `Agrandir`
-  String get careEpisodeReportsWorkspace_expand {
+  /// `Documents archivés`
+  String get careEpisodeReportsWorkspace_archivedDocumentsCount {
     return Intl.message(
-      'Agrandir',
-      name: 'careEpisodeReportsWorkspace_expand',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Impossible de charger la corbeille.`
-  String get careEpisodeReportsWorkspace_trashLoadError {
-    return Intl.message(
-      'Impossible de charger la corbeille.',
-      name: 'careEpisodeReportsWorkspace_trashLoadError',
+      'Documents archivés',
+      name: 'careEpisodeReportsWorkspace_archivedDocumentsCount',
       desc: '',
       args: [],
     );
@@ -360,31 +550,81 @@ class S {
     );
   }
 
-  /// `Rapport`
-  String get careEpisodeReportsWorkspace_report {
+  /// `Nombre de bilans`
+  String get careEpisodeReportsWorkspace_assessmentCount {
     return Intl.message(
-      'Rapport',
-      name: 'careEpisodeReportsWorkspace_report',
+      'Nombre de bilans',
+      name: 'careEpisodeReportsWorkspace_assessmentCount',
       desc: '',
       args: [],
     );
   }
 
-  /// `Aucun document`
-  String get careEpisodeReportsWorkspace_noDocument {
+  /// `Historique des bilans`
+  String get careEpisodeReportsWorkspace_assessmentHistory {
     return Intl.message(
-      'Aucun document',
-      name: 'careEpisodeReportsWorkspace_noDocument',
+      'Historique des bilans',
+      name: 'careEpisodeReportsWorkspace_assessmentHistory',
       desc: '',
       args: [],
     );
   }
 
-  /// `Restaurer`
-  String get careEpisodeReportsWorkspace_restore {
+  /// `Impossible de charger les bilans.`
+  String get careEpisodeReportsWorkspace_assessmentsLoadError {
     return Intl.message(
-      'Restaurer',
-      name: 'careEpisodeReportsWorkspace_restore',
+      'Impossible de charger les bilans.',
+      name: 'careEpisodeReportsWorkspace_assessmentsLoadError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Annuler`
+  String get careEpisodeReportsWorkspace_cancel {
+    return Intl.message(
+      'Annuler',
+      name: 'careEpisodeReportsWorkspace_cancel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Annuler les modifications`
+  String get careEpisodeReportsWorkspace_cancelChanges {
+    return Intl.message(
+      'Annuler les modifications',
+      name: 'careEpisodeReportsWorkspace_cancelChanges',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Créer ou reprendre un bilan`
+  String get careEpisodeReportsWorkspace_createOrResumeAssessment {
+    return Intl.message(
+      'Créer ou reprendre un bilan',
+      name: 'careEpisodeReportsWorkspace_createOrResumeAssessment',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Créer ou reprendre un rapport`
+  String get careEpisodeReportsWorkspace_createOrResumeReport {
+    return Intl.message(
+      'Créer ou reprendre un rapport',
+      name: 'careEpisodeReportsWorkspace_createOrResumeReport',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Date`
+  String get careEpisodeReportsWorkspace_date {
+    return Intl.message(
+      'Date',
+      name: 'careEpisodeReportsWorkspace_date',
       desc: '',
       args: [],
     );
@@ -400,11 +640,71 @@ class S {
     );
   }
 
-  /// `Documents archivés`
-  String get careEpisodeReportsWorkspace_archivedDocumentsCount {
+  /// `Dupliquer`
+  String get careEpisodeReportsWorkspace_duplicate {
     return Intl.message(
-      'Documents archivés',
-      name: 'careEpisodeReportsWorkspace_archivedDocumentsCount',
+      'Dupliquer',
+      name: 'careEpisodeReportsWorkspace_duplicate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Modifier`
+  String get careEpisodeReportsWorkspace_edit {
+    return Intl.message(
+      'Modifier',
+      name: 'careEpisodeReportsWorkspace_edit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Modifier le kiné référent`
+  String get careEpisodeReportsWorkspace_editReferringPractitioner {
+    return Intl.message(
+      'Modifier le kiné référent',
+      name: 'careEpisodeReportsWorkspace_editReferringPractitioner',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Documents de la prise en charge`
+  String get careEpisodeReportsWorkspace_episodeDocuments {
+    return Intl.message(
+      'Documents de la prise en charge',
+      name: 'careEpisodeReportsWorkspace_episodeDocuments',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Résumé de l’épisode`
+  String get careEpisodeReportsWorkspace_episodeSummary {
+    return Intl.message(
+      'Résumé de l’épisode',
+      name: 'careEpisodeReportsWorkspace_episodeSummary',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Agrandir`
+  String get careEpisodeReportsWorkspace_expand {
+    return Intl.message(
+      'Agrandir',
+      name: 'careEpisodeReportsWorkspace_expand',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Agrandir la zone de rédaction`
+  String get careEpisodeReportsWorkspace_expandEditor {
+    return Intl.message(
+      'Agrandir la zone de rédaction',
+      name: 'careEpisodeReportsWorkspace_expandEditor',
       desc: '',
       args: [],
     );
@@ -430,61 +730,11 @@ class S {
     );
   }
 
-  /// `Ajouter une note de suivi`
-  String get careEpisodeReportsWorkspace_addFollowUpNote {
-    return Intl.message(
-      'Ajouter une note de suivi',
-      name: 'careEpisodeReportsWorkspace_addFollowUpNote',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Impossible de charger les notes de suivi.`
   String get careEpisodeReportsWorkspace_followUpNotesLoadError {
     return Intl.message(
       'Impossible de charger les notes de suivi.',
       name: 'careEpisodeReportsWorkspace_followUpNotesLoadError',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Aucune note de suivi.`
-  String get careEpisodeReportsWorkspace_noFollowUpNotes {
-    return Intl.message(
-      'Aucune note de suivi.',
-      name: 'careEpisodeReportsWorkspace_noFollowUpNotes',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Date`
-  String get careEpisodeReportsWorkspace_date {
-    return Intl.message(
-      'Date',
-      name: 'careEpisodeReportsWorkspace_date',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Titre`
-  String get careEpisodeReportsWorkspace_title {
-    return Intl.message(
-      'Titre',
-      name: 'careEpisodeReportsWorkspace_title',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Note`
-  String get careEpisodeReportsWorkspace_note {
-    return Intl.message(
-      'Note',
-      name: 'careEpisodeReportsWorkspace_note',
       desc: '',
       args: [],
     );
@@ -510,151 +760,11 @@ class S {
     );
   }
 
-  /// `Impossible de charger les tests.`
-  String get careEpisodeReportsWorkspace_testsLoadError {
+  /// `Chargement…`
+  String get careEpisodeReportsWorkspace_loading {
     return Intl.message(
-      'Impossible de charger les tests.',
-      name: 'careEpisodeReportsWorkspace_testsLoadError',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Aucun test réalisé pour cet épisode.`
-  String get careEpisodeReportsWorkspace_noTests {
-    return Intl.message(
-      'Aucun test réalisé pour cet épisode.',
-      name: 'careEpisodeReportsWorkspace_noTests',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Test`
-  String get careEpisodeReportsWorkspace_test {
-    return Intl.message(
-      'Test',
-      name: 'careEpisodeReportsWorkspace_test',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Résultat`
-  String get careEpisodeReportsWorkspace_result {
-    return Intl.message(
-      'Résultat',
-      name: 'careEpisodeReportsWorkspace_result',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Historique des bilans`
-  String get careEpisodeReportsWorkspace_assessmentHistory {
-    return Intl.message(
-      'Historique des bilans',
-      name: 'careEpisodeReportsWorkspace_assessmentHistory',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Créer ou reprendre un bilan`
-  String get careEpisodeReportsWorkspace_createOrResumeAssessment {
-    return Intl.message(
-      'Créer ou reprendre un bilan',
-      name: 'careEpisodeReportsWorkspace_createOrResumeAssessment',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Retour au brouillon`
-  String get careEpisodeReportsWorkspace_returnToDraft {
-    return Intl.message(
-      'Retour au brouillon',
-      name: 'careEpisodeReportsWorkspace_returnToDraft',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Annuler les modifications`
-  String get careEpisodeReportsWorkspace_cancelChanges {
-    return Intl.message(
-      'Annuler les modifications',
-      name: 'careEpisodeReportsWorkspace_cancelChanges',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Mettre à jour le bilan`
-  String get careEpisodeReportsWorkspace_updateAssessment {
-    return Intl.message(
-      'Mettre à jour le bilan',
-      name: 'careEpisodeReportsWorkspace_updateAssessment',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Enregistrer le bilan`
-  String get careEpisodeReportsWorkspace_saveAssessment {
-    return Intl.message(
-      'Enregistrer le bilan',
-      name: 'careEpisodeReportsWorkspace_saveAssessment',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Impossible de charger les bilans.`
-  String get careEpisodeReportsWorkspace_assessmentsLoadError {
-    return Intl.message(
-      'Impossible de charger les bilans.',
-      name: 'careEpisodeReportsWorkspace_assessmentsLoadError',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Aucun bilan enregistré.`
-  String get careEpisodeReportsWorkspace_noAssessments {
-    return Intl.message(
-      'Aucun bilan enregistré.',
-      name: 'careEpisodeReportsWorkspace_noAssessments',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Nom`
-  String get careEpisodeReportsWorkspace_name {
-    return Intl.message(
-      'Nom',
-      name: 'careEpisodeReportsWorkspace_name',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Modifier`
-  String get careEpisodeReportsWorkspace_edit {
-    return Intl.message(
-      'Modifier',
-      name: 'careEpisodeReportsWorkspace_edit',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Dupliquer`
-  String get careEpisodeReportsWorkspace_duplicate {
-    return Intl.message(
-      'Dupliquer',
-      name: 'careEpisodeReportsWorkspace_duplicate',
+      'Chargement…',
+      name: 'careEpisodeReportsWorkspace_loading',
       desc: '',
       args: [],
     );
@@ -670,71 +780,11 @@ class S {
     );
   }
 
-  /// `Historique des rapports`
-  String get careEpisodeReportsWorkspace_reportHistory {
+  /// `Nom`
+  String get careEpisodeReportsWorkspace_name {
     return Intl.message(
-      'Historique des rapports',
-      name: 'careEpisodeReportsWorkspace_reportHistory',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Retour au brouillon du rapport`
-  String get careEpisodeReportsWorkspace_returnToReportDraft {
-    return Intl.message(
-      'Retour au brouillon du rapport',
-      name: 'careEpisodeReportsWorkspace_returnToReportDraft',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Créer ou reprendre un rapport`
-  String get careEpisodeReportsWorkspace_createOrResumeReport {
-    return Intl.message(
-      'Créer ou reprendre un rapport',
-      name: 'careEpisodeReportsWorkspace_createOrResumeReport',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Mettre à jour le rapport`
-  String get careEpisodeReportsWorkspace_updateReport {
-    return Intl.message(
-      'Mettre à jour le rapport',
-      name: 'careEpisodeReportsWorkspace_updateReport',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Enregistrer le rapport`
-  String get careEpisodeReportsWorkspace_saveReport {
-    return Intl.message(
-      'Enregistrer le rapport',
-      name: 'careEpisodeReportsWorkspace_saveReport',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Impossible de charger les rapports.`
-  String get careEpisodeReportsWorkspace_reportsLoadError {
-    return Intl.message(
-      'Impossible de charger les rapports.',
-      name: 'careEpisodeReportsWorkspace_reportsLoadError',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Aucun rapport enregistré.`
-  String get careEpisodeReportsWorkspace_noReports {
-    return Intl.message(
-      'Aucun rapport enregistré.',
-      name: 'careEpisodeReportsWorkspace_noReports',
+      'Nom',
+      name: 'careEpisodeReportsWorkspace_name',
       desc: '',
       args: [],
     );
@@ -750,11 +800,201 @@ class S {
     );
   }
 
-  /// `Agrandir la zone de rédaction`
-  String get careEpisodeReportsWorkspace_expandEditor {
+  /// `Aucun bilan enregistré.`
+  String get careEpisodeReportsWorkspace_noAssessments {
     return Intl.message(
-      'Agrandir la zone de rédaction',
-      name: 'careEpisodeReportsWorkspace_expandEditor',
+      'Aucun bilan enregistré.',
+      name: 'careEpisodeReportsWorkspace_noAssessments',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Aucun document`
+  String get careEpisodeReportsWorkspace_noDocument {
+    return Intl.message(
+      'Aucun document',
+      name: 'careEpisodeReportsWorkspace_noDocument',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Aucune note de suivi.`
+  String get careEpisodeReportsWorkspace_noFollowUpNotes {
+    return Intl.message(
+      'Aucune note de suivi.',
+      name: 'careEpisodeReportsWorkspace_noFollowUpNotes',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Aucun rapport enregistré.`
+  String get careEpisodeReportsWorkspace_noReports {
+    return Intl.message(
+      'Aucun rapport enregistré.',
+      name: 'careEpisodeReportsWorkspace_noReports',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Note`
+  String get careEpisodeReportsWorkspace_note {
+    return Intl.message(
+      'Note',
+      name: 'careEpisodeReportsWorkspace_note',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Aucun test réalisé pour cet épisode.`
+  String get careEpisodeReportsWorkspace_noTests {
+    return Intl.message(
+      'Aucun test réalisé pour cet épisode.',
+      name: 'careEpisodeReportsWorkspace_noTests',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Non renseigné`
+  String get careEpisodeReportsWorkspace_notProvided {
+    return Intl.message(
+      'Non renseigné',
+      name: 'careEpisodeReportsWorkspace_notProvided',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pathologie`
+  String get careEpisodeReportsWorkspace_pathology {
+    return Intl.message(
+      'Pathologie',
+      name: 'careEpisodeReportsWorkspace_pathology',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Kiné référent`
+  String get careEpisodeReportsWorkspace_referringPractitioner {
+    return Intl.message(
+      'Kiné référent',
+      name: 'careEpisodeReportsWorkspace_referringPractitioner',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Historique des kinés référents`
+  String get careEpisodeReportsWorkspace_referringPractitionerHistory {
+    return Intl.message(
+      'Historique des kinés référents',
+      name: 'careEpisodeReportsWorkspace_referringPractitionerHistory',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Rapport`
+  String get careEpisodeReportsWorkspace_report {
+    return Intl.message(
+      'Rapport',
+      name: 'careEpisodeReportsWorkspace_report',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Nombre de rapports`
+  String get careEpisodeReportsWorkspace_reportCount {
+    return Intl.message(
+      'Nombre de rapports',
+      name: 'careEpisodeReportsWorkspace_reportCount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Historique des rapports`
+  String get careEpisodeReportsWorkspace_reportHistory {
+    return Intl.message(
+      'Historique des rapports',
+      name: 'careEpisodeReportsWorkspace_reportHistory',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Impossible de charger les rapports.`
+  String get careEpisodeReportsWorkspace_reportsLoadError {
+    return Intl.message(
+      'Impossible de charger les rapports.',
+      name: 'careEpisodeReportsWorkspace_reportsLoadError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Restaurer`
+  String get careEpisodeReportsWorkspace_restore {
+    return Intl.message(
+      'Restaurer',
+      name: 'careEpisodeReportsWorkspace_restore',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Résultat`
+  String get careEpisodeReportsWorkspace_result {
+    return Intl.message(
+      'Résultat',
+      name: 'careEpisodeReportsWorkspace_result',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Retour au brouillon`
+  String get careEpisodeReportsWorkspace_returnToDraft {
+    return Intl.message(
+      'Retour au brouillon',
+      name: 'careEpisodeReportsWorkspace_returnToDraft',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Retour au brouillon du rapport`
+  String get careEpisodeReportsWorkspace_returnToReportDraft {
+    return Intl.message(
+      'Retour au brouillon du rapport',
+      name: 'careEpisodeReportsWorkspace_returnToReportDraft',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enregistrer le bilan`
+  String get careEpisodeReportsWorkspace_saveAssessment {
+    return Intl.message(
+      'Enregistrer le bilan',
+      name: 'careEpisodeReportsWorkspace_saveAssessment',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enregistrer le rapport`
+  String get careEpisodeReportsWorkspace_saveReport {
+    return Intl.message(
+      'Enregistrer le rapport',
+      name: 'careEpisodeReportsWorkspace_saveReport',
       desc: '',
       args: [],
     );
@@ -770,61 +1010,81 @@ class S {
     );
   }
 
-  /// `Diagnostic fiche d’entretien`
-  String get contactFormTemplateDiagnostic_title {
+  /// `Test`
+  String get careEpisodeReportsWorkspace_test {
     return Intl.message(
-      'Diagnostic fiche d’entretien',
-      name: 'contactFormTemplateDiagnostic_title',
+      'Test',
+      name: 'careEpisodeReportsWorkspace_test',
       desc: '',
       args: [],
     );
   }
 
-  /// `Actualiser`
-  String get contactFormTemplateDiagnostic_refresh {
+  /// `Nombre de tests`
+  String get careEpisodeReportsWorkspace_testCount {
     return Intl.message(
-      'Actualiser',
-      name: 'contactFormTemplateDiagnostic_refresh',
+      'Nombre de tests',
+      name: 'careEpisodeReportsWorkspace_testCount',
       desc: '',
       args: [],
     );
   }
 
-  /// `Annuler`
-  String get careEpisodeReportsWorkspace_cancel {
+  /// `Impossible de charger les tests.`
+  String get careEpisodeReportsWorkspace_testsLoadError {
     return Intl.message(
-      'Annuler',
-      name: 'careEpisodeReportsWorkspace_cancel',
+      'Impossible de charger les tests.',
+      name: 'careEpisodeReportsWorkspace_testsLoadError',
       desc: '',
       args: [],
     );
   }
 
-  /// `ID modèle`
-  String get contactFormTemplateDiagnostic_templateId {
+  /// `Titre`
+  String get careEpisodeReportsWorkspace_title {
     return Intl.message(
-      'ID modèle',
-      name: 'contactFormTemplateDiagnostic_templateId',
+      'Titre',
+      name: 'careEpisodeReportsWorkspace_title',
       desc: '',
       args: [],
     );
   }
 
-  /// `Praticien`
-  String get contactFormTemplateDiagnostic_practitioner {
+  /// `Impossible de charger la corbeille.`
+  String get careEpisodeReportsWorkspace_trashLoadError {
     return Intl.message(
-      'Praticien',
-      name: 'contactFormTemplateDiagnostic_practitioner',
+      'Impossible de charger la corbeille.',
+      name: 'careEpisodeReportsWorkspace_trashLoadError',
       desc: '',
       args: [],
     );
   }
 
-  /// `Modèle système`
-  String get contactFormTemplateDiagnostic_systemTemplate {
+  /// `Mettre à jour le bilan`
+  String get careEpisodeReportsWorkspace_updateAssessment {
     return Intl.message(
-      'Modèle système',
-      name: 'contactFormTemplateDiagnostic_systemTemplate',
+      'Mettre à jour le bilan',
+      name: 'careEpisodeReportsWorkspace_updateAssessment',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Mettre à jour le rapport`
+  String get careEpisodeReportsWorkspace_updateReport {
+    return Intl.message(
+      'Mettre à jour le rapport',
+      name: 'careEpisodeReportsWorkspace_updateReport',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Fermer`
+  String get close {
+    return Intl.message(
+      'Fermer',
+      name: 'close',
       desc: '',
       args: [],
     );
@@ -840,91 +1100,11 @@ class S {
     );
   }
 
-  /// `Non définie`
-  String get contactFormTemplateDiagnostic_notDefined {
-    return Intl.message(
-      'Non définie',
-      name: 'contactFormTemplateDiagnostic_notDefined',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Modèle par défaut`
   String get contactFormTemplateDiagnostic_defaultTemplate {
     return Intl.message(
       'Modèle par défaut',
       name: 'contactFormTemplateDiagnostic_defaultTemplate',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Oui`
-  String get contactFormTemplateDiagnostic_yes {
-    return Intl.message(
-      'Oui',
-      name: 'contactFormTemplateDiagnostic_yes',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Non`
-  String get contactFormTemplateDiagnostic_no {
-    return Intl.message(
-      'Non',
-      name: 'contactFormTemplateDiagnostic_no',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Type`
-  String get contactFormTemplateDiagnostic_type {
-    return Intl.message(
-      'Type',
-      name: 'contactFormTemplateDiagnostic_type',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Ordre`
-  String get contactFormTemplateDiagnostic_order {
-    return Intl.message(
-      'Ordre',
-      name: 'contactFormTemplateDiagnostic_order',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Obligatoire`
-  String get contactFormTemplateDiagnostic_required {
-    return Intl.message(
-      'Obligatoire',
-      name: 'contactFormTemplateDiagnostic_required',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Aucun modèle de fiche d’entretien initial trouvé.`
-  String get contactFormTemplateDiagnostic_noTemplate {
-    return Intl.message(
-      'Aucun modèle de fiche d’entretien initial trouvé.',
-      name: 'contactFormTemplateDiagnostic_noTemplate',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Champs`
-  String get contactFormTemplateDiagnostic_fields {
-    return Intl.message(
-      'Champs',
-      name: 'contactFormTemplateDiagnostic_fields',
       desc: '',
       args: [],
     );
@@ -940,11 +1120,141 @@ class S {
     );
   }
 
+  /// `Champs`
+  String get contactFormTemplateDiagnostic_fields {
+    return Intl.message(
+      'Champs',
+      name: 'contactFormTemplateDiagnostic_fields',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Non`
+  String get contactFormTemplateDiagnostic_no {
+    return Intl.message(
+      'Non',
+      name: 'contactFormTemplateDiagnostic_no',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Aucune donnée à afficher.`
   String get contactFormTemplateDiagnostic_noData {
     return Intl.message(
       'Aucune donnée à afficher.',
       name: 'contactFormTemplateDiagnostic_noData',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Non définie`
+  String get contactFormTemplateDiagnostic_notDefined {
+    return Intl.message(
+      'Non définie',
+      name: 'contactFormTemplateDiagnostic_notDefined',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Aucun modèle de fiche d’entretien initial trouvé.`
+  String get contactFormTemplateDiagnostic_noTemplate {
+    return Intl.message(
+      'Aucun modèle de fiche d’entretien initial trouvé.',
+      name: 'contactFormTemplateDiagnostic_noTemplate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Ordre`
+  String get contactFormTemplateDiagnostic_order {
+    return Intl.message(
+      'Ordre',
+      name: 'contactFormTemplateDiagnostic_order',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Praticien`
+  String get contactFormTemplateDiagnostic_practitioner {
+    return Intl.message(
+      'Praticien',
+      name: 'contactFormTemplateDiagnostic_practitioner',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Actualiser`
+  String get contactFormTemplateDiagnostic_refresh {
+    return Intl.message(
+      'Actualiser',
+      name: 'contactFormTemplateDiagnostic_refresh',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Obligatoire`
+  String get contactFormTemplateDiagnostic_required {
+    return Intl.message(
+      'Obligatoire',
+      name: 'contactFormTemplateDiagnostic_required',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Modèle système`
+  String get contactFormTemplateDiagnostic_systemTemplate {
+    return Intl.message(
+      'Modèle système',
+      name: 'contactFormTemplateDiagnostic_systemTemplate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `ID modèle`
+  String get contactFormTemplateDiagnostic_templateId {
+    return Intl.message(
+      'ID modèle',
+      name: 'contactFormTemplateDiagnostic_templateId',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Diagnostic fiche d’entretien`
+  String get contactFormTemplateDiagnostic_title {
+    return Intl.message(
+      'Diagnostic fiche d’entretien',
+      name: 'contactFormTemplateDiagnostic_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Type`
+  String get contactFormTemplateDiagnostic_type {
+    return Intl.message(
+      'Type',
+      name: 'contactFormTemplateDiagnostic_type',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Oui`
+  String get contactFormTemplateDiagnostic_yes {
+    return Intl.message(
+      'Oui',
+      name: 'contactFormTemplateDiagnostic_yes',
       desc: '',
       args: [],
     );
@@ -980,6 +1290,26 @@ class S {
     );
   }
 
+  /// `Praticien associé`
+  String get deviceForm_associatedPractitioner {
+    return Intl.message(
+      'Praticien associé',
+      name: 'deviceForm_associatedPractitioner',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Annuler`
+  String get deviceForm_cancel {
+    return Intl.message(
+      'Annuler',
+      name: 'deviceForm_cancel',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Nouvel appareil`
   String get deviceForm_contextName {
     return Intl.message(
@@ -990,31 +1320,11 @@ class S {
     );
   }
 
-  /// `Modifier l’appareil`
-  String get deviceForm_editDevice {
+  /// `Créer`
+  String get deviceForm_create {
     return Intl.message(
-      'Modifier l’appareil',
-      name: 'deviceForm_editDevice',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Nouvel appareil`
-  String get deviceForm_newDevice {
-    return Intl.message(
-      'Nouvel appareil',
-      name: 'deviceForm_newDevice',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Erreur lors du chargement des praticiens`
-  String get deviceForm_loadingPractitionersError {
-    return Intl.message(
-      'Erreur lors du chargement des praticiens',
-      name: 'deviceForm_loadingPractitionersError',
+      'Créer',
+      name: 'deviceForm_create',
       desc: '',
       args: [],
     );
@@ -1050,41 +1360,41 @@ class S {
     );
   }
 
+  /// `Modifier l’appareil`
+  String get deviceForm_editDevice {
+    return Intl.message(
+      'Modifier l’appareil',
+      name: 'deviceForm_editDevice',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Erreur lors du chargement des praticiens`
+  String get deviceForm_loadingPractitionersError {
+    return Intl.message(
+      'Erreur lors du chargement des praticiens',
+      name: 'deviceForm_loadingPractitionersError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Nouvel appareil`
+  String get deviceForm_newDevice {
+    return Intl.message(
+      'Nouvel appareil',
+      name: 'deviceForm_newDevice',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Plateforme`
   String get deviceForm_platform {
     return Intl.message(
       'Plateforme',
       name: 'deviceForm_platform',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Praticien associé`
-  String get deviceForm_associatedPractitioner {
-    return Intl.message(
-      'Praticien associé',
-      name: 'deviceForm_associatedPractitioner',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Aucun / appareil partagé`
-  String get deviceForm_sharedDevice {
-    return Intl.message(
-      'Aucun / appareil partagé',
-      name: 'deviceForm_sharedDevice',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Annuler`
-  String get deviceForm_cancel {
-    return Intl.message(
-      'Annuler',
-      name: 'deviceForm_cancel',
       desc: '',
       args: [],
     );
@@ -1100,101 +1410,11 @@ class S {
     );
   }
 
-  /// `Créer`
-  String get deviceForm_create {
+  /// `Aucun / appareil partagé`
+  String get deviceForm_sharedDevice {
     return Intl.message(
-      'Créer',
-      name: 'deviceForm_create',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Liste des appareils`
-  String get deviceList_contextName {
-    return Intl.message(
-      'Liste des appareils',
-      name: 'deviceList_contextName',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Cet écran montre la liste des appareils connectés à l’établissement`
-  String get deviceList_contextComment {
-    return Intl.message(
-      'Cet écran montre la liste des appareils connectés à l’établissement',
-      name: 'deviceList_contextComment',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Archiver l’appareil`
-  String get deviceList_archiveTitle {
-    return Intl.message(
-      'Archiver l’appareil',
-      name: 'deviceList_archiveTitle',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Voulez-vous vraiment archiver {deviceName} ?`
-  String deviceList_archiveConfirmation(Object deviceName) {
-    return Intl.message(
-      'Voulez-vous vraiment archiver $deviceName ?',
-      name: 'deviceList_archiveConfirmation',
-      desc: '',
-      args: [deviceName],
-    );
-  }
-
-  /// `Annuler`
-  String get deviceList_cancel {
-    return Intl.message(
-      'Annuler',
-      name: 'deviceList_cancel',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Archiver`
-  String get deviceList_archive {
-    return Intl.message(
-      'Archiver',
-      name: 'deviceList_archive',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Nouvel appareil`
-  String get deviceList_newDevice {
-    return Intl.message(
-      'Nouvel appareil',
-      name: 'deviceList_newDevice',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Erreur`
-  String get deviceList_error {
-    return Intl.message(
-      'Erreur',
-      name: 'deviceList_error',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Liste des appareils`
-  String get deviceList_title {
-    return Intl.message(
-      'Liste des appareils',
-      name: 'deviceList_title',
+      'Aucun / appareil partagé',
+      name: 'deviceForm_sharedDevice',
       desc: '',
       args: [],
     );
@@ -1210,11 +1430,131 @@ class S {
     );
   }
 
+  /// `Archiver`
+  String get deviceList_archive {
+    return Intl.message(
+      'Archiver',
+      name: 'deviceList_archive',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Voulez-vous vraiment archiver {deviceName} ?`
+  String deviceList_archiveConfirmation(Object deviceName) {
+    return Intl.message(
+      'Voulez-vous vraiment archiver $deviceName ?',
+      name: 'deviceList_archiveConfirmation',
+      desc: '',
+      args: [deviceName],
+    );
+  }
+
   /// `Archivés`
   String get deviceList_archived {
     return Intl.message(
       'Archivés',
       name: 'deviceList_archived',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `La corbeille des appareils est vide pour le moment.`
+  String get deviceList_archivedDevicesEmpty {
+    return Intl.message(
+      'La corbeille des appareils est vide pour le moment.',
+      name: 'deviceList_archivedDevicesEmpty',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Archivé le`
+  String get deviceList_archivedOn {
+    return Intl.message(
+      'Archivé le',
+      name: 'deviceList_archivedOn',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Archiver l’appareil`
+  String get deviceList_archiveTitle {
+    return Intl.message(
+      'Archiver l’appareil',
+      name: 'deviceList_archiveTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Praticien associé`
+  String get deviceList_associatedPractitioner {
+    return Intl.message(
+      'Praticien associé',
+      name: 'deviceList_associatedPractitioner',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Annuler`
+  String get deviceList_cancel {
+    return Intl.message(
+      'Annuler',
+      name: 'deviceList_cancel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cet écran montre la liste des appareils connectés à l’établissement`
+  String get deviceList_contextComment {
+    return Intl.message(
+      'Cet écran montre la liste des appareils connectés à l’établissement',
+      name: 'deviceList_contextComment',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Liste des appareils`
+  String get deviceList_contextName {
+    return Intl.message(
+      'Liste des appareils',
+      name: 'deviceList_contextName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Modifier`
+  String get deviceList_edit {
+    return Intl.message(
+      'Modifier',
+      name: 'deviceList_edit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Erreur`
+  String get deviceList_error {
+    return Intl.message(
+      'Erreur',
+      name: 'deviceList_error',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Nouvel appareil`
+  String get deviceList_newDevice {
+    return Intl.message(
+      'Nouvel appareil',
+      name: 'deviceList_newDevice',
       desc: '',
       args: [],
     );
@@ -1240,16 +1580,6 @@ class S {
     );
   }
 
-  /// `La corbeille des appareils est vide pour le moment.`
-  String get deviceList_archivedDevicesEmpty {
-    return Intl.message(
-      'La corbeille des appareils est vide pour le moment.',
-      name: 'deviceList_archivedDevicesEmpty',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Les appareils ABAK associés à l’établissement apparaîtront ici.`
   String get deviceList_pairedDevicesExplanation {
     return Intl.message(
@@ -1260,31 +1590,11 @@ class S {
     );
   }
 
-  /// `Archivé le`
-  String get deviceList_archivedOn {
-    return Intl.message(
-      'Archivé le',
-      name: 'deviceList_archivedOn',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Plateforme`
   String get deviceList_platform {
     return Intl.message(
       'Plateforme',
       name: 'deviceList_platform',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Praticien associé`
-  String get deviceList_associatedPractitioner {
-    return Intl.message(
-      'Praticien associé',
-      name: 'deviceList_associatedPractitioner',
       desc: '',
       args: [],
     );
@@ -1310,31 +1620,11 @@ class S {
     );
   }
 
-  /// `Modifier`
-  String get deviceList_edit {
+  /// `Liste des appareils`
+  String get deviceList_title {
     return Intl.message(
-      'Modifier',
-      name: 'deviceList_edit',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Formulaires`
-  String get episodeDashboard_forms {
-    return Intl.message(
-      'Formulaires',
-      name: 'episodeDashboard_forms',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Questionnaires spécifiques à cet épisode`
-  String get episodeDashboard_formsDescription {
-    return Intl.message(
-      'Questionnaires spécifiques à cet épisode',
-      name: 'episodeDashboard_formsDescription',
+      'Liste des appareils',
+      name: 'deviceList_title',
       desc: '',
       args: [],
     );
@@ -1355,6 +1645,26 @@ class S {
     return Intl.message(
       'Documents associés à cet épisode',
       name: 'episodeDashboard_documentsDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Formulaires`
+  String get episodeDashboard_forms {
+    return Intl.message(
+      'Formulaires',
+      name: 'episodeDashboard_forms',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Questionnaires spécifiques à cet épisode`
+  String get episodeDashboard_formsDescription {
+    return Intl.message(
+      'Questionnaires spécifiques à cet épisode',
+      name: 'episodeDashboard_formsDescription',
       desc: '',
       args: [],
     );
@@ -1395,6 +1705,196 @@ class S {
     return Intl.message(
       'Synthèse de l’épisode',
       name: 'episodeDashboard_reportDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Ajouter un document`
+  String get episodeDocuments_addDocument {
+    return Intl.message(
+      'Ajouter un document',
+      name: 'episodeDocuments_addDocument',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Ajouté le`
+  String get episodeDocuments_addedOn {
+    return Intl.message(
+      'Ajouté le',
+      name: 'episodeDocuments_addedOn',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Impossible d’ajouter le document`
+  String get episodeDocuments_addError {
+    return Intl.message(
+      'Impossible d’ajouter le document',
+      name: 'episodeDocuments_addError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Document`
+  String get episodeDocuments_document {
+    return Intl.message(
+      'Document',
+      name: 'episodeDocuments_document',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Le document a été ajouté à la prise en charge.`
+  String get episodeDocuments_documentAdded {
+    return Intl.message(
+      'Le document a été ajouté à la prise en charge.',
+      name: 'episodeDocuments_documentAdded',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Vous pouvez ajouter un document texte, une feuille de calcul, un PDF, une image ou tout autre fichier utile.`
+  String get episodeDocuments_emptyDescription {
+    return Intl.message(
+      'Vous pouvez ajouter un document texte, une feuille de calcul, un PDF, une image ou tout autre fichier utile.',
+      name: 'episodeDocuments_emptyDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Le fichier associé est introuvable.`
+  String get episodeDocuments_fileNotFound {
+    return Intl.message(
+      'Le fichier associé est introuvable.',
+      name: 'episodeDocuments_fileNotFound',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Vous pouvez associer à cette prise en charge des documents créés avec vos applications habituelles : traitement de texte, tableur, lecteur PDF ou logiciel d’image.\n\nLes fichiers ajoutés sont copiés dans l’espace de stockage de Companion. Un clic sur un document l’ouvre avec l’application correspondante installée sur cet ordinateur.`
+  String get episodeDocuments_help {
+    return Intl.message(
+      'Vous pouvez associer à cette prise en charge des documents créés avec vos applications habituelles : traitement de texte, tableur, lecteur PDF ou logiciel d’image.\n\nLes fichiers ajoutés sont copiés dans l’espace de stockage de Companion. Un clic sur un document l’ouvre avec l’application correspondante installée sur cet ordinateur.',
+      name: 'episodeDocuments_help',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Image`
+  String get episodeDocuments_image {
+    return Intl.message(
+      'Image',
+      name: 'episodeDocuments_image',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Impossible de charger les documents associés.`
+  String get episodeDocuments_loadError {
+    return Intl.message(
+      'Impossible de charger les documents associés.',
+      name: 'episodeDocuments_loadError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Aucun document associé à cette prise en charge.`
+  String get episodeDocuments_noDocument {
+    return Intl.message(
+      'Aucun document associé à cette prise en charge.',
+      name: 'episodeDocuments_noDocument',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Ouvrir le document`
+  String get episodeDocuments_openDocument {
+    return Intl.message(
+      'Ouvrir le document',
+      name: 'episodeDocuments_openDocument',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Impossible d’ouvrir le fichier`
+  String get episodeDocuments_openError {
+    return Intl.message(
+      'Impossible d’ouvrir le fichier',
+      name: 'episodeDocuments_openError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Document PDF`
+  String get episodeDocuments_pdfDocument {
+    return Intl.message(
+      'Document PDF',
+      name: 'episodeDocuments_pdfDocument',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Ouverture non prise en charge sur cette plateforme.`
+  String get episodeDocuments_platformNotSupported {
+    return Intl.message(
+      'Ouverture non prise en charge sur cette plateforme.',
+      name: 'episodeDocuments_platformNotSupported',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Actualiser`
+  String get episodeDocuments_refresh {
+    return Intl.message(
+      'Actualiser',
+      name: 'episodeDocuments_refresh',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Feuille de calcul`
+  String get episodeDocuments_spreadsheet {
+    return Intl.message(
+      'Feuille de calcul',
+      name: 'episodeDocuments_spreadsheet',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Document texte`
+  String get episodeDocuments_textDocument {
+    return Intl.message(
+      'Document texte',
+      name: 'episodeDocuments_textDocument',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Documents de la prise en charge`
+  String get episodeDocuments_title {
+    return Intl.message(
+      'Documents de la prise en charge',
+      name: 'episodeDocuments_title',
       desc: '',
       args: [],
     );
@@ -1490,36 +1990,6 @@ class S {
     );
   }
 
-  /// `Modifier le formulaire`
-  String get episodeFormEditor_title {
-    return Intl.message(
-      'Modifier le formulaire',
-      name: 'episodeFormEditor_title',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Enregistrer`
-  String get episodeFormEditor_save {
-    return Intl.message(
-      'Enregistrer',
-      name: 'episodeFormEditor_save',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Le champ "{fieldName}" est obligatoire.`
-  String episodeFormEditor_requiredField(Object fieldName) {
-    return Intl.message(
-      'Le champ "$fieldName" est obligatoire.',
-      name: 'episodeFormEditor_requiredField',
-      desc: '',
-      args: [fieldName],
-    );
-  }
-
   /// `Erreur`
   String get episodeFormEditor_error {
     return Intl.message(
@@ -1540,321 +2010,31 @@ class S {
     );
   }
 
-  /// `Dossier d'échange réinitialisé`
-  String get exchangeDirectoryReset {
+  /// `Le champ "{fieldName}" est obligatoire.`
+  String episodeFormEditor_requiredField(Object fieldName) {
     return Intl.message(
-      'Dossier d\'échange réinitialisé',
-      name: 'exchangeDirectoryReset',
+      'Le champ "$fieldName" est obligatoire.',
+      name: 'episodeFormEditor_requiredField',
+      desc: '',
+      args: [fieldName],
+    );
+  }
+
+  /// `Enregistrer`
+  String get episodeFormEditor_save {
+    return Intl.message(
+      'Enregistrer',
+      name: 'episodeFormEditor_save',
       desc: '',
       args: [],
     );
   }
 
-  /// `Dossier d'échange ABAK mis à jour`
-  String get exchangeDirectoryUpdated {
+  /// `Modifier le formulaire`
+  String get episodeFormEditor_title {
     return Intl.message(
-      'Dossier d\'échange ABAK mis à jour',
-      name: 'exchangeDirectoryUpdated',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Documents de la prise en charge`
-  String get episodeDocuments_title {
-    return Intl.message(
-      'Documents de la prise en charge',
-      name: 'episodeDocuments_title',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Le document a été ajouté à la prise en charge.`
-  String get episodeDocuments_documentAdded {
-    return Intl.message(
-      'Le document a été ajouté à la prise en charge.',
-      name: 'episodeDocuments_documentAdded',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Impossible d’ajouter le document`
-  String get episodeDocuments_addError {
-    return Intl.message(
-      'Impossible d’ajouter le document',
-      name: 'episodeDocuments_addError',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Le fichier associé est introuvable.`
-  String get episodeDocuments_fileNotFound {
-    return Intl.message(
-      'Le fichier associé est introuvable.',
-      name: 'episodeDocuments_fileNotFound',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Ouverture non prise en charge sur cette plateforme.`
-  String get episodeDocuments_platformNotSupported {
-    return Intl.message(
-      'Ouverture non prise en charge sur cette plateforme.',
-      name: 'episodeDocuments_platformNotSupported',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Impossible d’ouvrir le fichier`
-  String get episodeDocuments_openError {
-    return Intl.message(
-      'Impossible d’ouvrir le fichier',
-      name: 'episodeDocuments_openError',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Document PDF`
-  String get episodeDocuments_pdfDocument {
-    return Intl.message(
-      'Document PDF',
-      name: 'episodeDocuments_pdfDocument',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Document texte`
-  String get episodeDocuments_textDocument {
-    return Intl.message(
-      'Document texte',
-      name: 'episodeDocuments_textDocument',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Feuille de calcul`
-  String get episodeDocuments_spreadsheet {
-    return Intl.message(
-      'Feuille de calcul',
-      name: 'episodeDocuments_spreadsheet',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Image`
-  String get episodeDocuments_image {
-    return Intl.message(
-      'Image',
-      name: 'episodeDocuments_image',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Document`
-  String get episodeDocuments_document {
-    return Intl.message(
-      'Document',
-      name: 'episodeDocuments_document',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Ajouté le`
-  String get episodeDocuments_addedOn {
-    return Intl.message(
-      'Ajouté le',
-      name: 'episodeDocuments_addedOn',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Ouvrir le document`
-  String get episodeDocuments_openDocument {
-    return Intl.message(
-      'Ouvrir le document',
-      name: 'episodeDocuments_openDocument',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Aucun document associé à cette prise en charge.`
-  String get episodeDocuments_noDocument {
-    return Intl.message(
-      'Aucun document associé à cette prise en charge.',
-      name: 'episodeDocuments_noDocument',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Vous pouvez ajouter un document texte, une feuille de calcul, un PDF, une image ou tout autre fichier utile.`
-  String get episodeDocuments_emptyDescription {
-    return Intl.message(
-      'Vous pouvez ajouter un document texte, une feuille de calcul, un PDF, une image ou tout autre fichier utile.',
-      name: 'episodeDocuments_emptyDescription',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Vous pouvez associer à cette prise en charge des documents créés avec vos applications habituelles : traitement de texte, tableur, lecteur PDF ou logiciel d’image.\n\nLes fichiers ajoutés sont copiés dans l’espace de stockage de Companion. Un clic sur un document l’ouvre avec l’application correspondante installée sur cet ordinateur.`
-  String get episodeDocuments_help {
-    return Intl.message(
-      'Vous pouvez associer à cette prise en charge des documents créés avec vos applications habituelles : traitement de texte, tableur, lecteur PDF ou logiciel d’image.\n\nLes fichiers ajoutés sont copiés dans l’espace de stockage de Companion. Un clic sur un document l’ouvre avec l’application correspondante installée sur cet ordinateur.',
-      name: 'episodeDocuments_help',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Actualiser`
-  String get episodeDocuments_refresh {
-    return Intl.message(
-      'Actualiser',
-      name: 'episodeDocuments_refresh',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Impossible de charger les documents associés.`
-  String get episodeDocuments_loadError {
-    return Intl.message(
-      'Impossible de charger les documents associés.',
-      name: 'episodeDocuments_loadError',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Ajouter un document`
-  String get episodeDocuments_addDocument {
-    return Intl.message(
-      'Ajouter un document',
-      name: 'episodeDocuments_addDocument',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Catégorie`
-  String get episodeForms_category {
-    return Intl.message(
-      'Catégorie',
-      name: 'episodeForms_category',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Modèle système`
-  String get episodeForms_systemTemplate {
-    return Intl.message(
-      'Modèle système',
-      name: 'episodeForms_systemTemplate',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Modèle personnalisé`
-  String get episodeForms_customTemplate {
-    return Intl.message(
-      'Modèle personnalisé',
-      name: 'episodeForms_customTemplate',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Créer`
-  String get episodeForms_create {
-    return Intl.message(
-      'Créer',
-      name: 'episodeForms_create',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Formulaire`
-  String get episodeForms_form {
-    return Intl.message(
-      'Formulaire',
-      name: 'episodeForms_form',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Créé le`
-  String get episodeForms_createdOn {
-    return Intl.message(
-      'Créé le',
-      name: 'episodeForms_createdOn',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `État`
-  String get episodeForms_state {
-    return Intl.message(
-      'État',
-      name: 'episodeForms_state',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `complété`
-  String get episodeForms_completed {
-    return Intl.message(
-      'complété',
-      name: 'episodeForms_completed',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `en cours`
-  String get episodeForms_inProgress {
-    return Intl.message(
-      'en cours',
-      name: 'episodeForms_inProgress',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Formulaires créés`
-  String get episodeForms_createdForms {
-    return Intl.message(
-      'Formulaires créés',
-      name: 'episodeForms_createdForms',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Aucun formulaire créé pour cet épisode.`
-  String get episodeForms_noCreatedForm {
-    return Intl.message(
-      'Aucun formulaire créé pour cet épisode.',
-      name: 'episodeForms_noCreatedForm',
+      'Modifier le formulaire',
+      name: 'episodeFormEditor_title',
       desc: '',
       args: [],
     );
@@ -1870,31 +2050,61 @@ class S {
     );
   }
 
-  /// `Aucun modèle de formulaire disponible.`
-  String get episodeForms_noAvailableTemplate {
+  /// `Catégorie`
+  String get episodeForms_category {
     return Intl.message(
-      'Aucun modèle de formulaire disponible.',
-      name: 'episodeForms_noAvailableTemplate',
+      'Catégorie',
+      name: 'episodeForms_category',
       desc: '',
       args: [],
     );
   }
 
-  /// `Formulaires`
-  String get episodeForms_title {
+  /// `complété`
+  String get episodeForms_completed {
     return Intl.message(
-      'Formulaires',
-      name: 'episodeForms_title',
+      'complété',
+      name: 'episodeForms_completed',
       desc: '',
       args: [],
     );
   }
 
-  /// `Actualiser`
-  String get episodeForms_refresh {
+  /// `Créer`
+  String get episodeForms_create {
     return Intl.message(
-      'Actualiser',
-      name: 'episodeForms_refresh',
+      'Créer',
+      name: 'episodeForms_create',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Formulaires créés`
+  String get episodeForms_createdForms {
+    return Intl.message(
+      'Formulaires créés',
+      name: 'episodeForms_createdForms',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Créé le`
+  String get episodeForms_createdOn {
+    return Intl.message(
+      'Créé le',
+      name: 'episodeForms_createdOn',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Modèle personnalisé`
+  String get episodeForms_customTemplate {
+    return Intl.message(
+      'Modèle personnalisé',
+      name: 'episodeForms_customTemplate',
       desc: '',
       args: [],
     );
@@ -1910,6 +2120,46 @@ class S {
     );
   }
 
+  /// `Formulaire`
+  String get episodeForms_form {
+    return Intl.message(
+      'Formulaire',
+      name: 'episodeForms_form',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `en cours`
+  String get episodeForms_inProgress {
+    return Intl.message(
+      'en cours',
+      name: 'episodeForms_inProgress',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Aucun modèle de formulaire disponible.`
+  String get episodeForms_noAvailableTemplate {
+    return Intl.message(
+      'Aucun modèle de formulaire disponible.',
+      name: 'episodeForms_noAvailableTemplate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Aucun formulaire créé pour cet épisode.`
+  String get episodeForms_noCreatedForm {
+    return Intl.message(
+      'Aucun formulaire créé pour cet épisode.',
+      name: 'episodeForms_noCreatedForm',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Aucune donnée à afficher.`
   String get episodeForms_noData {
     return Intl.message(
@@ -1920,61 +2170,41 @@ class S {
     );
   }
 
-  /// `Notes`
-  String get episodeNotes_title {
-    return Intl.message(
-      'Notes',
-      name: 'episodeNotes_title',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Actualiser`
-  String get episodeNotes_refresh {
+  String get episodeForms_refresh {
     return Intl.message(
       'Actualiser',
-      name: 'episodeNotes_refresh',
+      name: 'episodeForms_refresh',
       desc: '',
       args: [],
     );
   }
 
-  /// `Modifiée le`
-  String get episodeNotes_modifiedOn {
+  /// `État`
+  String get episodeForms_state {
     return Intl.message(
-      'Modifiée le',
-      name: 'episodeNotes_modifiedOn',
+      'État',
+      name: 'episodeForms_state',
       desc: '',
       args: [],
     );
   }
 
-  /// `Archiver la note ?`
-  String get episodeNotes_archiveTitle {
+  /// `Modèle système`
+  String get episodeForms_systemTemplate {
     return Intl.message(
-      'Archiver la note ?',
-      name: 'episodeNotes_archiveTitle',
+      'Modèle système',
+      name: 'episodeForms_systemTemplate',
       desc: '',
       args: [],
     );
   }
 
-  /// `La note "{noteTitle}" ne sera plus affichée.`
-  String episodeNotes_archiveConfirmation(Object noteTitle) {
+  /// `Formulaires`
+  String get episodeForms_title {
     return Intl.message(
-      'La note "$noteTitle" ne sera plus affichée.',
-      name: 'episodeNotes_archiveConfirmation',
-      desc: '',
-      args: [noteTitle],
-    );
-  }
-
-  /// `Annuler`
-  String get episodeNotes_cancel {
-    return Intl.message(
-      'Annuler',
-      name: 'episodeNotes_cancel',
+      'Formulaires',
+      name: 'episodeForms_title',
       desc: '',
       args: [],
     );
@@ -1990,11 +2220,71 @@ class S {
     );
   }
 
+  /// `La note "{noteTitle}" ne sera plus affichée.`
+  String episodeNotes_archiveConfirmation(Object noteTitle) {
+    return Intl.message(
+      'La note "$noteTitle" ne sera plus affichée.',
+      name: 'episodeNotes_archiveConfirmation',
+      desc: '',
+      args: [noteTitle],
+    );
+  }
+
+  /// `Archiver la note ?`
+  String get episodeNotes_archiveTitle {
+    return Intl.message(
+      'Archiver la note ?',
+      name: 'episodeNotes_archiveTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Annuler`
+  String get episodeNotes_cancel {
+    return Intl.message(
+      'Annuler',
+      name: 'episodeNotes_cancel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Contenu`
+  String get episodeNotes_content {
+    return Intl.message(
+      'Contenu',
+      name: 'episodeNotes_content',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Modifier la note`
+  String get episodeNotes_editNote {
+    return Intl.message(
+      'Modifier la note',
+      name: 'episodeNotes_editNote',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Erreur`
   String get episodeNotes_error {
     return Intl.message(
       'Erreur',
       name: 'episodeNotes_error',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Modifiée le`
+  String get episodeNotes_modifiedOn {
+    return Intl.message(
+      'Modifiée le',
+      name: 'episodeNotes_modifiedOn',
       desc: '',
       args: [],
     );
@@ -2020,21 +2310,21 @@ class S {
     );
   }
 
-  /// `Le titre est obligatoire.`
-  String get episodeNotes_titleRequired {
+  /// `Titre`
+  String get episodeNotes_noteTitle {
     return Intl.message(
-      'Le titre est obligatoire.',
-      name: 'episodeNotes_titleRequired',
+      'Titre',
+      name: 'episodeNotes_noteTitle',
       desc: '',
       args: [],
     );
   }
 
-  /// `Modifier la note`
-  String get episodeNotes_editNote {
+  /// `Actualiser`
+  String get episodeNotes_refresh {
     return Intl.message(
-      'Modifier la note',
-      name: 'episodeNotes_editNote',
+      'Actualiser',
+      name: 'episodeNotes_refresh',
       desc: '',
       args: [],
     );
@@ -2050,41 +2340,101 @@ class S {
     );
   }
 
-  /// `Titre`
-  String get episodeNotes_noteTitle {
+  /// `Notes`
+  String get episodeNotes_title {
     return Intl.message(
-      'Titre',
-      name: 'episodeNotes_noteTitle',
+      'Notes',
+      name: 'episodeNotes_title',
       desc: '',
       args: [],
     );
   }
 
-  /// `Contenu`
-  String get episodeNotes_content {
+  /// `Le titre est obligatoire.`
+  String get episodeNotes_titleRequired {
     return Intl.message(
-      'Contenu',
-      name: 'episodeNotes_content',
+      'Le titre est obligatoire.',
+      name: 'episodeNotes_titleRequired',
       desc: '',
       args: [],
     );
   }
 
-  /// `Rapport`
-  String get episodeReport_title {
+  /// `Origine ABAK`
+  String get episodeReport_abakOrigin {
     return Intl.message(
-      'Rapport',
-      name: 'episodeReport_title',
+      'Origine ABAK',
+      name: 'episodeReport_abakOrigin',
       desc: '',
       args: [],
     );
   }
 
-  /// `Actualiser`
-  String get episodeReport_refresh {
+  /// `Ajouter une conclusion`
+  String get episodeReport_addConclusion {
     return Intl.message(
-      'Actualiser',
-      name: 'episodeReport_refresh',
+      'Ajouter une conclusion',
+      name: 'episodeReport_addConclusion',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Conclusion clinique`
+  String get episodeReport_clinicalConclusion {
+    return Intl.message(
+      'Conclusion clinique',
+      name: 'episodeReport_clinicalConclusion',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `La conclusion ne peut pas être vide.`
+  String get episodeReport_conclusionRequired {
+    return Intl.message(
+      'La conclusion ne peut pas être vide.',
+      name: 'episodeReport_conclusionRequired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Documents`
+  String get episodeReport_documents {
+    return Intl.message(
+      'Documents',
+      name: 'episodeReport_documents',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Côté dominant`
+  String get episodeReport_dominantSide {
+    return Intl.message(
+      'Côté dominant',
+      name: 'episodeReport_dominantSide',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Modifier la conclusion`
+  String get episodeReport_editConclusion {
+    return Intl.message(
+      'Modifier la conclusion',
+      name: 'episodeReport_editConclusion',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Email`
+  String get episodeReport_email {
+    return Intl.message(
+      'Email',
+      name: 'episodeReport_email',
       desc: '',
       args: [],
     );
@@ -2100,11 +2450,21 @@ class S {
     );
   }
 
-  /// `Aucune donnée à afficher.`
-  String get episodeReport_noData {
+  /// `Formulaires`
+  String get episodeReport_forms {
     return Intl.message(
-      'Aucune donnée à afficher.',
-      name: 'episodeReport_noData',
+      'Formulaires',
+      name: 'episodeReport_forms',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Aperçu du rapport généré`
+  String get episodeReport_generatedPreview {
+    return Intl.message(
+      'Aperçu du rapport généré',
+      name: 'episodeReport_generatedPreview',
       desc: '',
       args: [],
     );
@@ -2120,11 +2480,81 @@ class S {
     );
   }
 
-  /// `Aperçu du rapport généré`
-  String get episodeReport_generatedPreview {
+  /// `Nom`
+  String get episodeReport_name {
     return Intl.message(
-      'Aperçu du rapport généré',
-      name: 'episodeReport_generatedPreview',
+      'Nom',
+      name: 'episodeReport_name',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Aucune conclusion renseignée.`
+  String get episodeReport_noConclusion {
+    return Intl.message(
+      'Aucune conclusion renseignée.',
+      name: 'episodeReport_noConclusion',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Aucune donnée à afficher.`
+  String get episodeReport_noData {
+    return Intl.message(
+      'Aucune donnée à afficher.',
+      name: 'episodeReport_noData',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Aucun document associé`
+  String get episodeReport_noDocument {
+    return Intl.message(
+      'Aucun document associé',
+      name: 'episodeReport_noDocument',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Aucun formulaire associé`
+  String get episodeReport_noForm {
+    return Intl.message(
+      'Aucun formulaire associé',
+      name: 'episodeReport_noForm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Aucune note associée`
+  String get episodeReport_noNote {
+    return Intl.message(
+      'Aucune note associée',
+      name: 'episodeReport_noNote',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Aucun résultat associé`
+  String get episodeReport_noResult {
+    return Intl.message(
+      'Aucun résultat associé',
+      name: 'episodeReport_noResult',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Notes`
+  String get episodeReport_notes {
+    return Intl.message(
+      'Notes',
+      name: 'episodeReport_notes',
       desc: '',
       args: [],
     );
@@ -2150,41 +2580,11 @@ class S {
     );
   }
 
-  /// `Nom`
-  String get episodeReport_name {
-    return Intl.message(
-      'Nom',
-      name: 'episodeReport_name',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Téléphone`
   String get episodeReport_phone {
     return Intl.message(
       'Téléphone',
       name: 'episodeReport_phone',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Email`
-  String get episodeReport_email {
-    return Intl.message(
-      'Email',
-      name: 'episodeReport_email',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Côté dominant`
-  String get episodeReport_dominantSide {
-    return Intl.message(
-      'Côté dominant',
-      name: 'episodeReport_dominantSide',
       desc: '',
       args: [],
     );
@@ -2200,31 +2600,11 @@ class S {
     );
   }
 
-  /// `Activité sportive`
-  String get episodeReport_sportActivity {
+  /// `Actualiser`
+  String get episodeReport_refresh {
     return Intl.message(
-      'Activité sportive',
-      name: 'episodeReport_sportActivity',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Formulaires`
-  String get episodeReport_forms {
-    return Intl.message(
-      'Formulaires',
-      name: 'episodeReport_forms',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Aucun formulaire associé`
-  String get episodeReport_noForm {
-    return Intl.message(
-      'Aucun formulaire associé',
-      name: 'episodeReport_noForm',
+      'Actualiser',
+      name: 'episodeReport_refresh',
       desc: '',
       args: [],
     );
@@ -2240,11 +2620,11 @@ class S {
     );
   }
 
-  /// `Aucun résultat associé`
-  String get episodeReport_noResult {
+  /// `Enregistrer`
+  String get episodeReport_save {
     return Intl.message(
-      'Aucun résultat associé',
-      name: 'episodeReport_noResult',
+      'Enregistrer',
+      name: 'episodeReport_save',
       desc: '',
       args: [],
     );
@@ -2260,31 +2640,21 @@ class S {
     );
   }
 
-  /// `Origine ABAK`
-  String get episodeReport_abakOrigin {
+  /// `Activité sportive`
+  String get episodeReport_sportActivity {
     return Intl.message(
-      'Origine ABAK',
-      name: 'episodeReport_abakOrigin',
+      'Activité sportive',
+      name: 'episodeReport_sportActivity',
       desc: '',
       args: [],
     );
   }
 
-  /// `Documents`
-  String get episodeReport_documents {
+  /// `Rapport`
+  String get episodeReport_title {
     return Intl.message(
-      'Documents',
-      name: 'episodeReport_documents',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Aucun document associé`
-  String get episodeReport_noDocument {
-    return Intl.message(
-      'Aucun document associé',
-      name: 'episodeReport_noDocument',
+      'Rapport',
+      name: 'episodeReport_title',
       desc: '',
       args: [],
     );
@@ -2300,81 +2670,81 @@ class S {
     );
   }
 
-  /// `Notes`
-  String get episodeReport_notes {
+  /// `Dossier d'échange réinitialisé`
+  String get exchangeDirectoryReset {
     return Intl.message(
-      'Notes',
-      name: 'episodeReport_notes',
+      'Dossier d\'échange réinitialisé',
+      name: 'exchangeDirectoryReset',
       desc: '',
       args: [],
     );
   }
 
-  /// `Aucune note associée`
-  String get episodeReport_noNote {
+  /// `Choisir le dossier d’échange ABAK`
+  String get exchangeDirectoryService_choose {
     return Intl.message(
-      'Aucune note associée',
-      name: 'episodeReport_noNote',
+      'Choisir le dossier d’échange ABAK',
+      name: 'exchangeDirectoryService_choose',
       desc: '',
       args: [],
     );
   }
 
-  /// `Conclusion clinique`
-  String get episodeReport_clinicalConclusion {
+  /// `Dossier d'échange ABAK mis à jour`
+  String get exchangeDirectoryUpdated {
     return Intl.message(
-      'Conclusion clinique',
-      name: 'episodeReport_clinicalConclusion',
+      'Dossier d\'échange ABAK mis à jour',
+      name: 'exchangeDirectoryUpdated',
       desc: '',
       args: [],
     );
   }
 
-  /// `Aucune conclusion renseignée.`
-  String get episodeReport_noConclusion {
+  /// `L’add-on n’a retourné aucune réponse.`
+  String get externalSpeechToTextProvider_empty {
     return Intl.message(
-      'Aucune conclusion renseignée.',
-      name: 'episodeReport_noConclusion',
+      'L’add-on n’a retourné aucune réponse.',
+      name: 'externalSpeechToTextProvider_empty',
       desc: '',
       args: [],
     );
   }
 
-  /// `Ajouter une conclusion`
-  String get episodeReport_addConclusion {
+  /// `Échec de l’add-on de reconnaissance vocale.`
+  String get externalSpeechToTextProvider_failure {
     return Intl.message(
-      'Ajouter une conclusion',
-      name: 'episodeReport_addConclusion',
+      'Échec de l’add-on de reconnaissance vocale.',
+      name: 'externalSpeechToTextProvider_failure',
       desc: '',
       args: [],
     );
   }
 
-  /// `Modifier la conclusion`
-  String get episodeReport_editConclusion {
+  /// `Réponse invalide de l’add-on de reconnaissance vocale.`
+  String get externalSpeechToTextProvider_invalid {
     return Intl.message(
-      'Modifier la conclusion',
-      name: 'episodeReport_editConclusion',
+      'Réponse invalide de l’add-on de reconnaissance vocale.',
+      name: 'externalSpeechToTextProvider_invalid',
       desc: '',
       args: [],
     );
   }
 
-  /// `La conclusion ne peut pas être vide.`
-  String get episodeReport_conclusionRequired {
+  /// `L’add-on n’a retourné aucun texte.`
+  String get externalSpeechToTextProvider_noText {
     return Intl.message(
-      'La conclusion ne peut pas être vide.',
-      name: 'episodeReport_conclusionRequired',
+      'L’add-on n’a retourné aucun texte.',
+      name: 'externalSpeechToTextProvider_noText',
       desc: '',
       args: [],
     );
   }
 
-  /// `Enregistrer`
-  String get episodeReport_save {
+  /// `La transcription a échoué.`
+  String get externalSpeechToTextProvider_transcription {
     return Intl.message(
-      'Enregistrer',
-      name: 'episodeReport_save',
+      'La transcription a échoué.',
+      name: 'externalSpeechToTextProvider_transcription',
       desc: '',
       args: [],
     );
@@ -3760,6 +4130,26 @@ class S {
     );
   }
 
+  /// `Associer un bilan initial Word`
+  String get initialReportDocumentService_associate {
+    return Intl.message(
+      'Associer un bilan initial Word',
+      name: 'initialReportDocumentService_associate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Plateforme non supportée`
+  String get initialReportDocumentService_unsupported {
+    return Intl.message(
+      'Plateforme non supportée',
+      name: 'initialReportDocumentService_unsupported',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Langue de l'application`
   String get language_choice {
     return Intl.message(
@@ -3855,6 +4245,56 @@ class S {
     return Intl.message(
       'Sauvegarde préalable impossible',
       name: 'localDatabaseReset_backupFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `La base restaurée présente une anomalie : {integrityStatus}`
+  String localDatabaseRestoreService_anomaly(Object integrityStatus) {
+    return Intl.message(
+      'La base restaurée présente une anomalie : $integrityStatus',
+      name: 'localDatabaseRestoreService_anomaly',
+      desc: '',
+      args: [integrityStatus],
+    );
+  }
+
+  /// `Échec de la restauration : {error}`
+  String localDatabaseRestoreService_failure(Object error) {
+    return Intl.message(
+      'Échec de la restauration : $error',
+      name: 'localDatabaseRestoreService_failure',
+      desc: '',
+      args: [error],
+    );
+  }
+
+  /// `Restauration effectuée mais integrity_check a retourné : {integrityStatus}`
+  String localDatabaseRestoreService_integrity(Object integrityStatus) {
+    return Intl.message(
+      'Restauration effectuée mais integrity_check a retourné : $integrityStatus',
+      name: 'localDatabaseRestoreService_integrity',
+      desc: '',
+      args: [integrityStatus],
+    );
+  }
+
+  /// `Le fichier de sauvegarde est introuvable.`
+  String get localDatabaseRestoreService_missing {
+    return Intl.message(
+      'Le fichier de sauvegarde est introuvable.',
+      name: 'localDatabaseRestoreService_missing',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Restauration effectuée avec succès.`
+  String get localDatabaseRestoreService_success {
+    return Intl.message(
+      'Restauration effectuée avec succès.',
+      name: 'localDatabaseRestoreService_success',
       desc: '',
       args: [],
     );
@@ -4050,21 +4490,11 @@ class S {
     );
   }
 
-  /// `Modifier les données cliniques`
-  String get patientClinicalDataEdit_title {
+  /// `Adresse`
+  String get patientClinicalDataEdit_address {
     return Intl.message(
-      'Modifier les données cliniques',
-      name: 'patientClinicalDataEdit_title',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Enregistrer`
-  String get patientClinicalDataEdit_save {
-    return Intl.message(
-      'Enregistrer',
-      name: 'patientClinicalDataEdit_save',
+      'Adresse',
+      name: 'patientClinicalDataEdit_address',
       desc: '',
       args: [],
     );
@@ -4075,6 +4505,106 @@ class S {
     return Intl.message(
       'Identité administrative',
       name: 'patientClinicalDataEdit_administrativeIdentity',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Ambidextre`
+  String get patientClinicalDataEdit_ambidextrous {
+    return Intl.message(
+      'Ambidextre',
+      name: 'patientClinicalDataEdit_ambidextrous',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `En centimètres`
+  String get patientClinicalDataEdit_centimeters {
+    return Intl.message(
+      'En centimètres',
+      name: 'patientClinicalDataEdit_centimeters',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Côté dominant`
+  String get patientClinicalDataEdit_dominantSide {
+    return Intl.message(
+      'Côté dominant',
+      name: 'patientClinicalDataEdit_dominantSide',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Email`
+  String get patientClinicalDataEdit_email {
+    return Intl.message(
+      'Email',
+      name: 'patientClinicalDataEdit_email',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pays du système de santé`
+  String get patientClinicalDataEdit_healthSystemCountry {
+    return Intl.message(
+      'Pays du système de santé',
+      name: 'patientClinicalDataEdit_healthSystemCountry',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Taille`
+  String get patientClinicalDataEdit_height {
+    return Intl.message(
+      'Taille',
+      name: 'patientClinicalDataEdit_height',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Source de l’identité`
+  String get patientClinicalDataEdit_identitySource {
+    return Intl.message(
+      'Source de l’identité',
+      name: 'patientClinicalDataEdit_identitySource',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `En kilogrammes`
+  String get patientClinicalDataEdit_kilograms {
+    return Intl.message(
+      'En kilogrammes',
+      name: 'patientClinicalDataEdit_kilograms',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Gauche`
+  String get patientClinicalDataEdit_left {
+    return Intl.message(
+      'Gauche',
+      name: 'patientClinicalDataEdit_left',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Saisie manuelle`
+  String get patientClinicalDataEdit_manualEntry {
+    return Intl.message(
+      'Saisie manuelle',
+      name: 'patientClinicalDataEdit_manualEntry',
       desc: '',
       args: [],
     );
@@ -4100,41 +4630,11 @@ class S {
     );
   }
 
-  /// `Pays du système de santé`
-  String get patientClinicalDataEdit_healthSystemCountry {
+  /// `Profil patient`
+  String get patientClinicalDataEdit_patientProfile {
     return Intl.message(
-      'Pays du système de santé',
-      name: 'patientClinicalDataEdit_healthSystemCountry',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Source de l’identité`
-  String get patientClinicalDataEdit_identitySource {
-    return Intl.message(
-      'Source de l’identité',
-      name: 'patientClinicalDataEdit_identitySource',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Saisie manuelle`
-  String get patientClinicalDataEdit_manualEntry {
-    return Intl.message(
-      'Saisie manuelle',
-      name: 'patientClinicalDataEdit_manualEntry',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Carte Vitale`
-  String get patientClinicalDataEdit_vitaleCard {
-    return Intl.message(
-      'Carte Vitale',
-      name: 'patientClinicalDataEdit_vitaleCard',
+      'Profil patient',
+      name: 'patientClinicalDataEdit_patientProfile',
       desc: '',
       args: [],
     );
@@ -4150,41 +4650,11 @@ class S {
     );
   }
 
-  /// `Email`
-  String get patientClinicalDataEdit_email {
+  /// `Profession`
+  String get patientClinicalDataEdit_profession {
     return Intl.message(
-      'Email',
-      name: 'patientClinicalDataEdit_email',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Adresse`
-  String get patientClinicalDataEdit_address {
-    return Intl.message(
-      'Adresse',
-      name: 'patientClinicalDataEdit_address',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Profil patient`
-  String get patientClinicalDataEdit_patientProfile {
-    return Intl.message(
-      'Profil patient',
-      name: 'patientClinicalDataEdit_patientProfile',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Côté dominant`
-  String get patientClinicalDataEdit_dominantSide {
-    return Intl.message(
-      'Côté dominant',
-      name: 'patientClinicalDataEdit_dominantSide',
+      'Profession',
+      name: 'patientClinicalDataEdit_profession',
       desc: '',
       args: [],
     );
@@ -4200,41 +4670,11 @@ class S {
     );
   }
 
-  /// `Gauche`
-  String get patientClinicalDataEdit_left {
+  /// `Enregistrer`
+  String get patientClinicalDataEdit_save {
     return Intl.message(
-      'Gauche',
-      name: 'patientClinicalDataEdit_left',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Ambidextre`
-  String get patientClinicalDataEdit_ambidextrous {
-    return Intl.message(
-      'Ambidextre',
-      name: 'patientClinicalDataEdit_ambidextrous',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Non précisé`
-  String get patientClinicalDataEdit_unspecified {
-    return Intl.message(
-      'Non précisé',
-      name: 'patientClinicalDataEdit_unspecified',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Profession`
-  String get patientClinicalDataEdit_profession {
-    return Intl.message(
-      'Profession',
-      name: 'patientClinicalDataEdit_profession',
+      'Enregistrer',
+      name: 'patientClinicalDataEdit_save',
       desc: '',
       args: [],
     );
@@ -4250,21 +4690,31 @@ class S {
     );
   }
 
-  /// `Taille`
-  String get patientClinicalDataEdit_height {
+  /// `Modifier les données cliniques`
+  String get patientClinicalDataEdit_title {
     return Intl.message(
-      'Taille',
-      name: 'patientClinicalDataEdit_height',
+      'Modifier les données cliniques',
+      name: 'patientClinicalDataEdit_title',
       desc: '',
       args: [],
     );
   }
 
-  /// `En centimètres`
-  String get patientClinicalDataEdit_centimeters {
+  /// `Non précisé`
+  String get patientClinicalDataEdit_unspecified {
     return Intl.message(
-      'En centimètres',
-      name: 'patientClinicalDataEdit_centimeters',
+      'Non précisé',
+      name: 'patientClinicalDataEdit_unspecified',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Carte Vitale`
+  String get patientClinicalDataEdit_vitaleCard {
+    return Intl.message(
+      'Carte Vitale',
+      name: 'patientClinicalDataEdit_vitaleCard',
       desc: '',
       args: [],
     );
@@ -4280,301 +4730,11 @@ class S {
     );
   }
 
-  /// `En kilogrammes`
-  String get patientClinicalDataEdit_kilograms {
+  /// `Adresse`
+  String get patientDetail_address {
     return Intl.message(
-      'En kilogrammes',
-      name: 'patientClinicalDataEdit_kilograms',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Non renseignée`
-  String get patientDetail_notProvidedFemale {
-    return Intl.message(
-      'Non renseignée',
-      name: 'patientDetail_notProvidedFemale',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `ans`
-  String get patientDetail_years {
-    return Intl.message(
-      'ans',
-      name: 'patientDetail_years',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Modifier la prise en charge`
-  String get patientDetail_editCareEpisode {
-    return Intl.message(
-      'Modifier la prise en charge',
-      name: 'patientDetail_editCareEpisode',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Non renseigné`
-  String get patientDetail_noBirthdate {
-    return Intl.message(
-      'Non renseigné',
-      name: 'patientDetail_noBirthdate',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Pathologie`
-  String get patientDetail_pathology {
-    return Intl.message(
-      'Pathologie',
-      name: 'patientDetail_pathology',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Compte rendu initial`
-  String get patientDetail_initialReport {
-    return Intl.message(
-      'Compte rendu initial',
-      name: 'patientDetail_initialReport',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Kiné référent`
-  String get patientDetail_referringPractitioner {
-    return Intl.message(
-      'Kiné référent',
-      name: 'patientDetail_referringPractitioner',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Annuler`
-  String get patientDetail_cancel {
-    return Intl.message(
-      'Annuler',
-      name: 'patientDetail_cancel',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Enregistrer`
-  String get patientDetail_save {
-    return Intl.message(
-      'Enregistrer',
-      name: 'patientDetail_save',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Nouvelle prise en charge`
-  String get patientDetail_newCareEpisode {
-    return Intl.message(
-      'Nouvelle prise en charge',
-      name: 'patientDetail_newCareEpisode',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Créer`
-  String get patientDetail_create {
-    return Intl.message(
-      'Créer',
-      name: 'patientDetail_create',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Prise en charge ouverte en`
-  String get patientDetail_careEpisodeOpenedIn {
-    return Intl.message(
-      'Prise en charge ouverte en',
-      name: 'patientDetail_careEpisodeOpenedIn',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Informations patient`
-  String get patientDetail_patientInformation {
-    return Intl.message(
-      'Informations patient',
-      name: 'patientDetail_patientInformation',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Né(e) le`
-  String get patientDetail_bornOn {
-    return Intl.message(
-      'Né(e) le',
-      name: 'patientDetail_bornOn',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Sexe`
-  String get patientDetail_sex {
-    return Intl.message(
-      'Sexe',
-      name: 'patientDetail_sex',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Identité de santé — France`
-  String get patientDetail_frHealthIdentity {
-    return Intl.message(
-      'Identité de santé — France',
-      name: 'patientDetail_frHealthIdentity',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Erreur`
-  String get patientDetail_error {
-    return Intl.message(
-      'Erreur',
-      name: 'patientDetail_error',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Statut`
-  String get patientDetail_status {
-    return Intl.message(
-      'Statut',
-      name: 'patientDetail_status',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `État`
-  String get patientDetail_state {
-    return Intl.message(
-      'État',
-      name: 'patientDetail_state',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Récupérée`
-  String get patientDetail_retrieved {
-    return Intl.message(
-      'Récupérée',
-      name: 'patientDetail_retrieved',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Validée`
-  String get patientDetail_validated {
-    return Intl.message(
-      'Validée',
-      name: 'patientDetail_validated',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Qualifiée`
-  String get patientDetail_qualified {
-    return Intl.message(
-      'Qualifiée',
-      name: 'patientDetail_qualified',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Provisoire`
-  String get patientDetail_provisional {
-    return Intl.message(
-      'Provisoire',
-      name: 'patientDetail_provisional',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `INS obtenue, identité à contrôler`
-  String get patientDetail_retrievedDescription {
-    return Intl.message(
-      'INS obtenue, identité à contrôler',
-      name: 'patientDetail_retrievedDescription',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Identité contrôlée, INS à rechercher`
-  String get patientDetail_validatedDescription {
-    return Intl.message(
-      'Identité contrôlée, INS à rechercher',
-      name: 'patientDetail_validatedDescription',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Identité conforme`
-  String get patientDetail_qualifiedDescription {
-    return Intl.message(
-      'Identité conforme',
-      name: 'patientDetail_qualifiedDescription',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Identité à compléter`
-  String get patientDetail_provisionalDescription {
-    return Intl.message(
-      'Identité à compléter',
-      name: 'patientDetail_provisionalDescription',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Non renseigné`
-  String get patientDetail_notProvided {
-    return Intl.message(
-      'Non renseigné',
-      name: 'patientDetail_notProvided',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Modifier les données cliniques`
-  String get patientDetail_editClinicalData {
-    return Intl.message(
-      'Modifier les données cliniques',
-      name: 'patientDetail_editClinicalData',
+      'Adresse',
+      name: 'patientDetail_address',
       desc: '',
       args: [],
     );
@@ -4590,121 +4750,41 @@ class S {
     );
   }
 
-  /// `Identifiant national`
-  String get patientDetail_nationalIdentifier {
+  /// `archivé`
+  String get patientDetail_archived {
     return Intl.message(
-      'Identifiant national',
-      name: 'patientDetail_nationalIdentifier',
+      'archivé',
+      name: 'patientDetail_archived',
       desc: '',
       args: [],
     );
   }
 
-  /// `Pays système santé`
-  String get patientDetail_healthSystemCountry {
+  /// `Né(e) le`
+  String get patientDetail_bornOn {
     return Intl.message(
-      'Pays système santé',
-      name: 'patientDetail_healthSystemCountry',
+      'Né(e) le',
+      name: 'patientDetail_bornOn',
       desc: '',
       args: [],
     );
   }
 
-  /// `Source identité`
-  String get patientDetail_identitySource {
+  /// `Annuler`
+  String get patientDetail_cancel {
     return Intl.message(
-      'Source identité',
-      name: 'patientDetail_identitySource',
+      'Annuler',
+      name: 'patientDetail_cancel',
       desc: '',
       args: [],
     );
   }
 
-  /// `Téléphone`
-  String get patientDetail_phone {
+  /// `Prise en charge ouverte en`
+  String get patientDetail_careEpisodeOpenedIn {
     return Intl.message(
-      'Téléphone',
-      name: 'patientDetail_phone',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Email`
-  String get patientDetail_email {
-    return Intl.message(
-      'Email',
-      name: 'patientDetail_email',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Adresse`
-  String get patientDetail_address {
-    return Intl.message(
-      'Adresse',
-      name: 'patientDetail_address',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Profil patient`
-  String get patientDetail_patientProfile {
-    return Intl.message(
-      'Profil patient',
-      name: 'patientDetail_patientProfile',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Côté dominant`
-  String get patientDetail_dominantSide {
-    return Intl.message(
-      'Côté dominant',
-      name: 'patientDetail_dominantSide',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Profession`
-  String get patientDetail_profession {
-    return Intl.message(
-      'Profession',
-      name: 'patientDetail_profession',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Activité sportive`
-  String get patientDetail_sportActivity {
-    return Intl.message(
-      'Activité sportive',
-      name: 'patientDetail_sportActivity',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Taille`
-  String get patientDetail_height {
-    return Intl.message(
-      'Taille',
-      name: 'patientDetail_height',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Poids`
-  String get patientDetail_weight {
-    return Intl.message(
-      'Poids',
-      name: 'patientDetail_weight',
+      'Prise en charge ouverte en',
+      name: 'patientDetail_careEpisodeOpenedIn',
       desc: '',
       args: [],
     );
@@ -4720,21 +4800,21 @@ class S {
     );
   }
 
-  /// `Aucune prise en charge créée pour ce patient.`
-  String get patientDetail_noCareEpisode {
+  /// `Créer`
+  String get patientDetail_create {
     return Intl.message(
-      'Aucune prise en charge créée pour ce patient.',
-      name: 'patientDetail_noCareEpisode',
+      'Créer',
+      name: 'patientDetail_create',
       desc: '',
       args: [],
     );
   }
 
-  /// `archivé`
-  String get patientDetail_archived {
+  /// `Côté dominant`
+  String get patientDetail_dominantSide {
     return Intl.message(
-      'archivé',
-      name: 'patientDetail_archived',
+      'Côté dominant',
+      name: 'patientDetail_dominantSide',
       desc: '',
       args: [],
     );
@@ -4750,6 +4830,396 @@ class S {
     );
   }
 
+  /// `Modifier la prise en charge`
+  String get patientDetail_editCareEpisode {
+    return Intl.message(
+      'Modifier la prise en charge',
+      name: 'patientDetail_editCareEpisode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Modifier les données cliniques`
+  String get patientDetail_editClinicalData {
+    return Intl.message(
+      'Modifier les données cliniques',
+      name: 'patientDetail_editClinicalData',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Email`
+  String get patientDetail_email {
+    return Intl.message(
+      'Email',
+      name: 'patientDetail_email',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Erreur`
+  String get patientDetail_error {
+    return Intl.message(
+      'Erreur',
+      name: 'patientDetail_error',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Identité de santé — France`
+  String get patientDetail_frHealthIdentity {
+    return Intl.message(
+      'Identité de santé — France',
+      name: 'patientDetail_frHealthIdentity',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pays système santé`
+  String get patientDetail_healthSystemCountry {
+    return Intl.message(
+      'Pays système santé',
+      name: 'patientDetail_healthSystemCountry',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Taille`
+  String get patientDetail_height {
+    return Intl.message(
+      'Taille',
+      name: 'patientDetail_height',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Source identité`
+  String get patientDetail_identitySource {
+    return Intl.message(
+      'Source identité',
+      name: 'patientDetail_identitySource',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Compte rendu initial`
+  String get patientDetail_initialReport {
+    return Intl.message(
+      'Compte rendu initial',
+      name: 'patientDetail_initialReport',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Identifiant national`
+  String get patientDetail_nationalIdentifier {
+    return Intl.message(
+      'Identifiant national',
+      name: 'patientDetail_nationalIdentifier',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Nouvelle prise en charge`
+  String get patientDetail_newCareEpisode {
+    return Intl.message(
+      'Nouvelle prise en charge',
+      name: 'patientDetail_newCareEpisode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Non renseigné`
+  String get patientDetail_noBirthdate {
+    return Intl.message(
+      'Non renseigné',
+      name: 'patientDetail_noBirthdate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Aucune prise en charge créée pour ce patient.`
+  String get patientDetail_noCareEpisode {
+    return Intl.message(
+      'Aucune prise en charge créée pour ce patient.',
+      name: 'patientDetail_noCareEpisode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Non renseigné`
+  String get patientDetail_notProvided {
+    return Intl.message(
+      'Non renseigné',
+      name: 'patientDetail_notProvided',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Non renseignée`
+  String get patientDetail_notProvidedFemale {
+    return Intl.message(
+      'Non renseignée',
+      name: 'patientDetail_notProvidedFemale',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pathologie`
+  String get patientDetail_pathology {
+    return Intl.message(
+      'Pathologie',
+      name: 'patientDetail_pathology',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Informations patient`
+  String get patientDetail_patientInformation {
+    return Intl.message(
+      'Informations patient',
+      name: 'patientDetail_patientInformation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Profil patient`
+  String get patientDetail_patientProfile {
+    return Intl.message(
+      'Profil patient',
+      name: 'patientDetail_patientProfile',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Téléphone`
+  String get patientDetail_phone {
+    return Intl.message(
+      'Téléphone',
+      name: 'patientDetail_phone',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Profession`
+  String get patientDetail_profession {
+    return Intl.message(
+      'Profession',
+      name: 'patientDetail_profession',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Provisoire`
+  String get patientDetail_provisional {
+    return Intl.message(
+      'Provisoire',
+      name: 'patientDetail_provisional',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Identité à compléter`
+  String get patientDetail_provisionalDescription {
+    return Intl.message(
+      'Identité à compléter',
+      name: 'patientDetail_provisionalDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Qualifiée`
+  String get patientDetail_qualified {
+    return Intl.message(
+      'Qualifiée',
+      name: 'patientDetail_qualified',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Identité conforme`
+  String get patientDetail_qualifiedDescription {
+    return Intl.message(
+      'Identité conforme',
+      name: 'patientDetail_qualifiedDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Kiné référent`
+  String get patientDetail_referringPractitioner {
+    return Intl.message(
+      'Kiné référent',
+      name: 'patientDetail_referringPractitioner',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Récupérée`
+  String get patientDetail_retrieved {
+    return Intl.message(
+      'Récupérée',
+      name: 'patientDetail_retrieved',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `INS obtenue, identité à contrôler`
+  String get patientDetail_retrievedDescription {
+    return Intl.message(
+      'INS obtenue, identité à contrôler',
+      name: 'patientDetail_retrievedDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enregistrer`
+  String get patientDetail_save {
+    return Intl.message(
+      'Enregistrer',
+      name: 'patientDetail_save',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sexe`
+  String get patientDetail_sex {
+    return Intl.message(
+      'Sexe',
+      name: 'patientDetail_sex',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Activité sportive`
+  String get patientDetail_sportActivity {
+    return Intl.message(
+      'Activité sportive',
+      name: 'patientDetail_sportActivity',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `État`
+  String get patientDetail_state {
+    return Intl.message(
+      'État',
+      name: 'patientDetail_state',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Statut`
+  String get patientDetail_status {
+    return Intl.message(
+      'Statut',
+      name: 'patientDetail_status',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Validée`
+  String get patientDetail_validated {
+    return Intl.message(
+      'Validée',
+      name: 'patientDetail_validated',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Identité contrôlée, INS à rechercher`
+  String get patientDetail_validatedDescription {
+    return Intl.message(
+      'Identité contrôlée, INS à rechercher',
+      name: 'patientDetail_validatedDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Poids`
+  String get patientDetail_weight {
+    return Intl.message(
+      'Poids',
+      name: 'patientDetail_weight',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `ans`
+  String get patientDetail_years {
+    return Intl.message(
+      'ans',
+      name: 'patientDetail_years',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Date de naissance`
+  String get patientForm_birthDate {
+    return Intl.message(
+      'Date de naissance',
+      name: 'patientForm_birthDate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Annuler`
+  String get patientForm_cancel {
+    return Intl.message(
+      'Annuler',
+      name: 'patientForm_cancel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Créer`
+  String get patientForm_create {
+    return Intl.message(
+      'Créer',
+      name: 'patientForm_create',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Modifier le patient`
   String get patientForm_editPatient {
     return Intl.message(
@@ -4760,31 +5230,11 @@ class S {
     );
   }
 
-  /// `Nouveau patient`
-  String get patientForm_newPatient {
+  /// `Femme`
+  String get patientForm_female {
     return Intl.message(
-      'Nouveau patient',
-      name: 'patientForm_newPatient',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Nom`
-  String get patientForm_lastName {
-    return Intl.message(
-      'Nom',
-      name: 'patientForm_lastName',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Le nom est obligatoire`
-  String get patientForm_lastNameRequired {
-    return Intl.message(
-      'Le nom est obligatoire',
-      name: 'patientForm_lastNameRequired',
+      'Femme',
+      name: 'patientForm_female',
       desc: '',
       args: [],
     );
@@ -4810,11 +5260,61 @@ class S {
     );
   }
 
-  /// `Date de naissance`
-  String get patientForm_birthDate {
+  /// `Nom`
+  String get patientForm_lastName {
     return Intl.message(
-      'Date de naissance',
-      name: 'patientForm_birthDate',
+      'Nom',
+      name: 'patientForm_lastName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Le nom est obligatoire`
+  String get patientForm_lastNameRequired {
+    return Intl.message(
+      'Le nom est obligatoire',
+      name: 'patientForm_lastNameRequired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Homme`
+  String get patientForm_male {
+    return Intl.message(
+      'Homme',
+      name: 'patientForm_male',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Nouveau patient`
+  String get patientForm_newPatient {
+    return Intl.message(
+      'Nouveau patient',
+      name: 'patientForm_newPatient',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Autre`
+  String get patientForm_other {
+    return Intl.message(
+      'Autre',
+      name: 'patientForm_other',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enregistrer`
+  String get patientForm_save {
+    return Intl.message(
+      'Enregistrer',
+      name: 'patientForm_save',
       desc: '',
       args: [],
     );
@@ -4835,66 +5335,6 @@ class S {
     return Intl.message(
       'Non précisé',
       name: 'patientForm_unspecified',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Femme`
-  String get patientForm_female {
-    return Intl.message(
-      'Femme',
-      name: 'patientForm_female',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Homme`
-  String get patientForm_male {
-    return Intl.message(
-      'Homme',
-      name: 'patientForm_male',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Autre`
-  String get patientForm_other {
-    return Intl.message(
-      'Autre',
-      name: 'patientForm_other',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Annuler`
-  String get patientForm_cancel {
-    return Intl.message(
-      'Annuler',
-      name: 'patientForm_cancel',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Enregistrer`
-  String get patientForm_save {
-    return Intl.message(
-      'Enregistrer',
-      name: 'patientForm_save',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Créer`
-  String get patientForm_create {
-    return Intl.message(
-      'Créer',
-      name: 'patientForm_create',
       desc: '',
       args: [],
     );
@@ -5160,111 +5600,21 @@ class S {
     );
   }
 
-  /// `Nouveau patient`
-  String get patientNew_contextName {
+  /// `Correspondance archivée à vérifier`
+  String get patientNew_archivedMatchToReview {
     return Intl.message(
-      'Nouveau patient',
-      name: 'patientNew_contextName',
+      'Correspondance archivée à vérifier',
+      name: 'patientNew_archivedMatchToReview',
       desc: '',
       args: [],
     );
   }
 
-  /// `Cet écran permet la création d’un nouveau patient par saisie ou lecture de la Carte Vitale.`
-  String get patientNew_contextComment {
+  /// `Un patient archivé ayant les mêmes nom, prénom et date de naissance existe déjà, mais ses informations administratives sont différentes.\n\nAucune restauration automatique ne sera effectuée. Vérifiez les dossiers avant de poursuivre.`
+  String get patientNew_archivedMatchToReviewMessage {
     return Intl.message(
-      'Cet écran permet la création d’un nouveau patient par saisie ou lecture de la Carte Vitale.',
-      name: 'patientNew_contextComment',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Patient déjà existant ?`
-  String get patientNew_existingPatientTitle {
-    return Intl.message(
-      'Patient déjà existant ?',
-      name: 'patientNew_existingPatientTitle',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Un patient correspondant a été trouvé :`
-  String get patientNew_matchingPatientFound {
-    return Intl.message(
-      'Un patient correspondant a été trouvé :',
-      name: 'patientNew_matchingPatientFound',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Date de naissance`
-  String get patientNew_birthDate {
-    return Intl.message(
-      'Date de naissance',
-      name: 'patientNew_birthDate',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `non renseignée`
-  String get patientNew_notProvidedFemale {
-    return Intl.message(
-      'non renseignée',
-      name: 'patientNew_notProvidedFemale',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Voulez-vous rattacher les informations de la Carte Vitale à ce patient ?`
-  String get patientNew_attachVitaleQuestion {
-    return Intl.message(
-      'Voulez-vous rattacher les informations de la Carte Vitale à ce patient ?',
-      name: 'patientNew_attachVitaleQuestion',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Non`
-  String get patientNew_no {
-    return Intl.message(
-      'Non',
-      name: 'patientNew_no',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Rattacher`
-  String get patientNew_attach {
-    return Intl.message(
-      'Rattacher',
-      name: 'patientNew_attach',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Choisir le patient`
-  String get patientNew_choosePatient {
-    return Intl.message(
-      'Choisir le patient',
-      name: 'patientNew_choosePatient',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Annuler`
-  String get patientNew_cancel {
-    return Intl.message(
-      'Annuler',
-      name: 'patientNew_cancel',
+      'Un patient archivé ayant les mêmes nom, prénom et date de naissance existe déjà, mais ses informations administratives sont différentes.\n\nAucune restauration automatique ne sera effectuée. Vérifiez les dossiers avant de poursuivre.',
+      name: 'patientNew_archivedMatchToReviewMessage',
       desc: '',
       args: [],
     );
@@ -5290,81 +5640,11 @@ class S {
     );
   }
 
-  /// `Souhaitez-vous restaurer ce dossier plutôt que créer un nouveau patient ?`
-  String get patientNew_restoreInsteadOfCreate {
+  /// `Rattacher`
+  String get patientNew_attach {
     return Intl.message(
-      'Souhaitez-vous restaurer ce dossier plutôt que créer un nouveau patient ?',
-      name: 'patientNew_restoreInsteadOfCreate',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Restaurer`
-  String get patientNew_restore {
-    return Intl.message(
-      'Restaurer',
-      name: 'patientNew_restore',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Impossible de restaurer le patient`
-  String get patientNew_restoreError {
-    return Intl.message(
-      'Impossible de restaurer le patient',
-      name: 'patientNew_restoreError',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Le patient {patientName} a été restauré.`
-  String patientNew_restoreSuccess(Object patientName) {
-    return Intl.message(
-      'Le patient $patientName a été restauré.',
-      name: 'patientNew_restoreSuccess',
-      desc: '',
-      args: [patientName],
-    );
-  }
-
-  /// `Patient déjà enregistré`
-  String get patientNew_patientAlreadyRegistered {
-    return Intl.message(
-      'Patient déjà enregistré',
-      name: 'patientNew_patientAlreadyRegistered',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Cette Carte Vitale correspond au patient :`
-  String get patientNew_vitaleMatchesPatient {
-    return Intl.message(
-      'Cette Carte Vitale correspond au patient :',
-      name: 'patientNew_vitaleMatchesPatient',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Aucun nouveau patient ne sera créé.`
-  String get patientNew_noNewPatientCreated {
-    return Intl.message(
-      'Aucun nouveau patient ne sera créé.',
-      name: 'patientNew_noNewPatientCreated',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Retour à la liste`
-  String get patientNew_backToList {
-    return Intl.message(
-      'Retour à la liste',
-      name: 'patientNew_backToList',
+      'Rattacher',
+      name: 'patientNew_attach',
       desc: '',
       args: [],
     );
@@ -5380,6 +5660,16 @@ class S {
     );
   }
 
+  /// `Voulez-vous rattacher les informations de la Carte Vitale à ce patient ?`
+  String get patientNew_attachVitaleQuestion {
+    return Intl.message(
+      'Voulez-vous rattacher les informations de la Carte Vitale à ce patient ?',
+      name: 'patientNew_attachVitaleQuestion',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Carte Vitale rattachée au patient {patientName}.`
   String patientNew_attachVitaleSuccess(Object patientName) {
     return Intl.message(
@@ -5387,6 +5677,196 @@ class S {
       name: 'patientNew_attachVitaleSuccess',
       desc: '',
       args: [patientName],
+    );
+  }
+
+  /// `Retour à la liste`
+  String get patientNew_backToList {
+    return Intl.message(
+      'Retour à la liste',
+      name: 'patientNew_backToList',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Date de naissance`
+  String get patientNew_birthDate {
+    return Intl.message(
+      'Date de naissance',
+      name: 'patientNew_birthDate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Annuler`
+  String get patientNew_cancel {
+    return Intl.message(
+      'Annuler',
+      name: 'patientNew_cancel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choisir le patient`
+  String get patientNew_choosePatient {
+    return Intl.message(
+      'Choisir le patient',
+      name: 'patientNew_choosePatient',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Fermer`
+  String get patientNew_close {
+    return Intl.message(
+      'Fermer',
+      name: 'patientNew_close',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cet écran permet la création d’un nouveau patient par saisie ou lecture de la Carte Vitale.`
+  String get patientNew_contextComment {
+    return Intl.message(
+      'Cet écran permet la création d’un nouveau patient par saisie ou lecture de la Carte Vitale.',
+      name: 'patientNew_contextComment',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Nouveau patient`
+  String get patientNew_contextName {
+    return Intl.message(
+      'Nouveau patient',
+      name: 'patientNew_contextName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Erreur lors de la création du patient`
+  String get patientNew_createError {
+    return Intl.message(
+      'Erreur lors de la création du patient',
+      name: 'patientNew_createError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Créer le patient`
+  String get patientNew_createPatient {
+    return Intl.message(
+      'Créer le patient',
+      name: 'patientNew_createPatient',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Création...`
+  String get patientNew_creating {
+    return Intl.message(
+      'Création...',
+      name: 'patientNew_creating',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Télécharger`
+  String get patientNew_download {
+    return Intl.message(
+      'Télécharger',
+      name: 'patientNew_download',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Patient déjà existant ?`
+  String get patientNew_existingPatientTitle {
+    return Intl.message(
+      'Patient déjà existant ?',
+      name: 'patientNew_existingPatientTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Féminin`
+  String get patientNew_female {
+    return Intl.message(
+      'Féminin',
+      name: 'patientNew_female',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Prénom`
+  String get patientNew_firstName {
+    return Intl.message(
+      'Prénom',
+      name: 'patientNew_firstName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Le prénom est obligatoire`
+  String get patientNew_firstNameRequired {
+    return Intl.message(
+      'Le prénom est obligatoire',
+      name: 'patientNew_firstNameRequired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Nom`
+  String get patientNew_lastName {
+    return Intl.message(
+      'Nom',
+      name: 'patientNew_lastName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Le nom est obligatoire`
+  String get patientNew_lastNameRequired {
+    return Intl.message(
+      'Le nom est obligatoire',
+      name: 'patientNew_lastNameRequired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Masculin`
+  String get patientNew_male {
+    return Intl.message(
+      'Masculin',
+      name: 'patientNew_male',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Un patient correspondant a été trouvé :`
+  String get patientNew_matchingPatientFound {
+    return Intl.message(
+      'Un patient correspondant a été trouvé :',
+      name: 'patientNew_matchingPatientFound',
+      desc: '',
+      args: [],
     );
   }
 
@@ -5410,61 +5890,101 @@ class S {
     );
   }
 
-  /// `Fermer`
-  String get patientNew_close {
+  /// `NIR`
+  String get patientNew_nir {
     return Intl.message(
-      'Fermer',
-      name: 'patientNew_close',
+      'NIR',
+      name: 'patientNew_nir',
       desc: '',
       args: [],
     );
   }
 
-  /// `Correspondance archivée à vérifier`
-  String get patientNew_archivedMatchToReview {
+  /// `détecté et protégé`
+  String get patientNew_nirDetectedProtected {
     return Intl.message(
-      'Correspondance archivée à vérifier',
-      name: 'patientNew_archivedMatchToReview',
+      'détecté et protégé',
+      name: 'patientNew_nirDetectedProtected',
       desc: '',
       args: [],
     );
   }
 
-  /// `Un patient archivé ayant les mêmes nom, prénom et date de naissance existe déjà, mais ses informations administratives sont différentes.\n\nAucune restauration automatique ne sera effectuée. Vérifiez les dossiers avant de poursuivre.`
-  String get patientNew_archivedMatchToReviewMessage {
+  /// `non disponible`
+  String get patientNew_nirUnavailable {
     return Intl.message(
-      'Un patient archivé ayant les mêmes nom, prénom et date de naissance existe déjà, mais ses informations administratives sont différentes.\n\nAucune restauration automatique ne sera effectuée. Vérifiez les dossiers avant de poursuivre.',
-      name: 'patientNew_archivedMatchToReviewMessage',
+      'non disponible',
+      name: 'patientNew_nirUnavailable',
       desc: '',
       args: [],
     );
   }
 
-  /// `Module Carte Vitale non installé`
-  String get patientNew_vitaleModuleNotInstalled {
+  /// `Non`
+  String get patientNew_no {
     return Intl.message(
-      'Module Carte Vitale non installé',
-      name: 'patientNew_vitaleModuleNotInstalled',
+      'Non',
+      name: 'patientNew_no',
       desc: '',
       args: [],
     );
   }
 
-  /// `Le module ABAK Carte Vitale n’est pas installé sur cet ordinateur.\n\nVous pouvez le télécharger gratuitement depuis le site ABAK.`
-  String get patientNew_vitaleModuleNotInstalledMessage {
+  /// `Aucun nouveau patient ne sera créé.`
+  String get patientNew_noNewPatientCreated {
     return Intl.message(
-      'Le module ABAK Carte Vitale n’est pas installé sur cet ordinateur.\n\nVous pouvez le télécharger gratuitement depuis le site ABAK.',
-      name: 'patientNew_vitaleModuleNotInstalledMessage',
+      'Aucun nouveau patient ne sera créé.',
+      name: 'patientNew_noNewPatientCreated',
       desc: '',
       args: [],
     );
   }
 
-  /// `Télécharger`
-  String get patientNew_download {
+  /// `Non renseigné`
+  String get patientNew_notProvided {
     return Intl.message(
-      'Télécharger',
-      name: 'patientNew_download',
+      'Non renseigné',
+      name: 'patientNew_notProvided',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `non renseignée`
+  String get patientNew_notProvidedFemale {
+    return Intl.message(
+      'non renseignée',
+      name: 'patientNew_notProvidedFemale',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Autre`
+  String get patientNew_other {
+    return Intl.message(
+      'Autre',
+      name: 'patientNew_other',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Patient déjà enregistré`
+  String get patientNew_patientAlreadyRegistered {
+    return Intl.message(
+      'Patient déjà enregistré',
+      name: 'patientNew_patientAlreadyRegistered',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Identité du patient`
+  String get patientNew_patientIdentity {
+    return Intl.message(
+      'Identité du patient',
+      name: 'patientNew_patientIdentity',
       desc: '',
       args: [],
     );
@@ -5490,151 +6010,11 @@ class S {
     );
   }
 
-  /// `La configuration du module Carte Vitale est absente ou incorrecte. Réinstallez le module puis réessayez.`
-  String get patientNew_vitaleModuleConfigurationError {
+  /// `Lecture en cours...`
+  String get patientNew_reading {
     return Intl.message(
-      'La configuration du module Carte Vitale est absente ou incorrecte. Réinstallez le module puis réessayez.',
-      name: 'patientNew_vitaleModuleConfigurationError',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `La lecture de la Carte Vitale a échoué.`
-  String get patientNew_vitaleReadFailed {
-    return Intl.message(
-      'La lecture de la Carte Vitale a échoué.',
-      name: 'patientNew_vitaleReadFailed',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Informations patient préremplies depuis la Carte Vitale.`
-  String get patientNew_vitalePrefilled {
-    return Intl.message(
-      'Informations patient préremplies depuis la Carte Vitale.',
-      name: 'patientNew_vitalePrefilled',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Erreur lors de la création du patient`
-  String get patientNew_createError {
-    return Intl.message(
-      'Erreur lors de la création du patient',
-      name: 'patientNew_createError',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Féminin`
-  String get patientNew_female {
-    return Intl.message(
-      'Féminin',
-      name: 'patientNew_female',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Masculin`
-  String get patientNew_male {
-    return Intl.message(
-      'Masculin',
-      name: 'patientNew_male',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Autre`
-  String get patientNew_other {
-    return Intl.message(
-      'Autre',
-      name: 'patientNew_other',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Non renseigné`
-  String get patientNew_notProvided {
-    return Intl.message(
-      'Non renseigné',
-      name: 'patientNew_notProvided',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Identité lue depuis la Carte Vitale`
-  String get patientNew_vitaleIdentityRead {
-    return Intl.message(
-      'Identité lue depuis la Carte Vitale',
-      name: 'patientNew_vitaleIdentityRead',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Nom`
-  String get patientNew_lastName {
-    return Intl.message(
-      'Nom',
-      name: 'patientNew_lastName',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Prénom`
-  String get patientNew_firstName {
-    return Intl.message(
-      'Prénom',
-      name: 'patientNew_firstName',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Sexe`
-  String get patientNew_sex {
-    return Intl.message(
-      'Sexe',
-      name: 'patientNew_sex',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `NIR`
-  String get patientNew_nir {
-    return Intl.message(
-      'NIR',
-      name: 'patientNew_nir',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `non disponible`
-  String get patientNew_nirUnavailable {
-    return Intl.message(
-      'non disponible',
-      name: 'patientNew_nirUnavailable',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `détecté et protégé`
-  String get patientNew_nirDetectedProtected {
-    return Intl.message(
-      'détecté et protégé',
-      name: 'patientNew_nirDetectedProtected',
+      'Lecture en cours...',
+      name: 'patientNew_reading',
       desc: '',
       args: [],
     );
@@ -5650,26 +6030,6 @@ class S {
     );
   }
 
-  /// `Identité du patient`
-  String get patientNew_patientIdentity {
-    return Intl.message(
-      'Identité du patient',
-      name: 'patientNew_patientIdentity',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Lecture en cours...`
-  String get patientNew_reading {
-    return Intl.message(
-      'Lecture en cours...',
-      name: 'patientNew_reading',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Lire Carte Vitale`
   String get patientNew_readVitale {
     return Intl.message(
@@ -5680,41 +6040,121 @@ class S {
     );
   }
 
-  /// `Le nom est obligatoire`
-  String get patientNew_lastNameRequired {
+  /// `Restaurer`
+  String get patientNew_restore {
     return Intl.message(
-      'Le nom est obligatoire',
-      name: 'patientNew_lastNameRequired',
+      'Restaurer',
+      name: 'patientNew_restore',
       desc: '',
       args: [],
     );
   }
 
-  /// `Le prénom est obligatoire`
-  String get patientNew_firstNameRequired {
+  /// `Impossible de restaurer le patient`
+  String get patientNew_restoreError {
     return Intl.message(
-      'Le prénom est obligatoire',
-      name: 'patientNew_firstNameRequired',
+      'Impossible de restaurer le patient',
+      name: 'patientNew_restoreError',
       desc: '',
       args: [],
     );
   }
 
-  /// `Créer le patient`
-  String get patientNew_createPatient {
+  /// `Souhaitez-vous restaurer ce dossier plutôt que créer un nouveau patient ?`
+  String get patientNew_restoreInsteadOfCreate {
     return Intl.message(
-      'Créer le patient',
-      name: 'patientNew_createPatient',
+      'Souhaitez-vous restaurer ce dossier plutôt que créer un nouveau patient ?',
+      name: 'patientNew_restoreInsteadOfCreate',
       desc: '',
       args: [],
     );
   }
 
-  /// `Création...`
-  String get patientNew_creating {
+  /// `Le patient {patientName} a été restauré.`
+  String patientNew_restoreSuccess(Object patientName) {
     return Intl.message(
-      'Création...',
-      name: 'patientNew_creating',
+      'Le patient $patientName a été restauré.',
+      name: 'patientNew_restoreSuccess',
+      desc: '',
+      args: [patientName],
+    );
+  }
+
+  /// `Sexe`
+  String get patientNew_sex {
+    return Intl.message(
+      'Sexe',
+      name: 'patientNew_sex',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Identité lue depuis la Carte Vitale`
+  String get patientNew_vitaleIdentityRead {
+    return Intl.message(
+      'Identité lue depuis la Carte Vitale',
+      name: 'patientNew_vitaleIdentityRead',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cette Carte Vitale correspond au patient :`
+  String get patientNew_vitaleMatchesPatient {
+    return Intl.message(
+      'Cette Carte Vitale correspond au patient :',
+      name: 'patientNew_vitaleMatchesPatient',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `La configuration du module Carte Vitale est absente ou incorrecte. Réinstallez le module puis réessayez.`
+  String get patientNew_vitaleModuleConfigurationError {
+    return Intl.message(
+      'La configuration du module Carte Vitale est absente ou incorrecte. Réinstallez le module puis réessayez.',
+      name: 'patientNew_vitaleModuleConfigurationError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Module Carte Vitale non installé`
+  String get patientNew_vitaleModuleNotInstalled {
+    return Intl.message(
+      'Module Carte Vitale non installé',
+      name: 'patientNew_vitaleModuleNotInstalled',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Le module ABAK Carte Vitale n’est pas installé sur cet ordinateur.\n\nVous pouvez le télécharger gratuitement depuis le site ABAK.`
+  String get patientNew_vitaleModuleNotInstalledMessage {
+    return Intl.message(
+      'Le module ABAK Carte Vitale n’est pas installé sur cet ordinateur.\n\nVous pouvez le télécharger gratuitement depuis le site ABAK.',
+      name: 'patientNew_vitaleModuleNotInstalledMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Informations patient préremplies depuis la Carte Vitale.`
+  String get patientNew_vitalePrefilled {
+    return Intl.message(
+      'Informations patient préremplies depuis la Carte Vitale.',
+      name: 'patientNew_vitalePrefilled',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `La lecture de la Carte Vitale a échoué.`
+  String get patientNew_vitaleReadFailed {
+    return Intl.message(
+      'La lecture de la Carte Vitale a échoué.',
+      name: 'patientNew_vitaleReadFailed',
       desc: '',
       args: [],
     );
@@ -6910,6 +7350,86 @@ class S {
     );
   }
 
+  /// `Aucun enregistrement audio disponible.`
+  String get speechDictationButton_audio {
+    return Intl.message(
+      'Aucun enregistrement audio disponible.',
+      name: 'speechDictationButton_audio',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Fermer`
+  String get speechDictationButton_close {
+    return Intl.message(
+      'Fermer',
+      name: 'speechDictationButton_close',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Dicter`
+  String get speechDictationButton_dictate {
+    return Intl.message(
+      'Dicter',
+      name: 'speechDictationButton_dictate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Télécharger le module`
+  String get speechDictationButton_download {
+    return Intl.message(
+      'Télécharger le module',
+      name: 'speechDictationButton_download',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `La dictée vocale a échoué : {error}`
+  String speechDictationButton_failure(Object error) {
+    return Intl.message(
+      'La dictée vocale a échoué : $error',
+      name: 'speechDictationButton_failure',
+      desc: '',
+      args: [error],
+    );
+  }
+
+  /// `La dictée vocale nécessite l’installation du module optionnel ABAK Dictée vocale.\n\nCe module est gratuit et fonctionne localement sur votre ordinateur, sans envoyer les enregistrements vocaux sur Internet.\n\nLe téléchargement représente environ 1,5 Go.`
+  String get speechDictationButton_information {
+    return Intl.message(
+      'La dictée vocale nécessite l’installation du module optionnel ABAK Dictée vocale.\n\nCe module est gratuit et fonctionne localement sur votre ordinateur, sans envoyer les enregistrements vocaux sur Internet.\n\nLe téléchargement représente environ 1,5 Go.',
+      name: 'speechDictationButton_information',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Arrêter la dictée`
+  String get speechDictationButton_stop {
+    return Intl.message(
+      'Arrêter la dictée',
+      name: 'speechDictationButton_stop',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Dictée vocale`
+  String get speechDictationButton_title {
+    return Intl.message(
+      'Dictée vocale',
+      name: 'speechDictationButton_title',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Patients actifs`
   String get systemOverviewBar_active_patients {
     return Intl.message(
@@ -7200,10 +7720,10 @@ class S {
     );
   }
 
-  /// `non disponible`
+  /// `Non disponible`
   String get vitaleIdentity_unavailable {
     return Intl.message(
-      'non disponible',
+      'Non disponible',
       name: 'vitaleIdentity_unavailable',
       desc: '',
       args: [],
@@ -7215,6 +7735,96 @@ class S {
     return Intl.message(
       'Utiliser pour créer un patient',
       name: 'vitaleIdentity_useForPatientCreation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `L’accès au microphone n’est pas autorisé.`
+  String get speechRecordingService_permission {
+    return Intl.message(
+      'L’accès au microphone n’est pas autorisé.',
+      name: 'speechRecordingService_permission',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Masculin`
+  String get assessmentDocumentDataBuilder_male {
+    return Intl.message(
+      'Masculin',
+      name: 'assessmentDocumentDataBuilder_male',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Féminin`
+  String get assessmentDocumentDataBuilder_female {
+    return Intl.message(
+      'Féminin',
+      name: 'assessmentDocumentDataBuilder_female',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Patient introuvable pour la prise en charge {careEpisodeId}.`
+  String assessmentDocumentDataBuilder_patient(Object careEpisodeId) {
+    return Intl.message(
+      'Patient introuvable pour la prise en charge $careEpisodeId.',
+      name: 'assessmentDocumentDataBuilder_patient',
+      desc: '',
+      args: [careEpisodeId],
+    );
+  }
+
+  /// `Prise en charge`
+  String get careEpisode_title {
+    return Intl.message(
+      'Prise en charge',
+      name: 'careEpisode_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Aucun compte rendu initial.`
+  String get careEpisode_report {
+    return Intl.message(
+      'Aucun compte rendu initial.',
+      name: 'careEpisode_report',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Aucune évaluation clinique.`
+  String get careEpisode_evaluation {
+    return Intl.message(
+      'Aucune évaluation clinique.',
+      name: 'careEpisode_evaluation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Aucune analyse clinique.`
+  String get careEpisode_assessment {
+    return Intl.message(
+      'Aucune analyse clinique.',
+      name: 'careEpisode_assessment',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Aucun plan de traitement.`
+  String get careEpisode_treatment {
+    return Intl.message(
+      'Aucun plan de traitement.',
+      name: 'careEpisode_treatment',
       desc: '',
       args: [],
     );

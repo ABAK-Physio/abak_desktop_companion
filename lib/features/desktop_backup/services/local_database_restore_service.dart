@@ -4,6 +4,7 @@ import 'package:path/path.dart' as p;
 import 'package:uuid/uuid.dart';
 
 import '../../../core/database/database_service.dart';
+import '../../../generated/l10n.dart';
 import '../models/restore_result.dart';
 
 class LocalDatabaseRestoreService {
@@ -15,7 +16,7 @@ class LocalDatabaseRestoreService {
     if (!await sourceFile.exists()) {
       return RestoreResult(
         success: false,
-        message: 'Le fichier de sauvegarde est introuvable.',
+        message: S.current.localDatabaseRestoreService_missing,
         sourceBackupPath: backupPath,
       );
     }
@@ -47,15 +48,15 @@ class LocalDatabaseRestoreService {
         safetyBackupPath: safetyBackupPath,
         success: success,
         message: success
-            ? 'Restauration effectuée avec succès.'
-            : 'Restauration effectuée mais integrity_check a retourné : $integrityStatus',
+            ? S.current.localDatabaseRestoreService_success
+            : S.current.localDatabaseRestoreService_integrity(integrityStatus.toString()),
       );
 
       return RestoreResult(
         success: success,
         message: success
-            ? 'Restauration effectuée avec succès.'
-            : 'La base restaurée présente une anomalie : $integrityStatus',
+            ? S.current.localDatabaseRestoreService_success
+            : S.current.localDatabaseRestoreService_anomaly(integrityStatus.toString()),
         sourceBackupPath: backupPath,
         safetyBackupPath: safetyBackupPath,
       );
@@ -69,7 +70,7 @@ class LocalDatabaseRestoreService {
 
       return RestoreResult(
         success: false,
-        message: 'Échec de la restauration : $e',
+        message: S.current.localDatabaseRestoreService_failure(e.toString()),
         sourceBackupPath: backupPath,
         safetyBackupPath: safetyBackupPath,
       );
