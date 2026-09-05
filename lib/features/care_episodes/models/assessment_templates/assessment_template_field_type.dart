@@ -5,4 +5,5 @@ enum AssessmentTemplateFieldType {
   multipleChoice,
   simpleTable,
   abakData,
+  information,
 }

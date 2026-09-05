@@ -20,6 +20,8 @@ class AssessmentTemplateTextBuilder {
         final value = answers.valueFor(field.id);
 
         switch (field.type) {
+          case AssessmentTemplateFieldType.information:
+            break;
           case AssessmentTemplateFieldType.shortText:
           case AssessmentTemplateFieldType.longText:
           case AssessmentTemplateFieldType.singleChoice:

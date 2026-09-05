@@ -2474,6 +2474,7 @@ class _CareEpisodeReportsWorkspaceScreenState
             DefaultAssessmentTemplates.musculoskeletalGeneral,
             DefaultAssessmentTemplates.musculoskeletalUpperLimb,
             DefaultAssessmentTemplates.hyperventilation,
+            DefaultAssessmentTemplates.traumaticAnkle,
           ]
         );
       },

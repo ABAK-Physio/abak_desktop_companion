@@ -6,7 +6,7 @@ class AssessmentTemplateField {
   final AssessmentTemplateFieldType type;
   final List<String> options;
   final String? abakSource;
-
+  final String tableRowHeader;
   final List<String> tableColumns;
   final List<String> tableRows;
 
@@ -16,6 +16,7 @@ class AssessmentTemplateField {
     required this.type,
     this.options = const [],
     this.abakSource,
+    this.tableRowHeader = 'Mouvement',
     this.tableColumns = const [],
     this.tableRows = const [],
   });

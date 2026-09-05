@@ -309,6 +309,16 @@ class _AssessmentTemplateGuideState extends State<AssessmentTemplateGuide> {
 
   Widget _buildField(AssessmentTemplateField field) {
     switch (field.type) {
+      case AssessmentTemplateFieldType.information:
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          child: Text(
+            field.label,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              fontStyle: FontStyle.italic,
+            ),
+          ),
+        );
       case AssessmentTemplateFieldType.shortText:
       case AssessmentTemplateFieldType.abakData:
         return TextFormField(
@@ -471,9 +481,9 @@ class _AssessmentTemplateGuideState extends State<AssessmentTemplateGuide> {
           children: [
             TableRow(
               children: [
-                const Padding(
-                  padding: EdgeInsets.all(8),
-                  child: Text('Mouvement'),
+                Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: Text(field.tableRowHeader),
                 ),
                 for (final column in field.tableColumns)
                   Padding(
