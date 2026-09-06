@@ -171,9 +171,12 @@ class _RecentImportTile extends StatelessWidget {
     return ListTile(
       contentPadding: EdgeInsets.zero,
       leading: Icon(icon, color: color),
-      title: Row(
+      title: Wrap(
+        spacing: 8,
+        runSpacing: 4,
+        crossAxisAlignment: WrapCrossAlignment.center,
         children: [
-          Expanded(child: Text(formattedDate)),
+          Text(formattedDate),
           _StatusChip(status: session.status),
         ],
       ),
@@ -361,9 +364,11 @@ class _StatusChip extends StatelessWidget {
         children: [
           Icon(icon, size: 16, color: color),
           const SizedBox(width: 6),
-          Text(
-            label,
-            style: TextStyle(color: color, fontWeight: FontWeight.w600),
+          Flexible(
+            child: Text(
+              label,
+              style: TextStyle(color: color, fontWeight: FontWeight.w600),
+            ),
           ),
         ],
       ),

@@ -52,6 +52,7 @@ import '../../../core/settings/application_settings_service.dart';
 import '../../external_correspondents/data/external_correspondent_repository.dart';
 import '../../external_correspondents/models/external_correspondent.dart';
 import '../../documents/services/initial_report_document_service.dart';
+import 'package:abak_desktop_companion/features/care_episodes/data/assessment_template_prefill_resolver.dart';
 
 class CareEpisodeReportsWorkspaceScreen extends StatefulWidget {
   final CareEpisode episode;
@@ -2500,17 +2501,71 @@ class _CareEpisodeReportsWorkspaceScreenState
       attributeKey: 'sport',
     );
 
-    final savedAnswers = await _assessmentTemplateDraftRepository.getDraft(
+    final episodeResults =
+    await widget.resultRepository.getResultsForCareEpisode(
+      widget.episode.careEpisodeId,
+    );
+
+
+    var savedAnswers = await _assessmentTemplateDraftRepository.getDraft(
       careEpisodeId: widget.episode.careEpisodeId,
       templateId: template.id,
     );
 
     if (!mounted) return;
 
-    final initialValues = <String, String>{
-      'profession': profession?.attributeValue?.trim() ?? '',
-      'sports_activities': sport?.attributeValue?.trim() ?? '',
-    };
+    if (savedAnswers != null) {
+      final choice = await showDialog<String>(
+        context: context,
+        builder: (dialogContext) {
+          return AlertDialog(
+            title: const Text('Brouillon existant'),
+            content: const Text(
+              'Un brouillon existe déjà pour ce modèle de bilan.',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(dialogContext).pop(),
+                child: const Text('Annuler'),
+              ),
+              TextButton(
+                onPressed: () =>
+                    Navigator.of(dialogContext).pop('new'),
+                child: const Text('Nouveau bilan'),
+              ),
+              FilledButton(
+                onPressed: () =>
+                    Navigator.of(dialogContext).pop('resume'),
+                child: const Text('Reprendre le brouillon'),
+              ),
+            ],
+          );
+        },
+      );
+
+      if (!mounted || choice == null) {
+        return;
+      }
+
+      if (choice == 'new') {
+        await _assessmentTemplateDraftRepository.deleteDraft(
+          careEpisodeId: widget.episode.careEpisodeId,
+          templateId: template.id,
+        );
+
+        savedAnswers = null;
+
+        if (!mounted) return;
+      }
+    }
+
+    final initialValues =
+    AssessmentTemplatePrefillResolver().resolve(
+      template: template,
+      profession: profession?.attributeValue,
+      sportsActivities: sport?.attributeValue,
+      episodeResults: episodeResults,
+    );
 
     await showDialog<void>(
       context: context,

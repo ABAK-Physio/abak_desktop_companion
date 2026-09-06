@@ -731,7 +731,8 @@ class DefaultAssessmentTemplates {
           AssessmentTemplateField(
             id: 'nq_score',
             label: 'Score NQ',
-            type: AssessmentTemplateFieldType.shortText,
+            type: AssessmentTemplateFieldType.abakData,
+            abakSource: 'result.E53.scoreTotal',
           ),
           AssessmentTemplateField(
             id: 'nq_reevaluation',
