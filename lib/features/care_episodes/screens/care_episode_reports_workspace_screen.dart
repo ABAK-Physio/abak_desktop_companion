@@ -38,7 +38,6 @@ import 'care_episode_reports_workspace/widgets/assessment_history_card.dart';
 import 'care_episode_reports_workspace/widgets/report_history_card.dart';
 import 'care_episode_reports_workspace/widgets/soap_draft_card.dart';
 import 'care_episode_reports_workspace/widgets/document_title_dialog.dart';
-import 'package:abak_desktop_companion/features/patients/data/patient_attribute_repository.dart';
 import 'package:abak_desktop_companion/features/care_episodes/data/assessment_template_draft_repository.dart';
 import 'package:abak_desktop_companion/features/care_episodes/models/assessment_templates/assessment_template_answers.dart';
 import 'care_episode_reports_workspace/widgets/assessment_template_selector.dart';
@@ -52,7 +51,6 @@ import '../../../core/settings/application_settings_service.dart';
 import '../../external_correspondents/data/external_correspondent_repository.dart';
 import '../../external_correspondents/models/external_correspondent.dart';
 import '../../documents/services/initial_report_document_service.dart';
-import 'package:abak_desktop_companion/features/care_episodes/data/assessment_template_prefill_resolver.dart';
 
 class CareEpisodeReportsWorkspaceScreen extends StatefulWidget {
   final CareEpisode episode;
@@ -94,9 +92,6 @@ class _CareEpisodeReportsWorkspaceScreenState
 
   final ExternalCorrespondentRepository _externalCorrespondentRepository =
   ExternalCorrespondentRepository();
-
-  final PatientAttributeRepository _patientAttributeRepository =
-      PatientAttributeRepository();
 
   final AssessmentTemplateDraftRepository _assessmentTemplateDraftRepository =
       AssessmentTemplateDraftRepository();
@@ -2475,7 +2470,6 @@ class _CareEpisodeReportsWorkspaceScreenState
             DefaultAssessmentTemplates.musculoskeletalGeneral,
             DefaultAssessmentTemplates.musculoskeletalUpperLimb,
             DefaultAssessmentTemplates.hyperventilation,
-            DefaultAssessmentTemplates.traumaticAnkle,
           ]
         );
       },
@@ -2491,22 +2485,6 @@ class _CareEpisodeReportsWorkspaceScreenState
   Future<void> _openAssessmentTemplateGuideFor(
     AssessmentTemplate template,
   ) async {
-    final profession = await _patientAttributeRepository.getOne(
-      patientId: widget.episode.patientId,
-      attributeKey: 'profession',
-    );
-
-    final sport = await _patientAttributeRepository.getOne(
-      patientId: widget.episode.patientId,
-      attributeKey: 'sport',
-    );
-
-    final episodeResults =
-    await widget.resultRepository.getResultsForCareEpisode(
-      widget.episode.careEpisodeId,
-    );
-
-
     var savedAnswers = await _assessmentTemplateDraftRepository.getDraft(
       careEpisodeId: widget.episode.careEpisodeId,
       templateId: template.id,
@@ -2559,14 +2537,6 @@ class _CareEpisodeReportsWorkspaceScreenState
       }
     }
 
-    final initialValues =
-    AssessmentTemplatePrefillResolver().resolve(
-      template: template,
-      profession: profession?.attributeValue,
-      sportsActivities: sport?.attributeValue,
-      episodeResults: episodeResults,
-    );
-
     await showDialog<void>(
       context: context,
       builder: (dialogContext) {
@@ -2576,7 +2546,7 @@ class _CareEpisodeReportsWorkspaceScreenState
             height: 760,
             child: AssessmentTemplateGuide(
               template: template,
-              initialValues: initialValues,
+              initialValues: const {},
               initialAnswers: savedAnswers,
               onAnswersChanged: _scheduleAssessmentTemplateSave,
               onInsertGeneratedText: _insertAssessmentTemplateText,
