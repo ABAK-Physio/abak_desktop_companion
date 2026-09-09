@@ -12,6 +12,7 @@ class AssessmentTemplateGuide extends StatefulWidget {
   final Map<String, String> initialValues;
   final ValueChanged<AssessmentTemplateAnswers> onAnswersChanged;
   final AssessmentTemplateAnswers? initialAnswers;
+  final String documentLabel;
 
   const AssessmentTemplateGuide({
     super.key,
@@ -19,6 +20,7 @@ class AssessmentTemplateGuide extends StatefulWidget {
     required this.onInsertGeneratedText,
     required this.initialValues,
     required this.onAnswersChanged,
+    required this.documentLabel,
     this.initialAnswers,
   });
 
@@ -187,7 +189,7 @@ class _AssessmentTemplateGuideState extends State<AssessmentTemplateGuide> {
 
                 Navigator.of(context).pop();
               },
-              child: const Text('Insérer dans le bilan'),
+              child: Text('Insérer dans le ${widget.documentLabel}'),
             ),
           ],
         );
@@ -299,7 +301,7 @@ class _AssessmentTemplateGuideState extends State<AssessmentTemplateGuide> {
             child: FilledButton.icon(
               onPressed: _showPreview,
               icon: const Icon(Icons.preview_outlined),
-              label: const Text('Prévisualiser le bilan'),
+              label: Text('Prévisualiser le ${widget.documentLabel}'),
             ),
           ),
         ],

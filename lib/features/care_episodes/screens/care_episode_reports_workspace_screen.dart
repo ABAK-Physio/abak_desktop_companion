@@ -40,7 +40,6 @@ import 'care_episode_reports_workspace/widgets/soap_draft_card.dart';
 import 'care_episode_reports_workspace/widgets/document_title_dialog.dart';
 import 'package:abak_desktop_companion/features/care_episodes/data/assessment_template_draft_repository.dart';
 import 'package:abak_desktop_companion/features/care_episodes/models/assessment_templates/assessment_template_answers.dart';
-import 'care_episode_reports_workspace/widgets/assessment_template_selector.dart';
 import '../data/assessment_document_data_builder.dart';
 import '../data/report_document_data_builder.dart';
 import '../services/report_docx_service.dart';
@@ -2388,7 +2387,13 @@ class _CareEpisodeReportsWorkspaceScreenState
       return false;
     }
 
-    if (_documentType != ClinicalDocumentType.assessment || _draft == null) {
+    final isAssessment =
+        _documentType == ClinicalDocumentType.assessment && _draft != null;
+
+    final isReport =
+        _documentType == ClinicalDocumentType.report && _reportDraft != null;
+
+    if (!isAssessment && !isReport) {
       return false;
     }
 
@@ -2404,15 +2409,17 @@ class _CareEpisodeReportsWorkspaceScreenState
       return true;
     }
 
+    final documentLabel = isReport ? 'rapport' : 'bilan';
+
     final choice = await showDialog<String>(
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
-          title: const Text('Le bilan contient déjà du texte'),
-          content: const Text(
+          title: Text('Le $documentLabel contient déjà du texte'),
+          content: Text(
             'Souhaitez-vous ajouter le contenu généré '
-            'à la suite du bilan actuel ou remplacer '
-            'le contenu existant ?',
+                'à la suite du $documentLabel actuel ou remplacer '
+                'le contenu existant ?',
           ),
           actions: [
             TextButton(
@@ -2462,24 +2469,45 @@ class _CareEpisodeReportsWorkspaceScreenState
   }
 
   Future<void> _openAssessmentTemplateGuide() async {
-    final template = await showDialog<AssessmentTemplate>(
+    final isReport = _documentType == ClinicalDocumentType.report;
+
+    final templates = isReport
+        ? [
+      DefaultAssessmentTemplates.respiratoryReport,
+    ]
+        : [
+      DefaultAssessmentTemplates.musculoskeletalGeneral,
+      DefaultAssessmentTemplates.musculoskeletalUpperLimb,
+      DefaultAssessmentTemplates.hyperventilation,
+    ];
+
+    final selectedTemplate = await showDialog<AssessmentTemplate>(
       context: context,
-      builder: (dialogContext) {
-        return AssessmentTemplateSelector(
-          templates: const [
-            DefaultAssessmentTemplates.musculoskeletalGeneral,
-            DefaultAssessmentTemplates.musculoskeletalUpperLimb,
-            DefaultAssessmentTemplates.hyperventilation,
-          ]
+      builder: (context) {
+        return SimpleDialog(
+          title: Text(
+            isReport
+                ? 'Choisir un modèle de rapport'
+                : 'Choisir un modèle de bilan',
+          ),
+          children: [
+            for (final template in templates)
+              SimpleDialogOption(
+                onPressed: () {
+                  Navigator.of(context).pop(template);
+                },
+                child: Text(template.name),
+              ),
+          ],
         );
       },
     );
 
-    if (template == null || !mounted) {
+    if (selectedTemplate == null || !mounted) {
       return;
     }
 
-    await _openAssessmentTemplateGuideFor(template);
+    await _openAssessmentTemplateGuideFor(selectedTemplate);
   }
 
   Future<void> _openAssessmentTemplateGuideFor(
@@ -2492,14 +2520,19 @@ class _CareEpisodeReportsWorkspaceScreenState
 
     if (!mounted) return;
 
+    final documentLabel =
+    _documentType == ClinicalDocumentType.report
+        ? 'rapport'
+        : 'bilan';
+
     if (savedAnswers != null) {
       final choice = await showDialog<String>(
         context: context,
         builder: (dialogContext) {
           return AlertDialog(
             title: const Text('Brouillon existant'),
-            content: const Text(
-              'Un brouillon existe déjà pour ce modèle de bilan.',
+            content: Text(
+              'Un brouillon existe déjà pour ce modèle de $documentLabel.',
             ),
             actions: [
               TextButton(
@@ -2509,7 +2542,7 @@ class _CareEpisodeReportsWorkspaceScreenState
               TextButton(
                 onPressed: () =>
                     Navigator.of(dialogContext).pop('new'),
-                child: const Text('Nouveau bilan'),
+                child: Text('Nouveau $documentLabel'),
               ),
               FilledButton(
                 onPressed: () =>
@@ -2550,6 +2583,10 @@ class _CareEpisodeReportsWorkspaceScreenState
               initialAnswers: savedAnswers,
               onAnswersChanged: _scheduleAssessmentTemplateSave,
               onInsertGeneratedText: _insertAssessmentTemplateText,
+              documentLabel:
+              _documentType == ClinicalDocumentType.report
+                  ? 'rapport'
+                  : 'bilan',
             ),
           ),
         );

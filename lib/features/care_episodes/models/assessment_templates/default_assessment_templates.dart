@@ -829,4 +829,110 @@ class DefaultAssessmentTemplates {
       ),
     ],
   );
+  static const respiratoryReport = AssessmentTemplate(
+    id: 'respiratory_report',
+    name: 'Rapport SHV',
+    description: 'Rapport de suivi respiratoire / syndrome d’hyperventilation',
+    sections: [
+      AssessmentTemplateSection(
+        id: 'medical_history',
+        title: 'Contexte médical',
+        fields: [
+          AssessmentTemplateField(
+            id: 'atcd',
+            label: 'ATCD',
+            type: AssessmentTemplateFieldType.longText,
+          ),
+          AssessmentTemplateField(
+            id: 'hdm',
+            label: 'H.D.M',
+            type: AssessmentTemplateFieldType.longText,
+          ),
+        ],
+      ),
+      AssessmentTemplateSection(
+        id: 'current_symptoms',
+        title: 'Symptômes actuels',
+        fields: [
+          AssessmentTemplateField(
+            id: 'current_symptoms',
+            label: 'Actuellement ses symptômes sont les suivants',
+            type: AssessmentTemplateFieldType.longText,
+          ),
+        ],
+      ),
+      AssessmentTemplateSection(
+        id: 'care_objectives',
+        title: 'Objectifs de prise en charge',
+        fields: [
+          AssessmentTemplateField(
+            id: 'care_objectives',
+            label: 'Objectifs de prise en charge',
+            type: AssessmentTemplateFieldType.longText,
+          ),
+        ],
+      ),
+      AssessmentTemplateSection(
+        id: 'measured_values',
+        title: 'Valeurs chiffrées',
+        fields: [
+          AssessmentTemplateField(
+            id: 'borg_dyspnea',
+            label: 'Borg dyspnée lors de l’activité',
+            type: AssessmentTemplateFieldType.shortText,
+          ),
+          AssessmentTemplateField(
+            id: 'nijmegen_score',
+            label: 'Score Nijmegen',
+            type: AssessmentTemplateFieldType.shortText,
+          ),
+          AssessmentTemplateField(
+            id: 'nijmegen_information',
+            label: 'Suspicion de SHV si score > 20',
+            type: AssessmentTemplateFieldType.information,
+          ),
+          AssessmentTemplateField(
+            id: 'max_apnea',
+            label: 'Apnée max',
+            type: AssessmentTemplateFieldType.shortText,
+          ),
+          AssessmentTemplateField(
+            id: 'max_apnea_information',
+            label: 'Score moyen population générale = 30 sec',
+            type: AssessmentTemplateFieldType.information,
+          ),
+          AssessmentTemplateField(
+            id: 'mdp',
+            label: 'MDP',
+            type: AssessmentTemplateFieldType.shortText,
+          ),
+          AssessmentTemplateField(
+            id: 'thvp',
+            label: 'THVP',
+            type: AssessmentTemplateFieldType.shortText,
+          ),
+          AssessmentTemplateField(
+            id: 'thvp_information',
+            label: 'Test Hyperventilation provoqué (+ si reproduit les symptômes)',
+            type: AssessmentTemplateFieldType.information,
+          ),
+          AssessmentTemplateField(
+            id: 'pim',
+            label: 'PIM (cmH2O)',
+            type: AssessmentTemplateFieldType.shortText,
+          ),
+          AssessmentTemplateField(
+            id: 'diaphragm_control',
+            label: 'Contrôle neuro-moteur du m. diaphragme',
+            type: AssessmentTemplateFieldType.shortText,
+          ),
+          AssessmentTemplateField(
+            id: 'effort_tolerance',
+            label: 'Tolérance à l’effort - TLC3 ou TDM6',
+            type: AssessmentTemplateFieldType.shortText,
+          ),
+        ],
+      ),
+    ],
+  );
 }

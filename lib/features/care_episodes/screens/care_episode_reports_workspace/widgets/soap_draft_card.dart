@@ -225,11 +225,7 @@ class SoapDraftCard extends StatelessWidget {
                 SizedBox(
                   width: 240,
                   child: OutlinedButton.icon(
-                    onPressed:
-                    documentType == ClinicalDocumentType.assessment &&
-                        draftReady
-                        ? onOpenTemplateGuide
-                        : null,
+                    onPressed: draftReady ? onOpenTemplateGuide : null,
                     icon: const Icon(Icons.description_outlined),
                     label: Text(documentType.templateLabel),
                   ),
