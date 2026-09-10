@@ -14,6 +14,7 @@ class ReportDocumentData {
   final DateTime printedAt;
 
   final String? authorName;
+  final String? recipientText;
 
   final String patientLastName;
   final String patientFirstName;
@@ -59,6 +60,7 @@ class ReportDocumentData {
     required this.reportDate,
     required this.printedAt,
     required this.authorName,
+    required this.recipientText,
     required this.patientLastName,
     required this.patientFirstName,
     required this.patientSex,

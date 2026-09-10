@@ -21,8 +21,8 @@ class SoapDraftCard extends StatelessWidget {
   final VoidCallback? onOpenTemplateGuide;
   final Future<Practitioner?>? documentAuthorFuture;
   final VoidCallback onDocumentAuthorPressed;
-  final String? assessmentRecipientText;
-  final VoidCallback onAssessmentRecipientPressed;
+  final String? documentRecipientText;
+  final VoidCallback onDocumentRecipientPressed;
 
 
   const SoapDraftCard({
@@ -41,8 +41,8 @@ class SoapDraftCard extends StatelessWidget {
     required this.onOpenTemplateGuide,
     required this.documentAuthorFuture,
     required this.onDocumentAuthorPressed,
-    required this.assessmentRecipientText,
-    required this.onAssessmentRecipientPressed,
+    required this.documentRecipientText,
+    required this.onDocumentRecipientPressed,
   });
 
   @override
@@ -123,7 +123,7 @@ class SoapDraftCard extends StatelessWidget {
                   ),
                   const SizedBox(width: 8),
                   TextButton(
-                    onPressed: onAssessmentRecipientPressed,
+                    onPressed: onDocumentRecipientPressed,
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -133,10 +133,10 @@ class SoapDraftCard extends StatelessWidget {
                         ),
                         const SizedBox(width: 8),
                         Text(
-                          assessmentRecipientText == null ||
-                              assessmentRecipientText!.trim().isEmpty
+                          documentRecipientText == null ||
+                              documentRecipientText!.trim().isEmpty
                               ? 'Destinataire(s) : Non renseigné'
-                              : 'Destinataire(s) : $assessmentRecipientText',
+                              : 'Destinataire(s) : $documentRecipientText',
                         ),
                         const SizedBox(width: 6),
                         const Icon(

@@ -8,7 +8,6 @@ import '../models/report_document_data.dart';
 
 class ReportDocxService {
   Future<Uint8List> buildDocx({
-    required List<Uint8List> chartPngBytes,
     required ReportDocumentData data,
     Uint8List? establishmentLogoBytes,
     String? establishmentLogoExtension,
@@ -16,8 +15,6 @@ class ReportDocxService {
     final hasLogo =
         establishmentLogoBytes != null &&
             establishmentLogoExtension != null;
-
-    final imageOffset = hasLogo ? 1 : 0;
 
     final documentXml = _buildDocumentXml(
       data,
@@ -31,7 +28,6 @@ class ReportDocxService {
         _textFile(
           'word/_rels/document.xml.rels',
           _buildDocumentRelsXml(
-            chartImageCount: chartPngBytes.length,
             logoExtension: hasLogo
                 ? establishmentLogoExtension
                 : null,
@@ -47,18 +43,6 @@ class ReportDocxService {
           'word/media/image1.$establishmentLogoExtension',
           establishmentLogoBytes.length,
           establishmentLogoBytes,
-        ),
-      );
-    }
-
-    for (var i = 0; i < chartPngBytes.length; i++) {
-      final imageBytes = chartPngBytes[i];
-
-      archive.addFile(
-        ArchiveFile(
-          'word/media/image${i + 1 + imageOffset}.png',
-          imageBytes.length,
-          imageBytes,
         ),
       );
     }
@@ -99,310 +83,74 @@ class ReportDocxService {
       ),
     );
 
-    buffer.write(_paragraph('RAPPORT', style: 'Title'));
+    final reportCity = _hasValue(data.establishmentCity)
+        ? data.establishmentCity!.trim()
+        : '';
 
-    _writeLine(
-      buffer,
-      'Réalisé le',
-      _formatDate(data.reportDate),
-    );
+    final reportDateLabel = _formatDate(data.reportDate);
 
-    _writeLine(
-      buffer,
-      'Imprimé le',
-      _formatDate(data.printedAt),
-    );
-
-    _writeOptionalLine(
-      buffer,
-      'Rédacteur',
-      data.authorName,
-    );
-
-    buffer.write(_paragraph('Patient', style: 'Heading1'));
-
-    _writeLine(buffer, 'Nom', data.patientLastName);
-    _writeLine(buffer, 'Prénom', data.patientFirstName);
-
-    _writeOptionalLine(buffer, 'Sexe', data.patientSex);
-
-    if (data.patientAgeYears != null) {
-      _writeLine(
-        buffer,
-        'Âge',
-        '${data.patientAgeYears} ans',
-      );
-    }
-
-    _writeOptionalLine(
-      buffer,
-      'Pathologie',
-      data.pathologyLabel,
-    );
-
-    if (data.careEpisodeOpenedAt != null) {
-      _writeLine(
-        buffer,
-        'Prise en charge ouverte le',
-        _formatDate(data.careEpisodeOpenedAt!),
-      );
-    }
-
-    _writeOptionalLine(
-      buffer,
-      'Kiné référent',
-      data.referringPractitionerName,
-    );
-
-    buffer.write(
-      _paragraph(
-        'Informations sur le patient',
-        style: 'Heading1',
-      ),
-    );
-
-    _writeOptionalLine(
-      buffer,
-      'Côté dominant',
-      data.dominantSide,
-    );
-
-    _writeOptionalLine(
-      buffer,
-      'Profession',
-      data.profession,
-    );
-
-    _writeOptionalLine(
-      buffer,
-      'Activité sportive',
-      data.sport,
-    );
-
-    if (_hasValue(data.heightCm)) {
-      _writeLine(
-        buffer,
-        'Taille',
-        '${data.heightCm!.trim()} cm',
-      );
-    }
-
-    if (_hasValue(data.weightKg)) {
-      _writeLine(
-        buffer,
-        'Poids',
-        '${data.weightKg!.trim()} kg',
-      );
-    }
-
-    if (_hasCorrespondent(data)) {
+    if (reportCity.isNotEmpty) {
       buffer.write(
         _paragraph(
-          'Correspondant externe',
-          style: 'Heading1',
+          '$reportCity le $reportDateLabel',
         ),
       );
-
-      _writeOptionalLine(
-        buffer,
-        'Nom',
-        data.prescribingCorrespondentName,
-      );
-
-      _writeOptionalLine(
-        buffer,
-        'Profession',
-        data.prescribingCorrespondentProfession,
-      );
-
-      _writeOptionalLine(
-        buffer,
-        'Spécialité',
-        data.prescribingCorrespondentSpecialty,
-      );
-
-      _writeOptionalLine(
-        buffer,
-        'Adresse',
-        data.prescribingCorrespondentAddressLine1,
-      );
-
-      _writeOptionalLine(
-        buffer,
-        'Complément',
-        data.prescribingCorrespondentAddressLine2,
-      );
-
-      final locality = [
-        data.prescribingCorrespondentPostalCode,
-        data.prescribingCorrespondentCity,
-      ]
-          .where(
-            (value) => value != null && value.trim().isNotEmpty,
-      )
-          .map((value) => value!.trim())
-          .join(' ');
-
-      if (locality.isNotEmpty) {
-        _writeLine(
-          buffer,
-          'Ville',
-          locality,
-        );
-      }
-
-      _writeOptionalLine(
-        buffer,
-        'Email',
-        data.prescribingCorrespondentEmail,
-      );
-
-      _writeOptionalLine(
-        buffer,
-        'Téléphone',
-        data.prescribingCorrespondentPhone,
+    } else {
+      buffer.write(
+        _paragraph(
+          reportDateLabel,
+        ),
       );
     }
 
+    buffer.write(_paragraph(''));
+
+    final patientName = [
+      data.patientFirstName.trim(),
+      data.patientLastName.trim(),
+    ].where((value) => value.isNotEmpty).join(' ');
+
+    final correspondentName =
+    _hasValue(data.recipientText)
+        ? data.recipientText!.trim()
+        : 'Docteur';
+
+    final introduction = StringBuffer()
+      ..write(
+        'Cher $correspondentName, voici les conclusions du bilan réalisé ce jour',
+      );
+
+    if (patientName.isNotEmpty) {
+      introduction.write(
+        ' avec $patientName',
+      );
+    }
+
+    introduction.write('.');
+
     buffer.write(
       _paragraph(
-        data.reportTitle,
-        style: 'Heading1',
+        introduction.toString(),
       ),
     );
 
     if (_hasValue(data.reportText)) {
       buffer.write(
-        _paragraph(data.reportText),
+        _buildStructuredReportText(data.reportText),
       );
     }
 
-    var imageIndex = hasLogo ? 1 : 0;
+    buffer.write(
+      _paragraph('Très cordialement'),
+    );
 
-    if (data.tests.isNotEmpty) {
+    if (_hasValue(data.authorName)) {
       buffer.write(
         _paragraph(
-          'Résultats des tests sélectionnés',
-          style: 'Heading1',
+          data.authorName!.trim(),
+          bold: true,
         ),
       );
-
-      for (final test in data.tests) {
-        buffer.write(
-          _paragraph(
-            test.title,
-            style: 'Heading2',
-          ),
-        );
-
-        if (test.testDate != null) {
-          _writeLine(
-            buffer,
-            'Réalisé le',
-            _formatDate(test.testDate!),
-          );
-        }
-
-        final dossierAge = data.patientAgeYears;
-        final testAge = test.declaredAgeYears;
-
-        if (testAge != null) {
-          if (dossierAge == null || testAge != dossierAge) {
-            _writeLine(
-              buffer,
-              'Âge déclaré lors du test',
-              '$testAge ans',
-            );
-          }
-        }
-
-        final dossierPathology = data.pathologyLabel?.trim();
-        final testPathology = test.pathologyLabel?.trim();
-
-        if (testPathology != null && testPathology.isNotEmpty) {
-          final samePathology =
-              dossierPathology != null &&
-                  dossierPathology.isNotEmpty &&
-                  dossierPathology.toLowerCase() ==
-                      testPathology.toLowerCase();
-
-          if (!samePathology) {
-            _writeLine(
-              buffer,
-              'Pathologie lors du test',
-              testPathology,
-            );
-
-            if (dossierPathology != null &&
-                dossierPathology.isNotEmpty) {
-              _writeLine(
-                buffer,
-                'Pathologie lors du rattachement',
-                dossierPathology,
-              );
-            }
-          }
-        }
-
-        if (_hasValue(test.resultText)) {
-          buffer.write(
-            _paragraph(test.resultText),
-          );
-        }
-
-        for (var i = 0; i < test.chartSeries.length; i++) {
-          imageIndex++;
-
-          buffer.write(
-            _imageParagraph(
-              relationshipId: 'rId$imageIndex',
-              drawingId: imageIndex,
-              widthEmu: 5486400,
-              heightEmu: 2743200,
-            ),
-          );
-        }
-      }
-    }
-
-    if (data.notes.isNotEmpty) {
-      buffer.write(
-        _paragraph(
-          'Notes de suivi sélectionnées',
-          style: 'Heading1',
-        ),
-      );
-
-      for (final note in data.notes) {
-        final titleParts = <String>[];
-
-        if (note.noteDate != null) {
-          titleParts.add(
-            _formatDate(note.noteDate!),
-          );
-        }
-
-        if (_hasValue(note.title)) {
-          titleParts.add(
-            note.title.trim(),
-          );
-        }
-
-        if (titleParts.isNotEmpty) {
-          buffer.write(
-            _paragraph(
-              titleParts.join(' — '),
-              bold: true,
-            ),
-          );
-        }
-
-        if (_hasValue(note.content)) {
-          buffer.write(
-            _paragraph(note.content),
-          );
-        }
-      }
     }
 
       buffer.write('''
@@ -423,6 +171,173 @@ class ReportDocxService {
   ''');
 
     return buffer.toString();
+  }
+
+  String _buildStructuredReportText(String text) {
+    final buffer = StringBuffer();
+
+    final lines = text
+        .split('\n')
+        .map((line) => line.trim())
+        .where((line) => line.isNotEmpty)
+        .toList();
+
+    final valueLines = <String>[];
+    var inMeasuredValues = false;
+
+    for (final line in lines) {
+      if (line == 'VALEURS CHIFFRÉES') {
+        inMeasuredValues = true;
+
+        buffer.write(
+          _paragraph(
+            line,
+            bold: true,
+          ),
+        );
+
+        continue;
+      }
+
+      if (inMeasuredValues) {
+        valueLines.add(line);
+        continue;
+      }
+
+      final isSectionTitle =
+          line == line.toUpperCase() &&
+              !line.contains(':');
+
+      if (isSectionTitle) {
+        buffer.write(
+          _paragraph(
+            line,
+            bold: true,
+          ),
+        );
+        continue;
+      }
+
+      buffer.write(
+        _paragraph(line),
+      );
+    }
+
+    if (valueLines.isNotEmpty) {
+      buffer.write(
+        _buildMeasuredValuesTable(valueLines),
+      );
+    }
+
+    return buffer.toString();
+  }
+
+  String _buildMeasuredValuesTable(List<String> lines) {
+    final values = <String, String>{};
+
+    for (final line in lines) {
+      final separatorIndex = line.indexOf(' : ');
+
+      if (separatorIndex < 0) {
+        continue;
+      }
+
+      final label = line.substring(0, separatorIndex).trim();
+      final value = line.substring(separatorIndex + 3).trim();
+
+      if (label.isNotEmpty && value.isNotEmpty) {
+        values[label] = value;
+      }
+    }
+
+    const rows = [
+      (
+      'Borg dyspnée lors de l’activité',
+      '',
+      ),
+      (
+      'Score Nijmegen',
+      'Suspicion de SHV si score > 20',
+      ),
+      (
+      'Apnée max',
+      'Score moyen population générale = 30 sec',
+      ),
+      (
+      'MDP',
+      '',
+      ),
+      (
+      'THVP',
+      'Test Hyperventilation provoqué '
+          '(+ si reproduit les symptômes)',
+      ),
+      (
+      'PIM (cmH2O)',
+      '',
+      ),
+      (
+      'Contrôle neuro-moteur du m. diaphragme',
+      '',
+      ),
+      (
+      'Tolérance à l’effort - TLC3 ou TDM6',
+      '',
+      ),
+    ];
+
+    final buffer = StringBuffer();
+
+    buffer.write('''
+<w:tbl>
+  <w:tblPr>
+    <w:tblW w:w="9400" w:type="dxa"/>
+    <w:tblBorders>
+      <w:top w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+      <w:left w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+      <w:bottom w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+      <w:right w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+      <w:insideH w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+      <w:insideV w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+    </w:tblBorders>
+  </w:tblPr>
+
+  <w:tblGrid>
+    <w:gridCol w:w="3300"/>
+    <w:gridCol w:w="2100"/>
+    <w:gridCol w:w="4000"/>
+  </w:tblGrid>
+''');
+
+    for (final row in rows) {
+      final label = row.$1;
+      final information = row.$2;
+      final value = values[label] ?? '';
+
+      buffer.write('''
+  <w:tr>
+    ${_tableCell(label, 3300)}
+    ${_tableCell(value, 2100)}
+    ${_tableCell(information, 4000)}
+  </w:tr>
+''');
+    }
+
+    buffer.write('</w:tbl>');
+
+    return buffer.toString();
+  }
+
+  String _tableCell(String text, int width) {
+    return '''
+<w:tc>
+  <w:tcPr>
+    <w:tcW w:w="$width" w:type="dxa"/>
+    <w:vAlign w:val="top"/>
+  </w:tcPr>
+  ${_paragraph(text)}
+</w:tc>
+''';
   }
 
   String _buildEstablishmentHeader(
@@ -536,42 +451,6 @@ class ReportDocxService {
   </w:tr>
 </w:tbl>
 ''';
-  }
-
-  bool _hasCorrespondent(ReportDocumentData data) {
-    return _hasValue(data.prescribingCorrespondentName) ||
-        _hasValue(data.prescribingCorrespondentProfession) ||
-        _hasValue(data.prescribingCorrespondentSpecialty) ||
-        _hasValue(data.prescribingCorrespondentAddressLine1) ||
-        _hasValue(data.prescribingCorrespondentAddressLine2) ||
-        _hasValue(data.prescribingCorrespondentPostalCode) ||
-        _hasValue(data.prescribingCorrespondentCity) ||
-        _hasValue(data.prescribingCorrespondentEmail) ||
-        _hasValue(data.prescribingCorrespondentPhone);
-  }
-
-  void _writeLine(
-      StringBuffer buffer,
-      String label,
-      String value,
-      ) {
-    buffer.write(
-      _paragraph('$label : $value'),
-    );
-  }
-
-  void _writeOptionalLine(
-      StringBuffer buffer,
-      String label,
-      String? value,
-      ) {
-    if (!_hasValue(value)) return;
-
-    _writeLine(
-      buffer,
-      label,
-      value!.trim(),
-    );
   }
 
   bool _hasValue(String? value) {
@@ -710,7 +589,6 @@ const String _rootRelsXml = '''
 ''';
 
 String _buildDocumentRelsXml({
-  required int chartImageCount,
   String? logoExtension,
 }) {
   final buffer = StringBuffer()
@@ -726,7 +604,7 @@ String _buildDocumentRelsXml({
         'Target="styles.xml"/>',
   );
 
-  var relationshipIndex = 1;
+  const relationshipIndex = 1;
 
   if (logoExtension != null) {
     buffer.writeln(
@@ -735,22 +613,6 @@ String _buildDocumentRelsXml({
           'Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" '
           'Target="media/image1.$logoExtension"/>',
     );
-
-    relationshipIndex++;
-  }
-
-  for (var i = 0; i < chartImageCount; i++) {
-    final imageIndex =
-        i + 1 + (logoExtension != null ? 1 : 0);
-
-    buffer.writeln(
-      '  <Relationship '
-          'Id="rId$relationshipIndex" '
-          'Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" '
-          'Target="media/image$imageIndex.png"/>',
-    );
-
-    relationshipIndex++;
   }
 
   buffer.writeln('</Relationships>');

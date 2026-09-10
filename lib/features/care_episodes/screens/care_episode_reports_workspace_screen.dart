@@ -200,13 +200,7 @@ class _CareEpisodeReportsWorkspaceScreenState
           final pngBytes = await const AssessmentChartImageService().buildPng(
             series: series,
           );
-
           chartPngBytes.add(pngBytes);
-
-          debugPrint(
-            '[DOCX] Graphique généré : '
-            '${test.title} / ${series.label}',
-          );
         }
       }
 
@@ -219,15 +213,15 @@ class _CareEpisodeReportsWorkspaceScreenState
 
       final file = assessment.docxFileName == null || createNewDocx
           ? await exportService.exportToDocxFile(
-              bytes: bytes,
-              directory: Directory(selectedDirectory),
-              fileName: 'Bilan_${widget.patientName}_${assessment.title}',
-            )
+        bytes: bytes,
+        directory: Directory(selectedDirectory),
+        fileName: 'Bilan_${widget.patientName}_${assessment.title}',
+      )
           : await exportService.overwriteDocxFile(
-              bytes: bytes,
-              directory: Directory(selectedDirectory),
-              fileName: assessment.docxFileName!,
-            );
+        bytes: bytes,
+        directory: Directory(selectedDirectory),
+        fileName: assessment.docxFileName!,
+      );
 
       final updatedAssessment = CareEpisodeAssessment(
         assessmentId: assessment.assessmentId,
@@ -395,7 +389,6 @@ class _CareEpisodeReportsWorkspaceScreenState
 
       final bytes = await ReportDocxService().buildDocx(
         data: data,
-        chartPngBytes: chartPngBytes,
         establishmentLogoBytes: establishmentLogoBytes,
         establishmentLogoExtension: establishmentLogoExtension,
       );
@@ -419,6 +412,7 @@ class _CareEpisodeReportsWorkspaceScreenState
         careEpisodeId: report.careEpisodeId,
         sourceAssessmentId: report.sourceAssessmentId,
         authorPractitionerId: report.authorPractitionerId,
+        recipientText: report.recipientText,
         docxFileName: file.uri.pathSegments.last,
         title: report.title,
         contentJson: report.contentJson,
@@ -718,6 +712,7 @@ class _CareEpisodeReportsWorkspaceScreenState
       careEpisodeId: report.careEpisodeId,
       sourceAssessmentId: report.sourceAssessmentId,
       authorPractitionerId: selectedPractitionerId,
+      recipientText: report.recipientText,
       docxFileName: report.docxFileName,
       title: report.title,
       contentJson: report.contentJson,
@@ -810,6 +805,82 @@ class _CareEpisodeReportsWorkspaceScreenState
     });
   }
 
+  Future<void> _editReportRecipient() async {
+    final draft = _reportDraft;
+
+    if (draft == null) {
+      return;
+    }
+
+    final controller = TextEditingController(text: draft.recipientText ?? '');
+
+    final recipientText = await showDialog<String?>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: const Text('Destinataire(s)'),
+          content: SizedBox(
+            width: 420,
+            child: TextField(
+              controller: controller,
+              autofocus: true,
+              decoration: const InputDecoration(
+                labelText: 'Destinataire(s)',
+                border: OutlineInputBorder(),
+              ),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(dialogContext).pop();
+              },
+              child: const Text('Annuler'),
+            ),
+            FilledButton(
+              onPressed: () {
+                Navigator.of(dialogContext).pop(controller.text.trim());
+              },
+              child: const Text('Valider'),
+            ),
+          ],
+        );
+      },
+    );
+
+    controller.dispose();
+
+    if (recipientText == null || !mounted) {
+      return;
+    }
+
+    final updatedDraft = CareEpisodeReport(
+      reportId: draft.reportId,
+      careEpisodeId: draft.careEpisodeId,
+      sourceAssessmentId: draft.sourceAssessmentId,
+      authorPractitionerId: draft.authorPractitionerId,
+      recipientText: recipientText.isEmpty ? null : recipientText,
+      docxFileName: draft.docxFileName,
+      title: draft.title,
+      contentJson: draft.contentJson,
+      status: draft.status,
+      reportDate: draft.reportDate,
+      createdAt: draft.createdAt,
+      updatedAt: DateTime.now().millisecondsSinceEpoch,
+      archivedAt: draft.archivedAt,
+    );
+
+    await _reportRepository.updateReport(updatedDraft);
+
+    if (!mounted) {
+      return;
+    }
+
+    setState(() {
+      _reportDraft = updatedDraft;
+    });
+  }
+
   Future<void> _saveReportDraft() async {
     final report = _reportDraft;
 
@@ -822,6 +893,7 @@ class _CareEpisodeReportsWorkspaceScreenState
       careEpisodeId: report.careEpisodeId,
       sourceAssessmentId: report.sourceAssessmentId,
       authorPractitionerId: report.authorPractitionerId,
+      recipientText: report.recipientText,
       docxFileName: report.docxFileName,
       title: report.title,
       contentJson: _draftController.text,
@@ -943,6 +1015,7 @@ class _CareEpisodeReportsWorkspaceScreenState
             careEpisodeId: report.careEpisodeId,
             sourceAssessmentId: report.sourceAssessmentId,
             authorPractitionerId: report.authorPractitionerId,
+            recipientText: report.recipientText,
             docxFileName: report.docxFileName,
             title: '',
             contentJson: '',
@@ -1230,6 +1303,7 @@ class _CareEpisodeReportsWorkspaceScreenState
         careEpisodeId: report.careEpisodeId,
         sourceAssessmentId: report.sourceAssessmentId,
         authorPractitionerId: report.authorPractitionerId,
+        recipientText: report.recipientText,
         docxFileName: null,
         title: title,
         contentJson: report.contentJson,
@@ -2040,6 +2114,7 @@ class _CareEpisodeReportsWorkspaceScreenState
       authorPractitionerId:
       report.authorPractitionerId ??
           currentReferringPractitioner?.practitionerId,
+      recipientText: report.recipientText,
       docxFileName: report.docxFileName,
       title: title,
       contentJson: _draftController.text,
@@ -2894,13 +2969,14 @@ class _CareEpisodeReportsWorkspaceScreenState
                                   _documentType == ClinicalDocumentType.assessment
                                       ? _selectAssessmentAuthor
                                       : _selectReportAuthor,
-                                  assessmentRecipientText:
-                                  _documentType ==
-                                      ClinicalDocumentType.assessment
+                                  documentRecipientText:
+                                  _documentType == ClinicalDocumentType.assessment
                                       ? _draft?.recipientText
-                                      : null,
-                                  onAssessmentRecipientPressed:
-                                  _editAssessmentRecipient,
+                                      : _reportDraft?.recipientText,
+                                  onDocumentRecipientPressed:
+                                  _documentType == ClinicalDocumentType.assessment
+                                      ? _editAssessmentRecipient
+                                      : _editReportRecipient,
                                   onDocumentTypeChanged: (documentType) async {
                                     switch (documentType) {
                                       case ClinicalDocumentType.assessment:

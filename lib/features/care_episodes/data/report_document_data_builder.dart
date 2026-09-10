@@ -195,6 +195,7 @@ class ReportDocumentDataBuilder {
       reportDate: reportDate,
       printedAt: DateTime.now(),
       authorName: _clean(authorPractitioner?.displayName),
+      recipientText: _clean(report.recipientText),
       patientLastName: patient.lastName,
       patientFirstName: patient.firstName,
       patientSex: _sexLabel(patient.sexCode),

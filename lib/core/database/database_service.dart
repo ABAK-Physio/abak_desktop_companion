@@ -61,7 +61,7 @@ class DatabaseService {
 
     return openDatabase(
       path,
-      version: 27, //////////////////////
+      version: 28, //////////////////////
       onCreate: (db, version) async {
         await _createAllTables(db);
       },
@@ -244,6 +244,14 @@ class DatabaseService {
         }
         if (oldVersion < 27) {
           await _createCareEpisodeReportSelectionTables(db);
+        }
+        if (oldVersion < 28) {
+          await _addColumnIfMissing(
+            db,
+            'care_episode_reports',
+            'recipient_text',
+            'TEXT NULL',
+          );
         }
       },
     );
@@ -815,30 +823,31 @@ CREATE TABLE care_episode_notes (
 
   static Future<void> _createCareEpisodeReportTables(Database db) async {
     await db.execute('''
-      CREATE TABLE care_episode_reports (
-        report_id TEXT PRIMARY KEY,
-        care_episode_id TEXT NOT NULL,
-        source_assessment_id TEXT NULL,
-        author_practitioner_id TEXT NULL,
-        docx_file_name TEXT NULL,
+  CREATE TABLE care_episode_reports (
+    report_id TEXT PRIMARY KEY,
+    care_episode_id TEXT NOT NULL,
+    source_assessment_id TEXT NULL,
+    author_practitioner_id TEXT NULL,
+    recipient_text TEXT NULL,
+    docx_file_name TEXT NULL,
 
-        title TEXT NOT NULL,
-        content_json TEXT NOT NULL,
+    title TEXT NOT NULL,
+    content_json TEXT NOT NULL,
 
-        status TEXT NOT NULL DEFAULT 'draft',
+    status TEXT NOT NULL DEFAULT 'draft',
 
-        report_date INTEGER NOT NULL,
-        created_at INTEGER NOT NULL,
-        updated_at INTEGER NULL,
-        archived_at INTEGER NULL,
+    report_date INTEGER NOT NULL,
+    created_at INTEGER NOT NULL,
+    updated_at INTEGER NULL,
+    archived_at INTEGER NULL,
 
-        FOREIGN KEY(care_episode_id)
-          REFERENCES care_episodes(care_episode_id),
+    FOREIGN KEY(care_episode_id)
+      REFERENCES care_episodes(care_episode_id),
 
-        FOREIGN KEY(source_assessment_id)
-          REFERENCES care_episode_assessments(assessment_id)
-      )
-    ''');
+    FOREIGN KEY(source_assessment_id)
+      REFERENCES care_episode_assessments(assessment_id)
+  )
+''');
 
     await db.execute('''
       CREATE INDEX idx_care_episode_reports_episode_id
