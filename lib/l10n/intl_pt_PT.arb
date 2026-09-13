@@ -1,4 +1,11 @@
 {
+  "walkingAid_label": "Acessório utilizado",
+  "walkingAid_none": "Nenhum",
+  "walkingAid_cane": "Cana simples",
+  "walkingAid_walkerTwoWheels": "Andador de duas rodas",
+  "walkingAid_rollatorFourWheels": "Andador de 4 rodas",
+  "walkingAid_other": "Outro",
+
   "@@locale": "pt_PT",
   "abakWhisperSpeechProvider_name": "ABAK Dictado por voz",
   "assessmentDocxService_age": "Idade",

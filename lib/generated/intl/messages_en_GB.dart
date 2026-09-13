@@ -1524,6 +1524,17 @@ class MessageLookup extends MessageLookupByLibrary {
         "vitaleIdentity_unavailable":
             MessageLookupByLibrary.simpleMessage("Not available"),
         "vitaleIdentity_useForPatientCreation":
-            MessageLookupByLibrary.simpleMessage("Use this to create a patient")
+            MessageLookupByLibrary.simpleMessage(
+                "Use this to create a patient"),
+        "walkingAid_cane":
+            MessageLookupByLibrary.simpleMessage("Single-piece cane"),
+        "walkingAid_label":
+            MessageLookupByLibrary.simpleMessage("Accessory used"),
+        "walkingAid_none": MessageLookupByLibrary.simpleMessage("None"),
+        "walkingAid_other": MessageLookupByLibrary.simpleMessage("Other"),
+        "walkingAid_rollatorFourWheels":
+            MessageLookupByLibrary.simpleMessage("4-Wheel Rollator"),
+        "walkingAid_walkerTwoWheels":
+            MessageLookupByLibrary.simpleMessage("2-Wheel Walker")
       };
 }

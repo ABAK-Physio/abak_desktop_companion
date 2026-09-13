@@ -1,4 +1,11 @@
 {
+  "walkingAid_label": "Accessory used",
+  "walkingAid_none": "None",
+  "walkingAid_cane": "Single-piece cane",
+  "walkingAid_walkerTwoWheels": "2-Wheel Walker",
+  "walkingAid_rollatorFourWheels": "4-Wheel Rollator",
+  "walkingAid_other": "Other",
+
   "@@locale": "en_GB",
   "abakWhisperSpeechProvider_name": "ABAK Voice Dictation",
   "assessmentDocxService_age": "Age",

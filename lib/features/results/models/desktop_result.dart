@@ -1,3 +1,5 @@
+import 'result_walking_aid.dart';
+
 class DesktopResult {
   final String resultId;
   final String careEpisodeId;
@@ -23,6 +25,9 @@ class DesktopResult {
   final String? simpleExportSnapshotJson;
 
   final String? structuredJson;
+
+  ResultWalkingAid? get walkingAid =>
+      ResultWalkingAid.fromStructuredJson(structuredJson);
   final int? ageYears;
   final String? sexCode;
   final String? testedSideCode;

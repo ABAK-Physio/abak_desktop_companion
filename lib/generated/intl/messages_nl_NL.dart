@@ -1574,6 +1574,16 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Niet beschikbaar"),
         "vitaleIdentity_useForPatientCreation":
             MessageLookupByLibrary.simpleMessage(
-                "Gebruik dit om een patiënt aan te maken")
+                "Gebruik dit om een patiënt aan te maken"),
+        "walkingAid_cane":
+            MessageLookupByLibrary.simpleMessage("Enkele hengel"),
+        "walkingAid_label":
+            MessageLookupByLibrary.simpleMessage("Gebruikte accessoire"),
+        "walkingAid_none": MessageLookupByLibrary.simpleMessage("Geen"),
+        "walkingAid_other": MessageLookupByLibrary.simpleMessage("Overig"),
+        "walkingAid_rollatorFourWheels":
+            MessageLookupByLibrary.simpleMessage("Rollator met 4 wielen"),
+        "walkingAid_walkerTwoWheels":
+            MessageLookupByLibrary.simpleMessage("Looprek met 2 wielen")
       };
 }

@@ -1,4 +1,11 @@
 {
+  "walkingAid_label": "Accessorio utilizzato",
+  "walkingAid_none": "Nessuno",
+  "walkingAid_cane": "Bastone singolo",
+  "walkingAid_walkerTwoWheels": "Deambulatore a 2 ruote",
+  "walkingAid_rollatorFourWheels": "Deambulatore a 4 ruote",
+  "walkingAid_other": "Altro",
+
   "@@locale": "it_IT",
   "abakWhisperSpeechProvider_name": "ABAK Dettatura vocale",
   "assessmentDocxService_age": "Età",

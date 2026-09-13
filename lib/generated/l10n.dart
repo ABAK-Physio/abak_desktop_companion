@@ -50,6 +50,66 @@ class S {
     return Localizations.of<S>(context, S);
   }
 
+  /// `Accessoire utilisé`
+  String get walkingAid_label {
+    return Intl.message(
+      'Accessoire utilisé',
+      name: 'walkingAid_label',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Aucun`
+  String get walkingAid_none {
+    return Intl.message(
+      'Aucun',
+      name: 'walkingAid_none',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Canne simple`
+  String get walkingAid_cane {
+    return Intl.message(
+      'Canne simple',
+      name: 'walkingAid_cane',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Déambulateur 2 roues`
+  String get walkingAid_walkerTwoWheels {
+    return Intl.message(
+      'Déambulateur 2 roues',
+      name: 'walkingAid_walkerTwoWheels',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Rollator 4 roues`
+  String get walkingAid_rollatorFourWheels {
+    return Intl.message(
+      'Rollator 4 roues',
+      name: 'walkingAid_rollatorFourWheels',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Autre`
+  String get walkingAid_other {
+    return Intl.message(
+      'Autre',
+      name: 'walkingAid_other',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `ABAK Dictée vocale`
   String get abakWhisperSpeechProvider_name {
     return Intl.message(

@@ -1,4 +1,11 @@
 {
+  "walkingAid_label": "Accessoire utilisé",
+  "walkingAid_none": "Aucun",
+  "walkingAid_cane": "Canne simple",
+  "walkingAid_walkerTwoWheels": "Déambulateur 2 roues",
+  "walkingAid_rollatorFourWheels": "Rollator 4 roues",
+  "walkingAid_other": "Autre",
+
   "@@locale": "fr_FR",
   "abakWhisperSpeechProvider_name": "ABAK Dictée vocale",
   "assessmentDocxService_age": "Âge",

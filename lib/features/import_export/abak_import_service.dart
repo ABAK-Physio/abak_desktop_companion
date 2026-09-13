@@ -63,6 +63,7 @@ class AbakImportService {
             createdAt: (resultMap['createdAt'] as num?)?.toInt() ?? 0,
             scoreTotal: (resultMap['scoreTotal'] as num?)?.toDouble(),
             exportSimpleText: resultMap['exportSimpleText']?.toString() ?? '',
+            structuredJson: resultMap['structuredJson'],
           );
 
       final alreadyExists = await _repository.resultExists(resultId);
@@ -151,7 +152,9 @@ class AbakImportService {
         exportSimpleText: resultMap['exportSimpleText']?.toString() ?? '',
         simpleExportSnapshotJson: resultMap['simpleExportSnapshotJson']
             ?.toString(),
-        structuredJson: resultMap['structuredJson']?.toString(),
+        structuredJson: resultMap['structuredJson'] is Map
+            ? jsonEncode(resultMap['structuredJson'])
+            : resultMap['structuredJson']?.toString(),
         ageYears: (resultMap['ageYears'] as num?)?.toInt(),
         sexCode: resultMap['sexCode']?.toString(),
         testedSideCode: resultMap['testedSideCode']?.toString(),

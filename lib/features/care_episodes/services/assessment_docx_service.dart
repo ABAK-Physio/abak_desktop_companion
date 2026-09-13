@@ -168,6 +168,10 @@ class AssessmentDocxService {
           buffer.write(_paragraph(test.resultText));
         }
 
+        if (test.resultRows.isNotEmpty) {
+          buffer.write(_resultsTable(test.resultRows));
+        }
+
         for (var i = 0; i < test.chartSeries.length; i++) {
           imageIndex++;
 
@@ -287,6 +291,46 @@ class AssessmentDocxService {
   </w:r>
 </w:p>
 ''';
+  }
+
+  String _resultsTable(List<AssessmentDocumentResultRow> rows) {
+    final s = S.current;
+    const widths = [2100, 4500, 3000];
+    String cell(String value, int width, {bool header = false}) =>
+        '<w:tc><w:tcPr><w:tcW w:w="$width" w:type="dxa"/>'
+        '${header ? '<w:shd w:fill="E8EEF3"/>' : ''}</w:tcPr>'
+        '${_paragraph(value, bold: header)}</w:tc>';
+    final buffer = StringBuffer(
+      '<w:tbl><w:tblPr><w:tblW w:w="9600" w:type="dxa"/>'
+      '<w:tblBorders>'
+      '<w:top w:val="single" w:sz="4" w:color="C8CDD2"/>'
+      '<w:left w:val="single" w:sz="4" w:color="C8CDD2"/>'
+      '<w:bottom w:val="single" w:sz="4" w:color="C8CDD2"/>'
+      '<w:right w:val="single" w:sz="4" w:color="C8CDD2"/>'
+      '<w:insideH w:val="single" w:sz="4" w:color="C8CDD2"/>'
+      '<w:insideV w:val="single" w:sz="4" w:color="C8CDD2"/>'
+      '</w:tblBorders></w:tblPr><w:tblGrid>'
+      '${widths.map((width) => '<w:gridCol w:w="$width"/>').join()}'
+      '</w:tblGrid><w:tr><w:trPr><w:tblHeader/></w:trPr>',
+    );
+    final headers = [s.careEpisodeReportsWorkspace_date,
+      s.careEpisodeReportsWorkspace_result, s.walkingAid_label];
+    for (var i = 0; i < headers.length; i++) {
+      buffer.write(cell(headers[i], widths[i], header: true));
+    }
+    buffer.write('</w:tr>');
+    for (final row in rows) {
+      final date = '${_formatDate(row.date)} '
+          '${row.date.hour.toString().padLeft(2, '0')}:'
+          '${row.date.minute.toString().padLeft(2, '0')}';
+      buffer.write('<w:tr>');
+      buffer.write(cell(date, widths[0]));
+      buffer.write(cell(row.result, widths[1]));
+      buffer.write(cell(row.walkingAid, widths[2]));
+      buffer.write('</w:tr>');
+    }
+    buffer.write('</w:tbl>');
+    return buffer.toString();
   }
 
   String _paragraph(String text, {String? style, bool bold = false}) {

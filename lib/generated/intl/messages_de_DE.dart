@@ -1586,6 +1586,16 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Nicht verfügbar"),
         "vitaleIdentity_useForPatientCreation":
             MessageLookupByLibrary.simpleMessage(
-                "Zum Anlegen eines Patienten verwenden")
+                "Zum Anlegen eines Patienten verwenden"),
+        "walkingAid_cane":
+            MessageLookupByLibrary.simpleMessage("Einfacher Stock"),
+        "walkingAid_label":
+            MessageLookupByLibrary.simpleMessage("Verwendetes Zubehör"),
+        "walkingAid_none": MessageLookupByLibrary.simpleMessage("Keine"),
+        "walkingAid_other": MessageLookupByLibrary.simpleMessage("Sonstiges"),
+        "walkingAid_rollatorFourWheels":
+            MessageLookupByLibrary.simpleMessage("4-Rad-Rollator"),
+        "walkingAid_walkerTwoWheels":
+            MessageLookupByLibrary.simpleMessage("Zweirädriger Rollator")
       };
 }

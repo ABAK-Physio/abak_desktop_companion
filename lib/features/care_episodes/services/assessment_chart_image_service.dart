@@ -126,12 +126,20 @@ class AssessmentChartImageService {
 
       canvas.drawCircle(Offset(x, y), 6, pointPaint);
 
-      _drawText(
-        canvas,
-        _formatValue(point.value),
-        Offset(x - 25, y - 32),
-        fontSize: 18,
-      );
+      final labelPainter = TextPainter(
+        text: TextSpan(
+          text: _formatValue(point.value),
+          style: const TextStyle(color: Colors.black, fontSize: 18),
+        ),
+        textDirection: TextDirection.ltr,
+      )..layout();
+      final labelWidth = labelPainter.width + (point.usesWalkingAid ? 26 : 0);
+      final labelX = (x - labelWidth / 2).clamp(4.0, width - labelWidth - 4);
+      labelPainter.paint(canvas, Offset(labelX, y - 32));
+      if (point.usesWalkingAid) {
+        _drawWalkingAid(canvas, Offset(labelX + labelPainter.width + 8, y - 31));
+      }
+      labelPainter.dispose();
 
       _drawText(
         canvas,
@@ -160,6 +168,20 @@ class AssessmentChartImageService {
     }
 
     return byteData.buffer.asUint8List();
+  }
+
+  // Draw the cane directly so exported images do not depend on icon fonts.
+  void _drawWalkingAid(Canvas canvas, Offset origin) {
+    final cane = Path()
+      ..moveTo(origin.dx, origin.dy + 7)
+      ..cubicTo(origin.dx, origin.dy - 1, origin.dx + 12,
+          origin.dy - 1, origin.dx + 12, origin.dy + 7)
+      ..lineTo(origin.dx + 8, origin.dy + 23);
+    canvas.drawPath(cane, Paint()
+      ..color = const Color(0xFF9A4B00)
+      ..strokeWidth = 3
+      ..strokeCap = StrokeCap.round
+      ..style = PaintingStyle.stroke);
   }
 
   void _drawText(

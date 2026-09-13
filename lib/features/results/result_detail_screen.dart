@@ -116,6 +116,19 @@ class _ResultDetailScreenState extends State<ResultDetailScreen> {
     }
   }
 
+  String _walkingAidLabel(S s) {
+    final aid = _result.walkingAid;
+    if (aid == null) return '-';
+    switch (aid.code) {
+      case 'none': return s.walkingAid_none;
+      case 'cane': return s.walkingAid_cane;
+      case 'walkerTwoWheels': return s.walkingAid_walkerTwoWheels;
+      case 'rollatorFourWheels': return s.walkingAid_rollatorFourWheels;
+      case 'other': return aid.description ?? aid.label ?? s.walkingAid_other;
+      default: return aid.label ?? aid.description ?? aid.code ?? '-';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final s=S.of(context);
@@ -164,6 +177,12 @@ class _ResultDetailScreenState extends State<ResultDetailScreen> {
               : '${_result.scoreTotal!.toStringAsFixed(2)}'
               '${_result.measureUnit == null ? '' : ' ${_result.measureUnit}'}',
         ),
+        if (_result.exoId.trim().toUpperCase() == 'E76' ||
+            _result.walkingAid != null)
+          _InfoRow(
+            label: s.walkingAid_label,
+            value: _walkingAidLabel(s),
+          ),
         _InfoRow(
           label: s.resultDetail_performedBy,
           value: traceabilityInfo.isEmpty ? '-' : traceabilityInfo,

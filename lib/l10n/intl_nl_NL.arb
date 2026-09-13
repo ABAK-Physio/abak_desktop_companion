@@ -1,4 +1,11 @@
 {
+  "walkingAid_label": "Gebruikte accessoire",
+  "walkingAid_none": "Geen",
+  "walkingAid_cane": "Enkele hengel",
+  "walkingAid_walkerTwoWheels": "Looprek met 2 wielen",
+  "walkingAid_rollatorFourWheels": "Rollator met 4 wielen",
+  "walkingAid_other": "Overig",
+
   "@@locale": "nl_NL",
   "abakWhisperSpeechProvider_name": "ABAK Spraakgestuurd dictee",
   "assessmentDocxService_age": "Leeftijd",

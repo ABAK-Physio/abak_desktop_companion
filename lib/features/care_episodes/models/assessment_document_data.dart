@@ -60,6 +60,7 @@ class AssessmentDocumentTest {
   final int? declaredAgeYears;
   final String? pathologyLabel;
   final List<AssessmentDocumentChartSeries> chartSeries;
+  final List<AssessmentDocumentResultRow> resultRows;
 
   const AssessmentDocumentTest({
     required this.selectionKey,
@@ -69,6 +70,7 @@ class AssessmentDocumentTest {
     required this.declaredAgeYears,
     required this.pathologyLabel,
     required this.chartSeries,
+    this.resultRows = const [],
   });
 }
 
@@ -87,10 +89,12 @@ class AssessmentDocumentChartSeries {
 class AssessmentDocumentChartPoint {
   final DateTime date;
   final double value;
+  final bool usesWalkingAid;
 
   const AssessmentDocumentChartPoint({
     required this.date,
     required this.value,
+    this.usesWalkingAid = false,
   });
 }
 
@@ -103,5 +107,17 @@ class AssessmentDocumentNote {
     required this.noteDate,
     required this.title,
     required this.content,
+  });
+}
+
+class AssessmentDocumentResultRow {
+  final DateTime date;
+  final String result;
+  final String walkingAid;
+
+  const AssessmentDocumentResultRow({
+    required this.date,
+    required this.result,
+    required this.walkingAid,
   });
 }

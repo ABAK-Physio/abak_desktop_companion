@@ -298,6 +298,7 @@ class ReportDocumentDataBuilder {
               result.createdAt,
             ),
             value: value,
+            usesWalkingAid: result.walkingAid?.isUsed ?? false,
           ),
         );
       }

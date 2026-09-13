@@ -1,4 +1,11 @@
 {
+  "walkingAid_label": "Verwendetes Zubehör",
+  "walkingAid_none": "Keine",
+  "walkingAid_cane": "Einfacher Stock",
+  "walkingAid_walkerTwoWheels": "Zweirädriger Rollator",
+  "walkingAid_rollatorFourWheels": "4-Rad-Rollator",
+  "walkingAid_other": "Sonstiges",
+
   "@@locale": "de_DE",
   "abakWhisperSpeechProvider_name": "ABAK Sprachdiktat",
   "assessmentDocxService_age": "Alter",
