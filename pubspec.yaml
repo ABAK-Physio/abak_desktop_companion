@@ -41,6 +41,7 @@ dependencies:
     path: ../abak_vitale
   http: ^1.6.0
 
+  crypto: any
 dev_dependencies:
   flutter_test:
     sdk: flutter

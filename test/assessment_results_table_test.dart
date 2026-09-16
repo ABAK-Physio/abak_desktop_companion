@@ -19,8 +19,8 @@ void main() {
       resultId: id, careEpisodeId: 'episode', createdAt: date, importedAt: 1,
       exoId: 'E76', exportSimpleText: '', scoreTotal: 12,
       structuredJson: jsonEncode({'context': {
-        if (code != null) 'walkingAidCode': code,
-        if (label != null) 'walkingAidLabel': label,
+        'walkingAidCode': ?code,
+        'walkingAidLabel': ?label,
         if (code == 'other') 'walkingAidDescription': label,
       }, 'scores': {'time_seconds': 12.0}}),
     );
