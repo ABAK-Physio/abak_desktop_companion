@@ -875,6 +875,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "information_localStorage":
             MessageLookupByLibrary.simpleMessage("Stockage local"),
         "information_logo": MessageLookupByLibrary.simpleMessage("Logo"),
+        "information_new": MessageLookupByLibrary.simpleMessage(
+            "Version 1.1.0 build 3\nPossibilité de dictée vocale pour les bilans et rapports, nécessite le module gratuit.\nSauvegarde automatique Bilan et Rapport.\nBouton duplication Bilan et Rapport.\nNotes modifiables.\nBouton pour voir tous les tests d\'un patient pour un épisode.\nModèles de bilans.\nGraphique automatique si plusieurs résultats pour un test\nCréation d\'un document au format docx.\nAffichage de l\'aide utilisée pour E72 et E76"),
+        "information_newTitle":
+            MessageLookupByLibrary.simpleMessage("Nouveautés de la version"),
         "information_notConfigured":
             MessageLookupByLibrary.simpleMessage("Non configuré"),
         "information_notProvided":
@@ -1560,10 +1564,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "vitaleIdentity_useForPatientCreation":
             MessageLookupByLibrary.simpleMessage(
                 "Utiliser pour créer un patient"),
-        "walkingAid_cane": MessageLookupByLibrary.simpleMessage("Canne simple"),
+        "walkingAid_cane": MessageLookupByLibrary.simpleMessage("Canne"),
         "walkingAid_label":
-            MessageLookupByLibrary.simpleMessage("Accessoire utilisé"),
-        "walkingAid_none": MessageLookupByLibrary.simpleMessage("Aucun"),
+            MessageLookupByLibrary.simpleMessage("Aide utilisée"),
+        "walkingAid_none": MessageLookupByLibrary.simpleMessage("Aucune"),
         "walkingAid_other": MessageLookupByLibrary.simpleMessage("Autre"),
         "walkingAid_rollatorFourWheels":
             MessageLookupByLibrary.simpleMessage("Rollator 4 roues"),

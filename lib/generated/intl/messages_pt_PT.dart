@@ -882,6 +882,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "information_localStorage":
             MessageLookupByLibrary.simpleMessage("Armazenamento local"),
         "information_logo": MessageLookupByLibrary.simpleMessage("Logo"),
+        "information_new": MessageLookupByLibrary.simpleMessage(
+            "Versão 1.1.0 compilação 3\nPossibilidade de ditado vocal para balanços e relatórios; requer o módulo gratuito.\nGravação automática de balanços e relatórios.\nBotão para duplicar balanços e relatórios.\nNotas editáveis.\nBotão para visualizar todos os exames de um doente relativos a um episódio.\nModelos de relatórios.\nGráfico automático caso existam vários resultados para um exame.\nCriação de um documento no formato docx.\nExibição da ajuda utilizada para E72 e E76"),
+        "information_newTitle":
+            MessageLookupByLibrary.simpleMessage("Novidades desta versão"),
         "information_notConfigured":
             MessageLookupByLibrary.simpleMessage("Não configurado"),
         "information_notProvided":
@@ -1575,11 +1579,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "vitaleIdentity_useForPatientCreation":
             MessageLookupByLibrary.simpleMessage(
                 "Utilizar para criar um doente"),
-        "walkingAid_cane": MessageLookupByLibrary.simpleMessage("Cana simples"),
+        "walkingAid_cane": MessageLookupByLibrary.simpleMessage("Bengala"),
         "walkingAid_label":
-            MessageLookupByLibrary.simpleMessage("Acessório utilizado"),
-        "walkingAid_none": MessageLookupByLibrary.simpleMessage("Nenhum"),
-        "walkingAid_other": MessageLookupByLibrary.simpleMessage("Outro"),
+            MessageLookupByLibrary.simpleMessage("Ajuda utilizada"),
+        "walkingAid_none": MessageLookupByLibrary.simpleMessage("Nenhuma"),
+        "walkingAid_other": MessageLookupByLibrary.simpleMessage("Outros"),
         "walkingAid_rollatorFourWheels":
             MessageLookupByLibrary.simpleMessage("Andador de 4 rodas"),
         "walkingAid_walkerTwoWheels":

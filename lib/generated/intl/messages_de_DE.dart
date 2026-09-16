@@ -886,6 +886,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "information_localStorage":
             MessageLookupByLibrary.simpleMessage("Lokale Speicherung"),
         "information_logo": MessageLookupByLibrary.simpleMessage("Logo"),
+        "information_new": MessageLookupByLibrary.simpleMessage(
+            "Version 1.1.0 Build 3\nSprachsteuerung für Befunde und Berichte möglich, erfordert das kostenlose Modul.\nAutomatische Speicherung von Befunden und Berichten.\nSchaltfläche zum Duplizieren von Befunden und Berichten.\nBearbeitbare Notizen.\nSchaltfläche zum Anzeigen aller Tests eines Patienten für eine Episode.\nVorlagen für Befunde.\nAutomatische Grafik, wenn mehrere Ergebnisse für einen Test vorliegen.\nErstellung eines Dokuments im DOCX-Format.\nAnzeige der für E72 und E76 verwendeten Hilfe"),
+        "information_newTitle": MessageLookupByLibrary.simpleMessage(
+            "Neuerungen in dieser Version"),
         "information_notConfigured":
             MessageLookupByLibrary.simpleMessage("Nicht konfiguriert"),
         "information_notProvided":
@@ -1587,10 +1591,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "vitaleIdentity_useForPatientCreation":
             MessageLookupByLibrary.simpleMessage(
                 "Zum Anlegen eines Patienten verwenden"),
-        "walkingAid_cane":
-            MessageLookupByLibrary.simpleMessage("Einfacher Stock"),
+        "walkingAid_cane": MessageLookupByLibrary.simpleMessage("Stock"),
         "walkingAid_label":
-            MessageLookupByLibrary.simpleMessage("Verwendetes Zubehör"),
+            MessageLookupByLibrary.simpleMessage("Verwendete Hilfe"),
         "walkingAid_none": MessageLookupByLibrary.simpleMessage("Keine"),
         "walkingAid_other": MessageLookupByLibrary.simpleMessage("Sonstiges"),
         "walkingAid_rollatorFourWheels":

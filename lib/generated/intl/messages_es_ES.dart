@@ -886,6 +886,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "information_localStorage":
             MessageLookupByLibrary.simpleMessage("Almacenamiento local"),
         "information_logo": MessageLookupByLibrary.simpleMessage("Logo"),
+        "information_new": MessageLookupByLibrary.simpleMessage(
+            "Versión 1.1.0, compilación 3\nPosibilidad de dictado de voz para los informes y resúmenes; requiere el módulo gratuito.\nGuardado automático de informes y resúmenes.\nBotón para duplicar informes y resúmenes.\nNotas editables.\nBotón para ver todas las pruebas de un paciente correspondientes a un episodio.\nPlantillas de informes.\nGráfico automático si hay varios resultados para una prueba.\nCreación de un documento en formato docx.\nVisualización de la ayuda utilizada para E72 y E76."),
+        "information_newTitle":
+            MessageLookupByLibrary.simpleMessage("Novedades de esta versión"),
         "information_notConfigured":
             MessageLookupByLibrary.simpleMessage("No configurado"),
         "information_notProvided":
@@ -1585,10 +1589,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "vitaleIdentity_useForPatientCreation":
             MessageLookupByLibrary.simpleMessage(
                 "Utilizar para crear un paciente"),
-        "walkingAid_cane": MessageLookupByLibrary.simpleMessage("Caña simple"),
+        "walkingAid_cane": MessageLookupByLibrary.simpleMessage("Bastón"),
         "walkingAid_label":
-            MessageLookupByLibrary.simpleMessage("Accesorio utilizado"),
-        "walkingAid_none": MessageLookupByLibrary.simpleMessage("Ninguno"),
+            MessageLookupByLibrary.simpleMessage("Ayuda utilizada"),
+        "walkingAid_none": MessageLookupByLibrary.simpleMessage("Ninguna"),
         "walkingAid_other": MessageLookupByLibrary.simpleMessage("Otros"),
         "walkingAid_rollatorFourWheels":
             MessageLookupByLibrary.simpleMessage("Andador de 4 ruedas"),

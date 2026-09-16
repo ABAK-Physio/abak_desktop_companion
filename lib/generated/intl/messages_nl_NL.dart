@@ -885,6 +885,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "information_localStorage":
             MessageLookupByLibrary.simpleMessage("Lokale opslag"),
         "information_logo": MessageLookupByLibrary.simpleMessage("Logo"),
+        "information_new": MessageLookupByLibrary.simpleMessage(
+            "Versie 1.1.0 build 3\nMogelijkheid tot spraakdicteer voor overzichten en rapporten; hiervoor is de gratis module vereist.\nAutomatische opslag van overzichten en rapporten.\nKnop voor het dupliceren van overzichten en rapporten.\nBewerkbare notities.\nKnop om alle tests van een patiënt voor een bepaalde episode te bekijken.\nSjablonen voor beoordelingen.\nAutomatische grafiek bij meerdere resultaten voor één test.\nEen document aanmaken in docx-formaat.\nWeergave van de helptekst voor E72 en E76"),
+        "information_newTitle":
+            MessageLookupByLibrary.simpleMessage("Nieuwigheden in deze versie"),
         "information_notConfigured":
             MessageLookupByLibrary.simpleMessage("Niet geconfigureerd"),
         "information_notProvided":
@@ -1575,10 +1579,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "vitaleIdentity_useForPatientCreation":
             MessageLookupByLibrary.simpleMessage(
                 "Gebruik dit om een patiënt aan te maken"),
-        "walkingAid_cane":
-            MessageLookupByLibrary.simpleMessage("Enkele hengel"),
+        "walkingAid_cane": MessageLookupByLibrary.simpleMessage("Wandelstok"),
         "walkingAid_label":
-            MessageLookupByLibrary.simpleMessage("Gebruikte accessoire"),
+            MessageLookupByLibrary.simpleMessage("Gebruikte hulpbronnen"),
         "walkingAid_none": MessageLookupByLibrary.simpleMessage("Geen"),
         "walkingAid_other": MessageLookupByLibrary.simpleMessage("Overig"),
         "walkingAid_rollatorFourWheels":

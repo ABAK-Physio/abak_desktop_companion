@@ -50,66 +50,6 @@ class S {
     return Localizations.of<S>(context, S);
   }
 
-  /// `Accessoire utilisé`
-  String get walkingAid_label {
-    return Intl.message(
-      'Accessoire utilisé',
-      name: 'walkingAid_label',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Aucun`
-  String get walkingAid_none {
-    return Intl.message(
-      'Aucun',
-      name: 'walkingAid_none',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Canne simple`
-  String get walkingAid_cane {
-    return Intl.message(
-      'Canne simple',
-      name: 'walkingAid_cane',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Déambulateur 2 roues`
-  String get walkingAid_walkerTwoWheels {
-    return Intl.message(
-      'Déambulateur 2 roues',
-      name: 'walkingAid_walkerTwoWheels',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Rollator 4 roues`
-  String get walkingAid_rollatorFourWheels {
-    return Intl.message(
-      'Rollator 4 roues',
-      name: 'walkingAid_rollatorFourWheels',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Autre`
-  String get walkingAid_other {
-    return Intl.message(
-      'Autre',
-      name: 'walkingAid_other',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `ABAK Dictée vocale`
   String get abakWhisperSpeechProvider_name {
     return Intl.message(
@@ -117,6 +57,36 @@ class S {
       name: 'abakWhisperSpeechProvider_name',
       desc: '',
       args: [],
+    );
+  }
+
+  /// `Féminin`
+  String get assessmentDocumentDataBuilder_female {
+    return Intl.message(
+      'Féminin',
+      name: 'assessmentDocumentDataBuilder_female',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Masculin`
+  String get assessmentDocumentDataBuilder_male {
+    return Intl.message(
+      'Masculin',
+      name: 'assessmentDocumentDataBuilder_male',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Patient introuvable pour la prise en charge {careEpisodeId}.`
+  String assessmentDocumentDataBuilder_patient(Object careEpisodeId) {
+    return Intl.message(
+      'Patient introuvable pour la prise en charge $careEpisodeId.',
+      name: 'assessmentDocumentDataBuilder_patient',
+      desc: '',
+      args: [careEpisodeId],
     );
   }
 
@@ -485,6 +455,56 @@ class S {
     return Intl.message(
       'Historique des sauvegardes',
       name: 'backupHistory_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Aucune analyse clinique.`
+  String get careEpisode_assessment {
+    return Intl.message(
+      'Aucune analyse clinique.',
+      name: 'careEpisode_assessment',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Aucune évaluation clinique.`
+  String get careEpisode_evaluation {
+    return Intl.message(
+      'Aucune évaluation clinique.',
+      name: 'careEpisode_evaluation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Aucun compte rendu initial.`
+  String get careEpisode_report {
+    return Intl.message(
+      'Aucun compte rendu initial.',
+      name: 'careEpisode_report',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Prise en charge`
+  String get careEpisode_title {
+    return Intl.message(
+      'Prise en charge',
+      name: 'careEpisode_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Aucun plan de traitement.`
+  String get careEpisode_treatment {
+    return Intl.message(
+      'Aucun plan de traitement.',
+      name: 'careEpisode_treatment',
       desc: '',
       args: [],
     );
@@ -4090,6 +4110,26 @@ class S {
     );
   }
 
+  /// `Version 1.1.0 build 3\nPossibilité de dictée vocale pour les bilans et rapports, nécessite le module gratuit.\nSauvegarde automatique Bilan et Rapport.\nBouton duplication Bilan et Rapport.\nNotes modifiables.\nBouton pour voir tous les tests d'un patient pour un épisode.\nModèles de bilans.\nGraphique automatique si plusieurs résultats pour un test\nCréation d'un document au format docx.\nAffichage de l'aide utilisée pour E72 et E76`
+  String get information_new {
+    return Intl.message(
+      'Version 1.1.0 build 3\nPossibilité de dictée vocale pour les bilans et rapports, nécessite le module gratuit.\nSauvegarde automatique Bilan et Rapport.\nBouton duplication Bilan et Rapport.\nNotes modifiables.\nBouton pour voir tous les tests d\'un patient pour un épisode.\nModèles de bilans.\nGraphique automatique si plusieurs résultats pour un test\nCréation d\'un document au format docx.\nAffichage de l\'aide utilisée pour E72 et E76',
+      name: 'information_new',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Nouveautés de la version`
+  String get information_newTitle {
+    return Intl.message(
+      'Nouveautés de la version',
+      name: 'information_newTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Non configuré`
   String get information_notConfigured {
     return Intl.message(
@@ -7490,6 +7530,16 @@ class S {
     );
   }
 
+  /// `L’accès au microphone n’est pas autorisé.`
+  String get speechRecordingService_permission {
+    return Intl.message(
+      'L’accès au microphone n’est pas autorisé.',
+      name: 'speechRecordingService_permission',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Patients actifs`
   String get systemOverviewBar_active_patients {
     return Intl.message(
@@ -7800,91 +7850,61 @@ class S {
     );
   }
 
-  /// `L’accès au microphone n’est pas autorisé.`
-  String get speechRecordingService_permission {
+  /// `Aucune`
+  String get walkingAid_none {
     return Intl.message(
-      'L’accès au microphone n’est pas autorisé.',
-      name: 'speechRecordingService_permission',
+      'Aucune',
+      name: 'walkingAid_none',
       desc: '',
       args: [],
     );
   }
 
-  /// `Masculin`
-  String get assessmentDocumentDataBuilder_male {
+  /// `Canne`
+  String get walkingAid_cane {
     return Intl.message(
-      'Masculin',
-      name: 'assessmentDocumentDataBuilder_male',
+      'Canne',
+      name: 'walkingAid_cane',
       desc: '',
       args: [],
     );
   }
 
-  /// `Féminin`
-  String get assessmentDocumentDataBuilder_female {
+  /// `Déambulateur 2 roues`
+  String get walkingAid_walkerTwoWheels {
     return Intl.message(
-      'Féminin',
-      name: 'assessmentDocumentDataBuilder_female',
+      'Déambulateur 2 roues',
+      name: 'walkingAid_walkerTwoWheels',
       desc: '',
       args: [],
     );
   }
 
-  /// `Patient introuvable pour la prise en charge {careEpisodeId}.`
-  String assessmentDocumentDataBuilder_patient(Object careEpisodeId) {
+  /// `Rollator 4 roues`
+  String get walkingAid_rollatorFourWheels {
     return Intl.message(
-      'Patient introuvable pour la prise en charge $careEpisodeId.',
-      name: 'assessmentDocumentDataBuilder_patient',
-      desc: '',
-      args: [careEpisodeId],
-    );
-  }
-
-  /// `Prise en charge`
-  String get careEpisode_title {
-    return Intl.message(
-      'Prise en charge',
-      name: 'careEpisode_title',
+      'Rollator 4 roues',
+      name: 'walkingAid_rollatorFourWheels',
       desc: '',
       args: [],
     );
   }
 
-  /// `Aucun compte rendu initial.`
-  String get careEpisode_report {
+  /// `Autre`
+  String get walkingAid_other {
     return Intl.message(
-      'Aucun compte rendu initial.',
-      name: 'careEpisode_report',
+      'Autre',
+      name: 'walkingAid_other',
       desc: '',
       args: [],
     );
   }
 
-  /// `Aucune évaluation clinique.`
-  String get careEpisode_evaluation {
+  /// `Aide utilisée`
+  String get walkingAid_label {
     return Intl.message(
-      'Aucune évaluation clinique.',
-      name: 'careEpisode_evaluation',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Aucune analyse clinique.`
-  String get careEpisode_assessment {
-    return Intl.message(
-      'Aucune analyse clinique.',
-      name: 'careEpisode_assessment',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Aucun plan de traitement.`
-  String get careEpisode_treatment {
-    return Intl.message(
-      'Aucun plan de traitement.',
-      name: 'careEpisode_treatment',
+      'Aide utilisée',
+      name: 'walkingAid_label',
       desc: '',
       args: [],
     );

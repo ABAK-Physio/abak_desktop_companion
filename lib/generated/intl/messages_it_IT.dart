@@ -881,6 +881,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "information_localStorage":
             MessageLookupByLibrary.simpleMessage("Archiviazione locale"),
         "information_logo": MessageLookupByLibrary.simpleMessage("Logo"),
+        "information_new": MessageLookupByLibrary.simpleMessage(
+            "Versione 1.1.0 build 3\nPossibilità di dettatura vocale per i referti e le relazioni; richiede il modulo gratuito.\nSalvataggio automatico di referti e relazioni.\nPulsante per duplicare referti e relazioni.\nNote modificabili.\nPulsante per visualizzare tutti gli esami di un paziente relativi a un episodio clinico.\nModelli di referti.\nGrafico automatico in caso di più risultati per un esame.\nCreazione di un documento in formato docx.\nVisualizzazione della guida utilizzata per E72 e E76"),
+        "information_newTitle":
+            MessageLookupByLibrary.simpleMessage("Novità di questa versione"),
         "information_notConfigured":
             MessageLookupByLibrary.simpleMessage("Non configurato"),
         "information_notProvided":
@@ -1569,11 +1573,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "vitaleIdentity_useForPatientCreation":
             MessageLookupByLibrary.simpleMessage(
                 "Da utilizzare per creare un paziente"),
-        "walkingAid_cane":
-            MessageLookupByLibrary.simpleMessage("Bastone singolo"),
+        "walkingAid_cane": MessageLookupByLibrary.simpleMessage("Bastone"),
         "walkingAid_label":
-            MessageLookupByLibrary.simpleMessage("Accessorio utilizzato"),
-        "walkingAid_none": MessageLookupByLibrary.simpleMessage("Nessuno"),
+            MessageLookupByLibrary.simpleMessage("Aiuto utilizzato"),
+        "walkingAid_none": MessageLookupByLibrary.simpleMessage("Nessuna"),
         "walkingAid_other": MessageLookupByLibrary.simpleMessage("Altro"),
         "walkingAid_rollatorFourWheels":
             MessageLookupByLibrary.simpleMessage("Deambulatore a 4 ruote"),

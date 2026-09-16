@@ -853,6 +853,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "information_localStorage":
             MessageLookupByLibrary.simpleMessage("Local storage"),
         "information_logo": MessageLookupByLibrary.simpleMessage("Logo"),
+        "information_new": MessageLookupByLibrary.simpleMessage(
+            "Version 1.1.0 build 3\nVoice dictation support for assessments and reports; requires the free module.\nAutomatic saving of assessments and reports.\nButton to duplicate assessments and reports.\nEditable notes.\nButton to view all of a patient’s tests for a specific episode.\nAssessment templates.\nAutomatic graph generation if there are multiple results for a test.\nCreation of a document in docx format.\nDisplay of the help used for E72 and E76"),
+        "information_newTitle":
+            MessageLookupByLibrary.simpleMessage("What\'s New in This Version"),
         "information_notConfigured":
             MessageLookupByLibrary.simpleMessage("Not configured"),
         "information_notProvided":
@@ -1526,10 +1530,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "vitaleIdentity_useForPatientCreation":
             MessageLookupByLibrary.simpleMessage(
                 "Use this to create a patient"),
-        "walkingAid_cane":
-            MessageLookupByLibrary.simpleMessage("Single-piece cane"),
-        "walkingAid_label":
-            MessageLookupByLibrary.simpleMessage("Accessory used"),
+        "walkingAid_cane": MessageLookupByLibrary.simpleMessage("Cane"),
+        "walkingAid_label": MessageLookupByLibrary.simpleMessage("Help Used"),
         "walkingAid_none": MessageLookupByLibrary.simpleMessage("None"),
         "walkingAid_other": MessageLookupByLibrary.simpleMessage("Other"),
         "walkingAid_rollatorFourWheels":
