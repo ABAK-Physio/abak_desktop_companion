@@ -86,6 +86,7 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           NavigationRail(
             selectedIndex: selectedIndex,
@@ -359,7 +360,7 @@ class _DashboardHeader extends StatelessWidget {
     );
 
     return SizedBox(
-      height: 32,
+      height: 40,
       child: Row(
         children: [
           Text(title, style: Theme.of(context).textTheme.headlineSmall),
