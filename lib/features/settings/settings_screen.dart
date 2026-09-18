@@ -3,6 +3,7 @@ import '../../generated/l10n.dart';
 import 'package:flutter/material.dart';
 
 import '../../core/settings/exchange_directory_service.dart';
+import '../local_exchange/services/airdrop_import_watcher.dart';
 import 'package:abak_vitale/abak_vitale.dart';
 import '../import_export/abak_import_launcher.dart';
 import '../maintenance/backup_history_screen.dart';
@@ -36,10 +37,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
   bool _expertModeEnabled = false;
 
   final ExchangeDirectoryService _exchangeDirectoryService =
-      ExchangeDirectoryService();
+  ExchangeDirectoryService();
 
   String? _exchangeDirectoryPath;
   bool _isLoading = true;
+  bool _directoryBusy = false;
+  String? _directoryError;
 
   @override
   void initState() {
@@ -60,68 +63,102 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Future<void> _loadExchangeDirectory() async {
-    final path = await _exchangeDirectoryService
-        .getExchangeDirectoryPathLabel();
-
-    if (!mounted) return;
-
-    setState(() {
-      _exchangeDirectoryPath = path;
-      _isLoading = false;
-    });
-  }
-
-  Future<void> _chooseExchangeDirectory() async {
-    final selectedPath = await _exchangeDirectoryService.chooseDirectory();
-
-    if (!mounted) return;
-
-    if (selectedPath != null) {
+    try {
+      // Afficher le choix conservé même si le dossier est inaccessible.
+      final savedPath = await _exchangeDirectoryService.getSavedDirectoryPath();
+      final path = savedPath != null && savedPath.isNotEmpty
+          ? savedPath
+          : await _exchangeDirectoryService.getExchangeDirectoryPathLabel();
+      if (!mounted) return;
       setState(() {
-        _exchangeDirectoryPath = selectedPath;
+        _exchangeDirectoryPath = path;
+        _isLoading = false;
       });
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Dossier d’échange ABAK mis à jour')),
-      );
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        _isLoading = false;
+        _directoryError = 'Impossible de lire la configuration du dossier d’échange.';
+      });
     }
   }
 
-  Future<void> _resetExchangeDirectory() async {
-    await _exchangeDirectoryService.resetDirectory();
+  void _showDirectoryMessage(String message) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+  }
+
+  Future<void> _directoryOperation(Future<void> Function() action) async {
+    if (_directoryBusy) return;
+    setState(() {
+      _directoryBusy = true;
+      _directoryError = null;
+    });
+    try {
+      await action();
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        _directoryError = 'Impossible d’accéder au dossier ou de mémoriser ce choix. '
+            'Vérifiez sa disponibilité et autorisez-le à nouveau avec Modifier.';
+      });
+    } finally {
+      if (mounted) setState(() => _directoryBusy = false);
+    }
+  }
+
+  Future<void> _chooseExchangeDirectory() => _directoryOperation(() async {
+    final selectedPath = await _exchangeDirectoryService.chooseDirectory();
+    if (selectedPath == null) return;
+
+    // Relancer le service même si l’utilisateur a quitté cet écran entre-temps.
+    await AirDropImportWatcher.instance.restart();
     await _loadExchangeDirectory();
-
-    if (!mounted) return;
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Dossier d’échange réinitialisé')),
-    );
-  }
-
-  Future<void> _openExchangeDirectory() async {
-    final path = await _exchangeDirectoryService
-        .getExchangeDirectoryPathLabel();
-
-    final directory = Directory(path);
-
-    if (!await directory.exists()) {
-      await directory.create(recursive: true);
+    if (AirDropImportWatcher.instance.accessProblem.value == null) {
+      _showDirectoryMessage('Dossier d’échange autorisé. Surveillance active.');
     }
+  });
 
-    if (Platform.isWindows) {
-      await Process.run('explorer', [directory.path]);
-    } else if (Platform.isMacOS) {
-      await Process.run('open', [directory.path]);
-    } else if (Platform.isLinux) {
-      await Process.run('xdg-open', [directory.path]);
+  Future<void> _resetExchangeDirectory() => _directoryOperation(() async {
+    await _exchangeDirectoryService.resetDirectory();
+    await AirDropImportWatcher.instance.restart();
+    await _loadExchangeDirectory();
+    if (AirDropImportWatcher.instance.accessProblem.value == null) {
+      _showDirectoryMessage('Dossier d’échange réinitialisé. Surveillance active.');
     }
+  });
 
-    if (!mounted) return;
+  Future<void> _retryExchangeDirectory() => _directoryOperation(() async {
+    await AirDropImportWatcher.instance.restart();
+    await _loadExchangeDirectory();
+    if (AirDropImportWatcher.instance.accessProblem.value == null) {
+      _showDirectoryMessage('Accès rétabli. Surveillance active.');
+    }
+  });
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Ouverture du dossier d’échange')),
-    );
-  }
+  Future<void> _openExchangeDirectory() => _directoryOperation(() async {
+    final access = await _exchangeDirectoryService.acquireExchangeDirectory();
+    try {
+      final path = access.directory.path;
+      final ProcessResult result;
+      if (Platform.isWindows) {
+        result = await Process.run('explorer', [path]);
+      } else if (Platform.isMacOS) {
+        result = await Process.run('open', [path]);
+      } else if (Platform.isLinux) {
+        result = await Process.run('xdg-open', [path]);
+      } else {
+        throw UnsupportedError('Ouverture du dossier non prise en charge.');
+      }
+      // Explorer peut renvoyer un code non nul alors que sa fenêtre est ouverte.
+      if (!Platform.isWindows && result.exitCode != 0) {
+        throw StateError('Impossible d’ouvrir le dossier.');
+      }
+      _showDirectoryMessage('Ouverture du dossier d’échange');
+    } finally {
+      await access.release();
+    }
+  });
 
   Future<void> _importAbakFile() async {
     await AbakImportLauncher.importArchiveFromPicker(context);
@@ -265,16 +302,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
               children: [
                 Row(
                   children: [
-                   Expanded(
+                    Expanded(
                       child: Text(
                         s.settings_title,
                         style: TextStyle(fontSize: 24),
                       ),
                     ),
                     if (_expertModeEnabled)
-                    ExpertInfoButton(
-                    info: _expertInfo(s),
-                  ),
+                      ExpertInfoButton(
+                        info: _expertInfo(s),
+                      ),
                   ],
                 ),
                 const SizedBox(height: 16),
@@ -313,17 +350,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       spacing: 8,
                       children: [
                         OutlinedButton.icon(
-                          onPressed: _openExchangeDirectory,
+                          onPressed: _directoryBusy ? null : _openExchangeDirectory,
                           icon: const Icon(Icons.open_in_new),
                           label: Text(s.settings_open),
                         ),
                         OutlinedButton(
-                          onPressed: _chooseExchangeDirectory,
+                          onPressed: _directoryBusy ? null : _chooseExchangeDirectory,
                           child: Text(s.settings_edit),
                         ),
                         IconButton(
                           tooltip: s.settings_resetTooltip,
-                          onPressed: _resetExchangeDirectory,
+                          onPressed: _directoryBusy ? null : _resetExchangeDirectory,
                           icon: const Icon(Icons.restart_alt),
                         ),
                       ],
@@ -331,6 +368,49 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                 ),
 
+                const SizedBox(height: 16),
+
+                if (_directoryBusy) const LinearProgressIndicator(),
+                if (_directoryError != null)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    child: Text(
+                      _directoryError!,
+                      style: TextStyle(color: Theme.of(context).colorScheme.error),
+                    ),
+                  ),
+                ValueListenableBuilder<String?>(
+                  valueListenable: AirDropImportWatcher.instance.accessProblem,
+                  builder: (context, problem, child) {
+                    if (problem == null) return const SizedBox.shrink();
+                    return Card(
+                      color: Theme.of(context).colorScheme.errorContainer,
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(problem),
+                            const SizedBox(height: 8),
+                            Wrap(
+                              spacing: 8,
+                              children: [
+                                TextButton(
+                                  onPressed: _directoryBusy ? null : _chooseExchangeDirectory,
+                                  child: const Text('Autoriser un dossier'),
+                                ),
+                                TextButton(
+                                  onPressed: _directoryBusy ? null : _retryExchangeDirectory,
+                                  child: const Text('Réessayer'),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
                 const SizedBox(height: 16),
 
                 Align(

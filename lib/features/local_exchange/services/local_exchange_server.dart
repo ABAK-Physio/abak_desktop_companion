@@ -9,6 +9,7 @@ import 'package:shelf_router/shelf_router.dart';
 
 import '../../../core/database/database_service.dart';
 import '../../../core/settings/exchange_directory_service.dart';
+import '../../../core/settings/macos_directory_access_service.dart';
 
 class LocalExchangeServerAlreadyRunningException implements Exception {
   const LocalExchangeServerAlreadyRunningException();
@@ -22,7 +23,7 @@ class LocalExchangeServer {
   static const int defaultPort = 8790;
 
   final ExchangeDirectoryService _exchangeDirectoryService =
-      ExchangeDirectoryService();
+  ExchangeDirectoryService();
 
   HttpServer? _server;
 
@@ -108,7 +109,7 @@ class LocalExchangeServer {
 
       final fileName =
           request.url.queryParameters['filename'] ??
-          'incoming_${DateTime.now().millisecondsSinceEpoch}.abak';
+              'incoming_${DateTime.now().millisecondsSinceEpoch}.abak';
 
       if (!fileName.toLowerCase().endsWith('.abak')) {
         return Response(
@@ -121,44 +122,74 @@ class LocalExchangeServer {
         );
       }
 
-      final exchangeDir = await _exchangeDirectoryService
-          .getExchangeDirectory();
+      ExchangeDirectoryAccess? directoryAccess;
+      try {
+        directoryAccess = await _exchangeDirectoryService.acquireExchangeDirectory();
+        final exchangeDir = directoryAccess.directory;
 
-      if (!await exchangeDir.exists()) {
-        await exchangeDir.create(recursive: true);
+        if (!await exchangeDir.exists()) {
+          if (Platform.isMacOS) {
+            throw DirectoryAuthorizationRequired(exchangeDir.path);
+          }
+          await exchangeDir.create(recursive: true);
+        }
+
+        final safeFileName = p.basename(fileName);
+        final uniqueFileName = _uniqueFileName(exchangeDir, safeFileName);
+
+        final destinationPath = p.join(exchangeDir.path, uniqueFileName);
+
+        final bytes = await request.read().fold<List<int>>(
+          <int>[],
+              (previous, element) => previous..addAll(element),
+        );
+
+        final file = File(destinationPath);
+        await file.writeAsBytes(bytes, flush: true);
+
+        //final importResult  =
+        //await AbakImportLauncher.importArchiveFromPath(
+        //  destinationPath,
+        //  sourceLabel: 'local_exchange',
+        //);
+
+        return Response.ok(
+          jsonEncode({
+            'status': 'ok',
+            'message': 'Fichier .abak reçu dans le dossier d’échange.',
+            'fileName': uniqueFileName,
+            'filePath': destinationPath,
+            'size': bytes.length,
+            'contentType': contentType,
+            'timestamp': DateTime.now().toIso8601String(),
+          }),
+          headers: {HttpHeaders.contentTypeHeader: ContentType.json.mimeType},
+        );
+      } on DirectoryAuthorizationRequired {
+        return Response(
+          HttpStatus.serviceUnavailable,
+          body: jsonEncode({
+            'status': 'error',
+            'message': 'Le dossier d’échange est indisponible. '
+                'Dans les réglages de Companion, autorisez à nouveau ce dossier '
+                'ou reconnectez son volume, puis réessayez le transfert.',
+          }),
+          headers: {HttpHeaders.contentTypeHeader: ContentType.json.mimeType},
+        );
+      } on FileSystemException {
+        return Response(
+          HttpStatus.serviceUnavailable,
+          body: jsonEncode({
+            'status': 'error',
+            'message': 'Impossible d’écrire dans le dossier d’échange. '
+                'Vérifiez son accès et l’espace disponible, puis réessayez.',
+          }),
+          headers: {HttpHeaders.contentTypeHeader: ContentType.json.mimeType},
+        );
+      } finally {
+        // Chaque transfert possède son accès ; la surveillance garde le sien.
+        await directoryAccess?.release();
       }
-
-      final safeFileName = p.basename(fileName);
-      final uniqueFileName = _uniqueFileName(exchangeDir, safeFileName);
-
-      final destinationPath = p.join(exchangeDir.path, uniqueFileName);
-
-      final bytes = await request.read().fold<List<int>>(
-        <int>[],
-        (previous, element) => previous..addAll(element),
-      );
-
-      final file = File(destinationPath);
-      await file.writeAsBytes(bytes, flush: true);
-
-      //final importResult  =
-      //await AbakImportLauncher.importArchiveFromPath(
-      //  destinationPath,
-      //  sourceLabel: 'local_exchange',
-      //);
-
-      return Response.ok(
-        jsonEncode({
-          'status': 'ok',
-          'message': 'Fichier .abak reçu dans le dossier d’échange.',
-          'fileName': uniqueFileName,
-          'filePath': destinationPath,
-          'size': bytes.length,
-          'contentType': contentType,
-          'timestamp': DateTime.now().toIso8601String(),
-        }),
-        headers: {HttpHeaders.contentTypeHeader: ContentType.json.mimeType},
-      );
     });
 
     final handler = Pipeline()

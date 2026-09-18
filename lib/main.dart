@@ -18,6 +18,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart' show kReleaseMode;
 import 'package:window_manager/window_manager.dart';
 import 'package:xml/xml.dart';
 
@@ -31,6 +32,7 @@ import 'features/patients/services/patient_fr_insi_ws_ins2_request_builder.dart'
 import 'generated/l10n.dart';
 import 'app.dart';
 import 'core/database/database_service.dart';
+import 'core/settings/macos_launch_history_service.dart';
 import 'features/import_export/data/import_session_repository.dart';
 import 'features/local_exchange/services/airdrop_import_watcher.dart';
 import 'features/local_exchange/services/local_exchange_server.dart';
@@ -50,9 +52,73 @@ import 'features/patients/services/patient_fr_insi_ps_signed_info_canonicalizer.
 import 'features/patients/services/patient_fr_insi_ps_signature_verification_service.dart';
 import 'features/patients/services/patient_fr_insi_ps_assertion_signing_service.dart';
 import 'features/patients/services/patient_fr_insi_ws_ins2_transport_service.dart';
+import 'core/ui/macos_installation_guard.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  try {
+    await _startApplication();
+  } catch (error, stackTrace) {
+    debugPrint('Échec du démarrage : $error');
+    debugPrintStack(stackTrace: stackTrace);
+    runApp(const _StartupFailureApp());
+
+    try {
+      await windowManager.ensureInitialized();
+      await windowManager.show();
+      await windowManager.focus();
+    } catch (windowError) {
+      debugPrint('Impossible d’afficher la fenêtre : $windowError');
+    }
+  }
+}
+
+Future<void> _startApplication() async {
+  MacosLaunchSnapshot? launchSnapshot;
+  // Ne pas polluer l’historique de la Release depuis une session de développement.
+  if (Platform.isMacOS && kReleaseMode) {
+    final location = await const MacosInstallationGuard().inspect();
+
+    if (!location.isInstalled) {
+      await windowManager.ensureInitialized();
+      runApp(MacosInstallationRequiredApp(location: location));
+
+      await windowManager.waitUntilReadyToShow(
+        const WindowOptions(
+          size: Size(800, 620),
+          minimumSize: Size(640, 480),
+          center: true,
+          title: 'Installer ABAK Companion',
+        ),
+            () async {
+          await windowManager.show();
+          await windowManager.focus();
+        },
+      );
+
+      return;
+    }
+
+    launchSnapshot = await const MacosLaunchHistoryService().inspectBeforeStartup();
+    if (launchSnapshot.kind == MacosLaunchKind.olderVersion) {
+      await windowManager.ensureInitialized();
+      runApp(_OlderVersionApp(snapshot: launchSnapshot));
+      await windowManager.waitUntilReadyToShow(
+        const WindowOptions(
+          size: Size(720, 460),
+          minimumSize: Size(600, 400),
+          center: true,
+          title: 'ABAK Companion — Version ancienne',
+        ),
+            () async {
+          await windowManager.show();
+          await windowManager.focus();
+        },
+      );
+      return;
+    }
+  }
 
   try {
     final diagnostic =
@@ -403,11 +469,13 @@ Future<void> main() async {
 
   await windowManager.ensureInitialized();
 
-  const windowOptions = WindowOptions(
-    size: Size(1400, 900),
-    minimumSize: Size(1200, 800),
+  final windowOptions = WindowOptions(
+    size: const Size(1400, 900),
+    minimumSize: const Size(1200, 800),
     center: true,
-    title: 'ABAK Desktop Companion',
+    title: launchSnapshot == null
+        ? 'ABAK Desktop Companion'
+        : 'ABAK Companion — ${launchSnapshot.current.label}',
   );
 
   await DatabaseService.database;
@@ -439,7 +507,7 @@ Future<void> main() async {
 
   debugPrint(
     '📡 serveur local ABAK actif sur le port '
-    '${LocalExchangeServer.instance.port}',
+        '${LocalExchangeServer.instance.port}',
   );
 
   await ImportSessionRepository().recoverInterruptedSessions();
@@ -448,7 +516,7 @@ Future<void> main() async {
 
   debugPrint(
     '🧹 purge patients : '
-    '${purgeResult.deletedPatients} supprimé(s)',
+        '${purgeResult.deletedPatients} supprimé(s)',
   );
 
   final backupCleanupResult = await LocalBackupCleanupService(
@@ -457,8 +525,8 @@ Future<void> main() async {
 
   debugPrint(
     '🧹 purge sauvegardes SQLite : '
-    '${backupCleanupResult.deletedCount} supprimée(s), '
-    '${backupCleanupResult.keptCount} conservée(s)',
+        '${backupCleanupResult.deletedCount} supprimée(s), '
+        '${backupCleanupResult.keptCount} conservée(s)',
   );
 
   windowManager.waitUntilReadyToShow(windowOptions, () async {
@@ -466,7 +534,7 @@ Future<void> main() async {
     await windowManager.focus();
   });
 
-  runApp(const AbakDesktopApp());
+  runApp(AbakDesktopApp(launchSnapshot: launchSnapshot));
 }
 
 class _AlreadyRunningApp extends StatelessWidget {
@@ -528,6 +596,95 @@ class _AlreadyRunningScreen extends StatelessWidget {
                   FilledButton(
                     onPressed: _closeApplication,
                     child: Text(s.main_close),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _StartupFailureApp extends StatelessWidget {
+  const _StartupFailureApp();
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(colorSchemeSeed: Colors.teal, useMaterial3: true),
+      home: Scaffold(
+        body: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 560),
+            child: Padding(
+              padding: const EdgeInsets.all(32),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(Icons.error_outline, size: 48),
+                  const SizedBox(height: 24),
+                  const Text(
+                    'Impossible de démarrer ABAK Companion',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 16),
+                  const Text(
+                    'Une erreur est survenue pendant le démarrage. '
+                        'Fermez l’application et contactez l’assistance si le problème persiste.',
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 24),
+                  FilledButton(
+                    onPressed: () => windowManager.close(),
+                    child: const Text('Fermer'),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Cet écran est affiché avant toute ouverture de la base par ce lancement.
+class _OlderVersionApp extends StatelessWidget {
+  const _OlderVersionApp({required this.snapshot});
+
+  final MacosLaunchSnapshot snapshot;
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(colorSchemeSeed: Colors.teal, useMaterial3: true),
+      home: Scaffold(
+        body: Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(32),
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 560),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(Icons.update_disabled, size: 48),
+                  const SizedBox(height: 20),
+                  Text(
+                    snapshot.title,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(snapshot.message, textAlign: TextAlign.center),
+                  const SizedBox(height: 24),
+                  FilledButton(
+                    onPressed: () => windowManager.close(),
+                    child: const Text('Fermer cette copie'),
                   ),
                 ],
               ),

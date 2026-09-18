@@ -8,7 +8,7 @@ import '../patients/services/patient_archive_settings_service.dart';
 import '../organization/organization_screen.dart';
 import '../../core/expert/expert_context_info.dart';
 import '../../core/expert/expert_info_button.dart';
-import 'package:file_picker/file_picker.dart';
+import '../../core/settings/generated_documents_directory_service.dart';
 import '../external_correspondents/screens/external_correspondents_screen.dart';
 
 class PreferencesScreen extends StatefulWidget {
@@ -24,14 +24,15 @@ class PreferencesScreen extends StatefulWidget {
 
 class _PreferencesScreenState extends State<PreferencesScreen> {
   final LanguagePreferenceService _languageService =
-      const LanguagePreferenceService();
+  const LanguagePreferenceService();
   final ApplicationSettingsService _applicationSettingsService =
-      const ApplicationSettingsService();
+  const ApplicationSettingsService();
 
   final PatientArchiveSettingsService _archiveSettingsService =
   PatientArchiveSettingsService();
 
   String? _assessmentDocumentsDirectoryPath;
+  bool _choosingDocumentsDirectory = false;
   bool _openGeneratedDocument = true;
 
 
@@ -182,20 +183,13 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
   }
 
   Future<void> _chooseAssessmentDocumentsDirectory() async {
+    if (_choosingDocumentsDirectory) return;
+    setState(() => _choosingDocumentsDirectory = true);
+
     try {
-      final selectedPath = await FilePicker.platform.getDirectoryPath(
-        dialogTitle: 'Choisir le dossier des documents générés',
-      );
-
-      if (selectedPath == null || selectedPath.trim().isEmpty) return;
-      if (!mounted) return;
-
-      await _applicationSettingsService.setString(
-        ApplicationSettingsService.assessmentDocumentsDirectoryKey,
-        selectedPath,
-      );
-
-      if (!mounted) return;
+      final selectedPath = await const GeneratedDocumentsDirectoryService()
+          .chooseAndSave();
+      if (selectedPath == null || !mounted) return;
 
       setState(() {
         _assessmentDocumentsDirectoryPath = selectedPath;
@@ -209,17 +203,18 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
     } catch (error, stackTrace) {
       debugPrint('Impossible de modifier le dossier des documents : $error');
       debugPrintStack(stackTrace: stackTrace);
-
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text(
-            'Impossible de modifier le dossier des documents. '
-            'Vérifiez les autorisations d’accès aux fichiers de l’application.',
+            'Impossible d’autoriser ou de mémoriser ce dossier. '
+                'Vérifiez sa disponibilité et ses droits d’accès, puis réessayez.',
           ),
         ),
       );
+    } finally {
+      if (mounted) setState(() => _choosingDocumentsDirectory = false);
     }
   }
 
@@ -401,7 +396,9 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
                                 'Aucun dossier défini',
                           ),
                           trailing: OutlinedButton(
-                            onPressed: _chooseAssessmentDocumentsDirectory,
+                            onPressed: _choosingDocumentsDirectory
+                                ? null
+                                : _chooseAssessmentDocumentsDirectory,
                             child: const Text('Modifier'),
                           ),
                         ),

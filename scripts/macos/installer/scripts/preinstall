@@ -1,0 +1,26 @@
+#!/bin/sh
+
+# Ne jamais remplacer Companion pendant son utilisation.
+# Repérer aussi une copie lancée depuis un autre dossier.
+/usr/bin/pgrep -f \
+  '/Contents/MacOS/abak_desktop_companion([[:space:]]|$)' \
+  >/dev/null 2>&1
+
+PROCESS_STATUS=$?
+
+case "${PROCESS_STATUS}" in
+  0)
+    echo "ABAK Companion est ouvert."
+    echo "Quittez toutes les copies de l’application, puis relancez l’installation."
+    exit 1
+    ;;
+  1)
+    # Aucune copie active : l’installation peut continuer.
+    exit 0
+    ;;
+  *)
+    echo "Impossible de vérifier si ABAK Companion est fermé."
+    echo "Installation interrompue par précaution."
+    exit 1
+    ;;
+esac
