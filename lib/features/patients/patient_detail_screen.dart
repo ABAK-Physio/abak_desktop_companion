@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 import '../../generated/l10n.dart';
+import '../../core/expert/expert_context_info.dart';
+import '../../core/expert/expert_info_button.dart';
+import '../../core/settings/application_settings_service.dart';
 import '../care_episodes/data/care_episode_referring_practitioner_repository.dart';
 import '../practitioners/widgets/practitioner_selector.dart';
 
@@ -34,6 +37,35 @@ class PatientDetailScreen extends StatefulWidget {
 
 class _PatientDetailScreenState extends State<PatientDetailScreen> {
   int _refreshToken = 0;
+  bool _expertModeEnabled = false;
+
+  final ApplicationSettingsService _applicationSettingsService =
+      const ApplicationSettingsService();
+
+  ExpertContextInfo _expertInfo(S s) {
+    return ExpertContextInfo(
+      contextName: s.patientDetail_patientInformation,
+      sourceFile: 'lib/features/patients/patient_detail_screen.dart',
+      arbPrefix: 'patientDetail',
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadExpertMode();
+  }
+
+  Future<void> _loadExpertMode() async {
+    final expertModeEnabled =
+        await _applicationSettingsService.isExpertModeEnabled();
+
+    if (!mounted) return;
+
+    setState(() {
+      _expertModeEnabled = expertModeEnabled;
+    });
+  }
 
   final PatientIdentityRepository _patientIdentityRepository =
       PatientIdentityRepository();
@@ -317,7 +349,12 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
     final birthDateText = _formatBirthDate(context);
 
     return Scaffold(
-      appBar: AppBar(title: Text(_formatPatientTitle())),
+      appBar: AppBar(
+        title: Text(_formatPatientTitle()),
+        actions: [
+          if (_expertModeEnabled) ExpertInfoButton(info: _expertInfo(s)),
+        ],
+      ),
       body: ListView(
         padding: const EdgeInsets.all(24),
         children: [

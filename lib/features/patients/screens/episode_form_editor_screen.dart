@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+
+import '../../../core/expert/expert_context_info.dart';
+import '../../../core/expert/expert_info_button.dart';
+
 import 'package:intl/intl.dart';
 
 import '../../../generated/l10n.dart';
@@ -256,6 +260,13 @@ class _EpisodeFormEditorScreenState extends State<EpisodeFormEditorScreen> {
           appBar: AppBar(
             title: Text(s.episodeFormEditor_title),
             actions: [
+              ExpertModeInfoButton(
+                info: ExpertContextInfo(
+                  contextName: s.episodeFormEditor_title,
+                  sourceFile: 'lib/features/patients/screens/episode_form_editor_screen.dart',
+                  arbPrefix: 'episodeFormEditor',
+                ),
+              ),
               TextButton.icon(
                 onPressed: data == null || _saving ? null : () => _save(data),
                 icon: const Icon(Icons.save_outlined),

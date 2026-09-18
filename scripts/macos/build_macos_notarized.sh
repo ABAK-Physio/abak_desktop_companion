@@ -1,6 +1,6 @@
+#!/usr/bin/env zsh
 # Ceci est le script à utiliser pour créer la version macOs de Companion
 # Modifier le numéro de la VERSION BUILD_NAME et le numéro de la release BUILD_Number
-#!/usr/bin/env zsh
 set -euo pipefail
 
 BUILD_NAME=${1:-"1.0.0"}
@@ -22,6 +22,7 @@ APP_NAME="abak_desktop_companion"
 APP_ARTIFACT_NAME="ABAK_Desktop_Companion"
 
 APP_PATH="build/macos/Build/Products/Release/${APP_NAME}.app"
+ENTITLEMENTS_PATH="macos/Runner/Release.entitlements"
 
 ZIP_UNSIGNED="build/${APP_ARTIFACT_NAME}_${BUILD_NAME}_macOS_unsigned.zip"
 ZIP_FINAL="build/${APP_ARTIFACT_NAME}_${BUILD_NAME}_macOS.zip"
@@ -55,7 +56,16 @@ echo "✍️ Signature"
 codesign \
   --force \
   --deep \
+  --preserve-metadata=entitlements \
   --options runtime \
+  --sign "${SIGN_IDENTITY}" \
+  "${APP_PATH}"
+
+# Apply the release permissions to the main app only, not its frameworks.
+codesign \
+  --force \
+  --options runtime \
+  --entitlements "${ENTITLEMENTS_PATH}" \
   --sign "${SIGN_IDENTITY}" \
   "${APP_PATH}"
 
@@ -68,6 +78,20 @@ codesign \
   --strict \
   --verbose=2 \
   "${APP_PATH}"
+
+# Stop before distribution if signing has lost required permissions.
+SIGNED_ENTITLEMENTS=$(mktemp)
+trap 'rm -f "${SIGNED_ENTITLEMENTS}"' EXIT
+codesign --display --entitlements - --xml "${APP_PATH}" > "${SIGNED_ENTITLEMENTS}"
+for entitlement in \
+  com.apple.security.app-sandbox \
+  com.apple.security.files.user-selected.read-write \
+  com.apple.security.smartcard; do
+  if [[ "$(/usr/libexec/PlistBuddy -c "Print :${entitlement}" "${SIGNED_ENTITLEMENTS}")" != "true" ]]; then
+    echo "❌ Autorisation absente de la signature : ${entitlement}"
+    exit 1
+  fi
+done
 
 echo ""
 echo "📦 Création ZIP"

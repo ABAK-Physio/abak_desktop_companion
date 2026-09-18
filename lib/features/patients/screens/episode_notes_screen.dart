@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+
+import '../../../core/expert/expert_context_info.dart';
+import '../../../core/expert/expert_info_button.dart';
+
 import '../../../generated/l10n.dart';
 import '../data/episode_note_repository.dart';
 import '../models/episode_note.dart';
@@ -122,6 +126,13 @@ class _EpisodeNotesScreenState extends State<EpisodeNotesScreen> {
           '${s.episodeNotes_title} — ${widget.caseLabel}',
         ),
         actions: [
+          ExpertModeInfoButton(
+            info: ExpertContextInfo(
+              contextName: s.episodeNotes_title,
+              sourceFile: 'lib/features/patients/screens/episode_notes_screen.dart',
+              arbPrefix: 'episodeNotes',
+            ),
+          ),
           IconButton(
             tooltip: s.episodeForms_refresh,
             onPressed: _refresh,
@@ -268,6 +279,13 @@ class _EpisodeNoteEditorScreenState extends State<_EpisodeNoteEditorScreen> {
       appBar: AppBar(
         title: Text(isEditing ? s.episodeNotes_editNote : s.episodeNotes_newNote),
         actions: [
+          ExpertModeInfoButton(
+            info: ExpertContextInfo(
+              contextName: isEditing ? s.episodeNotes_editNote : s.episodeNotes_newNote,
+              sourceFile: 'lib/features/patients/screens/episode_notes_screen.dart',
+              arbPrefix: 'episodeNotes',
+            ),
+          ),
           TextButton.icon(
             onPressed: _saving ? null : _save,
             icon: const Icon(Icons.save_outlined),

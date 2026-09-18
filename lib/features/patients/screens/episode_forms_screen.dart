@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+
+import '../../../core/expert/expert_context_info.dart';
+import '../../../core/expert/expert_info_button.dart';
+
 import '../../../generated/l10n.dart';
 
 import '../data/contact_form_template_repository.dart';
@@ -212,6 +216,13 @@ class _EpisodeFormsScreenState extends State<EpisodeFormsScreen> {
           '${s.episodeForms_title} — ${widget.caseLabel}',
         ),
         actions: [
+          ExpertModeInfoButton(
+            info: ExpertContextInfo(
+              contextName: s.episodeForms_title,
+              sourceFile: 'lib/features/patients/screens/episode_forms_screen.dart',
+              arbPrefix: 'episodeForms',
+            ),
+          ),
           IconButton(
             tooltip: s.episodeForms_refresh,
             onPressed: _refresh,

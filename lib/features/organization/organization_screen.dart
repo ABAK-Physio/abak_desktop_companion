@@ -3,6 +3,9 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 
+import '../../core/expert/expert_context_info.dart';
+import '../../core/expert/expert_info_button.dart';
+
 import '../../core/settings/cabinet_identity_service.dart';
 import '../../generated/l10n.dart';
 
@@ -178,6 +181,15 @@ class _OrganizationScreenState extends State<OrganizationScreen> {
     final s=S.of(context);
     return Scaffold(
       appBar: AppBar(
+        actions: [
+          ExpertModeInfoButton(
+            info: ExpertContextInfo(
+              contextName: s.organization_title,
+              sourceFile: 'lib/features/organization/organization_screen.dart',
+              arbPrefix: 'organization',
+            ),
+          ),
+        ],
         title: Text(s.organization_title),
       ),
       body: Center(

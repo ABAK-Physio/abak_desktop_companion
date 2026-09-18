@@ -1,5 +1,9 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+
+import '../../../core/expert/expert_context_info.dart';
+import '../../../core/expert/expert_info_button.dart';
+
 import 'package:fl_chart/fl_chart.dart';
 import '../../../core/utils/date_format_utils.dart';
 import 'package:abak_desktop_companion/features/results/models/desktop_result.dart';
@@ -33,6 +37,14 @@ class ExerciseEvolutionDetailScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
+        actions: [
+          ExpertModeInfoButton(
+            info: ExpertContextInfo(
+              contextName: 'Évolution — ${ClinicalActivityCatalog.displayLabel(exoId)}',
+              sourceFile: 'lib/features/results/evolution/exercise_evolution_detail_screen.dart',
+            ),
+          ),
+        ],
         title: Text(
           'Évolution - ${ClinicalActivityCatalog.displayLabel(exoId)}',
         ),

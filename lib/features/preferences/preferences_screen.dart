@@ -182,32 +182,45 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
   }
 
   Future<void> _chooseAssessmentDocumentsDirectory() async {
-    final selectedPath = await FilePicker.platform.getDirectoryPath(
-      dialogTitle: 'Choisir le dossier des documents générés',
-    );
+    try {
+      final selectedPath = await FilePicker.platform.getDirectoryPath(
+        dialogTitle: 'Choisir le dossier des documents générés',
+      );
 
-    if (selectedPath == null) {
-      return;
-    }
+      if (selectedPath == null || selectedPath.trim().isEmpty) return;
+      if (!mounted) return;
 
-    await _applicationSettingsService.setString(
-      ApplicationSettingsService.assessmentDocumentsDirectoryKey,
-      selectedPath,
-    );
+      await _applicationSettingsService.setString(
+        ApplicationSettingsService.assessmentDocumentsDirectoryKey,
+        selectedPath,
+      );
 
-    if (!mounted) return;
+      if (!mounted) return;
 
-    setState(() {
-      _assessmentDocumentsDirectoryPath = selectedPath;
-    });
+      setState(() {
+        _assessmentDocumentsDirectoryPath = selectedPath;
+      });
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text(
-          'Dossier des documents générés mis à jour',
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Dossier des documents générés mis à jour'),
         ),
-      ),
-    );
+      );
+    } catch (error, stackTrace) {
+      debugPrint('Impossible de modifier le dossier des documents : $error');
+      debugPrintStack(stackTrace: stackTrace);
+
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Impossible de modifier le dossier des documents. '
+            'Vérifiez les autorisations d’accès aux fichiers de l’application.',
+          ),
+        ),
+      );
+    }
   }
 
   @override

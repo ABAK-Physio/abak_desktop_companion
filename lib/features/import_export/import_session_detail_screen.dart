@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+
+import '../../core/expert/expert_context_info.dart';
+import '../../core/expert/expert_info_button.dart';
+
 import '../../core/utils/date_format_utils.dart';
 
 import 'data/import_session_repository.dart';
@@ -125,7 +129,17 @@ class ImportSessionDetailScreen extends StatelessWidget {
         session.status == 'failed' || session.failedFilesCount > 0;
 
     return Scaffold(
-      appBar: AppBar(title: const Text("Suivi de l'import")),
+      appBar: AppBar(
+        actions: [
+          ExpertModeInfoButton(
+            info: ExpertContextInfo(
+              contextName: "Suivi de l’import",
+              sourceFile: 'lib/features/import_export/import_session_detail_screen.dart',
+            ),
+          ),
+        ],
+        title: const Text("Suivi de l'import"),
+      ),
         body: ListView(
           padding: const EdgeInsets.all(24),
           children: [

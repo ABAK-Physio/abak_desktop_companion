@@ -5,6 +5,10 @@ import 'package:abak_shared/abak_shared.dart';
 import 'package:file_picker/file_picker.dart';
 
 import 'package:flutter/material.dart';
+
+import '../../../core/expert/expert_context_info.dart';
+import '../../../core/expert/expert_info_button.dart';
+
 import 'package:uuid/uuid.dart';
 
 import '../../external_correspondents/widgets/external_correspondent_selector.dart';
@@ -2884,6 +2888,12 @@ class _CareEpisodeReportsWorkspaceScreenState
         appBar: AppBar(
           title: Text('${widget.patientName} — Bilans et rapports'),
           actions: [
+            ExpertModeInfoButton(
+              info: ExpertContextInfo(
+                contextName: 'Bilans et rapports',
+                sourceFile: 'lib/features/care_episodes/screens/care_episode_reports_workspace_screen.dart',
+              ),
+            ),
             ContextHelpButton(
               title: 'Bilans et rapports',
               content:

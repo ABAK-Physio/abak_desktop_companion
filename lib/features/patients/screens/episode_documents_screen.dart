@@ -3,6 +3,10 @@ import 'dart:io';
 import 'package:abak_shared/abak_shared.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+
+import '../../../core/expert/expert_context_info.dart';
+import '../../../core/expert/expert_info_button.dart';
+
 import '../../../core/utils/date_format_utils.dart';
 
 import '../../../generated/l10n.dart';
@@ -321,6 +325,13 @@ class _EpisodeDocumentsScreenState extends State<EpisodeDocumentsScreen> {
           s.episodeDocuments_title,
         ),
         actions: [
+          ExpertModeInfoButton(
+            info: ExpertContextInfo(
+              contextName: s.episodeDocuments_title,
+              sourceFile: 'lib/features/patients/screens/episode_documents_screen.dart',
+              arbPrefix: 'episodeDocuments',
+            ),
+          ),
           ContextHelpButton(
             title: s.episodeDocuments_title,
             content:

@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+
+import '../../../core/expert/expert_context_info.dart';
+import '../../../core/expert/expert_info_button.dart';
+
 import '../../../generated/l10n.dart';
 import '../data/patient_attribute_repository.dart';
 import '../data/patient_identity_repository.dart';
@@ -339,6 +343,13 @@ class _PatientClinicalDataEditScreenState
       appBar: AppBar(
         title: Text(s.patientClinicalDataEdit_title),
         actions: [
+          ExpertModeInfoButton(
+            info: ExpertContextInfo(
+              contextName: s.patientClinicalDataEdit_title,
+              sourceFile: 'lib/features/patients/screens/patient_clinical_data_edit_screen.dart',
+              arbPrefix: 'patientClinicalDataEdit',
+            ),
+          ),
           TextButton.icon(
             onPressed: _saving ? null : _save,
             icon: const Icon(Icons.save_outlined),

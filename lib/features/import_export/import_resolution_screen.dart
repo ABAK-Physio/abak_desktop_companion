@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+
+import '../../core/expert/expert_context_info.dart';
+import '../../core/expert/expert_info_button.dart';
+
 import 'package:uuid/uuid.dart';
 
 import '../care_episodes/data/care_episode_repository.dart';
@@ -279,7 +283,17 @@ class _ImportResolutionScreenState extends State<ImportResolutionScreen> {
     final mobileCase = widget.package.mobileCase;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Rattacher l’import')),
+      appBar: AppBar(
+        actions: [
+          ExpertModeInfoButton(
+            info: ExpertContextInfo(
+              contextName: 'Rattacher l’import',
+              sourceFile: 'lib/features/import_export/import_resolution_screen.dart',
+            ),
+          ),
+        ],
+        title: const Text('Rattacher l’import'),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(24),
         child: Row(

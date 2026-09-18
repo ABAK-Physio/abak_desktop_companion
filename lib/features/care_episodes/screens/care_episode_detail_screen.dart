@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+
+import '../../../core/expert/expert_context_info.dart';
+import '../../../core/expert/expert_info_button.dart';
+
 import '../../../generated/l10n.dart';
 import '../models/care_episode.dart';
 import '../../../core/utils/date_format_utils.dart';
@@ -75,6 +79,13 @@ class _CareEpisodeDetailScreenState extends State<CareEpisodeDetailScreen> {
                 : '${_patient!.lastName.toUpperCase()} ${_patient!.firstName}',
           ),
           actions: [
+            ExpertModeInfoButton(
+              info: ExpertContextInfo(
+                contextName: 'Détail de la prise en charge',
+                sourceFile: 'lib/features/care_episodes/screens/care_episode_detail_screen.dart',
+                arbPrefix: 'careEpisodeDetail',
+              ),
+            ),
             IconButton(
               tooltip: s.careEpisodeDetail_reportsWorkspaceTooltip,
               icon: const Icon(Icons.dashboard_customize_outlined),

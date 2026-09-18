@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../../core/expert/expert_context_info.dart';
+import '../../core/expert/expert_info_button.dart';
+
 import '../../generated/l10n.dart';
 
 class NouveautesScreen extends StatelessWidget {
@@ -9,7 +12,18 @@ class NouveautesScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final s = S.of(context);
     return Scaffold(
-      appBar: AppBar(title: Text(s.information_newTitle)),
+      appBar: AppBar(
+        actions: [
+          ExpertModeInfoButton(
+            info: ExpertContextInfo(
+              contextName: s.information_newTitle,
+              sourceFile: 'lib/features/informations/nouveautes.dart',
+              arbPrefix: 'information',
+            ),
+          ),
+        ],
+        title: Text(s.information_newTitle),
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
         child: Center(

@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+
+import '../../core/expert/expert_context_info.dart';
+import '../../core/expert/expert_info_button.dart';
+
 import '../../core/utils/date_format_utils.dart';
 import '../../generated/l10n.dart';
 import 'data/desktop_result_repository.dart';
@@ -251,6 +255,13 @@ class _ResultDetailScreenState extends State<ResultDetailScreen> {
       appBar: AppBar(
         title: Text(ClinicalActivityCatalog.displayLabel(_result.exoId)),
         actions: [
+          ExpertModeInfoButton(
+            info: ExpertContextInfo(
+              contextName: 'Détail du résultat — ${ClinicalActivityCatalog.displayLabel(_result.exoId)}',
+              sourceFile: 'lib/features/results/result_detail_screen.dart',
+              arbPrefix: 'resultDetail',
+            ),
+          ),
           IconButton(
             tooltip: s.resultDetail_cancel,
             icon: const Icon(Icons.archive_outlined),

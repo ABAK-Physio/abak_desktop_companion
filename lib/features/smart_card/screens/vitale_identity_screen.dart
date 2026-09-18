@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+
+import '../../../core/expert/expert_context_info.dart';
+import '../../../core/expert/expert_info_button.dart';
+
 import '../../../core/utils/date_format_utils.dart';
 import 'package:abak_vitale/abak_vitale.dart';
 import '../../../generated/l10n.dart';
@@ -138,6 +142,15 @@ class _VitaleIdentityScreenState extends State<VitaleIdentityScreen> {
 
     return Scaffold(
       appBar: AppBar(
+        actions: [
+          ExpertModeInfoButton(
+            info: ExpertContextInfo(
+              contextName: s.vitaleIdentity_title,
+              sourceFile: 'lib/features/smart_card/screens/vitale_identity_screen.dart',
+              arbPrefix: 'vitaleIdentity',
+            ),
+          ),
+        ],
         title: Text(s.vitaleIdentity_title),
       ),
       body: Padding(

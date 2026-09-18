@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../../../core/expert/expert_context_info.dart';
+import '../../../core/expert/expert_info_button.dart';
+
 import '../data/external_correspondent_repository.dart';
 import '../models/external_correspondent.dart';
 import '../widgets/external_correspondent_dialog.dart';
@@ -54,6 +57,14 @@ class _ExternalCorrespondentsScreenState
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        actions: [
+          ExpertModeInfoButton(
+            info: ExpertContextInfo(
+              contextName: 'Correspondants externes',
+              sourceFile: 'lib/features/external_correspondents/screens/external_correspondents_screen.dart',
+            ),
+          ),
+        ],
         title: const Text('Correspondants externes'),
       ),
       body: FutureBuilder<List<ExternalCorrespondent>>(

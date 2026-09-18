@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../../../core/expert/expert_context_info.dart';
+import '../../../core/expert/expert_info_button.dart';
+
 import '../../../generated/l10n.dart';
 import 'episode_forms_screen.dart';
 import 'episode_documents_screen.dart';
@@ -24,7 +27,18 @@ class EpisodeDashboardScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final s = S.of(context);
     return Scaffold(
-      appBar: AppBar(title: Text(caseLabel)),
+      appBar: AppBar(
+        actions: [
+          ExpertModeInfoButton(
+            info: ExpertContextInfo(
+              contextName: 'Tableau de bord de l’épisode',
+              sourceFile: 'lib/features/patients/screens/episode_dashboard_screen.dart',
+              arbPrefix: 'episodeDashboard',
+            ),
+          ),
+        ],
+        title: Text(caseLabel),
+      ),
       body: ListView(
         padding: const EdgeInsets.all(24),
         children: [
