@@ -1,4 +1,8 @@
 import 'dart:async';
+import '../../practitioners/practitioner_list_screen.dart';
+import '../../external_correspondents/screens/external_correspondents_screen.dart';
+import '../../dashboard/home_dashboard_screen.dart';
+import '../../../generated/l10n.dart';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:abak_shared/abak_shared.dart';
@@ -104,6 +108,8 @@ class _CareEpisodeReportsWorkspaceScreenState
 
   late Future<ExternalCorrespondent?> _prescribingCorrespondentFuture;
 
+  bool _returningHome = false;
+  AssessmentTemplateAnswers? _pendingTemplateAnswers;
   Timer? _draftSaveTimer;
   Timer? _assessmentTemplateSaveTimer;
   bool _updatingDraftController = false;
@@ -2571,6 +2577,7 @@ class _CareEpisodeReportsWorkspaceScreenState
   void _scheduleAssessmentTemplateSave(AssessmentTemplateAnswers answers) {
     _assessmentTemplateSaveTimer?.cancel();
 
+    _pendingTemplateAnswers = answers;
     _assessmentTemplateSaveTimer = Timer(const Duration(seconds: 1), () async {
       await _assessmentTemplateDraftRepository.saveDraft(
         careEpisodeId: widget.episode.careEpisodeId,
@@ -2825,14 +2832,18 @@ class _CareEpisodeReportsWorkspaceScreenState
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (dialogContext) {
-        return AlertDialog(
+        return StatefulBuilder(
+          builder: (dialogContext, setDialogState) => AlertDialog(
           title: const Text('Modifier les référents'),
           content: SizedBox(
             width: 480,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                PractitionerSelector(
+                Row(
+                  children: [
+                    Expanded(
+                      child: PractitionerSelector(
                   label: 'Kiné référent',
                   selectedPractitionerId: selectedPractitionerId,
                   allowEmpty: true,
@@ -2840,14 +2851,58 @@ class _CareEpisodeReportsWorkspaceScreenState
                     selectedPractitionerId = practitionerId;
                   },
                 ),
+                    ),
+                    const SizedBox(width: 8),
+                    IconButton(
+                      tooltip: 'Gérer les kinés',
+                      icon: const Icon(Icons.manage_accounts_outlined),
+                      onPressed: () async {
+                        await Navigator.of(dialogContext).push<void>(
+                          MaterialPageRoute(
+                            builder: (_) => const PractitionerListScreen(),
+                          ),
+                        );
+                        if (!dialogContext.mounted) return;
+                        setDialogState(() {});
+                      },
+                    ),
+                  ],
+                ),
                 const SizedBox(height: 16),
-                ExternalCorrespondentSelector(
+                Row(
+                  children: [
+                    Expanded(
+                      child: ExternalCorrespondentSelector(
                   label: 'Médecin prescripteur',
                   selectedCorrespondentId: selectedCorrespondentId,
                   allowEmpty: true,
                   onChanged: (correspondentId) {
                     selectedCorrespondentId = correspondentId;
                   },
+                ),
+                    ),
+                    const SizedBox(width: 8),
+                    IconButton(
+                      tooltip: 'Gérer les médecins prescripteurs',
+                      icon: const Icon(Icons.manage_accounts_outlined),
+                      onPressed: () async {
+                        await Navigator.of(dialogContext).push<void>(
+                          MaterialPageRoute(
+                            builder: (_) => const ExternalCorrespondentsScreen(),
+                          ),
+                        );
+                        final available = await _externalCorrespondentRepository
+                            .getActiveCorrespondents();
+                        if (!dialogContext.mounted) return;
+                        setDialogState(() {
+                          if (!available.any((item) =>
+                              item.correspondentId == selectedCorrespondentId)) {
+                            selectedCorrespondentId = null;
+                          }
+                        });
+                      },
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -2862,6 +2917,7 @@ class _CareEpisodeReportsWorkspaceScreenState
               child: const Text('Enregistrer'),
             ),
           ],
+          ),
         );
       },
     );
@@ -2903,6 +2959,42 @@ class _CareEpisodeReportsWorkspaceScreenState
     });
   }
 
+  Future<void> _returnHome() async {
+    if (_returningHome) return;
+    setState(() => _returningHome = true);
+    _draftSaveTimer?.cancel();
+    final saveTemplate = _assessmentTemplateSaveTimer?.isActive ?? false;
+    _assessmentTemplateSaveTimer?.cancel();
+    try {
+      if (_documentTypeSelected && !_draftLoading) {
+        switch (_documentType) {
+          case ClinicalDocumentType.assessment:
+            await _saveDraft();
+            await _saveAssessmentEditDraft();
+          case ClinicalDocumentType.report:
+            await _saveReportDraft();
+            await _saveReportEditDraft();
+        }
+      }
+      final answers = _pendingTemplateAnswers;
+      if (saveTemplate && answers != null) {
+        await _assessmentTemplateDraftRepository.saveDraft(
+          careEpisodeId: widget.episode.careEpisodeId,
+          answers: answers,
+        );
+      }
+      if (!mounted) return;
+      HomeDashboardScreen.returnToHome(context);
+    } catch (error) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(S.of(context).home_error_while_saving(error.toString()))),
+      );
+    } finally {
+      if (mounted) setState(() => _returningHome = false);
+    }
+  }
+
   void _openEpisodeDocuments() {
     Navigator.of(context).push(
       MaterialPageRoute(
@@ -2920,6 +3012,11 @@ class _CareEpisodeReportsWorkspaceScreenState
       appBar: AppBar(
         title: Text('${widget.patientName} — Bilans et rapports'),
         actions: [
+          TextButton.icon(
+            onPressed: _returningHome || _draftLoading ? null : _returnHome,
+            icon: const Icon(Icons.home_outlined),
+            label: Text(S.of(context).home_home),
+          ),
           ExpertModeInfoButton(
             info: ExpertContextInfo(
               contextName: 'Bilans et rapports',

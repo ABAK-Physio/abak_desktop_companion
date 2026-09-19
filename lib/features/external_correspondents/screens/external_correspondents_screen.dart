@@ -57,6 +57,9 @@ class _ExternalCorrespondentsScreenState
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: Navigator.of(context).canPop()
+            ? BackButton(onPressed: () => Navigator.of(context).maybePop())
+            : null,
         actions: [
           ExpertModeInfoButton(
             info: ExpertContextInfo(

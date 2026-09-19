@@ -222,30 +222,28 @@ ExpertContextInfo _expertInfo(S s) {
       );
     }
 
-    if (patients.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Icon(Icons.people_outline, size: 64),
-            const SizedBox(height: 16),
-            Text(
-              _showArchived
-                  ? s.patientList_noArchivedPatients
-                  : s.patientList_noRegisteredPatients,
-              style: const TextStyle(fontSize: 22),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              _showArchived
-                  ? s.patientList_archivedPatientsEmpty
-                  : s.patientList_patientFileEmpty,
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-          ],
-        ),
-      );
-    }
+    final emptyState = Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(Icons.people_outline, size: 64),
+          const SizedBox(height: 16),
+          Text(
+            _showArchived
+                ? s.patientList_noArchivedPatients
+                : s.patientList_noRegisteredPatients,
+            style: const TextStyle(fontSize: 22),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            _showArchived
+                ? s.patientList_archivedPatientsEmpty
+                : s.patientList_patientFileEmpty,
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+        ],
+      ),
+    );
 
     final filteredPatients = patients.where((patient) {
       final query = _searchQuery.toLowerCase().trim();
@@ -323,7 +321,9 @@ ExpertContextInfo _expertInfo(S s) {
           ),
         ),
         Expanded(
-          child: filteredPatients.isEmpty
+          child: patients.isEmpty
+              ? emptyState
+              : filteredPatients.isEmpty
               ? Center(
                   child: Text(
                     s.patientList_noPatientFound,

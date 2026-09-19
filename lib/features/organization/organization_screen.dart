@@ -136,27 +136,32 @@ class _OrganizationScreenState extends State<OrganizationScreen> {
 
   Future<void> _chooseLogo() async {
     final s=S.of(context);
-    final result = await FilePicker.platform.pickFiles(
-      type: FileType.image,
-      allowMultiple: false,
-    );
+    try {
+      final result = await FilePicker.platform.pickFiles(
+        type: FileType.image,
+        allowMultiple: false,
+      );
 
-    final path = result?.files.single.path;
-    if (path == null) return;
+      final path = result?.files.single.path;
+      if (path == null) return;
 
-    await _cabinetIdentityService.setCabinetLogoPath(path);
+      final savedPath = await _cabinetIdentityService.setCabinetLogoPath(path);
 
-    if (!mounted) return;
+      if (!mounted) return;
 
-    setState(() {
-      _cabinetLogoPath = path;
-    });
+      setState(() {
+        _cabinetLogoPath = savedPath;
+      });
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(s.organization_logoSaved),
-      ),
-    );
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(s.organization_logoSaved)),
+      );
+    } catch (error) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(s.home_error_while_saving(error.toString()))),
+      );
+    }
   }
 
   Future<void> _removeLogo() async {

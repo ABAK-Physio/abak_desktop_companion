@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart' show kDebugMode, kReleaseMode;
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -94,6 +95,11 @@ class _AboutScreenState extends State<AboutScreen> {
 
   Future<void> _loadVersion() async {
     final info = await PackageInfo.fromPlatform();
+    const buildMode = kReleaseMode
+        ? 'Release'
+        : kDebugMode
+        ? 'Debug'
+        : 'Profile';
 
     String platform;
     if (Platform.isMacOS) {
@@ -110,8 +116,8 @@ class _AboutScreenState extends State<AboutScreen> {
 
     setState(() {
       _version = info.buildNumber.isEmpty
-          ? info.version
-          : '${info.version} (${info.buildNumber})';
+          ? '${info.version} — $buildMode'
+          : '${info.version} (${info.buildNumber}) — $buildMode';
       _platform = platform;
     });
   }

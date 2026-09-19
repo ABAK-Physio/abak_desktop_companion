@@ -1,3 +1,8 @@
+import 'dart:io';
+
+import 'package:path/path.dart' as p;
+import 'package:path_provider/path_provider.dart';
+
 import '../database/database_service.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:uuid/uuid.dart';
@@ -33,8 +38,31 @@ class CabinetIdentityService {
     return _getValue(_cabinetLogoPathKey);
   }
 
-  Future<void> setCabinetLogoPath(String path) async {
-    await _setValue(_cabinetLogoPathKey, path);
+  Future<String> setCabinetLogoPath(String path) async {
+    final supportDirectory = await getApplicationSupportDirectory();
+    final logoDirectory = Directory(
+      p.join(supportDirectory.path, 'organization', 'logos'),
+    );
+    await logoDirectory.create(recursive: true);
+
+    // Import while the file picker still grants access to the selected file.
+    // A unique path also prevents Flutter from displaying a cached old logo.
+    final importedLogo = File(
+      p.join(logoDirectory.path, '${const Uuid().v4()}${p.extension(path)}'),
+    );
+    try {
+      await File(path).copy(importedLogo.path);
+      await _setValue(_cabinetLogoPathKey, importedLogo.path);
+    } catch (_) {
+      // Keep the previous setting intact if the import cannot be completed.
+      try {
+        if (await importedLogo.exists()) await importedLogo.delete();
+      } on FileSystemException {
+        // Cleanup must not hide the original import error.
+      }
+      rethrow;
+    }
+    return importedLogo.path;
   }
 
   Future<void> clearCabinetLogoPath() async {

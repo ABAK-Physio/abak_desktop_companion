@@ -4,6 +4,14 @@ import 'package:uuid/uuid.dart';
 import '../models/patient.dart';
 
 class PatientRepository {
+  // Compare name formatting without changing the stored identity.
+  static String _normalizeIdentityName(String value) {
+    return value.toUpperCase()
+        .replaceAll(RegExp(r'[-\u2010-\u2015\u2212]'), ' ')
+        .replaceAll(RegExp(r'\s+'), ' ')
+        .trim();
+  }
+
   Future<List<Patient>> getAllPatients() async {
     final db = await DatabaseService.database;
 
@@ -206,8 +214,8 @@ class PatientRepository {
     required String firstName,
     required String birthDate,
   }) async {
-    final normalizedLastName = lastName.trim();
-    final normalizedFirstName = firstName.trim();
+    final normalizedLastName = _normalizeIdentityName(lastName);
+    final normalizedFirstName = _normalizeIdentityName(firstName);
     final normalizedBirthDate = birthDate.trim();
 
     if (normalizedLastName.isEmpty ||
@@ -222,19 +230,18 @@ class PatientRepository {
       'patients',
       where: '''
       archived_at IS NULL
-      AND last_name = ? COLLATE NOCASE
-      AND first_name = ? COLLATE NOCASE
       AND birth_date = ?
     ''',
       whereArgs: [
-        normalizedLastName,
-        normalizedFirstName,
         normalizedBirthDate,
       ],
       orderBy: 'last_name COLLATE NOCASE, first_name COLLATE NOCASE',
     );
 
-    return rows.map(Patient.fromMap).toList();
+    return rows.map(Patient.fromMap).where((patient) {
+      return _normalizeIdentityName(patient.lastName) == normalizedLastName &&
+          _normalizeIdentityName(patient.firstName) == normalizedFirstName;
+    }).toList();
   }
 
   // Recherche des patients archivés par nom, prénom et date de naissance.
@@ -243,8 +250,8 @@ class PatientRepository {
     required String firstName,
     required String birthDate,
   }) async {
-    final normalizedLastName = lastName.trim();
-    final normalizedFirstName = firstName.trim();
+    final normalizedLastName = _normalizeIdentityName(lastName);
+    final normalizedFirstName = _normalizeIdentityName(firstName);
     final normalizedBirthDate = birthDate.trim();
 
     if (normalizedLastName.isEmpty ||
@@ -259,19 +266,18 @@ class PatientRepository {
       'patients',
       where: '''
       archived_at IS NOT NULL
-      AND last_name = ? COLLATE NOCASE
-      AND first_name = ? COLLATE NOCASE
       AND birth_date = ?
     ''',
       whereArgs: [
-        normalizedLastName,
-        normalizedFirstName,
         normalizedBirthDate,
       ],
       orderBy: 'archived_at DESC',
     );
 
-    return rows.map(Patient.fromMap).toList();
+    return rows.map(Patient.fromMap).where((patient) {
+      return _normalizeIdentityName(patient.lastName) == normalizedLastName &&
+          _normalizeIdentityName(patient.firstName) == normalizedFirstName;
+    }).toList();
   }
 
   // permet de rattacher un nir à un patient créé manuellement
