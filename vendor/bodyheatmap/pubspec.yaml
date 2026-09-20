@@ -1,0 +1,21 @@
+name: bodyheatmap
+description: Interactive human body heatmap widget for Flutter. Perfect for fitness, health, and medical apps to track body parts with customizable intensity visualization.
+version: 1.0.0
+homepage: https://github.com/Lanhubs/body_heatmap
+repository: https://github.com/Lanhubs/body_heatmap
+issue_tracker: https://github.com/Lanhubs/body_heatmap/issues
+
+environment:
+  sdk: ^3.10.1
+
+dependencies:
+  svg_path_parser: ^1.1.1
+  flutter:
+    sdk: flutter
+  flutter_svg: ^2.0.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  lints: ^6.0.0
+  test: ^1.25.6

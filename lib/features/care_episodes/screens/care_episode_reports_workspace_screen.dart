@@ -1,3 +1,4 @@
+import '../../bodymap/episode_bodymap_screen.dart';
 import 'dart:async';
 import '../../practitioners/practitioner_list_screen.dart';
 import '../../external_correspondents/screens/external_correspondents_screen.dart';
@@ -3053,6 +3054,14 @@ class _CareEpisodeReportsWorkspaceScreenState
                   ),
                 );
               },
+              onOpenBodymap: () => Navigator.of(context).push(MaterialPageRoute(
+                builder: (_) => EpisodeBodymapScreen(
+                  careEpisodeId: widget.episode.careEpisodeId,
+                  patientId: widget.episode.patientId,
+                  patientName: widget.patientName,
+                  episodeLabel: widget.episode.pathologyLabel,
+                ),
+              )),
               onOpenDocuments: _openEpisodeDocuments,
             ),
 
