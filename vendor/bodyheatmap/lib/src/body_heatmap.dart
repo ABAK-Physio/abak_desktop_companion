@@ -447,7 +447,8 @@ class _BodyHeatmapState extends State<BodyHeatmap> {
       final strokeWidth = getStrokeWidth(canonicalPart);
       final strokeColor = getStrokeColor(canonicalPart);
 
-      String transformAttr = '';
+      // Keep SVG attributes explicit for XML-aware Dart editors.
+      String transform = 'matrix(1, 0, 0, 1, 0, 0)';
       if (canonicalPart == _activePart) {
         // Look up center of the path for "scale-in-place"
         final path = _pathCache[id];
@@ -461,11 +462,11 @@ class _BodyHeatmapState extends State<BodyHeatmap> {
           // ty = cy * (1 - scale)
           final tx = cx * (1 - scale);
           final ty = cy * (1 - scale);
-          transformAttr = ' transform="matrix($scale, 0, 0, $scale, $tx, $ty)"';
+          transform = 'matrix($scale, 0, 0, $scale, $tx, $ty)';
         }
       }
 
-      return '<path id="$id" d="$d" fill="$fillColor" fill-opacity="$opacity" stroke="$strokeColor" stroke-width="$strokeWidth"$transformAttr/>';
+      return '<path id="$id" d="$d" fill="$fillColor" fill-opacity="$opacity" stroke="$strokeColor" stroke-width="$strokeWidth" transform="$transform"/>';
     }
 
     // Iterate through the paths to build the SVG dynamically
