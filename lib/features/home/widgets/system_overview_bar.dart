@@ -106,7 +106,7 @@ class _SystemOverviewBarState extends State<SystemOverviewBar> {
 
   @override
   Widget build(BuildContext context) {
-    final s=S.of(context);
+    final s = S.of(context);
     if (_isLoading) {
       return Card(
         child: Padding(

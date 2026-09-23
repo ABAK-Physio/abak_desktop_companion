@@ -91,7 +91,7 @@ Future<void> _startApplication() async {
           center: true,
           title: 'Installer ABAK Companion',
         ),
-            () async {
+        () async {
           await windowManager.show();
           await windowManager.focus();
         },
@@ -100,7 +100,8 @@ Future<void> _startApplication() async {
       return;
     }
 
-    launchSnapshot = await const MacosLaunchHistoryService().inspectBeforeStartup();
+    launchSnapshot = await const MacosLaunchHistoryService()
+        .inspectBeforeStartup();
     if (launchSnapshot.kind == MacosLaunchKind.olderVersion) {
       await windowManager.ensureInitialized();
       runApp(_OlderVersionApp(snapshot: launchSnapshot));
@@ -111,7 +112,7 @@ Future<void> _startApplication() async {
           center: true,
           title: 'ABAK Companion — Version ancienne',
         ),
-            () async {
+        () async {
           await windowManager.show();
           await windowManager.focus();
         },
@@ -121,98 +122,78 @@ Future<void> _startApplication() async {
   }
 
   try {
-    final diagnostic =
-    await const PatientFrInsiPkcs11DiagnosticService().diagnose();
+    final diagnostic = await const PatientFrInsiPkcs11DiagnosticService()
+        .diagnose();
 
-    debugPrint(
-      '🔐 Diagnostic PKCS#11 : $diagnostic',
-    );
+    debugPrint('🔐 Diagnostic PKCS#11 : $diagnostic');
 
-    final loginResult =
-    await const PatientFrInsiPkcs11LoginService().login(
+    final loginResult = await const PatientFrInsiPkcs11LoginService().login(
       pin: '1234',
     );
 
-    debugPrint(
-      '🔐 Login PKCS#11 : $loginResult',
-    );
+    debugPrint('🔐 Login PKCS#11 : $loginResult');
 
-    final objects =
-    await const PatientFrInsiPkcs11ObjectService().listObjects(
+    final objects = await const PatientFrInsiPkcs11ObjectService().listObjects(
       pin: '1234',
     );
 
-    debugPrint(
-      '🔐 Objets PKCS#11 : $objects',
-    );
+    debugPrint('🔐 Objets PKCS#11 : $objects');
 
-    final certificates =
-    (objects['certificates'] as List)
+    final certificates = (objects['certificates'] as List)
         .cast<Map<dynamic, dynamic>>();
 
     for (final certificate in certificates) {
       final label = certificate['label'] as String;
-      final certificateBase64 =
-      certificate['certificateBase64'] as String;
+      final certificateBase64 = certificate['certificateBase64'] as String;
 
       final fileName = label.contains('Signature')
           ? '/tmp/abak_cps_signature.der'
           : '/tmp/abak_cps_authentication.der';
 
-      await File(fileName).writeAsBytes(
-        base64Decode(certificateBase64),
-      );
+      await File(fileName).writeAsBytes(base64Decode(certificateBase64));
 
       debugPrint(
         '🔐 Certificat exporté : '
-            '$label → $fileName',
+        '$label → $fileName',
       );
     }
 
     final signingCertificate =
-    await const PatientFrInsiPkcs11SigningCertificateService()
-        .getCertificate(
-      pin: '1234',
-    );
+        await const PatientFrInsiPkcs11SigningCertificateService()
+            .getCertificate(pin: '1234');
 
     debugPrint(
       '🔐 Certificat signature CPS : '
-          '{success: ${signingCertificate['success']}, '
-          'label: ${signingCertificate['label']}, '
-          'id: ${signingCertificate['id']}, '
-          'certificateLength: ${signingCertificate['certificateLength']}}',
+      '{success: ${signingCertificate['success']}, '
+      'label: ${signingCertificate['label']}, '
+      'id: ${signingCertificate['id']}, '
+      'certificateLength: ${signingCertificate['certificateLength']}}',
     );
 
-    final testSignature =
-    await const PatientFrInsiPkcs11TestSignatureService().sign(
-      pin: '1234',
-    );
+    final testSignature = await const PatientFrInsiPkcs11TestSignatureService()
+        .sign(pin: '1234');
 
     debugPrint(
       '🔐 Signature CPS de test : '
-          '{success: ${testSignature['success']}, '
-          'step: ${testSignature['step']}, '
-          'keyLabel: ${testSignature['keyLabel']}, '
-          'mechanism: ${testSignature['mechanism']}, '
-          'signatureLength: ${testSignature['signatureLength']}}',
+      '{success: ${testSignature['success']}, '
+      'step: ${testSignature['step']}, '
+      'keyLabel: ${testSignature['keyLabel']}, '
+      'mechanism: ${testSignature['mechanism']}, '
+      'signatureLength: ${testSignature['signatureLength']}}',
     );
 
-    const signedInfoBuilder =
-    PatientFrInsiPsSignedInfoBuilder();
+    const signedInfoBuilder = PatientFrInsiPsSignedInfoBuilder();
 
-    const signedInfoCanonicalizer =
-    PatientFrInsiPsSignedInfoCanonicalizer();
+    const signedInfoCanonicalizer = PatientFrInsiPsSignedInfoCanonicalizer();
 
-    const psSigner =
-    PatientFrInsiPsMethodChannelSigner();
+    const psSigner = PatientFrInsiPsMethodChannelSigner();
 
     final signedInfoXml = signedInfoBuilder.build(
       assertionId: '_e451e702-85aa-4c55-a083-7f02da22cc40',
       digestValue: 'TEST_DIGEST_BASE64',
     );
 
-    final canonicalSignedInfo =
-    signedInfoCanonicalizer.canonicalize(
+    final canonicalSignedInfo = signedInfoCanonicalizer.canonicalize(
       signedInfoXml,
     );
 
@@ -222,57 +203,48 @@ Future<void> _startApplication() async {
 
     debugPrint(
       '🔐 Signature INSi réelle : '
-          'length=${signatureValue.length}',
+      'length=${signatureValue.length}',
     );
 
     final verification =
-    await const PatientFrInsiPsSignatureVerificationService().verify(
-      canonicalSignedInfo: canonicalSignedInfo,
-      signatureBase64: signatureValue,
-      certificateBase64:
-      signingCertificate['certificateBase64'] as String,
-    );
+        await const PatientFrInsiPsSignatureVerificationService().verify(
+          canonicalSignedInfo: canonicalSignedInfo,
+          signatureBase64: signatureValue,
+          certificateBase64: signingCertificate['certificateBase64'] as String,
+        );
 
-    debugPrint(
-      '🔐 Vérification signature INSi : $verification',
-    );
+    debugPrint('🔐 Vérification signature INSi : $verification');
 
     const realAssertionSigningService =
-    PatientFrInsiPsAssertionSigningService();
+        PatientFrInsiPsAssertionSigningService();
 
     final realAssertionData = PatientFrInsiPsAssertionData(
       assertionId: '_abak-test-insi-ps-0001',
       issueInstant: DateTime.now().toUtc(),
       issuer:
-      'SN=MASSAGE0087058+CN=899700870589+GN=MICHEL,'
+          'SN=MASSAGE0087058+CN=899700870589+GN=MICHEL,'
           'title=Masseur-Kinésithérapeute,C=FR',
       professionalId: '899700870589',
       billingIdentifier: '991130972',
       activitySector: 'SA07',
     );
 
-    final signedAssertionXml =
-    await realAssertionSigningService.buildSignedAssertion(
-      data: realAssertionData,
-      x509Certificate:
-      signingCertificate['certificateBase64'] as String,
-    );
+    final signedAssertionXml = await realAssertionSigningService
+        .buildSignedAssertion(
+          data: realAssertionData,
+          x509Certificate: signingCertificate['certificateBase64'] as String,
+        );
 
     debugPrint(
       '🔐 Assertion PS signée complète : '
-          'length=${signedAssertionXml.length}',
+      'length=${signedAssertionXml.length}',
     );
 
-    const contexteBamBuilder =
-    PatientFrInsiContexteBamBuilder();
-    const contexteLpsBuilder =
-    PatientFrInsiContexteLpsBuilder();
-    const messageIdBuilder =
-    PatientFrInsiMessageIdBuilder();
-    const requestBuilder =
-    PatientFrInsiWsIns2RequestBuilder();
-    const envelopeBuilder =
-    PatientFrInsiWsIns2EnvelopeBuilder();
+    const contexteBamBuilder = PatientFrInsiContexteBamBuilder();
+    const contexteLpsBuilder = PatientFrInsiContexteLpsBuilder();
+    const messageIdBuilder = PatientFrInsiMessageIdBuilder();
+    const requestBuilder = PatientFrInsiWsIns2RequestBuilder();
+    const envelopeBuilder = PatientFrInsiWsIns2EnvelopeBuilder();
 
     final now = DateTime.now().toUtc();
 
@@ -314,126 +286,92 @@ Future<void> _startApplication() async {
 
     debugPrint(
       '🔐 Enveloppe WS_INS2 avec Assertion CPS : '
-          'length=${completeEnvelopeXml.length}',
+      'length=${completeEnvelopeXml.length}',
     );
 
-    final envelopeDocument = XmlDocument.parse(
-      completeEnvelopeXml,
-    );
+    final envelopeDocument = XmlDocument.parse(completeEnvelopeXml);
 
-    XmlElement singleEnvelopeElement(
-        String localName,
-        ) {
-      return envelopeDocument.descendants
-          .whereType<XmlElement>()
-          .singleWhere(
-            (element) => element.name.local == localName,
+    XmlElement singleEnvelopeElement(String localName) {
+      return envelopeDocument.descendants.whereType<XmlElement>().singleWhere(
+        (element) => element.name.local == localName,
       );
     }
 
-    final security = singleEnvelopeElement(
-      'Security',
-    );
+    final security = singleEnvelopeElement('Security');
 
-    final assertion = singleEnvelopeElement(
-      'Assertion',
-    );
+    final assertion = singleEnvelopeElement('Assertion');
 
-    final signatureValueElement = singleEnvelopeElement(
-      'SignatureValue',
-    );
+    final signatureValueElement = singleEnvelopeElement('SignatureValue');
 
-    final certificateElement = singleEnvelopeElement(
-      'X509Certificate',
-    );
+    final certificateElement = singleEnvelopeElement('X509Certificate');
 
-    final referenceElement = singleEnvelopeElement(
-      'Reference',
-    );
+    final referenceElement = singleEnvelopeElement('Reference');
 
-    final requestElement = singleEnvelopeElement(
-      'RECSANSVITALE',
-    );
+    final requestElement = singleEnvelopeElement('RECSANSVITALE');
 
-    final assertionId = assertion.getAttribute(
-      'ID',
-    );
+    final assertionId = assertion.getAttribute('ID');
 
-    final referenceUri = referenceElement.getAttribute(
-      'URI',
-    );
+    final referenceUri = referenceElement.getAttribute('URI');
 
     final envelopeIsValid =
         security.name.namespaceUri ==
             PatientFrInsiWsIns2EnvelopeBuilder.wsSecurityNamespace &&
-            assertionId != null &&
-            referenceUri == '#$assertionId' &&
-            signatureValueElement.innerText.trim().isNotEmpty &&
-            certificateElement.innerText.trim().isNotEmpty &&
-            requestElement.name.namespaceUri ==
-                'http://www.cnamts.fr/INSiRecSans';
+        assertionId != null &&
+        referenceUri == '#$assertionId' &&
+        signatureValueElement.innerText.trim().isNotEmpty &&
+        certificateElement.innerText.trim().isNotEmpty &&
+        requestElement.name.namespaceUri == 'http://www.cnamts.fr/INSiRecSans';
 
     debugPrint(
       '🔐 Contrôle enveloppe WS_INS2 : '
-          '{valid: $envelopeIsValid, '
-          'assertionId: $assertionId, '
-          'referenceUri: $referenceUri, '
-          'signatureLength: ${signatureValueElement.innerText.trim().length}, '
-          'certificateLength: ${certificateElement.innerText.trim().length}}',
+      '{valid: $envelopeIsValid, '
+      'assertionId: $assertionId, '
+      'referenceUri: $referenceUri, '
+      'signatureLength: ${signatureValueElement.innerText.trim().length}, '
+      'certificateLength: ${certificateElement.innerText.trim().length}}',
     );
 
     final finalSignedInfoElement = envelopeDocument.descendants
         .whereType<XmlElement>()
-        .singleWhere(
-          (element) => element.name.local == 'SignedInfo',
-    );
+        .singleWhere((element) => element.name.local == 'SignedInfo');
 
     final finalSignatureValue = envelopeDocument.descendants
         .whereType<XmlElement>()
-        .singleWhere(
-          (element) => element.name.local == 'SignatureValue',
-    )
+        .singleWhere((element) => element.name.local == 'SignatureValue')
         .innerText
         .trim();
 
     final finalCertificateBase64 = envelopeDocument.descendants
         .whereType<XmlElement>()
-        .singleWhere(
-          (element) => element.name.local == 'X509Certificate',
-    )
+        .singleWhere((element) => element.name.local == 'X509Certificate')
         .innerText
         .trim();
 
     final finalCanonicalSignedInfo =
-    const PatientFrInsiPsSignedInfoCanonicalizer().canonicalize(
-      finalSignedInfoElement.toXmlString(),
-    );
+        const PatientFrInsiPsSignedInfoCanonicalizer().canonicalize(
+          finalSignedInfoElement.toXmlString(),
+        );
 
     final finalVerification =
-    await const PatientFrInsiPsSignatureVerificationService().verify(
-      canonicalSignedInfo: finalCanonicalSignedInfo,
-      signatureBase64: finalSignatureValue,
-      certificateBase64: finalCertificateBase64,
-    );
+        await const PatientFrInsiPsSignatureVerificationService().verify(
+          canonicalSignedInfo: finalCanonicalSignedInfo,
+          signatureBase64: finalSignatureValue,
+          certificateBase64: finalCertificateBase64,
+        );
 
     debugPrint(
       '🔐 Vérification signature extraite enveloppe finale : '
-          '$finalVerification',
+      '$finalVerification',
     );
 
     if (!envelopeIsValid) {
-      throw StateError(
-        'Enveloppe WS_INS2 locale invalide',
-      );
+      throw StateError('Enveloppe WS_INS2 locale invalide');
     }
 
-    final transportService =
-    PatientFrInsiWsIns2TransportService();
+    final transportService = PatientFrInsiWsIns2TransportService();
 
     try {
-      debugPrint(
-        '🌐 Envoi WS_INS2 vers environnement de qualification...',
-      );
+      debugPrint('🌐 Envoi WS_INS2 vers environnement de qualification...');
 
       final response = await transportService.send(
         envelopeXml: completeEnvelopeXml,
@@ -441,30 +379,23 @@ Future<void> _startApplication() async {
 
       debugPrint(
         '🌐 Réponse WS_INS2 : '
-            'statusCode=${response.statusCode}, '
-            'bodyLength=${response.body.length}',
+        'statusCode=${response.statusCode}, '
+        'bodyLength=${response.body.length}',
       );
 
       debugPrint(
         '🌐 Content-Type réponse : '
-            '${response.headers['content-type']}',
+        '${response.headers['content-type']}',
       );
 
-      debugPrint(
-        '🌐 Corps réponse WS_INS2 :',
-      );
+      debugPrint('🌐 Corps réponse WS_INS2 :');
 
-      debugPrint(
-        response.body,
-        wrapWidth: 1024,
-      );
+      debugPrint(response.body, wrapWidth: 1024);
     } finally {
       transportService.close();
     }
   } catch (e) {
-    debugPrint(
-      '❌ Test PKCS#11 : $e',
-    );
+    debugPrint('❌ Test PKCS#11 : $e');
   }
 
   await windowManager.ensureInitialized();
@@ -480,9 +411,7 @@ Future<void> _startApplication() async {
 
   await DatabaseService.database;
 
-  SpeechToTextProviderRegistry.register(
-    AbakWhisperSpeechProvider(),
-  );
+  SpeechToTextProviderRegistry.register(AbakWhisperSpeechProvider());
 
   try {
     await LocalExchangeServer.instance.start();
@@ -507,7 +436,7 @@ Future<void> _startApplication() async {
 
   debugPrint(
     '📡 serveur local ABAK actif sur le port '
-        '${LocalExchangeServer.instance.port}',
+    '${LocalExchangeServer.instance.port}',
   );
 
   await ImportSessionRepository().recoverInterruptedSessions();
@@ -516,7 +445,7 @@ Future<void> _startApplication() async {
 
   debugPrint(
     '🧹 purge patients : '
-        '${purgeResult.deletedPatients} supprimé(s)',
+    '${purgeResult.deletedPatients} supprimé(s)',
   );
 
   final backupCleanupResult = await LocalBackupCleanupService(
@@ -525,8 +454,8 @@ Future<void> _startApplication() async {
 
   debugPrint(
     '🧹 purge sauvegardes SQLite : '
-        '${backupCleanupResult.deletedCount} supprimée(s), '
-        '${backupCleanupResult.keptCount} conservée(s)',
+    '${backupCleanupResult.deletedCount} supprimée(s), '
+    '${backupCleanupResult.keptCount} conservée(s)',
   );
 
   windowManager.waitUntilReadyToShow(windowOptions, () async {
@@ -546,9 +475,7 @@ class _AlreadyRunningApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'ABAK Desktop Companion',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.blue,
-        ),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,
       ),
       home: const _AlreadyRunningScreen(),
@@ -634,7 +561,7 @@ class _StartupFailureApp extends StatelessWidget {
                   const SizedBox(height: 16),
                   const Text(
                     'Une erreur est survenue pendant le démarrage. '
-                        'Fermez l’application et contactez l’assistance si le problème persiste.',
+                    'Fermez l’application et contactez l’assistance si le problème persiste.',
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 24),
@@ -677,7 +604,10 @@ class _OlderVersionApp extends StatelessWidget {
                   Text(
                     snapshot.title,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   const SizedBox(height: 16),
                   Text(snapshot.message, textAlign: TextAlign.center),

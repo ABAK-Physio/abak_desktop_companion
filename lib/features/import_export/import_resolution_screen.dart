@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../core/expert/expert_context_info.dart';
 import '../../core/expert/expert_info_button.dart';
 
-import 'package:uuid/uuid.dart';
+import '../care_episodes/widgets/care_episodes_panel.dart';
 
 import '../care_episodes/data/care_episode_repository.dart';
 import '../care_episodes/models/care_episode.dart';
@@ -36,7 +36,7 @@ class _ImportResolutionScreenState extends State<ImportResolutionScreen> {
   late Future<List<Patient>> _patientsFuture;
 
   Patient? _selectedPatient;
-  Future<List<CareEpisode>>? _careEpisodesFuture;
+  bool _completingAssignment = false;
 
   @override
   void initState() {
@@ -47,19 +47,52 @@ class _ImportResolutionScreenState extends State<ImportResolutionScreen> {
   Future<void> _selectPatient(Patient patient) async {
     setState(() {
       _selectedPatient = patient;
-      _careEpisodesFuture = _careEpisodeRepository.getEpisodesForPatient(
-        patient.patientId,
-      );
     });
   }
 
   Future<void> _completeWithEpisode(CareEpisode careEpisode) async {
     final patient = _selectedPatient;
-    if (patient == null) return;
+    if (_completingAssignment ||
+        patient == null ||
+        careEpisode.patientId != patient.patientId) {
+      return;
+    }
+    _completingAssignment = true;
 
-    Navigator.of(
-      context,
-    ).pop(ImportAssignment(patient: patient, careEpisode: careEpisode));
+    try {
+      final current = await _careEpisodeRepository.getEpisodeById(
+        careEpisode.careEpisodeId,
+      );
+      if (!mounted || _selectedPatient?.patientId != patient.patientId) return;
+      if (current == null ||
+          current.isArchived ||
+          current.patientId != patient.patientId) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'Cette prise en charge n’est plus disponible. Choisissez une prise en charge active.',
+            ),
+          ),
+        );
+        return;
+      }
+      Navigator.of(
+        context,
+      ).pop(ImportAssignment(patient: patient, careEpisode: current));
+    } catch (error, stackTrace) {
+      debugPrint('Échec du choix de la prise en charge : $error');
+      debugPrintStack(stackTrace: stackTrace);
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Impossible de sélectionner la prise en charge. Veuillez réessayer.',
+          ),
+        ),
+      );
+    } finally {
+      _completingAssignment = false;
+    }
   }
 
   Future<void> _createPatient({
@@ -80,7 +113,7 @@ class _ImportResolutionScreenState extends State<ImportResolutionScreen> {
 
     String sexCode = initialSexCode ?? 'U';
 
-    final patient = await showDialog<Patient>(
+    final dialog = DialogRoute<Patient>(
       context: context,
       builder: (context) {
         return AlertDialog(
@@ -157,11 +190,14 @@ class _ImportResolutionScreenState extends State<ImportResolutionScreen> {
       },
     );
 
+    final patient = await Navigator.of(context).push(dialog);
+    await dialog.completed;
+
     lastNameController.dispose();
     firstNameController.dispose();
     birthDateController.dispose();
 
-    if (patient == null) return;
+    if (!mounted || patient == null) return;
 
     setState(() {
       _patientsFuture = _patientRepository.getPatients();
@@ -185,98 +221,6 @@ class _ImportResolutionScreenState extends State<ImportResolutionScreen> {
     );
   }
 
-  Future<void> _createCareEpisode() async {
-    final patient = _selectedPatient;
-    if (patient == null) return;
-
-    final suggestedTitle =
-        widget.package.clinicalEpisode?.pathologyLabel ??
-        widget.package.mobileCase?.caseLabel ??
-        'Nouvelle prise en charge';
-
-    final titleController = TextEditingController(text: suggestedTitle);
-    final pathologyController = TextEditingController(
-      text: widget.package.clinicalEpisode?.pathologyLabel ?? '',
-    );
-
-    final careEpisode = await showDialog<CareEpisode>(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Nouvelle prise en charge'),
-          content: SizedBox(
-            width: 420,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                  controller: titleController,
-                  decoration: const InputDecoration(labelText: 'Titre'),
-                ),
-                TextField(
-                  controller: pathologyController,
-                  decoration: const InputDecoration(labelText: 'Pathologie'),
-                ),
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Annuler'),
-            ),
-            FilledButton(
-              onPressed: () async {
-                final now = DateTime.now().millisecondsSinceEpoch;
-                final openedAt = int.tryParse(
-                  widget.package.clinicalEpisode?.createdAt ?? '',
-                );
-
-                final episode = CareEpisode(
-                  careEpisodeId: const Uuid().v4(),
-                  patientId: patient.patientId,
-                  title: titleController.text.trim().isEmpty
-                      ? 'Nouvelle prise en charge'
-                      : titleController.text.trim(),
-                  pathologyLabel: pathologyController.text.trim().isEmpty
-                      ? 'Non renseignée'
-                      : pathologyController.text.trim(),
-                  initialReport: null,
-                  finalConclusion: null,
-                  openedAt: openedAt,
-                  createdAt: now,
-                  updatedAt: now,
-                  archivedAt: null,
-                );
-
-                await _careEpisodeRepository.insertCareEpisode(episode);
-
-                if (!context.mounted) return;
-                Navigator.of(context).pop(episode);
-              },
-              child: const Text('Créer'),
-            ),
-          ],
-        );
-      },
-    );
-
-    titleController.dispose();
-    pathologyController.dispose();
-
-    if (careEpisode == null) return;
-
-    if (!mounted) return;
-
-    setState(() {
-      _careEpisodesFuture = _careEpisodeRepository.getEpisodesForPatient(
-        patient.patientId,
-      );
-    });
-
-    await _completeWithEpisode(careEpisode);
-  }
-
   @override
   Widget build(BuildContext context) {
     final clinicalEpisode = widget.package.clinicalEpisode;
@@ -288,7 +232,8 @@ class _ImportResolutionScreenState extends State<ImportResolutionScreen> {
           ExpertModeInfoButton(
             info: ExpertContextInfo(
               contextName: 'Rattacher l’import',
-              sourceFile: 'lib/features/import_export/import_resolution_screen.dart',
+              sourceFile:
+                  'lib/features/import_export/import_resolution_screen.dart',
             ),
           ),
         ],
@@ -417,59 +362,23 @@ class _ImportResolutionScreenState extends State<ImportResolutionScreen> {
                           'Patient sélectionné : ${_selectedPatient!.displayName}',
                         ),
                         const SizedBox(height: 12),
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: FilledButton.icon(
-                            onPressed: _createCareEpisode,
-                            icon: const Icon(Icons.add_circle_outline),
-                            label: const Text('Nouvelle prise en charge'),
-                          ),
+                        const Text(
+                          'Choisissez une prise en charge active pour rattacher le résultat. '
+                          'Une prise en charge archivée doit d’abord être restaurée.',
                         ),
                         const SizedBox(height: 16),
                         Expanded(
-                          child: FutureBuilder<List<CareEpisode>>(
-                            future: _careEpisodesFuture,
-                            builder: (context, snapshot) {
-                              final episodes = snapshot.data ?? [];
-
-                              if (snapshot.connectionState ==
-                                  ConnectionState.waiting) {
-                                return const Center(
-                                  child: CircularProgressIndicator(),
-                                );
-                              }
-
-                              if (episodes.isEmpty) {
-                                return const Center(
-                                  child: Text(
-                                    'Aucune prise en charge pour ce patient.',
-                                  ),
-                                );
-                              }
-
-                              return ListView.separated(
-                                itemCount: episodes.length,
-                                separatorBuilder: (_, _) =>
-                                    const Divider(height: 1),
-                                itemBuilder: (context, index) {
-                                  final episode = episodes[index];
-
-                                  return ListTile(
-                                    leading: const Icon(
-                                      Icons.medical_services_outlined,
-                                    ),
-                                    title: Text(episode.title),
-                                    subtitle: Text(
-                                      [
-                                        'Pathologie : ${episode.pathologyLabel}',
-                                        'ID : ${episode.careEpisodeId}',
-                                      ].join('\n'),
-                                    ),
-                                    onTap: () => _completeWithEpisode(episode),
-                                  );
-                                },
-                              );
-                            },
+                          child: SingleChildScrollView(
+                            child: CareEpisodesPanel(
+                              key: ValueKey(_selectedPatient!.patientId),
+                              patientId: _selectedPatient!.patientId,
+                              patientName: _selectedPatient!.displayName,
+                              initialPathology: widget
+                                  .package
+                                  .clinicalEpisode
+                                  ?.pathologyLabel,
+                              onSelectEpisode: _completeWithEpisode,
+                            ),
                           ),
                         ),
                       ],

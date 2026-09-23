@@ -21,27 +21,28 @@ class PatientListScreen extends StatefulWidget {
   @override
   State<PatientListScreen> createState() => _PatientListScreenState();
 }
+
 class _PatientListScreenState extends State<PatientListScreen> {
-ExpertContextInfo _expertInfo(S s) {
-  return ExpertContextInfo(
-    contextName: s.patientList_contextName,
-    sourceFile: 'lib/features/patients/patient_list_screen.dart',
-    arbPrefix: 'patientList',
-    comment: s.patientList_contextComment,
-  );
-}
+  ExpertContextInfo _expertInfo(S s) {
+    return ExpertContextInfo(
+      contextName: s.patientList_contextName,
+      sourceFile: 'lib/features/patients/patient_list_screen.dart',
+      arbPrefix: 'patientList',
+      comment: s.patientList_contextComment,
+    );
+  }
+
   final ApplicationSettingsService _applicationSettingsService =
-  const ApplicationSettingsService();
+      const ApplicationSettingsService();
 
   final PatientRepository _repository = PatientRepository();
 
   final PatientArchiveSettingsService _archiveSettingsService =
-  PatientArchiveSettingsService();
+      PatientArchiveSettingsService();
 
   String _searchQuery = '';
 
-  Future<List<Patient>> _patientsFuture =
-  PatientRepository().getAllPatients();
+  Future<List<Patient>> _patientsFuture = PatientRepository().getAllPatients();
 
   bool _showArchived = false;
   bool _expertModeEnabled = false;
@@ -49,8 +50,7 @@ ExpertContextInfo _expertInfo(S s) {
   int _activePatientsCount = 0;
   int _archivedPatientsCount = 0;
 
-  int _retentionDays =
-      PatientArchiveSettingsService.defaultRetentionDays;
+  int _retentionDays = PatientArchiveSettingsService.defaultRetentionDays;
 
   @override
   void initState() {
@@ -61,8 +61,8 @@ ExpertContextInfo _expertInfo(S s) {
   }
 
   Future<void> _loadExpertMode() async {
-    final expertModeEnabled =
-    await _applicationSettingsService.isExpertModeEnabled();
+    final expertModeEnabled = await _applicationSettingsService
+        .isExpertModeEnabled();
 
     if (!mounted) return;
 
@@ -72,8 +72,7 @@ ExpertContextInfo _expertInfo(S s) {
   }
 
   Future<void> _loadSettings() async {
-    final retentionDays =
-    await _archiveSettingsService.getRetentionDays();
+    final retentionDays = await _archiveSettingsService.getRetentionDays();
 
     if (!mounted) return;
 
@@ -90,9 +89,7 @@ ExpertContextInfo _expertInfo(S s) {
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(
-          s.patientList_restoreSuccess(patient.displayName),
-        ),
+        content: Text(s.patientList_restoreSuccess(patient.displayName)),
       ),
     );
 
@@ -143,9 +140,7 @@ ExpertContextInfo _expertInfo(S s) {
       builder: (context) {
         return AlertDialog(
           title: Text(s.patientList_archiveTitle),
-          content: Text(
-            s.patientList_archiveConfirmation(patient.displayName),
-          ),
+          content: Text(s.patientList_archiveConfirmation(patient.displayName)),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(false),
@@ -216,9 +211,7 @@ ExpertContextInfo _expertInfo(S s) {
 
     if (snapshot.hasError) {
       return Center(
-        child: Text(
-            s.patientList_error(snapshot.error.toString())
-        ),
+        child: Text(s.patientList_error(snapshot.error.toString())),
       );
     }
 
@@ -268,10 +261,7 @@ ExpertContextInfo _expertInfo(S s) {
                   style: Theme.of(context).textTheme.headlineSmall,
                 ),
               ),
-              if (_expertModeEnabled)
-                ExpertInfoButton(
-                  info: _expertInfo(s),
-                ),
+              if (_expertModeEnabled) ExpertInfoButton(info: _expertInfo(s)),
             ],
           ),
         ),
@@ -281,9 +271,7 @@ ExpertContextInfo _expertInfo(S s) {
             segments: [
               ButtonSegment(
                 value: false,
-                label: Text(
-                  '${s.patientList_active} ($_activePatientsCount)',
-                ),
+                label: Text('${s.patientList_active} ($_activePatientsCount)'),
                 icon: Icon(Icons.people_outline),
               ),
               ButtonSegment(
@@ -341,13 +329,9 @@ ExpertContextInfo _expertInfo(S s) {
 
                     final restorableUntil = archivedAt == null
                         ? null
-                        : DateTime.fromMillisecondsSinceEpoch(
-                      archivedAt,
-                    ).add(
-                      Duration(
-                        days: _retentionDays,
-                      ),
-                    ).millisecondsSinceEpoch;
+                        : DateTime.fromMillisecondsSinceEpoch(archivedAt)
+                              .add(Duration(days: _retentionDays))
+                              .millisecondsSinceEpoch;
 
                     return ListTile(
                       leading: CircleAvatar(
@@ -360,37 +344,35 @@ ExpertContextInfo _expertInfo(S s) {
                       title: Text(patient.displayName),
                       subtitle: _showArchived
                           ? Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '${s.patientList_sex} : ${patient.sexCode}',
-                          ),
-                          if (archivedAt != null)
-                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Expanded(
-                                  child: Text(
-                                    '${s.patientList_archivedOn} '
-                                        '${DateFormatUtils.formatTimestampForDisplay(context, archivedAt)}'
-                                        '${restorableUntil == null
-                                        ? ''
-                                        : ' · ${s.patientList_restorableUntil} ${DateFormatUtils.formatTimestampForDisplay(context, restorableUntil)}'}',
+                                Text(
+                                  '${s.patientList_sex} : ${patient.sexCode}',
+                                ),
+                                if (archivedAt != null)
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          '${s.patientList_archivedOn} '
+                                          '${DateFormatUtils.formatTimestampForDisplay(context, archivedAt)}'
+                                          '${restorableUntil == null ? '' : ' · ${s.patientList_restorableUntil} ${DateFormatUtils.formatTimestampForDisplay(context, restorableUntil)}'}',
+                                        ),
+                                      ),
+                                      ContextHelpButton(
+                                        title: s.patientList_archivedPatient,
+                                        content: S
+                                            .of(context)
+                                            .help_archived_patient,
+                                      ),
+                                    ],
                                   ),
-                                ),
-                                ContextHelpButton(
-                                  title: s.patientList_archivedPatient,
-                                  content: S.of(context).help_archived_patient,
-                                ),
                               ],
-                            ),
-                        ],
-                      )
+                            )
                           : Text(
-                        '${s.patientList_sex} : ${patient.sexCode}'
-                            '${patient.birthDate == null
-                            ? ''
-                            : ' · ${s.patientList_bornOn} ${DateFormatUtils.formatIsoDateForDisplay(context, patient.birthDate)}'}',
-                      ),
+                              '${s.patientList_sex} : ${patient.sexCode}'
+                              '${patient.birthDate == null ? '' : ' · ${s.patientList_bornOn} ${DateFormatUtils.formatIsoDateForDisplay(context, patient.birthDate)}'}',
+                            ),
                       trailing: _showArchived
                           ? IconButton(
                               tooltip: s.patientList_restore,
