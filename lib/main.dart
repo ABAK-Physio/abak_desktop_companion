@@ -80,7 +80,8 @@ Future<void> _startApplication() async {
   if (Platform.isMacOS && kReleaseMode) {
     final location = await const MacosInstallationGuard().inspect();
 
-    if (!location.isInstalled) {
+    if (!location.isInstalled &&
+        !MacosInstallationGuard.allowsOutsideApplications) {
       await windowManager.ensureInitialized();
       runApp(MacosInstallationRequiredApp(location: location));
 

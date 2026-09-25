@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show kReleaseMode;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:window_manager/window_manager.dart';
@@ -16,6 +17,10 @@ class MacosInstallationLocation {
 
 class MacosInstallationGuard {
   const MacosInstallationGuard();
+
+  // Exception explicite réservée aux compilations Release locales.
+  static const bool allowsOutsideApplications =
+      kReleaseMode && String.fromEnvironment('ENV') == 'local_release';
 
   static const _channel = MethodChannel('abak/directory_access');
 

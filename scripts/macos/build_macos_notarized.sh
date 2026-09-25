@@ -87,7 +87,8 @@ fi
 for required_file in \
   "scripts/macos/installer/distribution.xml" \
   "scripts/macos/installer/resources/welcome.html" \
-  "scripts/macos/installer/scripts/preinstall"; do
+  "scripts/macos/installer/scripts/preinstall" \
+  "scripts/macos/installer/desktop-shortcut-scripts/postinstall"; do
   if [[ ! -s "${required_file}" ]]; then
     echo "❌ Fichier absent ou vide : ${required_file}"
     exit 1
@@ -99,6 +100,9 @@ done
 
 /bin/sh -n \
   "scripts/macos/installer/scripts/preinstall"
+
+/bin/sh -n \
+  "scripts/macos/installer/desktop-shortcut-scripts/postinstall"
 
 ZIP_UNSIGNED="build/${APP_ARTIFACT_NAME}_${BUILD_NAME}_${BUILD_NUMBER}_macOS_unsigned.zip"
 ZIP_FINAL="build/${APP_ARTIFACT_NAME}_${BUILD_NAME}_${BUILD_NUMBER}_macOS.zip"
@@ -266,6 +270,20 @@ xcrun stapler validate "${APP_PATH}"
     --install-location "/" \
     --ownership recommended \
     "${PKG_STAGE}/Companion-component.pkg"
+
+  # Composant facultatif, sans copie supplémentaire de l’application.
+  SHORTCUT_SCRIPTS="${PKG_STAGE}/desktop-shortcut-scripts"
+  mkdir -p "${SHORTCUT_SCRIPTS}"
+  /usr/bin/install -m 755 \
+    "scripts/macos/installer/desktop-shortcut-scripts/postinstall" \
+    "${SHORTCUT_SCRIPTS}/postinstall"
+
+  pkgbuild \
+    --nopayload \
+    --scripts "${SHORTCUT_SCRIPTS}" \
+    --identifier "fr.abakphysio.abakdesktopcompanion.desktop-shortcut" \
+    --version "${BUILD_NUMBER}" \
+    "${PKG_STAGE}/Companion-desktop-shortcut.pkg"
 
   # Assembler l’assistant avec son accueil et signer le PKG final.
   productbuild \

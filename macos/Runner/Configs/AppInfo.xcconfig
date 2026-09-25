@@ -12,3 +12,6 @@ PRODUCT_BUNDLE_IDENTIFIER = fr.abakphysio.abakdesktopcompanion
 
 // The copyright displayed in application information
 PRODUCT_COPYRIGHT = Copyright © 2026 com.example. All rights reserved.
+
+// Nom visible ; le script local fournit sa propre valeur à Xcode.
+ABAK_APP_DISPLAY_NAME = ABAK Companion

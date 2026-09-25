@@ -1,0 +1,45 @@
+#!/bin/sh
+
+# Ce composant est exécuté uniquement si le raccourci a été sélectionné.
+# Un raccourci facultatif ne doit pas faire échouer l'installation de l'app.
+APP_PATH='/Applications/abak_desktop_companion.app'
+
+skip_shortcut() {
+  echo "ABAK Companion : $1"
+  exit 0
+}
+
+[ "${3:-/}" = '/' ] || skip_shortcut 'raccourci ignoré pour un autre volume.'
+
+CONSOLE_USER=$(/usr/bin/stat -f '%Su' /dev/console) ||
+  skip_shortcut 'impossible de déterminer l’utilisateur connecté.'
+case "$CONSOLE_USER" in
+  ''|root|loginwindow|_mbsetupuser)
+    skip_shortcut 'aucune session utilisateur disponible pour le raccourci.' ;;
+esac
+
+USER_HOME=$(/usr/bin/dscl . -read "/Users/$CONSOLE_USER" NFSHomeDirectory 2>/dev/null |
+  /usr/bin/sed -n 's/^NFSHomeDirectory: //p')
+case "$USER_HOME" in
+  /*) ;;
+  *) skip_shortcut 'dossier personnel introuvable ; raccourci non créé.' ;;
+esac
+
+DESKTOP_PATH="$USER_HOME/Desktop"
+SHORTCUT_PATH="$DESKTOP_PATH/ABAK Companion.app"
+[ -d "$DESKTOP_PATH" ] || skip_shortcut 'Bureau indisponible ; raccourci non créé.'
+
+# Créer le lien sous l'identité de l'utilisateur, sans écraser un ancien alias,
+# un lien (même cassé), un fichier ou un dossier. Le lien peut être créé avant
+# la fin de l'installation du composant application.
+if [ -e "$SHORTCUT_PATH" ] || [ -L "$SHORTCUT_PATH" ]; then
+  skip_shortcut 'un élément ABAK Companion.app existe déjà sur le Bureau ; il est conservé.'
+fi
+
+if /usr/bin/sudo -u "$CONSOLE_USER" -- /bin/ln -s "$APP_PATH" "$SHORTCUT_PATH"; then
+  echo 'ABAK Companion : raccourci ajouté sur le Bureau.'
+else
+  echo 'ABAK Companion : accès au Bureau refusé ; créez le raccourci depuis Applications dans le Finder.'
+fi
+
+exit 0
