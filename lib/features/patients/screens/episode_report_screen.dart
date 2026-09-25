@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+
+import '../../../core/expert/expert_context_info.dart';
+import '../../../core/expert/expert_info_button.dart';
+
 import '../../../generated/l10n.dart';
 import '../data/episode_document_repository.dart';
 import '../data/episode_form_repository.dart';
@@ -188,6 +192,13 @@ class _EpisodeReportScreenState extends State<EpisodeReportScreen> {
           '${s.episodeReport_title} — ${widget.caseLabel}',
         ),
         actions: [
+          ExpertModeInfoButton(
+            info: ExpertContextInfo(
+              contextName: s.episodeReport_title,
+              sourceFile: 'lib/features/patients/screens/episode_report_screen.dart',
+              arbPrefix: 'episodeReport',
+            ),
+          ),
           IconButton(
             tooltip: s.episodeReport_refresh,
             onPressed: _refresh,
@@ -706,6 +717,13 @@ class _EpisodeConclusionEditorScreenState
           isEditing ? s.episodeReport_editConclusion : s.episodeReport_addConclusion,
         ),
         actions: [
+          ExpertModeInfoButton(
+            info: ExpertContextInfo(
+              contextName: isEditing ? s.episodeReport_editConclusion : s.episodeReport_addConclusion,
+              sourceFile: 'lib/features/patients/screens/episode_report_screen.dart',
+              arbPrefix: 'episodeReport',
+            ),
+          ),
           TextButton.icon(
             onPressed: _saving ? null : _save,
             icon: const Icon(Icons.save_outlined),

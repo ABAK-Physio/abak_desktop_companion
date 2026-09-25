@@ -3,6 +3,9 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 
+import '../../core/expert/expert_context_info.dart';
+import '../../core/expert/expert_info_button.dart';
+
 import '../../core/settings/cabinet_identity_service.dart';
 import '../../generated/l10n.dart';
 
@@ -133,27 +136,32 @@ class _OrganizationScreenState extends State<OrganizationScreen> {
 
   Future<void> _chooseLogo() async {
     final s=S.of(context);
-    final result = await FilePicker.platform.pickFiles(
-      type: FileType.image,
-      allowMultiple: false,
-    );
+    try {
+      final result = await FilePicker.platform.pickFiles(
+        type: FileType.image,
+        allowMultiple: false,
+      );
 
-    final path = result?.files.single.path;
-    if (path == null) return;
+      final path = result?.files.single.path;
+      if (path == null) return;
 
-    await _cabinetIdentityService.setCabinetLogoPath(path);
+      final savedPath = await _cabinetIdentityService.setCabinetLogoPath(path);
 
-    if (!mounted) return;
+      if (!mounted) return;
 
-    setState(() {
-      _cabinetLogoPath = path;
-    });
+      setState(() {
+        _cabinetLogoPath = savedPath;
+      });
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(s.organization_logoSaved),
-      ),
-    );
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(s.organization_logoSaved)),
+      );
+    } catch (error) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(s.home_error_while_saving(error.toString()))),
+      );
+    }
   }
 
   Future<void> _removeLogo() async {
@@ -178,6 +186,15 @@ class _OrganizationScreenState extends State<OrganizationScreen> {
     final s=S.of(context);
     return Scaffold(
       appBar: AppBar(
+        actions: [
+          ExpertModeInfoButton(
+            info: ExpertContextInfo(
+              contextName: s.organization_title,
+              sourceFile: 'lib/features/organization/organization_screen.dart',
+              arbPrefix: 'organization',
+            ),
+          ),
+        ],
         title: Text(s.organization_title),
       ),
       body: Center(

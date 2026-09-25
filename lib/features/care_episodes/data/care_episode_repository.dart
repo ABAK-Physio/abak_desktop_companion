@@ -116,6 +116,20 @@ class CareEpisodeRepository {
     );
   }
 
+  Future<void> restoreCareEpisode(String careEpisodeId) async {
+    final db = await DatabaseService.database;
+
+    await db.update(
+      'care_episodes',
+      {
+        'archived_at': null,
+        'updated_at': DateTime.now().millisecondsSinceEpoch,
+      },
+      where: 'care_episode_id = ? AND archived_at IS NOT NULL',
+      whereArgs: [careEpisodeId],
+    );
+  }
+
   Future<List<CareEpisode>> getEpisodesForPatient(String patientId) async {
     final db = await DatabaseService.database;
 
@@ -163,8 +177,9 @@ class CareEpisodeRepository {
   }
 
   Future<List<CareEpisodeSummary>> getEpisodeSummariesForPatient(
-      String patientId,
-      ) async {
+    String patientId, {
+    bool archived = false,
+  }) async {
     final db = await DatabaseService.database;
 
     final rows = await db.rawQuery(
@@ -197,11 +212,11 @@ class CareEpisodeRepository {
      ON ec.correspondent_id = ce.prescribing_correspondent_id
 
     WHERE ce.patient_id = ?
-      AND ce.archived_at IS NULL
+      AND ce.archived_at IS ${archived ? 'NOT NULL' : 'NULL'}
 
     GROUP BY ce.care_episode_id
 
-    ORDER BY ce.created_at DESC
+    ORDER BY ${archived ? 'ce.archived_at' : 'ce.created_at'} DESC
     ''',
       [patientId],
     );

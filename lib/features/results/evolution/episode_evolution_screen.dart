@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+
+import '../../../core/expert/expert_context_info.dart';
+import '../../../core/expert/expert_info_button.dart';
+
 import 'package:intl/intl.dart';
 import '../../../generated/l10n.dart';
 
@@ -117,6 +121,15 @@ class EpisodeEvolutionScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
+        actions: [
+          ExpertModeInfoButton(
+            info: ExpertContextInfo(
+              contextName: s.episodeEvolution_title,
+              sourceFile: 'lib/features/results/evolution/episode_evolution_screen.dart',
+              arbPrefix: 'episodeEvolution',
+            ),
+          ),
+        ],
         title: Text(s.episodeEvolution_title),
       ),
       body: FutureBuilder<List<DesktopResult>>(

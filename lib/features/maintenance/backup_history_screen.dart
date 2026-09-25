@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../../core/expert/expert_context_info.dart';
+import '../../core/expert/expert_info_button.dart';
+
 import '../../core/utils/date_format_utils.dart';
 import '../../generated/l10n.dart';
 import 'data/database_backup_repository.dart';
@@ -73,7 +76,18 @@ class _BackupHistoryScreenState extends State<BackupHistoryScreen> {
   Widget build(BuildContext context) {
     final s=S.of(context);
     return Scaffold(
-      appBar: AppBar(title: Text(s.backupHistory_title)),
+      appBar: AppBar(
+        actions: [
+          ExpertModeInfoButton(
+            info: ExpertContextInfo(
+              contextName: s.backupHistory_title,
+              sourceFile: 'lib/features/maintenance/backup_history_screen.dart',
+              arbPrefix: 'backupHistory',
+            ),
+          ),
+        ],
+        title: Text(s.backupHistory_title),
+      ),
       body: FutureBuilder<List<DatabaseBackup>>(
         future: _futureBackups,
         builder: (context, snapshot) {

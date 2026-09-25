@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+
+import '../../core/expert/expert_context_info.dart';
+import '../../core/expert/expert_info_button.dart';
+
 import '../../core/utils/date_format_utils.dart';
 
 import 'data/import_session_repository.dart';
@@ -13,7 +17,17 @@ class ImportHistoryScreen extends StatelessWidget {
     final repository = ImportSessionRepository();
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Historique des imports')),
+      appBar: AppBar(
+        actions: [
+          ExpertModeInfoButton(
+            info: ExpertContextInfo(
+              contextName: 'Historique des imports',
+              sourceFile: 'lib/features/import_export/import_history_screen.dart',
+            ),
+          ),
+        ],
+        title: const Text('Historique des imports'),
+      ),
       body: FutureBuilder<List<ImportSession>>(
         future: repository.getSessions(),
         builder: (context, snapshot) {

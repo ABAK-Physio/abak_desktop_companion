@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../../core/expert/expert_context_info.dart';
+import '../../core/expert/expert_info_button.dart';
+
 import '../../core/utils/date_format_utils.dart';
 import '../../generated/l10n.dart';
 import 'data/import_session_repository.dart';
@@ -135,6 +138,15 @@ class _ImportResolutionAssistantScreenState
     final s = S.of(context);
     return Scaffold(
       appBar: AppBar(
+        actions: [
+          ExpertModeInfoButton(
+            info: ExpertContextInfo(
+              contextName: s.importResolutionAssistant_title,
+              sourceFile: 'lib/features/import_export/import_resolution_assistant_screen.dart',
+              arbPrefix: 'importResolutionAssistant',
+            ),
+          ),
+        ],
         title: Text(s.importResolutionAssistant_title),
       ),
       body: FutureBuilder<List<ImportSession>>(

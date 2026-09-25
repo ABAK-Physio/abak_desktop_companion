@@ -22,6 +22,8 @@
     <true/>
     <key>com.apple.security.smartcard</key>
     <true/>
+    <key>com.apple.security.files.bookmarks.app-scope</key>
+    <true/>
 
 </dict>
 </plist>

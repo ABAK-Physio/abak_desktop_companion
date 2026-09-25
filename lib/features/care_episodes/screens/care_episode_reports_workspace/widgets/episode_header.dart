@@ -12,6 +12,7 @@ class EpisodeHeader extends StatelessWidget {
   final VoidCallback onEditPractitioner;
   final VoidCallback onShowHistory;
   final VoidCallback onOpenDocuments;
+  final VoidCallback? onOpenBodymap;
 
   const EpisodeHeader({
     super.key,
@@ -21,6 +22,7 @@ class EpisodeHeader extends StatelessWidget {
     required this.onEditPractitioner,
     required this.onShowHistory,
     required this.onOpenDocuments,
+    this.onOpenBodymap,
   });
 
   @override
@@ -98,6 +100,12 @@ class EpisodeHeader extends StatelessWidget {
                 ),
               ],
             ),
+          ),
+          if (onOpenBodymap != null) IconButton(
+            key: const ValueKey('open-pain-bodymap'),
+            onPressed: onOpenBodymap,
+            tooltip: 'Carte des douleurs',
+            icon: const Icon(Icons.accessibility_new),
           ),
           IconButton(
             onPressed: onOpenDocuments,

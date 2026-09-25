@@ -61,11 +61,14 @@ class DatabaseService {
 
     return openDatabase(
       path,
-      version: 28, //////////////////////
+      version: 29, //////////////////////
       onCreate: (db, version) async {
         await _createAllTables(db);
       },
       onUpgrade: (db, oldVersion, newVersion) async {
+        if (oldVersion < 29) {
+          await _createBodymapTable(db);
+        }
         if (oldVersion < 2) {
           await _addColumnIfMissing(
             db,
@@ -487,6 +490,7 @@ class DatabaseService {
     await _createApplicationSettingsTable(db);
     await _createPatientClinicalTables(db);
     await _createCareEpisodeTables(db);
+    await _createBodymapTable(db);
     await _createEpisodeDocumentsTable(db);
     await _createExternalCorrespondentsTable(db);
     await _createCareEpisodeReferringPractitionerTables(db);
@@ -515,6 +519,7 @@ class DatabaseService {
     await db.execute('DROP TABLE IF EXISTS care_episode_reports');
     await db.execute('DROP TABLE IF EXISTS care_episode_assessments');
     await db.execute('DROP TABLE IF EXISTS care_episode_notes');
+    await db.execute('DROP TABLE IF EXISTS care_episode_bodymaps');
     await db.execute('DROP TABLE IF EXISTS care_episodes');
 
     await db.execute('DROP TABLE IF EXISTS desktop_import_session_files');
@@ -541,6 +546,18 @@ class DatabaseService {
     await db.execute('DROP TABLE IF EXISTS contact_form_templates');
     await db.execute('DROP TABLE IF EXISTS patient_attributes');
     await db.execute('DROP TABLE IF EXISTS patient_identity');
+  }
+
+  static Future<void> _createBodymapTable(Database db) async {
+    await db.execute('''
+      CREATE TABLE IF NOT EXISTS care_episode_bodymaps (
+        care_episode_id TEXT PRIMARY KEY,
+        record_json TEXT NOT NULL,
+        updated_at INTEGER NOT NULL,
+        FOREIGN KEY (care_episode_id) REFERENCES care_episodes(care_episode_id)
+          ON DELETE CASCADE
+      )
+    ''');
   }
 
   static Future<void> _createCoreTables(Database db) async {

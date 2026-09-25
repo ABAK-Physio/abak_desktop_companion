@@ -151,6 +151,17 @@ class _PractitionerListScreenState extends State<PractitionerListScreen> {
         final practitioners = snapshot.data ?? [];
 
         return Scaffold(
+          appBar: AppBar(
+            title: Text(s.practitionerList_title),
+            actions: [
+              ContextHelpButton(
+                title: s.practitionerList_title,
+                content: s.help_practitionerList_helpText,
+              ),
+              if (_expertModeEnabled)
+                ExpertInfoButton(info: _expertInfo(s)),
+            ],
+          ),
           body: _buildBody(
             context,
             snapshot,
@@ -185,27 +196,6 @@ class _PractitionerListScreenState extends State<PractitionerListScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-          child: Row(
-            children: [
-              Expanded(
-                child: Text(
-                  s.practitionerList_title,
-                  style: Theme.of(context).textTheme.headlineSmall,
-                ),
-              ),
-              ContextHelpButton(
-                title: s.practitionerList_title,
-                content: s.help_practitionerList_helpText,
-              ),
-              if (_expertModeEnabled)
-                ExpertInfoButton(
-                  info: _expertInfo(S.of(context)),
-                ),
-            ],
-          ),
-        ),
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
           child: SegmentedButton<bool>(

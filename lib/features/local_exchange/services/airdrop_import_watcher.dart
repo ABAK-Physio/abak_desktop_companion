@@ -14,89 +14,133 @@ class AirDropImportWatcher {
   static final AirDropImportWatcher instance = AirDropImportWatcher._();
 
   final ExchangeDirectoryService _exchangeDirectoryService =
-      ExchangeDirectoryService();
+  ExchangeDirectoryService();
 
   Timer? _timer;
+  ExchangeDirectoryAccess? _directoryAccess;
+  Future<void>? _activeScan;
+  Future<void> _lifecycle = Future<void>.value();
+
+  /// L’interface pourra afficher cet état même si l’erreur survient
+  /// avant la création de la première fenêtre Flutter.
+  final ValueNotifier<String?> accessProblem = ValueNotifier<String?>(null);
+
   void Function(String message)? onImportMessage;
   final Set<String> _seenPaths = <String>{};
   final Set<String> _processingPaths = <String>{};
 
   bool get isRunning => _timer != null;
 
-  Future<void> start() async {
-    if (_timer != null) return;
-
-    final exchangeDir = await _exchangeDirectoryService.getExchangeDirectory();
-
-    debugPrint('📥 Watcher dossier d’échange démarré');
-    debugPrint('📂 Dossier surveillé : ${exchangeDir.path}');
-
-    await _markExistingFiles(exchangeDir);
-
-    _timer = Timer.periodic(
-      const Duration(seconds: 3),
-      (_) => _scan(exchangeDir),
-    );
+  Future<void> _serialize(Future<void> Function() operation) {
+    final next = _lifecycle.then((_) => operation());
+    _lifecycle = next.then<void>((_) {}, onError: (Object _, StackTrace _) {});
+    return next;
   }
 
-  Future<void> stop() async {
+  Future<void> start() => _serialize(_start);
+
+  Future<void> _start() async {
+    if (_timer != null) return;
+    await _stop();
+
+    try {
+      final access = await _exchangeDirectoryService.acquireExchangeDirectory();
+      _directoryAccess = access;
+      final exchangeDir = access.directory;
+
+      await _markExistingFiles(exchangeDir);
+      accessProblem.value = null;
+
+      _timer = Timer.periodic(const Duration(seconds: 3), (_) {
+        // Un seul scan à la fois : ne pas libérer un accès encore utilisé.
+        if (_activeScan != null) return;
+        _activeScan = _runScan(exchangeDir);
+      });
+      debugPrint('📥 Surveillance du dossier d’échange démarrée');
+    } catch (error) {
+      _suspendForAccessProblem();
+      await _releaseDirectoryAccess();
+      debugPrint('Surveillance du dossier d’échange suspendue : $error');
+    }
+  }
+
+  Future<void> stop() => _serialize(_stop);
+
+  Future<void> _stop() async {
     _timer?.cancel();
     _timer = null;
+    // Laisser finir une copie/importation avant de retirer son autorisation.
+    final scan = _activeScan;
+    if (scan != null) await scan;
+    await _releaseDirectoryAccess();
     _seenPaths.clear();
     _processingPaths.clear();
+  }
 
-    debugPrint('📥 Watcher dossier d’échange arrêté');
+  Future<void> restart() => _serialize(() async {
+    await _stop();
+    await _start();
+  });
+
+  Future<void> _releaseDirectoryAccess() async {
+    final access = _directoryAccess;
+    if (access == null) return;
+    _directoryAccess = null;
+    try {
+      await access.release();
+    } catch (error) {
+      debugPrint('Impossible de libérer l’accès au dossier d’échange : $error');
+    }
+  }
+
+  void _suspendForAccessProblem() {
+    _timer?.cancel();
+    _timer = null;
+    accessProblem.value =
+    'La surveillance du dossier d’échange est suspendue. '
+        'Dans Réglages, sélectionnez à nouveau ce dossier pour autoriser '
+        'son accès, ou reconnectez son volume puis réessayez.';
   }
 
   Future<void> _markExistingFiles(Directory exchangeDir) async {
+    if (!await exchangeDir.exists()) {
+      throw FileSystemException('Dossier d’échange indisponible', exchangeDir.path);
+    }
+    // La lecture réelle doit réussir ; exists() seul ne valide pas l’accès.
+    final existingFiles = await exchangeDir.list().where((entry) =>
+    entry is File && _isAbakFile(entry)).toList();
+    _seenPaths.addAll(existingFiles.map((file) => file.path));
+  }
+
+  Future<void> _runScan(Directory exchangeDir) async {
     try {
-      if (!await exchangeDir.exists()) {
-        debugPrint('⚠️ Dossier d’échange introuvable : ${exchangeDir.path}');
-        return;
-      }
-
-      final existingFiles = exchangeDir
-          .listSync()
-          .whereType<File>()
-          .where(_isAbakFile)
-          .toList();
-
-      for (final file in existingFiles) {
-        _seenPaths.add(file.path);
-      }
-
-      debugPrint('📚 ${_seenPaths.length} fichier(s) .abak déjà présent(s)');
-    } catch (e) {
-      debugPrint('⚠️ Watcher dossier d’échange erreur initialisation : $e');
+      await _scan(exchangeDir);
+    } finally {
+      if (_timer == null) await _releaseDirectoryAccess();
+      _activeScan = null;
     }
   }
 
   Future<void> _scan(Directory exchangeDir) async {
     try {
       if (!await exchangeDir.exists()) {
-        debugPrint('⚠️ Dossier d’échange introuvable : ${exchangeDir.path}');
-        return;
+        throw FileSystemException('Dossier d’échange indisponible', exchangeDir.path);
       }
 
-      final files = exchangeDir
-          .listSync()
-          .whereType<File>()
-          .where(_isAbakFile)
-          .toList();
-
+      final entries = await exchangeDir.list().toList();
+      final files = entries.whereType<File>().where(_isAbakFile);
       for (final file in files) {
+        // Un arrêt demandé laisse finir le fichier courant, sans en ouvrir un autre.
+        if (_timer == null) break;
         final path = file.path;
-
-        if (_seenPaths.contains(path)) continue;
-        if (_processingPaths.contains(path)) continue;
-
+        if (_seenPaths.contains(path) || _processingPaths.contains(path)) continue;
         _seenPaths.add(path);
         _processingPaths.add(path);
-
         await _handleNewExchangeFile(file);
       }
-    } catch (e) {
-      debugPrint('⚠️ Watcher dossier d’échange erreur scan : $e');
+    } catch (error) {
+      _suspendForAccessProblem();
+      debugPrint('Lecture du dossier d’échange impossible : $error');
     }
   }
 

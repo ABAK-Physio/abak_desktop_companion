@@ -31,7 +31,7 @@ void main() {
         old, result('middle', 2, code: 'none', label: 'Aucun')],
     );
     expect(rows.length, 3);
-    expect(rows.map((r) => r.walkingAid), ['-', 'Aucun', 'Deux cannes']);
+    expect(rows.map((r) => r.walkingAid), ['-', 'Aucune', 'Deux cannes']);
     expect(rows.map((r) => r.date.millisecondsSinceEpoch), [1, 2, 3]);
     expect(rows.every((r) => r.result.contains('12')), isTrue);
   });
@@ -59,7 +59,7 @@ void main() {
     final table = xml.findAllElements('w:tbl').single;
     expect(table.findAllElements('w:tr').length, 3);
     expect(table.findAllElements('w:tblHeader').length, 1);
-    expect(table.innerText, contains('Accessoire utilisé'));
+    expect(table.innerText, contains('Aide utilisée'));
     expect(table.innerText, contains('12 s'));
     expect(table.innerText, contains('10 s'));
     expect(table.innerText, contains('Canne & appui <léger>'));

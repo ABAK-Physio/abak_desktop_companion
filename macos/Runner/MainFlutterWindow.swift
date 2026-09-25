@@ -11,6 +11,9 @@ class MainFlutterWindow: NSWindow {
     self.setFrame(windowFrame, display: true)
 
     RegisterGeneratedPlugins(registry: flutterViewController)
+    AbakDirectoryAccessBridge.shared.register(
+        with: flutterViewController.engine.binaryMessenger
+    )
 
     let dmpChannel = FlutterMethodChannel(
         name: "abak_dmp_fr",
@@ -2677,6 +2680,176 @@ class MainFlutterWindow: NSWindow {
       "verified": true,
       "signatureLength": signatureData.count,
       "certificateLength": certificateData.count,
+    ]
+  }
+}
+// À ajouter après la dernière accolade de MainFlutterWindow.swift.
+// Les imports Cocoa et FlutterMacOS existent déjà dans ce fichier.
+
+final class AbakDirectoryAccessBridge {
+  static let shared = AbakDirectoryAccessBridge()
+
+  private var channel: FlutterMethodChannel?
+  private var activeURLs: [String: URL] = [:]
+
+  private init() {}
+
+  func register(with messenger: FlutterBinaryMessenger) {
+    guard channel == nil else { return }
+    let newChannel = FlutterMethodChannel(
+        name: "abak/directory_access",
+        binaryMessenger: messenger
+    )
+    newChannel.setMethodCallHandler { [weak self] call, result in
+      guard let self = self else {
+        result(FlutterError(
+            code: "UNAVAILABLE",
+            message: "Service d’accès aux dossiers indisponible.",
+            details: nil
+        ))
+        return
+      }
+      self.handle(call, result: result)
+    }
+    channel = newChannel
+  }
+
+  private func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+    let args = call.arguments as? [String: Any] ?? [:]
+    do {
+      switch call.method {
+      case "getInstallationLocation":
+        let actualURL = Bundle.main.bundleURL
+            .resolvingSymlinksInPath()
+            .standardizedFileURL
+
+        let expectedURL = URL(
+            fileURLWithPath: "/Applications/abak_desktop_companion.app",
+            isDirectory: true
+        ).resolvingSymlinksInPath().standardizedFileURL
+
+        result([
+                 "actualPath": actualURL.path,
+                 "expectedPath": expectedURL.path,
+                 "isInstalled": actualURL.path == expectedURL.path,
+               ])
+
+      case "openApplicationsFolder":
+        let opened = NSWorkspace.shared.open(
+            URL(fileURLWithPath: "/Applications", isDirectory: true)
+        )
+        result(opened)
+
+      case "chooseDirectory":
+        let panel = NSOpenPanel()
+        panel.canChooseDirectories = true
+        panel.canChooseFiles = false
+        panel.allowsMultipleSelection = false
+        panel.canCreateDirectories = true
+        panel.title = args["title"] as? String ?? "Choisir un dossier"
+        panel.prompt = "Autoriser ce dossier"
+        guard panel.runModal() == .OK, let url = panel.url else {
+          result(nil)
+          return
+        }
+        let bookmark = try url.bookmarkData(
+            options: [.withSecurityScope],
+            includingResourceValuesForKeys: nil,
+            relativeTo: nil
+        )
+        result(try activate(bookmark))
+
+      case "restoreDirectory":
+        guard let encoded = args["bookmark"] as? String,
+              let bookmark = Data(base64Encoded: encoded) else {
+          result(FlutterError(
+              code: "INVALID_BOOKMARK",
+              message: "Autorisation de dossier absente ou illisible.",
+              details: nil
+          ))
+          return
+        }
+        result(try activate(bookmark))
+
+      case "releaseDirectory":
+        guard let token = args["token"] as? String else {
+          result(FlutterError(
+              code: "INVALID_TOKEN",
+              message: "Identifiant d’accès absent.",
+              details: nil
+          ))
+          return
+        }
+        if let url = activeURLs.removeValue(forKey: token) {
+          url.stopAccessingSecurityScopedResource()
+        }
+        result(nil)
+
+      case "releaseAll":
+        for url in activeURLs.values {
+          url.stopAccessingSecurityScopedResource()
+        }
+        activeURLs.removeAll()
+        result(nil)
+
+      default:
+        result(FlutterMethodNotImplemented)
+      }
+    } catch {
+      result(FlutterError(
+          code: "DIRECTORY_ACCESS_FAILED",
+          message: "Impossible d’accéder au dossier. Vérifiez sa disponibilité ou autorisez-le à nouveau.",
+          details: error.localizedDescription
+      ))
+    }
+  }
+
+  private func activate(_ bookmark: Data) throws -> [String: Any] {
+    var stale = false
+    let url = try URL(
+        resolvingBookmarkData: bookmark,
+        options: [.withSecurityScope, .withoutUI, .withoutMounting],
+        relativeTo: nil,
+        bookmarkDataIsStale: &stale
+    )
+
+    let started = url.startAccessingSecurityScopedResource()
+    var retained = false
+    defer {
+      if started && !retained {
+        url.stopAccessingSecurityScopedResource()
+      }
+    }
+
+    // Certains dossiers sont déjà accessibles, notamment hors sandbox en Debug.
+    // Ne jamais assimiler la seule résolution du chemin à une autorisation.
+    let values = try url.resourceValues(forKeys: [.isDirectoryKey])
+    guard values.isDirectory == true,
+          FileManager.default.isReadableFile(atPath: url.path),
+          FileManager.default.isWritableFile(atPath: url.path) else {
+      throw NSError(
+          domain: "AbakDirectoryAccess",
+          code: 1,
+          userInfo: [NSLocalizedDescriptionKey: "Dossier indisponible ou accès lecture-écriture refusé."]
+      )
+    }
+
+    let currentBookmark = stale ? try url.bookmarkData(
+        options: [.withSecurityScope],
+        includingResourceValuesForKeys: nil,
+        relativeTo: nil
+    ) : bookmark
+
+    let token = UUID().uuidString
+    if started {
+      activeURLs[token] = url
+      retained = true
+    }
+
+    return [
+      "path": url.path,
+      "bookmark": currentBookmark.base64EncodedString(),
+      "token": token,
     ]
   }
 }

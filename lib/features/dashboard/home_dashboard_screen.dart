@@ -11,7 +11,6 @@ import 'package:qr_flutter/qr_flutter.dart';
 import '../local_exchange/services/local_exchange_server.dart';
 
 import '../patients/patient_list_screen.dart';
-import '../reports/report_archive_screen.dart';
 import '../settings/settings_screen.dart';
 import '../informations/about.dart';
 import '../practitioners/practitioner_list_screen.dart';
@@ -29,6 +28,13 @@ import 'package:abak_shared/abak_shared.dart';
 
 
 class HomeDashboardScreen extends StatefulWidget {
+  static final _homeRequests = ValueNotifier<int>(0);
+
+  static void returnToHome(BuildContext context) {
+    _homeRequests.value++;
+    Navigator.of(context).popUntil((route) => route.isFirst);
+  }
+
   final VoidCallback onLocaleChanged;
 
   const HomeDashboardScreen({super.key, required this.onLocaleChanged});
@@ -50,7 +56,6 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
       S.of(context).home_patients,
       'Kinés',
       'Appareils',
-      'Archives',
       'Paramètres',
       'Réglages',
       'Informations',
@@ -68,7 +73,22 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
   @override
   void initState() {
     super.initState();
+    HomeDashboardScreen._homeRequests.addListener(_showHome);
     _loadExpertMode();
+  }
+
+  void _showHome() {
+    setState(() {
+      selectedIndex = 0;
+      _refreshToken++;
+    });
+    _loadExpertMode();
+  }
+
+  @override
+  void dispose() {
+    HomeDashboardScreen._homeRequests.removeListener(_showHome);
+    super.dispose();
   }
 
   Future<void> _loadExpertMode() async {
@@ -120,11 +140,6 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
                 icon: Icon(Icons.devices_other_outlined),
                 selectedIcon: Icon(Icons.devices_other),
                 label: Text(S.of(context).home_devices),
-              ),
-              NavigationRailDestination(
-                icon: Icon(Icons.folder_outlined),
-                selectedIcon: Icon(Icons.folder),
-                label: Text(S.of(context).home_archives),
               ),
               NavigationRailDestination(
                 icon: Icon(Icons.tune_outlined),
@@ -324,12 +339,10 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
       case 3:
         return const DeviceListScreen();
       case 4:
-        return const ReportArchiveScreen();
-      case 5:
         return PreferencesScreen(onLanguageChanged: widget.onLocaleChanged);
-      case 6:
+      case 5:
         return const SettingsScreen();
-      case 7:
+      case 6:
         return const AboutScreen();
       default:
         return const SizedBox.shrink();

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../../../core/expert/expert_context_info.dart';
+import '../../../core/expert/expert_info_button.dart';
+
 import '../../../generated/l10n.dart';
 import '../data/contact_form_template_repository.dart';
 import '../models/contact_form_field.dart';
@@ -165,6 +168,13 @@ class _ContactFormTemplateDiagnosticScreenState
       appBar: AppBar(
         title: Text(s.contactFormTemplateDiagnostic_title),
         actions: [
+          ExpertModeInfoButton(
+            info: ExpertContextInfo(
+              contextName: s.contactFormTemplateDiagnostic_title,
+              sourceFile: 'lib/features/patients/screens/contact_form_template_diagnostic_screen.dart',
+              arbPrefix: 'contactFormTemplateDiagnostic',
+            ),
+          ),
           IconButton(
             tooltip: s.contactFormTemplateDiagnostic_refresh,
             onPressed: _refresh,

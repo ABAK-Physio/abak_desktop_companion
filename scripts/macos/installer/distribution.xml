@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<installer-gui-script minSpecVersion="2">
+    <title>ABAK Companion</title>
+
+    <welcome file="welcome.html" mime-type="text/html"/>
+
+    <options customize="always" require-scripts="false"/>
+
+    <domains
+        enable_anywhere="false"
+        enable_currentUserHome="false"
+        enable_localSystem="true"/>
+
+    <choices-outline>
+        <line choice="companion"/>
+        <line choice="desktop_shortcut"/>
+    </choices-outline>
+
+    <choice
+        id="companion"
+        title="ABAK Companion"
+        visible="true"
+        enabled="false"
+        selected="true">
+        <pkg-ref id="fr.abakphysio.abakdesktopcompanion.installer">
+            <must-close>
+                <app id="fr.abakphysio.abakdesktopcompanion"/>
+            </must-close>
+        </pkg-ref>
+    </choice>
+
+    <choice
+        id="desktop_shortcut"
+        title="Créer un raccourci sur le Bureau"
+        description="Ajoute un raccourci vers ABAK Companion dans Applications sur le Bureau de l’utilisateur connecté. Les éléments existants sont conservés."
+        visible="true"
+        start_selected="true">
+        <pkg-ref id="fr.abakphysio.abakdesktopcompanion.desktop-shortcut"/>
+    </choice>
+
+    <pkg-ref id="fr.abakphysio.abakdesktopcompanion.desktop-shortcut">
+        Companion-desktop-shortcut.pkg
+    </pkg-ref>
+
+    <pkg-ref id="fr.abakphysio.abakdesktopcompanion.installer">
+        Companion-component.pkg
+    </pkg-ref>
+</installer-gui-script>

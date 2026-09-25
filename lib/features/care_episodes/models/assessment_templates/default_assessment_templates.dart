@@ -583,7 +583,7 @@ class DefaultAssessmentTemplates {
           ),
           AssessmentTemplateField(
             id: 'pulmonologist',
-            label: 'Pneumologue',
+            label: 'Spécialité',
             type: AssessmentTemplateFieldType.shortText,
           ),
           AssessmentTemplateField(
