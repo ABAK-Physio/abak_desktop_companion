@@ -79,7 +79,11 @@ void main() {
         patientAgeYears: null,
         pathologyLabel: null,
       );
-      final doc = XmlDocument.parse('<root xmlns:w="w">$xml</root>');
+      final doc = XmlDocument.parse(
+        '<w:document '
+        'xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">'
+        '$xml</w:document>',
+      );
       final table = doc.findAllElements('w:tbl').single;
       final columns = visible ? 3 : 2;
       expect(table.findAllElements('w:gridCol').length, columns);
@@ -87,7 +91,7 @@ void main() {
         expect(row.findAllElements('w:tc').length, columns);
       }
       expect(table.innerText.contains(S.current.walkingAid_label), visible);
-      if (visible)
+      if (visible) {
         expect(
           table
               .findAllElements('w:tr')
@@ -98,6 +102,7 @@ void main() {
               .trim(),
           '-',
         );
+      }
       expect(
         table
             .findAllElements('w:gridCol')
