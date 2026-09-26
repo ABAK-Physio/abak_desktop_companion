@@ -5,6 +5,10 @@
 #define MyAppVersion "0.0.0-dev"
 #endif
 
+#ifndef MyBuildNumber
+#define MyBuildNumber "0"
+#endif
+
 #define MyAppPublisher "ABAK Physio"
 #define MyAppExeName "abak_desktop_companion.exe"
 
@@ -17,7 +21,7 @@ DefaultDirName={autopf}\ABAK Desktop Companion
 DefaultGroupName=ABAK Desktop Companion
 DisableProgramGroupPage=yes
 OutputDir=..\..\build\installer
-        OutputBaseFilename={#MyArtifactName}_{#MyAppVersion}_Windows_Setup
+        OutputBaseFilename={#MyArtifactName}_{#MyAppVersion}_{#MyBuildNumber}_Windows_Setup
 Compression=lzma
 SolidCompression=yes
 WizardStyle=modern
