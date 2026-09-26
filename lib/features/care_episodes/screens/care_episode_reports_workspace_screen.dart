@@ -426,6 +426,7 @@ class _CareEpisodeReportsWorkspaceScreenState
 
       final bytes = await ReportDocxService().buildDocx(
         data: data,
+        chartPngBytes: chartPngBytes,
         establishmentLogoBytes: establishmentLogoBytes,
         establishmentLogoExtension: establishmentLogoExtension,
       );

@@ -31,7 +31,7 @@ void main() {
         old, result('middle', 2, code: 'none', label: 'Aucun')],
     );
     expect(rows.length, 3);
-    expect(rows.map((r) => r.walkingAid), ['-', 'Aucune', 'Deux cannes']);
+    expect(rows.map((r) => r.walkingAid), [null, 'Aucune', 'Deux cannes']);
     expect(rows.map((r) => r.date.millisecondsSinceEpoch), [1, 2, 3]);
     expect(rows.every((r) => r.result.contains('12')), isTrue);
   });

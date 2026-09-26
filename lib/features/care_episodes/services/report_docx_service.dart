@@ -1,3 +1,4 @@
+import 'clinical_document_attachments_docx.dart';
 import 'dart:convert';
 import 'dart:typed_data';
 
@@ -9,6 +10,7 @@ import '../models/report_document_data.dart';
 class ReportDocxService {
   Future<Uint8List> buildDocx({
     required ReportDocumentData data,
+    required List<Uint8List> chartPngBytes,
     Uint8List? establishmentLogoBytes,
     String? establishmentLogoExtension,
   }) async {
@@ -28,6 +30,7 @@ class ReportDocxService {
         _textFile(
           'word/_rels/document.xml.rels',
           _buildDocumentRelsXml(
+            chartCount: chartPngBytes.length,
             logoExtension: hasLogo
                 ? establishmentLogoExtension
                 : null,
@@ -45,6 +48,12 @@ class ReportDocxService {
           establishmentLogoBytes,
         ),
       );
+    }
+
+    for (var i = 0; i < chartPngBytes.length; i++) {
+      final imageIndex = i + 1 + (hasLogo ? 1 : 0);
+      final bytes = chartPngBytes[i];
+      archive.addFile(ArchiveFile('word/media/image$imageIndex.png', bytes.length, bytes));
     }
 
     final encoded = ZipEncoder().encode(archive);
@@ -139,6 +148,14 @@ class ReportDocxService {
         _buildStructuredReportText(data.reportText),
       );
     }
+
+    buffer.write(ClinicalDocumentAttachmentsDocx().build(
+      tests: data.tests,
+      notes: data.notes,
+      patientAgeYears: data.patientAgeYears,
+      pathologyLabel: data.pathologyLabel,
+      firstImageIndex: hasLogo ? 1 : 0,
+    ));
 
     buffer.write(
       _paragraph('Très cordialement'),
@@ -589,6 +606,7 @@ const String _rootRelsXml = '''
 ''';
 
 String _buildDocumentRelsXml({
+  required int chartCount,
   String? logoExtension,
 }) {
   final buffer = StringBuffer()
@@ -612,6 +630,15 @@ String _buildDocumentRelsXml({
           'Id="rId$relationshipIndex" '
           'Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" '
           'Target="media/image1.$logoExtension"/>',
+    );
+  }
+
+  for (var i = 0; i < chartCount; i++) {
+    final imageIndex = i + 1 + (logoExtension != null ? 1 : 0);
+    buffer.writeln(
+      '<Relationship Id="rId$imageIndex" '
+      'Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" '
+      'Target="media/image$imageIndex.png"/>',
     );
   }
 

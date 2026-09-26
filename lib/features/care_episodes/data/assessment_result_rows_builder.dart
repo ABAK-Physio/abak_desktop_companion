@@ -44,9 +44,9 @@ class AssessmentResultRowsBuilder {
     return '-';
   }
 
-  static String _walkingAid(DesktopResult result) {
+  static String? _walkingAid(DesktopResult result) {
     final aid = result.walkingAid;
-    if (aid == null) return '-';
+    if (aid == null) return null;
     final s = S.current;
     switch (aid.code) {
       case 'none': return s.walkingAid_none;

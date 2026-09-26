@@ -113,7 +113,7 @@ class AssessmentDocumentNote {
 class AssessmentDocumentResultRow {
   final DateTime date;
   final String result;
-  final String walkingAid;
+  final String? walkingAid;
 
   const AssessmentDocumentResultRow({
     required this.date,

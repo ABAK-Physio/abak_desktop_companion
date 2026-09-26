@@ -1,6 +1,8 @@
 #!/usr/bin/env zsh
 set -euo pipefail
 
+LOCAL_BUNDLE_IDENTIFIER="fr.abakphysio.abakdesktopcompanion.local"
+
 BUILD_ARGS=()
 LAUNCH_APP=1
 for option in "$@"; do
@@ -23,6 +25,7 @@ echo ""
 echo "🔨 Build Flutter Release"
 
 # Ces réglages ne s'appliquent qu'à cette compilation locale.
+FLUTTER_XCODE_PRODUCT_BUNDLE_IDENTIFIER="$LOCAL_BUNDLE_IDENTIFIER" \
 FLUTTER_XCODE_ASSETCATALOG_COMPILER_APPICON_NAME=AppIconLocal \
 FLUTTER_XCODE_ABAK_APP_DISPLAY_NAME="ABAK Companion — Local" \
 flutter build macos --release --dart-define=ENV=local_release "${BUILD_ARGS[@]}"
@@ -32,6 +35,17 @@ APP_PATH="build/macos/Build/Products/Release/abak_desktop_companion.app"
 if [[ ! -d "$APP_PATH" ]]; then
   echo "❌ Application Release introuvable :"
   echo "$APP_PATH"
+  exit 1
+fi
+
+# Refuser toute installation si la compilation a conservé l'identité standard.
+if ! BUILT_BUNDLE_IDENTIFIER=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' "$APP_PATH/Contents/Info.plist"); then
+  echo "❌ Impossible de lire le Bundle Identifier de l'application compilée." >&2
+  exit 1
+fi
+if [[ "$BUILT_BUNDLE_IDENTIFIER" != "$LOCAL_BUNDLE_IDENTIFIER" ]]; then
+  echo "❌ Bundle Identifier inattendu : $BUILT_BUNDLE_IDENTIFIER" >&2
+  echo "   Attendu : $LOCAL_BUNDLE_IDENTIFIER — installation annulée." >&2
   exit 1
 fi
 
@@ -65,8 +79,9 @@ echo ""
 echo "Application :"
 echo "$LOCAL_APP_PATH"
 echo ""
-echo "⚠️ Cette version utilise l'environnement Release macOS"
-echo "   et donc la base de données du conteneur sandbox Release."
+echo "Identifiant : $LOCAL_BUNDLE_IDENTIFIER"
+echo "Cette version utilise son propre conteneur sandbox et sa base locale."
+echo "Conteneur : $HOME/Library/Containers/$LOCAL_BUNDLE_IDENTIFIER"
 
 echo ""
 if (( LAUNCH_APP )); then

@@ -181,8 +181,7 @@ class _ResultDetailScreenState extends State<ResultDetailScreen> {
               : '${_result.scoreTotal!.toStringAsFixed(2)}'
               '${_result.measureUnit == null ? '' : ' ${_result.measureUnit}'}',
         ),
-        if (_result.exoId.trim().toUpperCase() == 'E76' ||
-            _result.walkingAid != null)
+        if (_result.walkingAid != null)
           _InfoRow(
             label: s.walkingAid_label,
             value: _walkingAidLabel(s),

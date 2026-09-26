@@ -1,3 +1,4 @@
+import 'assessment_result_rows_builder.dart';
 import 'package:abak_desktop_companion/core/settings/cabinet_identity_service.dart';
 import 'package:abak_desktop_companion/features/care_episodes/data/care_episode_referring_practitioner_repository.dart';
 import 'package:abak_desktop_companion/features/care_episodes/data/care_episode_report_repository.dart';
@@ -146,6 +147,10 @@ class ReportDocumentDataBuilder {
 
         return AssessmentDocumentTest(
           selectionKey: entry.key,
+          resultRows: AssessmentResultRowsBuilder.build(
+            selectionKey: entry.key,
+            results: episodeResults,
+          ),
           chartSeries: _buildChartSeries(
             selectionKey: entry.key,
             episodeResults: episodeResults,
