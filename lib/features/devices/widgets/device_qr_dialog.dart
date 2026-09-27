@@ -8,6 +8,8 @@ import '../models/paired_device.dart';
 import '../../../core/expert/expert_context_info.dart';
 import '../../../core/expert/expert_info_button.dart';
 import '../../../core/settings/application_settings_service.dart';
+import 'package:abak_shared/abak_shared.dart';
+import '../../../generated/l10n.dart';
 
 class DeviceQrDialog extends StatelessWidget {
   static const ExpertContextInfo _expertInfo = ExpertContextInfo(
@@ -45,17 +47,22 @@ class DeviceQrDialog extends StatelessWidget {
         final data = snapshot.data!;
 
         return AlertDialog(
-          title: Row(
-            children: [
-              const Expanded(
-                child: Text('Appareil ABAK'),
-              ),
-              if (data.expertModeEnabled)
-                const ExpertInfoButton(
-                  info: _expertInfo,
+            title: Row(
+              children: [
+                Expanded(
+                  child: Text(S.of(context).deviceQr_title),
                 ),
-            ],
-          ),
+                ContextHelpButton(
+                  technicalInformationLabel: S.of(context).g_helpTooltip,
+                  title: S.of(context).deviceQr_title,
+                  content: S.of(context).deviceQr_help,
+                ),
+                if (data.expertModeEnabled)
+                  const ExpertInfoButton(
+                    info: _expertInfo,
+                  ),
+              ],
+            ),
           content: SizedBox(
             width: 360,
             child: Column(

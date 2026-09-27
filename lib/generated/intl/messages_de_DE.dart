@@ -97,6 +97,8 @@ class MessageLookup extends MessageLookupByLibrary {
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "abakWhisperSpeechProvider_name":
             MessageLookupByLibrary.simpleMessage("ABAK Sprachdiktat"),
+        "archivedDocuments_help": MessageLookupByLibrary.simpleMessage(
+            "Diese Ansicht fasst die archivierten Berichte und Zusammenfassungen der Betreuung zusammen. Jede Zeile enthält die Art des Dokuments, dessen Titel und das Archivierungsdatum.\n\nMit der Wiederherstellungsfunktion können Sie das Dokument wieder in den Verlauf der Berichte oder Zusammenfassungen aufnehmen.\n\nMit der Aktion „Endgültig löschen“ wird das Dokument aus Companion entfernt. Lesen Sie die Bestätigungsmeldung sorgfältig durch, bevor Sie bestätigen: Das Dokument kann aus dieser Liste nicht mehr wiederhergestellt werden.\n\nKlicken Sie auf das Kreuz, um die vergrößerte Ansicht zu schließen und zum Bereich „Bilanz/Berichte“ zurückzukehren."),
         "assessmentDocumentDataBuilder_female":
             MessageLookupByLibrary.simpleMessage("Weiblich"),
         "assessmentDocumentDataBuilder_male":
@@ -160,11 +162,19 @@ class MessageLookup extends MessageLookupByLibrary {
         "assessmentDocxService_weight":
             MessageLookupByLibrary.simpleMessage("Gewicht"),
         "assessmentDocxService_years": m3,
+        "assessmentDraft_help": MessageLookupByLibrary.simpleMessage(
+            "Der angezeigte Text entspricht einem automatisch gespeicherten Entwurf. Sie können ihn beibehalten, bearbeiten oder löschen, bevor Sie Ihren Abschluss speichern."),
+        "assessmentDraft_helpTitle":
+            MessageLookupByLibrary.simpleMessage("Den Bilanzentwurf verstehen"),
+        "assessmentHistory_help": MessageLookupByLibrary.simpleMessage(
+            "Diese Ansicht zeigt die für die Betreuung gespeicherten Berichte mit deren Titel und Datum an.\n\nÜber die Aktionen in jeder Zeile können Sie einen Bericht bearbeiten, duplizieren oder in die archivierten Dokumente verschieben.\n\nWenn ein Bericht zur Bearbeitung geöffnet ist, verwenden Sie die Aktion „Aktualisieren“, um Ihre Änderungen zu speichern. Mit den verfügbaren Befehlen können Sie außerdem die Änderungen rückgängig machen oder zum Entwurf zurückkehren.\n\nDas Verschieben in die archivierten Dokumente ist keine endgültige Löschung.\n\nKlicken Sie auf das Kreuz, um die vergrößerte Ansicht zu schließen und zum Bereich „Bilanzen/Berichte“ zurückzukehren."),
         "backupHistory_cancel":
             MessageLookupByLibrary.simpleMessage("Abbrechen"),
         "backupHistory_empty": MessageLookupByLibrary.simpleMessage(
             "Es wurde kein Backup gespeichert."),
         "backupHistory_fileSize": m4,
+        "backupHistory_help": MessageLookupByLibrary.simpleMessage(
+            "Auf diesem Bildschirm werden die in Companion gespeicherten Sicherungen angezeigt. In jeder Zeile sind der Dateiname, das Erstellungsdatum, die Dateigröße und der Speicherort angegeben.\n\nMit der Schaltfläche „Wiederherstellen“ können Sie die aktuelle Datenbank durch die aus der ausgewählten Sicherung ersetzen. Daten, die nach dieser Sicherung hinzugefügt oder geändert wurden, sind daher in der wiederhergestellten Datenbank nicht enthalten.\n\nÜberprüfen Sie das Datum der Sicherung und lesen Sie die Bestätigungsmeldung, bevor Sie fortfahren. Vor dem Ersetzen wird eine Sicherungskopie der aktuellen Datenbank erstellt.\n\nDie Sicherungsdatei muss immer am angegebenen Speicherort verfügbar sein. Wurde sie verschoben oder gelöscht, kann die Wiederherstellung nicht durchgeführt werden.\n\nUm eine neue Sicherung zu erstellen, verwenden Sie die Aktion „Sicherung erstellen“ auf der Startseite."),
         "backupHistory_restore":
             MessageLookupByLibrary.simpleMessage("Wiederherstellen"),
         "backupHistory_restoreTitle": MessageLookupByLibrary.simpleMessage(
@@ -173,6 +183,9 @@ class MessageLookup extends MessageLookupByLibrary {
             "Dieser Vorgang wird die aktuelle Datenbank vollständig ersetzen.\n\nVor der Wiederherstellung wird automatisch eine Sicherheitskopie erstellt.\n\nWeiter?"),
         "backupHistory_title":
             MessageLookupByLibrary.simpleMessage("Sicherungshistorie"),
+        "bodymap_help": MessageLookupByLibrary.simpleMessage(
+            "Mithilfe der Schmerzkarte lassen sich die schmerzhaften Bereiche des Patienten für die aktuelle Behandlungsphase lokalisieren.\n\nWählen Sie eine Ansicht aus und klicken Sie dann auf einen Bereich der Silhouette oder wählen Sie ihn aus der Liste aus. Sie können einen Vermerk hinzufügen und bei Bedarf eine Intensität von 0 bis 10 angeben. Verwenden Sie den Papierkorb, um einen Bereich aus dem Protokoll zu entfernen.\n\nKlicken Sie auf „Speichern“, um Ihren Befund in Companion zu speichern. Wenn Sie den Bildschirm mit ungespeicherten Änderungen verlassen, können Sie wählen, ob Sie diese speichern oder verwerfen möchten.\n\n„Beide Karten exportieren“ erstellt ein PNG-Bild an dem von Ihnen gewählten Speicherort auf Ihrem Computer. Dieser Export ersetzt nicht das Speichern der Erfassung.\n\nDieses Modul ist ein erster Entwurf, der entsprechend Ihrem Feedback weiterentwickelt werden soll. Testen Sie es in der Praxis und teilen Sie uns mit, welche Funktionen Sie gerne hinzugefügt oder verbessert sehen würden."),
+        "bodymap_title": MessageLookupByLibrary.simpleMessage("Schmerzkarte"),
         "careEpisodeDetail_abakOrigin":
             MessageLookupByLibrary.simpleMessage("Herkunft von ABAK"),
         "careEpisodeDetail_evolution":
@@ -331,6 +344,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "careEpisode_title": MessageLookupByLibrary.simpleMessage("Betreuung"),
         "careEpisode_treatment":
             MessageLookupByLibrary.simpleMessage("Kein Behandlungsplan."),
+        "clinicalDocuments_help": MessageLookupByLibrary.simpleMessage(
+            "Auf diesem Bildschirm können Sie die zu einer Behandlung gehörenden Befunde und Berichte erstellen und speichern.\n\nFür einen Befund können Sie den Haupttext verfassen, die einzufügenden Testergebnisse und Nachsorgehinweise auswählen und nach dem Speichern des Befunds ein DOCX-Dokument erstellen.\n\nEntwürfe werden automatisch gespeichert, solange sie nicht als Bilanz oder Bericht gespeichert werden.\n\nÜber den Verlauf können Sie bereits gespeicherte Bilanzen und Berichte abrufen."),
+        "clinicalDocuments_title":
+            MessageLookupByLibrary.simpleMessage("Bilanzen und Berichte"),
         "close": MessageLookupByLibrary.simpleMessage("Schließen"),
         "contactFormTemplateDiagnostic_category":
             MessageLookupByLibrary.simpleMessage("Kategorie"),
@@ -386,6 +403,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "Der Name des Geräts ist ein Pflichtfeld."),
         "deviceForm_editDevice":
             MessageLookupByLibrary.simpleMessage("Gerät ändern"),
+        "deviceForm_help": MessageLookupByLibrary.simpleMessage(
+            "In diesem Fenster können Sie einen Geräteeintrag in Companion erstellen oder bearbeiten.\n\nGeben Sie einen Namen ein, anhand dessen das Smartphone oder Tablet leicht zu erkennen ist. Die Angabe dieses Namens ist obligatorisch.\n\nWählen Sie die Plattform des Geräts aus: iOS oder Android.\n\nSie können das Gerät einem Arzt aus der Liste zuordnen oder die Option „Gemeinsam genutztes Gerät“ wählen, um es keinem bestimmten Arzt zuzuweisen.\n\nKlicken Sie auf „Erstellen“, um das Gerät hinzuzufügen, oder auf „Speichern“, um die Änderungen zu übernehmen. Mit „Abbrechen“ schließen Sie das Fenster, ohne die Änderungen zu übernehmen.\n\nBeim Öffnen und Schließen dieser Hilfe bleiben Ihre Eingaben im Formular erhalten."),
         "deviceForm_loadingPractitionersError":
             MessageLookupByLibrary.simpleMessage("Fehler beim Laden der Ärzte"),
         "deviceForm_newDevice":
@@ -432,6 +451,65 @@ class MessageLookup extends MessageLookupByLibrary {
         "deviceList_showQrCode":
             MessageLookupByLibrary.simpleMessage("QR-Code anzeigen"),
         "deviceList_title": MessageLookupByLibrary.simpleMessage("Geräteliste"),
+        "deviceQr_help": MessageLookupByLibrary.simpleMessage(
+            "In diesem Fenster wird der QR-Code zur Identifizierung des Geräts angezeigt, zusammen mit dessen Namen, dem Namen der Praxis und der Plattform.\n\nScannen Sie diesen QR-Code mit ABAK Mobile, um dieses Gerät in dieser Einrichtung zu identifizieren. Vergewissern Sie sich, dass der angezeigte Name tatsächlich dem betreffenden Smartphone oder Tablet entspricht.\n\nDieser QR-Code dient zur Identifizierung des Geräts; seine Anzeige löst keine Übertragung von Ergebnissen aus.\n\nSchließen Sie dieses Fenster, um zur Geräteliste zurückzukehren."),
+        "deviceQr_title": MessageLookupByLibrary.simpleMessage("ABAK-Gerät"),
+        "documentArchiveConfirm_help": MessageLookupByLibrary.simpleMessage(
+            "Durch das Verschieben in den Papierkorb wird die Bilanz oder der Bericht aus dem üblichen Verlauf entfernt.\n\nDas Dokument bleibt in Companion gespeichert. Sie können es in den archivierten Dokumenten wiederfinden und wiederherstellen, damit es erneut im Verlauf erscheint.\n\nDOCX-Dateien, die bereits auf Ihren Computer exportiert wurden, werden durch diesen Vorgang nicht gelöscht.\n\nKlicken Sie auf „In den Papierkorb“, um den Vorgang zu bestätigen, oder auf „Abbrechen“, um das Dokument im Verlauf zu behalten."),
+        "documentArchiveConfirm_title": MessageLookupByLibrary.simpleMessage(
+            "Das Dokument in den Papierkorb verschieben?"),
+        "documentAuthor_help": MessageLookupByLibrary.simpleMessage(
+            "In diesem Fenster können Sie den Arzt auswählen, der als Verfasser der aktuellen Beurteilung oder des aktuellen Berichts festgelegt werden soll.\n\nWählen Sie den Arzt aus der Liste aus und klicken Sie anschließend auf „Bestätigen“, um diese Zuordnung zum Dokument zu speichern.\n\nDiese Auswahl betrifft den Verfasser des Dokuments; sie ändert nichts an der Zuständigkeit des behandelnden Arztes für den Behandlungsfall.\n\nMit „Abbrechen“ wird das Fenster geschlossen, ohne den Verfasser zu ändern."),
+        "documentAuthor_title":
+            MessageLookupByLibrary.simpleMessage("Den Verfasser auswählen"),
+        "documentDirectoryAccess_help": MessageLookupByLibrary.simpleMessage(
+            "Companion kann nicht auf den Ordner zugreifen, der zum Speichern der Dokumente vorgesehen ist, oder seine Zugriffsberechtigung muss erneuert werden.\n\nBefindet sich dieser Ordner auf einem externen Laufwerk oder einem Netzwerkspeicherort, überprüfen Sie zunächst, ob dieser angeschlossen und zugänglich ist.\n\nKlicken Sie auf „Ordner autorisieren“ und wählen Sie anschließend den Ordner im sich öffnenden Fenster aus. Sie können den üblichen Ordner auswählen oder ein anderes Ziel festlegen.\n\nDer ausgewählte Ordner wird für zukünftige Exporte in Ihren Einstellungen gespeichert. Dateien, die sich bereits im alten Ordner befinden, werden nicht verschoben.\n\n„Abbrechen“ bricht den laufenden Export ab, ohne Ihre Bilanz oder Ihren Bericht zu ändern."),
+        "documentDirectoryAccess_title": MessageLookupByLibrary.simpleMessage(
+            "Den Dokumentordner freigeben"),
+        "documentDocxExisting_help": MessageLookupByLibrary.simpleMessage(
+            "Dieser Bilanz oder diesem Bericht ist bereits eine DOCX-Datei zugeordnet.\n\n„Neu erstellen“ erzeugt eine neue Datei mit dem aktuellen Inhalt des Dokuments. Falls der Dateiname im Zielordner bereits vorhanden ist, wird eine Nummer hinzugefügt, um die vorherige Datei beizubehalten. Die neue Datei wird dann dem Dokument in Companion zugeordnet.\n\n„Ersetzen“ überschreibt die Datei mit dem dem Dokument zugeordneten Namen im Zielordner. Eventuelle Änderungen, die direkt in dieser Datei in Word oder LibreOffice vorgenommen wurden, werden überschrieben.\n\n„Abbrechen“ bricht den Export ab, ohne die Dateien zu ändern."),
+        "documentDocxExisting_title": MessageLookupByLibrary.simpleMessage(
+            "Es gibt bereits eine DOCX-Datei"),
+        "documentDraftChoice_help": MessageLookupByLibrary.simpleMessage(
+            "Ein Text, der gerade erstellt wird, wurde für diesen Dokumenttyp bereits automatisch gespeichert.\n\nMit „Entwurf wiederherstellen“ können Sie diesen Text wiederfinden und mit dem Schreiben fortfahren.\n\n„Neue Bilanz“ oder „Neuer Bericht“ löscht den Titel und den Text dieses Entwurfs, damit Sie von vorne beginnen können. Der vorherige Entwurf wird nicht als separates Dokument gespeichert. Wenn Sie Ihre Arbeit behalten möchten, rufen Sie den Entwurf auf und speichern Sie ihn, bevor Sie ein neues Dokument anlegen.\n\nMit „Abbrechen“ schließen Sie dieses Fenster, ohne den Entwurf zu ändern."),
+        "documentDraftChoice_title":
+            MessageLookupByLibrary.simpleMessage("Es gibt einen Entwurf"),
+        "documentExpandedEditor_help": MessageLookupByLibrary.simpleMessage(
+            "Dieses Fenster bietet mehr Platz zum Verfassen oder Bearbeiten des Textes der aktuellen Bilanz oder des Berichts.\n\nIhre Änderungen werden fortlaufend in den Hauptbearbeitungsbereich übernommen. Durch das Schließen des Fensters werden sie nicht verworfen.\n\nKlicken Sie auf das Kreuz, um zum Bereich „Bilanzen/Berichte“ zurückzukehren, und fahren Sie dann mit der Erstellung und dem Speichern Ihres Dokuments fort.\n\nBeim Öffnen und Schließen dieser Hilfe bleibt der eingegebene Text erhalten."),
+        "documentExpandedEditor_helpTitle":
+            MessageLookupByLibrary.simpleMessage(
+                "In der vergrößerten Ansicht schreiben"),
+        "documentRecipient_help": MessageLookupByLibrary.simpleMessage(
+            "In diesem Fenster können Sie die Empfänger des aktuellen Berichts oder der aktuellen Bilanz eingeben.\n\nGeben Sie den Namen des Empfängers oder die Namen der verschiedenen Empfänger frei ein und klicken Sie anschließend auf „Bestätigen“, um diese Angaben im Dokument zu speichern.\n\nUm einen bestehenden Eintrag zu löschen, löschen Sie den Inhalt des Feldes und bestätigen Sie anschließend.\n\nDiese Eingabe dient zur Angabe der Empfänger des Dokuments; sie löst keinen Versand aus.\n\n„Abbrechen“ schließt das Fenster, ohne die Änderungen zu übernehmen. Beim Öffnen und Schließen dieser Hilfe bleiben Ihre Eingaben erhalten."),
+        "documentRecipient_title":
+            MessageLookupByLibrary.simpleMessage("Empfänger"),
+        "documentTemplateDraft_help": MessageLookupByLibrary.simpleMessage(
+            "Für diese Leitfadenvorlage wurden in der aktuellen Versorgungsphase bereits Antworten erfasst.\n\n„Entwurf wieder aufnehmen“ öffnet den Leitfaden mit diesen Antworten, damit Sie Ihre Eingabe fortsetzen oder ändern können.\n\n„Neue Bilanz“ oder „Neuer Bericht“ löscht die für diese Vorlage gespeicherten Antworten und öffnet den Leitfaden, ohne diese Antworten zu übernehmen. Diese Auswahl löscht den bereits im Bearbeitungsfeld des Dokuments vorhandenen Text nicht.\n\n„Abbrechen“ behält die gespeicherten Antworten bei und kehrt zum vorherigen Bildschirm zurück, ohne den Leitfaden zu öffnen."),
+        "documentTemplateDraft_title":
+            MessageLookupByLibrary.simpleMessage("Vorhandener Entwurf"),
+        "documentTemplateGuide_help": MessageLookupByLibrary.simpleMessage(
+            "Dieser Leitfaden hilft Ihnen dabei, den Inhalt einer Bilanz oder eines Berichts anhand der ausgewählten Vorlage zu erstellen.\n\nNutzen Sie die Themenliste auf der linken Seite, um zu den verschiedenen Abschnitten zu gelangen. Geben Sie je nach den angebotenen Feldern Text ein, wählen Sie Antworten aus oder füllen Sie die Tabellen aus.\n\nÜber die Vorschau-Schaltfläche am unteren Rand des Formulars können Sie den anhand Ihrer Antworten erstellten Text einsehen.\n\nVon der Vorschau aus können Sie zur Anleitung zurückkehren, um die Eingabe fortzusetzen, oder die Einfügung des Textes in die Bilanz oder den Bericht anfordern. Befolgen Sie gegebenenfalls die von Companion angezeigten Vorschläge zum Hinzufügen oder Ersetzen.\n\nDas Einfügen des Textes ersetzt nicht die endgültige Speicherung der Bilanz oder des Berichts.\n\nBeim Öffnen und Schließen dieser Hilfe bleiben Ihre Eingaben erhalten."),
+        "documentTemplateGuide_helpTitle":
+            MessageLookupByLibrary.simpleMessage("Die Eingabehilfe verwenden"),
+        "documentTemplatePreview_help": MessageLookupByLibrary.simpleMessage(
+            "In diesem Fenster können Sie den Text lesen, der anhand der im Leitfaden eingegebenen Antworten generiert wurde.\n\nDer Text kann angezeigt und markiert werden. Um Ihre Antworten zu ändern, klicken Sie auf „Schließen“, um zum Leitfaden zurückzukehren, und rufen Sie die Vorschau anschließend erneut auf.\n\nKlicken Sie auf „In die Bilanz einfügen“ oder „In den Bericht einfügen“, um den Text in das aktuelle Dokument zu übernehmen. Befolgen Sie gegebenenfalls die von Companion angezeigten Vorschläge zum Hinzufügen oder Ersetzen.\n\nWenn kein Text generiert wurde, bleibt die Schaltfläche zum Einfügen deaktiviert.\n\nÜberprüfen Sie nach dem Einfügen den Inhalt des Dokuments und speichern Sie Ihre Bilanz oder Ihren Bericht."),
+        "documentTemplatePreview_title": MessageLookupByLibrary.simpleMessage(
+            "Vorschau des generierten Textes"),
+        "documentTemplate_assessmentTitle":
+            MessageLookupByLibrary.simpleMessage(
+                "Eine Bilanzvorlage auswählen"),
+        "documentTemplate_help": MessageLookupByLibrary.simpleMessage(
+            "In diesem Fenster werden die für den aktuellen Dokumenttyp verfügbaren Vorlagen angezeigt: Bilanz oder Bericht.\n\nKlicken Sie auf eine Vorlage, um die entsprechende Eingabeanleitung zu öffnen. Durch die Auswahl der Vorlage wird nicht sofort ein Dokument erstellt.\n\nWenn für diese Vorlage bereits ein Entwurf in der Behandlungsepisode vorhanden ist, bietet Companion Ihnen an, diesen zu übernehmen oder eine neue Eingabe zu beginnen."),
+        "documentTemplate_reportTitle": MessageLookupByLibrary.simpleMessage(
+            "Eine Berichtsvorlage auswählen"),
+        "documentTests_help": MessageLookupByLibrary.simpleMessage(
+            "In dieser vergrößerten Ansicht können Sie die im Rahmen der Behandlung durchgeführten Tests einsehen und auswählen, welche davon in die aktuelle Bilanz oder den aktuellen Bericht aufgenommen werden sollen.\n\nVerwenden Sie die Auswahlfelder, um einen Test in das Dokument aufzunehmen oder daraus zu entfernen. Durch diese Auswahl werden die in Companion gespeicherten Ergebnisse nicht gelöscht.\n\nÜber die in der Liste angebotenen Aktionen können Sie die Details der Ergebnisse einsehen. Die Auswahl ist verfügbar, sobald ein Befundbericht oder ein Bericht geöffnet ist und der Ladevorgang abgeschlossen ist.\n\nKlicken Sie auf das Kreuz, um zum Bereich „Befundberichte/Berichte“ zurückzukehren."),
+        "documentTextInsertion_help": MessageLookupByLibrary.simpleMessage(
+            "Ihr Bericht oder Ihre Bilanz enthält bereits Text. Wählen Sie aus, wie der vom Eingabeassistenten generierte Inhalt darin integriert werden soll.\n\n„An das Ende anhängen“ behält den bestehenden Text bei und fügt den generierten Inhalt am Ende hinzu.\n\n„Ersetzen“ ersetzt den gesamten Text im Bearbeitungsfeld durch den generierten Inhalt. Die Passagen, die Sie in dieses Feld eingegeben haben, werden somit ebenfalls ersetzt.\n\n„Abbrechen“ bricht diesen Einfügevorgang ab und behält den aktuellen Text bei.\n\nSie können diese Hilfe lesen und anschließend schließen, bevor Sie Ihre Wahl treffen."),
+        "documentTextInsertion_title": MessageLookupByLibrary.simpleMessage(
+            "Den generierten Text einfügen"),
+        "documentTitle_help": MessageLookupByLibrary.simpleMessage(
+            "In diesem Fenster können Sie den Titel der Bilanz oder des Berichts eingeben.\n\nBehalten Sie den vorgeschlagenen Titel bei oder ersetzen Sie ihn durch eine Bezeichnung, anhand derer das Dokument leicht zu erkennen ist. Das Feld „Titel“ darf nicht leer bleiben.\n\nKlicken Sie auf die Bestätigungsschaltfläche oder drücken Sie die Eingabetaste, um die Eingabe zu bestätigen. Mit „Abbrechen“ wird das Fenster geschlossen, ohne den Titel zu speichern.\n\nBeim Öffnen und Schließen dieser Hilfe bleibt der eingegebene Text erhalten."),
         "episodeDashboard_documents":
             MessageLookupByLibrary.simpleMessage("Dokumente"),
         "episodeDashboard_documentsDescription":
@@ -572,6 +650,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Anmerkungen"),
         "episodeNotes_titleRequired": MessageLookupByLibrary.simpleMessage(
             "Der Titel ist obligatorisch."),
+        "episodeReferents_help": MessageLookupByLibrary.simpleMessage(
+            "In diesem Fenster können Sie den zuständigen Physiotherapeuten und den überweisenden Arzt für die Behandlung auswählen.\n\nWählen Sie die Fachkräfte aus den Listen aus. Sie können eine Zuordnung auch aufheben, indem Sie die Option „Ohne Fachkraft“ auswählen.\n\nÜber die Verwaltungsschaltflächen rechts neben den Listen können Sie auf die Profile der Fachkräfte und externen Ansprechpartner zugreifen, insbesondere um eine fehlende Fachkraft hinzuzufügen.\n\nKlicken Sie auf „Speichern“, um die ausgewählten Zuordnungen zu übernehmen. Änderungen des zuständigen Physiotherapeuten werden im Verlauf der Behandlung gespeichert.\n\nMit „Abbrechen“ werden die Änderungen der Zuordnungen in diesem Fenster verworfen. Eventuell über die Verwaltungsbildschirme angelegte Profile bleiben gespeichert."),
+        "episodeReferents_title":
+            MessageLookupByLibrary.simpleMessage("Referenzen bearbeiten"),
         "episodeReport_abakOrigin":
             MessageLookupByLibrary.simpleMessage("Herkunft von ABAK"),
         "episodeReport_addConclusion": MessageLookupByLibrary.simpleMessage(
@@ -634,6 +716,16 @@ class MessageLookup extends MessageLookupByLibrary {
             "Den ABAK-Austauschordner auswählen"),
         "exchangeDirectoryUpdated": MessageLookupByLibrary.simpleMessage(
             "Aktualisierte ABAK-Austauschdatei"),
+        "externalCorrespondentForm_addTitle":
+            MessageLookupByLibrary.simpleMessage("Kontakt hinzufügen"),
+        "externalCorrespondentForm_editTitle":
+            MessageLookupByLibrary.simpleMessage("Kontakt bearbeiten"),
+        "externalCorrespondentForm_help": MessageLookupByLibrary.simpleMessage(
+            "In diesem Fenster können Sie die Daten eines externen Ansprechpartners eingeben.\n\nDie Angabe des Nachnamens ist obligatorisch. Sie können den Vornamen, den Beruf, das Fachgebiet, die Adresse, die Postleitzahl, den Ort, die E-Mail-Adresse und die Telefonnummer ergänzen.\n\nKlicken Sie auf „Speichern“, um den Datensatz zu bestätigen. Mit „Abbrechen“ schließen Sie das Fenster, ohne die Änderungen zu übernehmen.\n\nBeim Öffnen und Schließen dieser Hilfe bleiben Ihre Eingaben im Formular erhalten."),
+        "externalCorrespondents_help": MessageLookupByLibrary.simpleMessage(
+            "Auf diesem Bildschirm werden die in Companion gespeicherten externen Ansprechpartner angezeigt. In jeder Zeile sind der Name des Ansprechpartners sowie – sofern angegeben – dessen Beruf, Fachgebiet und Wohnort aufgeführt.\n\nKlicken Sie auf „Hinzufügen“, um einen Ansprechpartner anzulegen. Geben Sie die persönlichen Daten und die relevanten Kontaktdaten ein und klicken Sie dann auf „Speichern“, um den Ansprechpartner zur Liste hinzuzufügen. Mit „Abbrechen“ schließen Sie das Formular, ohne einen Ansprechpartner anzulegen.\n\nDiese Ansprechpartner können insbesondere in Behandlungsverläufen als überweisende Ärzte ausgewählt werden."),
+        "externalCorrespondents_title":
+            MessageLookupByLibrary.simpleMessage("Externe Korrespondenten"),
         "externalSpeechToTextProvider_empty":
             MessageLookupByLibrary.simpleMessage(
                 "Das Add-on hat keine Antwort zurückgegeben."),
@@ -649,12 +741,21 @@ class MessageLookup extends MessageLookupByLibrary {
         "externalSpeechToTextProvider_transcription":
             MessageLookupByLibrary.simpleMessage(
                 "Die Transkription ist fehlgeschlagen."),
+        "followUpNoteForm_createTitle":
+            MessageLookupByLibrary.simpleMessage("Neuer Follow-up-Bericht"),
+        "followUpNoteForm_editTitle": MessageLookupByLibrary.simpleMessage(
+            "Die Follow-up-Notiz bearbeiten"),
+        "followUpNoteForm_help": MessageLookupByLibrary.simpleMessage(
+            "In diesem Fenster können Sie eine zur Behandlungssitzung gehörende Nachverfolgungsnotiz erstellen oder bearbeiten.\n\nGeben Sie einen Titel und den Inhalt der Notiz ein. Beide Felder müssen Text enthalten, damit die Notiz gespeichert wird.\n\nKlicken Sie beim Anlegen auf „Hinzufügen“. Klicken Sie bei einer Bearbeitung auf „Speichern“, um Ihre Änderungen zu übernehmen.\n\n„Abbrechen“ schließt das Fenster, ohne Ihre Eingaben zu speichern. Sie können diese Hilfe öffnen und wieder schließen, ohne den gerade verfassten Text zu verlieren."),
+        "followUpNotes_help": MessageLookupByLibrary.simpleMessage(
+            "Diese Ansicht zeigt die Notizen zur Nachsorge mit Datum, Titel und einer Vorschau auf den Inhalt an.\n\nÜber die Schaltfläche „Hinzufügen“ können Sie einen Vermerk erstellen. Über das Bearbeitungssymbol können Sie einen bestehenden Vermerk öffnen, um ihn anzusehen oder zu bearbeiten.\n\nVerwenden Sie die Auswahlfelder, um die Vermerke auszuwählen, die in den aktuellen Bericht oder die aktuelle Bilanz aufgenommen werden sollen. Wenn Sie das Häkchen bei einem Vermerk entfernen, wird dieser aus der Auswahl entfernt, ohne dass der Vermerk gelöscht wird.\n\nDie Auswahl ist verfügbar, sobald ein Bericht geöffnet ist und der Ladevorgang abgeschlossen ist.\n\nKlicken Sie auf das Kreuz, um die vergrößerte Ansicht zu schließen und zum Bereich „Berichte“ zurückzukehren."),
         "g_arb_prefix": MessageLookupByLibrary.simpleMessage("Vorwahl ARB"),
         "g_close": MessageLookupByLibrary.simpleMessage("Schließen"),
         "g_comment": MessageLookupByLibrary.simpleMessage("Kommentar"),
         "g_context": MessageLookupByLibrary.simpleMessage("Hintergrund"),
         "g_copy": MessageLookupByLibrary.simpleMessage("Kopieren"),
         "g_file": MessageLookupByLibrary.simpleMessage("Datei"),
+        "g_helpTooltip": MessageLookupByLibrary.simpleMessage("Hilfe anzeigen"),
         "g_learn_more": MessageLookupByLibrary.simpleMessage("Mehr erfahren"),
         "g_technical_informations":
             MessageLookupByLibrary.simpleMessage("Technische Informationen"),
@@ -663,7 +764,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "help_archived_patient": MessageLookupByLibrary.simpleMessage(
             "Archivierte Patienten können bis zu dem angegebenen Datum wiederhergestellt werden.\nNach diesem Datum werden sie automatisch gelöscht, damit nicht ungenutzte Datensätze auf unbestimmte Zeit gespeichert bleiben.\nDie Aufbewahrungsdauer kann in den Einstellungen von Companion geändert werden."),
         "help_device_list_content": MessageLookupByLibrary.simpleMessage(
-            "Sie können ein Gerät anlegen, bearbeiten oder archivieren.\n\nAus Gründen der Nachverfolgbarkeit ist es nicht möglich, ein Gerät zu löschen.\nBei Bedarf können Sie es wiederherstellen.\n\nDer QR-Code dient dazu, ein Smartphone oder Tablet zu koppeln."),
+            "Es handelt sich um die Geräte (Smartphone, Tablet), die zur Durchführung der Tests verwendet werden.\n- Ein Gerät kann von verschiedenen Personen genutzt werden.\n- Eine Person kann mehrere Geräte besitzen.\n\nAnhand dieser Informationen lässt sich feststellen, von welchem Gerät die an Companion übermittelten Informationen stammen.\nSie können ein Gerät anlegen, bearbeiten oder archivieren.\n\nAus Gründen der Rückverfolgbarkeit ist es nicht möglich, ein Gerät zu löschen.\nBei Bedarf können Sie ein archiviertes Gerät wiederherstellen.\n\nZum Koppeln eines Smartphones oder Tablets wird ein QR-Code verwendet. Zeigen Sie den QR-Code auf dem Festgerät an (Gerät > entsprechendes Gerätesymbol) und rufen Sie auf dem Smartphone (oder Tablet) die Einstellungen > Unternehmensorganisation > Registrierte Geräte > Gerät hinzufügen auf.\n\nHalten Sie das Gerät nahe an den Bildschirm, um den QR-Code zu scannen.Eine Meldung informiert Sie über den erfolgreichen Abschluss des Vorgangs."),
         "help_device_list_title":
             MessageLookupByLibrary.simpleMessage("Geräteliste"),
         "help_donnees_cliniques_patient": MessageLookupByLibrary.simpleMessage(
@@ -831,10 +932,18 @@ class MessageLookup extends MessageLookupByLibrary {
         "home_verify": MessageLookupByLibrary.simpleMessage("Überprüfen"),
         "home_very_large_backups": MessageLookupByLibrary.simpleMessage(
             "Sehr umfangreiche Sicherungen"),
+        "importHistory_help": MessageLookupByLibrary.simpleMessage(
+            "Dieser Bildschirm zeigt den Verlauf der in Companion gespeicherten Importvorgänge an.\n\nJede Zeile enthält das Datum des Vorgangs, dessen Status, die Anzahl der verarbeiteten Dateien sowie die Anzahl der importierten, ignorierten oder in Konflikt stehenden Ergebnisse.\n\nDas Symbol weist insbesondere auf einen laufenden Import, einen Fehlschlag, Fehler oder Konflikte hin, die Ihre Aufmerksamkeit erfordern.\n\nKlicken Sie auf eine Sitzung, um deren Details anzuzeigen und die Verarbeitung der Ergebnisse besser nachzuvollziehen."),
+        "importPatientForm_help": MessageLookupByLibrary.simpleMessage(
+            "In diesem Fenster können Sie einen Patienten anlegen, um ihm die aus ABAK Mobile importierten Ergebnisse zuzuordnen.\n\nGeben Sie seinen Vor- und Nachnamen ein. Sie können sein Geburtsdatum im Format JJJJ-MM-TT ergänzen und sein Geschlecht angeben oder „Nicht angegeben“ belassen.\n\nWenn Sie die Vitale-Karte eingelesen haben, überprüfen Sie die vorausgefüllten Angaben und korrigieren Sie diese gegebenenfalls.\n\nKlicken Sie auf „Erstellen“, um den Patienten zu speichern und auszuwählen. Wählen Sie anschließend die Behandlung aus, der die Ergebnisse zugeordnet werden sollen: Die Erstellung des Patienten allein reicht nicht aus, um die Zuordnung des Imports abzuschließen.\n\nMit „Abbrechen“ schließen Sie dieses Fenster, ohne einen Patienten anzulegen. Wenn Sie diese Hilfe öffnen und anschließend wieder schließen, bleiben Ihre Eingaben erhalten."),
+        "importPatientForm_title":
+            MessageLookupByLibrary.simpleMessage("Neuer Patient"),
         "importResolutionAssistant_file":
             MessageLookupByLibrary.simpleMessage("Datei"),
         "importResolutionAssistant_files":
             MessageLookupByLibrary.simpleMessage("Dateien"),
+        "importResolutionAssistant_help": MessageLookupByLibrary.simpleMessage(
+            "Auf diesem Bildschirm werden die Importe zusammengefasst, die Ihre Aufmerksamkeit erfordern: noch zu vervollständigende Patientenzuordnung, fehlgeschlagener Import, Fehler, ignorierte Ergebnisse oder zu prüfende Konflikte.\n\nJede Zeile enthält das Datum des Imports sowie die verfügbaren Informationen zur Identifizierung der betreffenden Akte.\n\nKlicken Sie auf einen Import, um dessen Nachverfolgung zu öffnen, die Erläuterungen einzusehen und auf die je nach Situation vorgeschlagenen Maßnahmen zuzugreifen.\n\nDie Liste wird aktualisiert, sobald Sie aus der Nachverfolgung des Imports zurückkehren. Wenn kein Import diese Kriterien erfüllt, wird eine Meldung angezeigt, dass kein Problem festgestellt wurde."),
         "importResolutionAssistant_import":
             MessageLookupByLibrary.simpleMessage("Importieren"),
         "importResolutionAssistant_importFailed":
@@ -867,6 +976,14 @@ class MessageLookup extends MessageLookupByLibrary {
             "Behebung von Importproblemen"),
         "importResolutionAssistant_toReview":
             MessageLookupByLibrary.simpleMessage("zu überprüfen"),
+        "importResolution_help": MessageLookupByLibrary.simpleMessage(
+            "Auf diesem Bildschirm können Sie die von ABAK Mobile empfangenen Ergebnisse dem richtigen Patienten und der richtigen Behandlung in Companion zuordnen.\n\nSehen Sie sich die Informationen des importierten Datensatzes an und wählen Sie dann den betreffenden Patienten aus der Liste aus. Erstellen Sie bei Bedarf einen Patientenstamm mit „Neuer Patient“ oder „Über Carte Vitale“, sofern das Lesegerät verfügbar ist.\n\nNachdem Sie den Patienten ausgewählt haben, wählen Sie eine aktive Behandlung aus oder legen Sie eine neue an. Eine archivierte Behandlung muss zunächst wiederhergestellt werden, bevor sie ausgewählt werden kann.\n\nÜberprüfen Sie den Patienten und die Behandlung, bevor Sie letztere auswählen: Durch die Auswahl wird die Zuordnung bestätigt und der Import fortgesetzt."),
+        "importResolution_title":
+            MessageLookupByLibrary.simpleMessage("Import zuordnen"),
+        "importSessionDetail_help": MessageLookupByLibrary.simpleMessage(
+            "Dieser Bildschirm zeigt den Verlauf eines in Companion eingegangenen Imports an. Die Hauptmeldung gibt an, ob der Import erfolgreich war, eine Zuordnung zu einem Patienten erforderlich ist oder ein Problem vorliegt.\n\nWenn eine Zuordnung erforderlich ist, klicken Sie auf „Einem Patienten zuordnen“, um die Akte auszuwählen, der die Ergebnisse zugeordnet werden sollen.\n\nÜber den Bericht und die Dateiliste können Sie die Details der Verarbeitung sowie eventuelle Warnmeldungen einsehen.\n\nSollte die empfangene Datei unvollständig oder beschädigt sein, fordern Sie über ABAK Mobile eine erneute Übermittlung an.\n\nJe nach Situation wird die Schaltfläche „Diesen Import löschen“ angezeigt. Lesen Sie die Bestätigungsmeldung, bevor Sie den Löschvorgang bestätigen."),
+        "importSessionDetail_title":
+            MessageLookupByLibrary.simpleMessage("Verfolgung des Imports"),
         "information_backupCount": m11,
         "information_backups":
             MessageLookupByLibrary.simpleMessage("Sicherungen"),
@@ -878,6 +995,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Informationen"),
         "information_database":
             MessageLookupByLibrary.simpleMessage("Datenbank"),
+        "information_help": MessageLookupByLibrary.simpleMessage(
+            "Auf dieser Seite finden Sie allgemeine Informationen zu Ihrer Companion-Installation: Anwendungsversion, konfigurierte Praxis, Vorhandensein des Logos, verwendetes Betriebssystem und Sprache.\n\nIm Abschnitt „Lokaler Speicher“ werden die Größe der Datenbank sowie die Anzahl und die Gesamtgröße der gespeicherten Sicherungen angezeigt.\n\nÜber die Schaltflächen können Sie die Neuigkeiten, die Lizenz und die Hinweise zur Nutzung der App einsehen.\n\nBei der Kontaktaufnahme mit dem Support können die hier angezeigte Companion-Version und das Betriebssystem dabei helfen, Ihre Konfiguration zu identifizieren."),
         "information_language": MessageLookupByLibrary.simpleMessage("Sprache"),
         "information_legalNotice":
             MessageLookupByLibrary.simpleMessage("Rechtlicher Hinweis"),
@@ -888,6 +1007,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "information_logo": MessageLookupByLibrary.simpleMessage("Logo"),
         "information_new": MessageLookupByLibrary.simpleMessage(
             "Version 1.1.0 Build 3\nSprachsteuerung für Befunde und Berichte möglich, erfordert das kostenlose Modul.\nAutomatische Speicherung von Befunden und Berichten.\nSchaltfläche zum Duplizieren von Befunden und Berichten.\nBearbeitbare Notizen.\nSchaltfläche zum Anzeigen aller Tests eines Patienten für eine Episode.\nVorlagen für Befunde.\nAutomatische Grafik, wenn mehrere Ergebnisse für einen Test vorliegen.\nErstellung eines Dokuments im DOCX-Format.\nAnzeige der für E72 und E76 verwendeten Hilfe"),
+        "information_newHelp": MessageLookupByLibrary.simpleMessage(
+            "Auf dieser Seite werden die für Companion beschriebenen Neuerungen und Weiterentwicklungen vorgestellt.\n\nScrollen Sie durch den Text, um alle Informationen zu lesen. Bei Bedarf können Sie einen Abschnitt auswählen und kopieren.\n\nVerwenden Sie den Zurück-Pfeil, um zur Seite „Über“ zurückzukehren."),
         "information_newTitle": MessageLookupByLibrary.simpleMessage(
             "Neuerungen in dieser Version"),
         "information_notConfigured":
@@ -919,6 +1040,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Hinweis"),
         "legalNotice_content": MessageLookupByLibrary.simpleMessage(
             "ABAK Desktop Companion ist eine Software, die bei der Organisation, dem Import und der Einsichtnahme in klinische Ergebnisse aus dem ABAK-Ökosystem unterstützt.\n\nSie stellt kein zertifiziertes Medizinprodukt dar und ersetzt nicht die Beurteilung durch medizinisches Fachpersonal.\n\nDie angezeigten Ergebnisse, Werte, Berichte und Indikatoren müssen stets von einer qualifizierten Fachkraft unter Berücksichtigung der klinischen Untersuchung, der Situation des Patienten und der geltenden Empfehlungen interpretiert werden.\n\nDer Nutzer bleibt allein verantwortlich für seine klinischen Entscheidungen, die Überprüfung der importierten Daten und die Übereinstimmung ihrer Verwendung mit den geltenden beruflichen, behördlichen und ethischen Vorschriften.\n\nABAK Desktop Companion stellt keine eigenständige Diagnose, verschreibt keine Behandlung und ersetzt in keinem Fall eine ärztliche oder paramedizinische Konsultation."),
+        "legalNotice_help": MessageLookupByLibrary.simpleMessage(
+            "Auf dieser Seite finden Sie Hinweise und Informationen zur Nutzung von Companion.\n\nScrollen Sie nach unten, um den gesamten Text zu lesen.\n\nVerwenden Sie den Zurück-Pfeil, um zur Seite „Über“ zurückzukehren."),
         "legalNotice_title":
             MessageLookupByLibrary.simpleMessage("Rechtlicher Hinweis"),
         "loading": MessageLookupByLibrary.simpleMessage("Wird geladen..."),
@@ -953,6 +1076,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "open": MessageLookupByLibrary.simpleMessage("Öffnen"),
         "organization_chooseLogo":
             MessageLookupByLibrary.simpleMessage("Ein Logo auswählen"),
+        "organization_help": MessageLookupByLibrary.simpleMessage(
+            "Auf diesem Bildschirm können Sie den Namen und die Kontaktdaten Ihrer Praxis eingeben: Adresse, Postleitzahl, Ort, Telefonnummer und E-Mail-Adresse.\n\nKlicken Sie auf „Kontaktdaten speichern“, um Ihre Änderungen zu speichern, bevor Sie den Bildschirm verlassen.\n\nSie können außerdem ein Bild auf Ihrem Computer auswählen, um das Logo Ihrer Praxis festzulegen. Die Auswahl des Logos wird sofort gespeichert, unabhängig von den Kontaktdaten.\n\nMit der Schaltfläche zum Löschen des Logos können Sie das in Companion verwendete Logo entfernen."),
         "organization_identityTitle":
             MessageLookupByLibrary.simpleMessage("Identität der Einrichtung"),
         "organization_logoRemoved": MessageLookupByLibrary.simpleMessage(
@@ -975,6 +1100,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Ein Telefon koppeln"),
         "pairPhoneInstructions": MessageLookupByLibrary.simpleMessage(
             "Scannen Sie diesen QR-Code mit ABAK Mobile, um die Verbindung zum Desktop automatisch einzurichten."),
+        "pairPhone_help": MessageLookupByLibrary.simpleMessage(
+            "In diesem Fenster werden die Informationen angezeigt, anhand derer ABAK Mobile Companion im lokalen Netzwerk finden kann.\n\nVerbinden Sie das Smartphone oder Tablet und den Computer mit demselben lokalen Netzwerk und scannen Sie anschließend diesen QR-Code über die Funktion zur Kopplung mit Companion in ABAK Mobile.\n\nDer QR-Code enthält die Netzwerkadresse und den Kommunikationsport dieses Computers. Diese Informationen werden ebenfalls unter dem Code angezeigt.\n\nLassen Sie Companion während des Datenaustauschs auf dem Computer geöffnet. Sollte sich die Netzwerkadresse des Computers ändern, öffnen Sie dieses Fenster erneut und scannen Sie den neuen Code.\n\nDas Anzeigen dieses QR-Codes allein löst noch nicht das Senden von Ergebnissen aus."),
         "patientClinicalDataEdit_address":
             MessageLookupByLibrary.simpleMessage("Adresse"),
         "patientClinicalDataEdit_administrativeIdentity":
@@ -992,6 +1119,8 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Länder mit diesem Gesundheitssystem"),
         "patientClinicalDataEdit_height":
             MessageLookupByLibrary.simpleMessage("Größe"),
+        "patientClinicalDataEdit_help": MessageLookupByLibrary.simpleMessage(
+            "Auf diesem Bildschirm können Sie die administrativen Angaben und das Profil des Patienten vervollständigen.\n\nSie können die Gesundheits-ID des Patienten, die Quelle seiner Identität, seine Telefonnummer, seine E-Mail-Adresse und seine Postanschrift eingeben.\n\nDas Profil umfasst die dominante Seite, den Beruf, sportliche Aktivitäten, die Körpergröße in Zentimetern und das Gewicht in Kilogramm.\n\nKlicken Sie auf „Speichern“, um Ihre Änderungen zu speichern und zur Patientenkarte zurückzukehren. Wenn Sie ohne Speichern zurückgehen, gehen die Änderungen verloren."),
         "patientClinicalDataEdit_identitySource":
             MessageLookupByLibrary.simpleMessage("Quelle der Identität"),
         "patientClinicalDataEdit_kilograms":
@@ -1048,6 +1177,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Bearbeiten"),
         "patientDetail_editCareEpisode":
             MessageLookupByLibrary.simpleMessage("Die Betreuung ändern"),
+        "patientDetail_editCareEpisodeHelp": MessageLookupByLibrary.simpleMessage(
+            "In diesem Fenster können Sie die Angaben zur Patientenbetreuung bearbeiten.\n\nSie können die Erkrankung oder den Grund für die Betreuung korrigieren, den ursprünglichen Text ergänzen und den behandelnden Arzt sowie den verschreibenden Arzt auswählen.\n\nDie Erkrankung muss angegeben werden, damit die Änderungen gespeichert werden.\n\nKlicken Sie auf „Speichern“, um die Änderungen zu bestätigen. Mit „Abbrechen“ wird das Fenster geschlossen, ohne die Änderungen zu übernehmen.\n\nBeim Öffnen und Schließen dieser Hilfe bleiben Ihre Eingaben im Formular erhalten."),
         "patientDetail_editClinicalData":
             MessageLookupByLibrary.simpleMessage("Klinische Daten bearbeiten"),
         "patientDetail_email": MessageLookupByLibrary.simpleMessage("E-Mail"),
@@ -1066,6 +1197,8 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Nationale Identifikationsnummer"),
         "patientDetail_newCareEpisode":
             MessageLookupByLibrary.simpleMessage("Neue Kostenübernahme"),
+        "patientDetail_newCareEpisodeHelp": MessageLookupByLibrary.simpleMessage(
+            "In diesem Fenster können Sie eine neue Behandlung für den ausgewählten Patienten anlegen.\n\nGeben Sie die Erkrankung oder den Grund für die Behandlung ein. Diese Angabe ist erforderlich, um die Behandlungsphase anzulegen.\n\nSie können den Anfangstext ergänzen und einen behandelnden Arzt auswählen. Diese Angaben sind optional.\n\nKlicken Sie auf „Erstellen“, um die Behandlungsphase zu speichern. Mit „Abbrechen“ schließen Sie das Fenster, ohne die Behandlungsphase zu erstellen.\n\nBeim Öffnen und Schließen dieser Hilfe bleiben Ihre Eingaben im Formular erhalten."),
         "patientDetail_noBirthdate":
             MessageLookupByLibrary.simpleMessage("Keine Angabe"),
         "patientDetail_noCareEpisode": MessageLookupByLibrary.simpleMessage(
@@ -1124,6 +1257,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Vorname"),
         "patientForm_firstNameRequired":
             MessageLookupByLibrary.simpleMessage("Der Vorname ist Pflicht"),
+        "patientForm_help": MessageLookupByLibrary.simpleMessage(
+            "In diesem Fenster können Sie die Patientendaten eingeben oder korrigieren.\n\nVorname und Nachname sind Pflichtangaben. Sie können das Geburtsdatum im Kalender auswählen und das Geschlecht angeben oder den Wert „Nicht angegeben“ beibehalten.\n\nKlicken Sie auf „Speichern“, um die Änderungen zu bestätigen. Wenn das Formular im Erstellungsmodus geöffnet ist, können Sie über die Schaltfläche „Erstellen“ den Datensatz anlegen.\n\n„Abbrechen“ schließt das Fenster, ohne die Änderungen zu übernehmen. Beim Öffnen und Schließen dieser Hilfe bleiben Ihre Eingaben im Formular erhalten."),
         "patientForm_lastName": MessageLookupByLibrary.simpleMessage("Name"),
         "patientForm_lastNameRequired": MessageLookupByLibrary.simpleMessage(
             "Der Name ist ein Pflichtfeld"),
@@ -1161,6 +1296,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Patientenliste"),
         "patientList_edit": MessageLookupByLibrary.simpleMessage("Bearbeiten"),
         "patientList_error": m20,
+        "patientList_help": MessageLookupByLibrary.simpleMessage(
+            "Auf diesem Bildschirm können Sie Ihre Patienten suchen und auf deren Akten zugreifen.\n\nMit den Schaltflächen „Aktiv“ und „Archiviert“ können Sie auswählen, welche Liste angezeigt werden soll. Die angezeigte Zahl entspricht der Gesamtzahl der Patienten in der jeweiligen Kategorie.\n\nUm einen Patienten in der angezeigten Liste zu suchen, geben Sie seinen Nachnamen oder Vornamen ganz oder teilweise in das Suchfeld ein. Klicken Sie auf die entsprechende Zeile, um die Patientenakte zu öffnen.\n\nDie Schaltfläche „Neuer Patient“ öffnet den Bildschirm zur Anlage eines Patienten.\n\nBei einem aktiven Patienten können Sie über das Stiftsymbol seine Daten bearbeiten. Über das Archivierungssymbol können Sie ihn nach Bestätigung aus der Liste der aktiven Patienten entfernen.\n\nIn der Liste der archivierten Patienten können Sie einen Patienten über das Symbol „Wiederherstellen“ wieder in die Liste der aktiven Patienten aufnehmen. Eine spezielle Hilfe, die neben dem Archivierungsdatum zugänglich ist, erläutert die Aufbewahrungsmodalitäten."),
         "patientList_newPatient":
             MessageLookupByLibrary.simpleMessage("Neuer Patient"),
         "patientList_noArchivedPatients": MessageLookupByLibrary.simpleMessage(
@@ -1224,6 +1361,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "patientNew_firstName": MessageLookupByLibrary.simpleMessage("Vorname"),
         "patientNew_firstNameRequired":
             MessageLookupByLibrary.simpleMessage("Der Vorname ist Pflicht"),
+        "patientNew_help": MessageLookupByLibrary.simpleMessage(
+            "Auf diesem Bildschirm können Sie einen Patienten in ABAK Companion anlegen.\n\nGeben Sie den Vor- und Nachnamen ein: Diese beiden Angaben sind Pflichtfelder. Sie können das Geburtsdatum mithilfe des Kalenders ergänzen und das Geschlecht angeben.\n\nÜber die Schaltfläche zum Einlesen der Vitale-Karte können Sie die Identität des Patienten abrufen, sofern das Lesegerät und das Lesemodul verfügbar sind. Wenn mehrere Versicherte vorgeschlagen werden, wählen Sie die betreffende Person aus und überprüfen Sie anschließend die angezeigten Angaben. Eine manuelle Eingabe ist weiterhin möglich.\n\nWenn Companion einen bereits vorhandenen Patienten erkennt, überprüfen Sie die vorgeschlagenen Angaben, bevor Sie fortfahren, um einen Doppeleintrag zu vermeiden. Ein archivierter Patient kann zur Wiederherstellung vorgeschlagen werden.\n\nKlicken Sie auf „Patienten anlegen“, um den Datensatz zu speichern, oder auf „Abbrechen“, um den Vorgang zu beenden, ohne einen Patienten anzulegen."),
         "patientNew_lastName": MessageLookupByLibrary.simpleMessage("Name"),
         "patientNew_lastNameRequired": MessageLookupByLibrary.simpleMessage(
             "Der Name ist ein Pflichtfeld"),
@@ -1343,6 +1482,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "practitionerNew_email": MessageLookupByLibrary.simpleMessage("E-Mail"),
         "practitionerNew_firstName":
             MessageLookupByLibrary.simpleMessage("Vorname"),
+        "practitionerNew_help": MessageLookupByLibrary.simpleMessage(
+            "In diesem Fenster können Sie den Eintrag eines Behandlers anlegen oder bearbeiten.\n\nDie Angabe des Namens ist obligatorisch: Er dient zur Identifizierung des Behandlers in Companion. Sie können außerdem den Vornamen, den Nachnamen, die berufliche Kennnummer, die E-Mail-Adresse und die Telefonnummer eingeben.\n\nKlicken Sie auf „Erstellen“, um einen Arzt hinzuzufügen, oder auf „Speichern“, um die Änderungen an einem bestehenden Datensatz zu übernehmen.\n\n„Abbrechen“ schließt das Fenster, ohne die Änderungen zu übernehmen. Beim Öffnen und Schließen dieser Hilfe bleiben Ihre Eingaben im Formular erhalten."),
         "practitionerNew_lastName":
             MessageLookupByLibrary.simpleMessage("Name"),
         "practitionerNew_newPractitioner":
@@ -1359,6 +1500,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Schließen"),
         "practitionerQr_defaultOrganizationName":
             MessageLookupByLibrary.simpleMessage("Kanzlei"),
+        "practitionerQr_help": MessageLookupByLibrary.simpleMessage(
+            "In diesem Fenster wird der QR-Code des Berufsprofils des Behandlers zusammen mit dessen Namen und dem Namen der Praxis angezeigt.\n\nScannen Sie diesen QR-Code mit ABAK Mobile, um den Behandler in dieser Einrichtung zu identifizieren. Vergewissern Sie sich, dass der angezeigte Name mit dem betreffenden Behandler übereinstimmt.\n\nDieser QR-Code dient zur Übermittlung der Identifikationsdaten des Berufsprofils; seine Anzeige löst keine Übertragung von Ergebnissen aus.\n\nSchließen Sie dieses Fenster, um zur Liste der Ärzte zurückzukehren."),
         "practitionerQr_professionalProfile":
             MessageLookupByLibrary.simpleMessage("ABAK-Berufsprofil"),
         "practitionerQr_scanQrCodeInstruction":
@@ -1409,10 +1552,21 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Es wurden keine Ergebnisse importiert"),
         "recentImportCard_result":
             MessageLookupByLibrary.simpleMessage("Ergebnis"),
+        "referringPractitionerHistory_help": MessageLookupByLibrary.simpleMessage(
+            "In diesem Fenster werden die Ärzte angezeigt, die als Ansprechpartner für diesen Behandlungsverlauf benannt wurden.\n\nJede Zeile enthält den Namen des Arztes und seinen Einsatzzeitraum. Der Vermerk „Aktueller Ansprechpartner“ kennzeichnet den Arzt, der derzeit diesem Behandlungsverlauf zugeordnet ist.\n\nDer Vermerk „Archiviert“ bedeutet, dass der Datensatz des Arztes archiviert wurde; sein Name bleibt im Verlauf sichtbar.\n\nIn diesem Fenster können Sie ausschließlich den Verlauf einsehen. Schließen Sie es, um zur Behandlungsphase zurückzukehren."),
+        "referringPractitionerHistory_title":
+            MessageLookupByLibrary.simpleMessage(
+                "Übersicht über die zuständigen Physiotherapeuten"),
         "refreshDashboard":
             MessageLookupByLibrary.simpleMessage("Dashboard aktualisieren"),
         "reportArchive_title":
             MessageLookupByLibrary.simpleMessage("Berichtsarchiv"),
+        "reportDraft_help": MessageLookupByLibrary.simpleMessage(
+            "Der angezeigte Text entspricht einem automatisch gespeicherten Entwurf. Sie können ihn beibehalten, bearbeiten oder löschen, bevor Sie Ihren Bericht speichern."),
+        "reportDraft_helpTitle": MessageLookupByLibrary.simpleMessage(
+            "Den Berichtsentwurf verstehen"),
+        "reportHistory_help": MessageLookupByLibrary.simpleMessage(
+            "Diese Ansicht zeigt die für die Betreuung gespeicherten Berichte mit ihrem Titel und ihrem Datum an.\n\nÜber die Aktionen in jeder Zeile können Sie einen Bericht bearbeiten, duplizieren oder in die archivierten Dokumente verschieben.\n\nWenn ein Bericht zur Bearbeitung geöffnet ist, verwenden Sie die Aktion „Aktualisieren“, um Ihre Änderungen zu speichern. Mit den verfügbaren Befehlen können Sie außerdem die Änderungen rückgängig machen oder zum Entwurf zurückkehren.\n\nDas Verschieben in die archivierten Dokumente ist keine endgültige Löschung.\n\nKlicken Sie auf das Kreuz, um die vergrößerte Ansicht zu schließen und zum Bereich „Bilanzen/Berichte“ zurückzukehren."),
         "reset": MessageLookupByLibrary.simpleMessage("Zurücksetzen"),
         "resultDetail_addCommentHint":
             MessageLookupByLibrary.simpleMessage("Kommentar hinzufügen..."),
@@ -1436,6 +1590,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Datum des Geschäftsjahres"),
         "resultDetail_generalInformation":
             MessageLookupByLibrary.simpleMessage("Allgemeine Informationen"),
+        "resultDetail_help": MessageLookupByLibrary.simpleMessage(
+            "Dieser Bildschirm zeigt die Informationen zu einem aus ABAK Mobile importierten Ergebnis an: Patient, Durchführungsdatum, Wert sowie – sofern verfügbar – verwendete Hilfsmittel, Identität des Behandlers und Ursprungsgerät.\n\nSie können den detaillierten Bericht und die zusätzlichen Messwerte einsehen, die im Rahmen der Untersuchung übermittelt wurden.\n\nIm Feld „Klinischer Kommentar“ können Sie Ihre Anmerkungen hinzufügen oder bearbeiten. Klicken Sie auf „Speichern“, um diese zu sichern, bevor Sie den Bildschirm verlassen.\n\nDer Bereich „Import“ zeigt den Synchronisationsstatus und das Datum der letzten Änderung des Ergebnisses an.\n\nÜber das Archivierungssymbol können Sie dieses Ergebnis nach der Bestätigung archivieren."),
         "resultDetail_identityUnverified":
             MessageLookupByLibrary.simpleMessage("Identität nicht verifiziert"),
         "resultDetail_identityVerified":
@@ -1478,6 +1634,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "settings_exchangeDirectoryUpdated":
             MessageLookupByLibrary.simpleMessage(
                 "Aktualisierte ABAK-Austauschdatei"),
+        "settings_help": MessageLookupByLibrary.simpleMessage(
+            "Dieser Bildschirm fasst die Funktionen für Installation, Diagnose und Wartung von Companion zusammen. Verwenden Sie diese gemäß den Anweisungen in der ABAK-Dokumentation oder den Anweisungen eines Technikers.\n\nÜber den Menüpunkt „Konfiguration“ können Sie den für den Dateiaustausch verwendeten Ordner anzeigen, öffnen oder ändern.\n\nÜber den Bereich „Diagnose“ können Sie Überprüfungen des Lesegeräts für die Vitale-Karte durchführen.\n\nIm Bereich „Wartung“ können Sie den Assistenten zur Behebung von Importproblemen öffnen, eine ABAK-Datei manuell importieren und auf die Verwaltung der Sicherungskopien zugreifen.\n\nDurch das Zurücksetzen der Datenbank werden die lokalen Daten gelöscht. Dieser Vorgang ist ausschließlich für den technischen Support vorgesehen: Lesen Sie die Bestätigungsmeldungen sorgfältig durch, bevor Sie fortfahren."),
         "settings_importAbakFile": MessageLookupByLibrary.simpleMessage(
             "Eine .abak-Datei manuell importieren"),
         "settings_invalidConfirmation":
@@ -1550,9 +1708,13 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Benutzereinstellungen"),
         "vitaleBeneficiarySelector_cancel":
             MessageLookupByLibrary.simpleMessage("Abbrechen"),
+        "vitaleBeneficiarySelector_help": MessageLookupByLibrary.simpleMessage(
+            "In diesem Fenster können Sie die betreffende Person auswählen, wenn nach dem Einlesen der Vitale-Karte mehrere Leistungsempfänger vorgeschlagen werden.\n\nÜberprüfen Sie den Nachnamen, den Vornamen und das Geburtsdatum, sofern verfügbar, und klicken Sie anschließend auf die Zeile des gewünschten Leistungsempfängers.\n\nDurch die Auswahl wird dieses Fenster geschlossen und die ausgewählte Person wird an den nächsten Schritt weitergeleitet.\n\nMit „Abbrechen“ wird das Fenster geschlossen, ohne dass ein Begünstigter ausgewählt wird."),
         "vitaleBeneficiarySelector_selectBeneficiary":
             MessageLookupByLibrary.simpleMessage(
                 "Wählen Sie einen Begünstigten aus"),
+        "vitaleDiagnostic_help": MessageLookupByLibrary.simpleMessage(
+            "Auf diesem Bildschirm können Sie die Funktionsfähigkeit des Lesegeräts für die Vitale-Karte überprüfen.\n\nUnter Windows zeigt der Abschnitt zum Modul dessen Status an und ermöglicht es, diese Informationen zu aktualisieren.\n\nStarten Sie einen Lesevorgang, wenn das Lesegerät angeschlossen und die Karte eingelegt ist. Wenn mehrere Begünstigte vorgeschlagen werden, wählen Sie die betreffende Person aus, um die ausgelesenen Informationen einzusehen.\n\nDie angezeigten Meldungen helfen dabei, einen eventuellen Fehler zu verstehen, und können dem Support mitgeteilt werden.\n\nDer Abschnitt „Erweiterte Diagnose“ bietet einen technischen Test zur Kommunikation mit der Karte an. Verwenden Sie diesen gemäß den Anweisungen in der ABAK-Dokumentation oder nach Anleitung eines Technikers.\n\nDieser Bildschirm dient der Diagnose: Durch das Einlesen einer Identität wird kein Patientenstammdatensatz angelegt."),
         "vitaleIdentity_birthDate":
             MessageLookupByLibrary.simpleMessage("Geburtsdatum"),
         "vitaleIdentity_dataMasked":
@@ -1563,6 +1725,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Weiblich"),
         "vitaleIdentity_firstName":
             MessageLookupByLibrary.simpleMessage("Vorname"),
+        "vitaleIdentity_help": MessageLookupByLibrary.simpleMessage(
+            "Auf diesem Bildschirm können Sie die Daten eines Leistungsempfängers von einer Vitale-Karte auslesen, sofern das Lesegerät und das Lesemodul verfügbar sind.\n\nDer Lesevorgang beginnt beim Öffnen des Bildschirms. Sie können ihn über die Lesetaste erneut starten. Sind mehrere Leistungsempfänger auf der Karte gespeichert, wählen Sie die betreffende Person aus.\n\nÜberprüfen Sie den Nachnamen, den Vornamen, das Geburtsdatum und die weiteren angezeigten Informationen. Die Identifikationsnummer wird als „erkannt“ oder „nicht verfügbar“ angezeigt, ohne dass sie vollständig dargestellt wird.\n\nWenn die Identität verwendbar ist, können Sie diese Informationen über die Schaltfläche „Patient anlegen“ an das Anlegeformular übermitteln.\n\nWenn keine Identität verfügbar ist, lesen Sie die angezeigte Meldung und überprüfen Sie das Lesegerät, bevor Sie es erneut versuchen. Sie können zum vorherigen Bildschirm zurückkehren, um eine manuelle Eingabe vorzunehmen."),
         "vitaleIdentity_identityRead":
             MessageLookupByLibrary.simpleMessage("Identität gelesen"),
         "vitaleIdentity_identityReceivedMasked":

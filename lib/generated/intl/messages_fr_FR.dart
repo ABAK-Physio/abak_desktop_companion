@@ -95,6 +95,8 @@ class MessageLookup extends MessageLookupByLibrary {
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "abakWhisperSpeechProvider_name":
             MessageLookupByLibrary.simpleMessage("ABAK Dictée vocale"),
+        "archivedDocuments_help": MessageLookupByLibrary.simpleMessage(
+            "Cette vue regroupe les bilans et les rapports archivés de la prise en charge. Chaque ligne indique le type de document, son titre et sa date d’archivage.\n\nL’action de restauration permet de remettre le document dans l’historique des bilans ou des rapports.\n\nL’action de suppression définitive retire le document de Companion. Lisez attentivement le message de confirmation avant de valider : le document ne pourra plus être restauré depuis cette liste.\n\nCliquez sur la croix pour fermer la vue agrandie et revenir à l’espace Bilans/Rapports."),
         "assessmentDocumentDataBuilder_female":
             MessageLookupByLibrary.simpleMessage("Féminin"),
         "assessmentDocumentDataBuilder_male":
@@ -158,10 +160,18 @@ class MessageLookup extends MessageLookupByLibrary {
         "assessmentDocxService_weight":
             MessageLookupByLibrary.simpleMessage("Poids"),
         "assessmentDocxService_years": m3,
+        "assessmentDraft_help": MessageLookupByLibrary.simpleMessage(
+            "Le texte affiché correspond à un travail en cours sauvegardé automatiquement. Vous pouvez le conserver, le modifier ou le supprimer avant d’enregistrer votre bilan."),
+        "assessmentDraft_helpTitle": MessageLookupByLibrary.simpleMessage(
+            "Comprendre le brouillon du bilan"),
+        "assessmentHistory_help": MessageLookupByLibrary.simpleMessage(
+            "Cette vue présente les bilans enregistrés pour la prise en charge, avec leur titre et leur date.\n\nLes actions de chaque ligne permettent de modifier un bilan, de le dupliquer ou de le déplacer vers les documents archivés.\n\nLorsqu’un bilan est ouvert en modification, utilisez l’action de mise à jour pour enregistrer vos changements. Les commandes disponibles permettent également d’annuler les modifications ou de revenir au brouillon.\n\nLe déplacement vers les documents archivés n’est pas une suppression définitive.\n\nCliquez sur la croix pour fermer la vue agrandie et revenir à l’espace Bilans/Rapports."),
         "backupHistory_cancel": MessageLookupByLibrary.simpleMessage("Annuler"),
         "backupHistory_empty": MessageLookupByLibrary.simpleMessage(
             "Aucune sauvegarde enregistrée."),
         "backupHistory_fileSize": m4,
+        "backupHistory_help": MessageLookupByLibrary.simpleMessage(
+            "Cet écran présente les sauvegardes enregistrées dans Companion. Chaque ligne indique le nom du fichier, sa date de création, sa taille et son emplacement.\n\nLe bouton « Restaurer » permet de remplacer la base actuelle par celle de la sauvegarde choisie. Les données ajoutées ou modifiées après cette sauvegarde ne seront donc pas présentes dans la base restaurée.\n\nVérifiez la date de la sauvegarde et lisez le message de confirmation avant de poursuivre. Une copie de sécurité de la base actuelle est créée avant son remplacement.\n\nLe fichier de sauvegarde doit toujours être accessible à l’emplacement indiqué. S’il a été déplacé ou supprimé, la restauration ne pourra pas être effectuée.\n\nPour créer une nouvelle sauvegarde, utilisez l’action « Créer une sauvegarde » sur la page d’accueil."),
         "backupHistory_restore":
             MessageLookupByLibrary.simpleMessage("Restaurer"),
         "backupHistory_restoreTitle": MessageLookupByLibrary.simpleMessage(
@@ -170,6 +180,10 @@ class MessageLookup extends MessageLookupByLibrary {
             "Cette opération remplacera totalement la base actuelle.\n\nUne sauvegarde automatique de sécurité sera créée avant restauration.\n\nContinuer ?"),
         "backupHistory_title":
             MessageLookupByLibrary.simpleMessage("Historique des sauvegardes"),
+        "bodymap_help": MessageLookupByLibrary.simpleMessage(
+            "La carte des douleurs permet de repérer les zones douloureuses du patient pour l’épisode de soins en cours.\n\nChoisissez une vue, puis cliquez sur une zone de la silhouette ou sélectionnez-la dans la liste. Vous pouvez ajouter une observation et, si nécessaire, une intensité de 0 à 10. Utilisez la corbeille pour retirer une zone du relevé.\n\nCliquez sur « Enregistrer » pour conserver votre relevé dans Companion. Lorsque vous quittez l’écran avec des modifications non enregistrées, un choix vous permet de les enregistrer ou de les abandonner.\n\n« Exporter les deux cartes » crée une image PNG à l’emplacement choisi sur votre ordinateur. Cet export ne remplace pas l’enregistrement du relevé.\n\nCe module est une première proposition, destinée à évoluer selon vos retours. Testez-le dans votre pratique et indiquez les possibilités que vous souhaiteriez voir ajoutées ou améliorées."),
+        "bodymap_title":
+            MessageLookupByLibrary.simpleMessage("Carte des douleurs"),
         "careEpisodeDetail_abakOrigin":
             MessageLookupByLibrary.simpleMessage("Origine ABAK"),
         "careEpisodeDetail_evolution":
@@ -324,6 +338,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Prise en charge"),
         "careEpisode_treatment":
             MessageLookupByLibrary.simpleMessage("Aucun plan de traitement."),
+        "clinicalDocuments_help": MessageLookupByLibrary.simpleMessage(
+            "Cet écran permet de préparer et d’enregistrer les bilans et rapports liés à la prise en charge.\n\nPour un bilan, vous pouvez rédiger le texte principal, sélectionner les résultats de tests et les notes de suivi à inclure, puis générer un document DOCX une fois le bilan enregistré.\n\nLes brouillons sont sauvegardés automatiquement tant qu’ils ne sont pas enregistrés comme bilan ou rapport.\n\nL’historique permet de retrouver les bilans et rapports déjà enregistrés."),
+        "clinicalDocuments_title":
+            MessageLookupByLibrary.simpleMessage("Bilans et rapports"),
         "close": MessageLookupByLibrary.simpleMessage("Fermer"),
         "contactFormTemplateDiagnostic_category":
             MessageLookupByLibrary.simpleMessage("Catégorie"),
@@ -379,6 +397,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "Le nom de l’appareil est obligatoire"),
         "deviceForm_editDevice":
             MessageLookupByLibrary.simpleMessage("Modifier l’appareil"),
+        "deviceForm_help": MessageLookupByLibrary.simpleMessage(
+            "Cette fenêtre permet de créer ou de modifier la fiche d’un appareil dans Companion.\n\nSaisissez un nom permettant de reconnaître facilement le téléphone ou la tablette. Ce nom est obligatoire.\n\nSélectionnez la plateforme de l’appareil : iOS ou Android.\n\nVous pouvez associer l’appareil à un praticien de la liste ou choisir l’option d’appareil partagé pour ne pas l’affecter à un praticien particulier.\n\nCliquez sur « Créer » pour ajouter l’appareil ou sur « Enregistrer » pour valider les modifications. « Annuler » ferme la fenêtre sans appliquer les modifications.\n\nL’ouverture et la fermeture de cette aide conservent votre saisie dans le formulaire."),
         "deviceForm_loadingPractitionersError":
             MessageLookupByLibrary.simpleMessage(
                 "Erreur lors du chargement des praticiens"),
@@ -424,6 +444,64 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Afficher le QR Code"),
         "deviceList_title":
             MessageLookupByLibrary.simpleMessage("Liste des appareils"),
+        "deviceQr_help": MessageLookupByLibrary.simpleMessage(
+            "Cette fenêtre affiche le QR code d’identification de l’appareil, accompagné de son nom, du nom du cabinet et de sa plateforme.\n\nScannez ce QR code depuis ABAK Mobile pour identifier cet appareil dans cet établissement. Vérifiez que le nom affiché correspond bien au téléphone ou à la tablette concernée.\n\nCe QR code sert à identifier l’appareil ; son affichage ne déclenche pas de transfert de résultats.\n\nFermez cette fenêtre pour revenir à la liste des appareils."),
+        "deviceQr_title": MessageLookupByLibrary.simpleMessage("Appareil ABAK"),
+        "documentArchiveConfirm_help": MessageLookupByLibrary.simpleMessage(
+            "La mise à la corbeille retire le bilan ou le rapport de son historique habituel.\n\nLe document reste conservé dans Companion. Vous pouvez le retrouver dans les documents archivés et le restaurer pour le faire réapparaître dans l’historique.\n\nLes fichiers DOCX déjà exportés sur votre ordinateur ne sont pas supprimés par cette action.\n\nCliquez sur « Mettre à la corbeille » pour confirmer, ou sur « Annuler » pour conserver le document dans l’historique."),
+        "documentArchiveConfirm_title": MessageLookupByLibrary.simpleMessage(
+            "Mettre le document à la corbeille ?"),
+        "documentAuthor_help": MessageLookupByLibrary.simpleMessage(
+            "Cette fenêtre permet de choisir le praticien désigné comme rédacteur du bilan ou du rapport en cours.\n\nSélectionnez le praticien dans la liste, puis cliquez sur « Valider » pour enregistrer cette association au document.\n\nCe choix concerne le rédacteur du document ; il ne modifie pas le praticien référent de l’épisode de soins.\n\n« Annuler » ferme la fenêtre sans changer le rédacteur."),
+        "documentAuthor_title":
+            MessageLookupByLibrary.simpleMessage("Choisir le rédacteur"),
+        "documentDirectoryAccess_help": MessageLookupByLibrary.simpleMessage(
+            "Companion ne peut pas accéder au dossier prévu pour enregistrer les documents, ou son autorisation d’accès doit être renouvelée.\n\nSi ce dossier se trouve sur un disque externe ou un emplacement réseau, vérifiez d’abord qu’il est connecté et accessible.\n\nCliquez sur « Autoriser un dossier », puis sélectionnez le dossier dans la fenêtre qui s’ouvre. Vous pouvez sélectionner le dossier habituel ou choisir une autre destination.\n\nLe dossier sélectionné est enregistré dans vos préférences pour les prochains exports. Les fichiers déjà présents dans l’ancien dossier ne sont pas déplacés.\n\n« Annuler » interrompt l’export en cours sans modifier votre bilan ou votre rapport."),
+        "documentDirectoryAccess_title": MessageLookupByLibrary.simpleMessage(
+            "Autoriser le dossier des documents"),
+        "documentDocxExisting_help": MessageLookupByLibrary.simpleMessage(
+            "Un fichier DOCX a déjà été associé à ce bilan ou à ce rapport.\n\n« Créer un nouveau » génère un nouveau fichier avec le contenu actuel du document. Si son nom existe déjà dans le dossier de destination, un numéro est ajouté pour conserver le fichier précédent. Le nouveau fichier devient celui associé au document dans Companion.\n\n« Remplacer » réécrit le fichier portant le nom associé au document dans le dossier de destination. Les éventuelles modifications apportées directement à ce fichier dans Word ou LibreOffice seront écrasées.\n\n« Annuler » abandonne l’export sans modifier les fichiers."),
+        "documentDocxExisting_title":
+            MessageLookupByLibrary.simpleMessage("Un DOCX existe déjà"),
+        "documentDraftChoice_help": MessageLookupByLibrary.simpleMessage(
+            "Un texte en cours de rédaction a déjà été sauvegardé automatiquement pour ce type de document.\n\n« Reprendre le brouillon » vous permet de retrouver ce texte et de poursuivre votre rédaction.\n\n« Nouveau bilan » ou « Nouveau rapport » efface le titre et le texte de ce brouillon pour recommencer. Le brouillon précédent n’est pas conservé comme un document séparé. Si vous souhaitez garder votre travail, reprenez-le et enregistrez-le avant de commencer un nouveau document.\n\n« Annuler » ferme cette fenêtre sans modifier le brouillon."),
+        "documentDraftChoice_title":
+            MessageLookupByLibrary.simpleMessage("Un brouillon existe"),
+        "documentExpandedEditor_help": MessageLookupByLibrary.simpleMessage(
+            "Cette fenêtre offre davantage d’espace pour rédiger ou modifier le texte du bilan ou du rapport en cours.\n\nVos modifications sont répercutées au fur et à mesure dans la zone de rédaction principale. Fermer la fenêtre ne les annule pas.\n\nCliquez sur la croix pour revenir à l’espace Bilans/Rapports, puis poursuivez la préparation et l’enregistrement de votre document.\n\nL’ouverture et la fermeture de cette aide conservent le texte saisi."),
+        "documentExpandedEditor_helpTitle":
+            MessageLookupByLibrary.simpleMessage(
+                "Rédiger dans la vue agrandie"),
+        "documentRecipient_help": MessageLookupByLibrary.simpleMessage(
+            "Cette fenêtre permet de renseigner les destinataires du bilan ou du rapport en cours.\n\nSaisissez librement le nom du destinataire ou les noms des différents destinataires, puis cliquez sur « Valider » pour conserver cette information dans le document.\n\nPour supprimer une mention existante, effacez le contenu du champ puis validez.\n\nCette saisie renseigne les destinataires du document ; elle ne déclenche aucun envoi.\n\n« Annuler » ferme la fenêtre sans appliquer les modifications. L’ouverture et la fermeture de cette aide conservent votre saisie."),
+        "documentRecipient_title":
+            MessageLookupByLibrary.simpleMessage("Destinataire(s)"),
+        "documentTemplateDraft_help": MessageLookupByLibrary.simpleMessage(
+            "Des réponses ont déjà été enregistrées pour ce modèle de guide dans l’épisode de soins en cours.\n\n« Reprendre le brouillon » ouvre le guide avec ces réponses pour vous permettre de poursuivre ou de modifier votre saisie.\n\n« Nouveau bilan » ou « Nouveau rapport » efface les réponses enregistrées pour ce modèle et ouvre le guide sans reprendre ces réponses. Ce choix ne supprime pas le texte déjà présent dans la zone de rédaction du document.\n\n« Annuler » conserve les réponses enregistrées et revient à l’écran précédent sans ouvrir le guide."),
+        "documentTemplateDraft_title":
+            MessageLookupByLibrary.simpleMessage("Brouillon existant"),
+        "documentTemplateGuide_help": MessageLookupByLibrary.simpleMessage(
+            "Ce guide vous aide à préparer le contenu d’un bilan ou d’un rapport à partir du modèle sélectionné.\n\nUtilisez la liste des rubriques à gauche pour accéder aux différentes sections. Selon les champs proposés, saisissez du texte, sélectionnez des réponses ou complétez les tableaux.\n\nLe bouton de prévisualisation, situé en bas du formulaire, permet de consulter le texte produit à partir de vos réponses.\n\nDepuis l’aperçu, vous pouvez revenir au guide pour poursuivre votre saisie ou demander l’insertion du texte dans le bilan ou le rapport. Suivez les éventuelles propositions d’ajout ou de remplacement affichées par Companion.\n\nL’insertion du texte ne remplace pas l’enregistrement final du bilan ou du rapport.\n\nL’ouverture et la fermeture de cette aide conservent votre saisie."),
+        "documentTemplateGuide_helpTitle":
+            MessageLookupByLibrary.simpleMessage("Utiliser le guide de saisie"),
+        "documentTemplatePreview_help": MessageLookupByLibrary.simpleMessage(
+            "Cette fenêtre permet de relire le texte généré à partir des réponses saisies dans le guide.\n\nLe texte est consultable et sélectionnable. Pour modifier vos réponses, cliquez sur « Fermer » afin de revenir au guide, puis relancez la prévisualisation.\n\nCliquez sur « Insérer dans le bilan » ou « Insérer dans le rapport » pour transmettre le texte au document en cours. Suivez les éventuelles propositions d’ajout ou de remplacement affichées par Companion.\n\nSi aucun texte n’a été généré, le bouton d’insertion reste désactivé.\n\nAprès insertion, vérifiez le contenu du document et enregistrez votre bilan ou votre rapport."),
+        "documentTemplatePreview_title":
+            MessageLookupByLibrary.simpleMessage("Aperçu du texte généré"),
+        "documentTemplate_assessmentTitle":
+            MessageLookupByLibrary.simpleMessage("Choisir un modèle de bilan"),
+        "documentTemplate_help": MessageLookupByLibrary.simpleMessage(
+            "Cette fenêtre présente les modèles disponibles pour le type de document en cours : bilan ou rapport.\n\nCliquez sur un modèle pour ouvrir le guide de saisie correspondant. Le choix du modèle ne crée pas immédiatement un document enregistré.\n\nSi un brouillon existe déjà pour ce modèle dans l’épisode de soins, Companion vous propose de le reprendre ou de commencer une nouvelle saisie."),
+        "documentTemplate_reportTitle": MessageLookupByLibrary.simpleMessage(
+            "Choisir un modèle de rapport"),
+        "documentTests_help": MessageLookupByLibrary.simpleMessage(
+            "Cette vue agrandie permet de consulter les tests réalisés dans la prise en charge et de choisir ceux à inclure dans le bilan ou le rapport en cours.\n\nUtilisez les cases de sélection pour inclure ou retirer un test du document. Cette sélection ne supprime pas les résultats enregistrés dans Companion.\n\nLes actions proposées dans la liste permettent de consulter le détail des résultats. La sélection est disponible lorsqu’un bilan ou un rapport est ouvert et que le chargement est terminé.\n\nCliquez sur la croix pour revenir à l’espace Bilans/Rapports."),
+        "documentTextInsertion_help": MessageLookupByLibrary.simpleMessage(
+            "Votre bilan ou votre rapport contient déjà du texte. Choisissez comment y intégrer le contenu généré par le guide de saisie.\n\n« Ajouter à la suite » conserve le texte existant et ajoute le contenu généré à la fin.\n\n« Remplacer » remplace tout le texte de la zone de rédaction par le contenu généré. Les passages que vous aviez saisis dans cette zone seront donc remplacés eux aussi.\n\n« Annuler » abandonne cette insertion et conserve le texte actuel.\n\nVous pouvez consulter puis fermer cette aide avant de faire votre choix."),
+        "documentTextInsertion_title":
+            MessageLookupByLibrary.simpleMessage("Insérer le texte généré"),
+        "documentTitle_help": MessageLookupByLibrary.simpleMessage(
+            "Cette fenêtre permet de renseigner le titre du bilan ou du rapport.\n\nConservez le titre proposé ou remplacez-le par un intitulé permettant de reconnaître facilement le document. Le titre ne peut pas être vide.\n\nCliquez sur le bouton de validation ou appuyez sur Entrée pour confirmer. « Annuler » ferme la fenêtre sans valider le titre.\n\nL’ouverture et la fermeture de cette aide conservent le texte saisi."),
         "episodeDashboard_documents":
             MessageLookupByLibrary.simpleMessage("Documents"),
         "episodeDashboard_documentsDescription":
@@ -563,6 +641,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "episodeNotes_title": MessageLookupByLibrary.simpleMessage("Notes"),
         "episodeNotes_titleRequired":
             MessageLookupByLibrary.simpleMessage("Le titre est obligatoire."),
+        "episodeReferents_help": MessageLookupByLibrary.simpleMessage(
+            "Cette fenêtre permet de choisir le kiné référent et le médecin prescripteur associés à la prise en charge.\n\nSélectionnez les professionnels dans les listes. Vous pouvez également retirer une association en choisissant l’option sans professionnel.\n\nLes boutons de gestion situés à droite des listes permettent d’accéder aux fiches des praticiens et des correspondants externes, notamment pour ajouter un professionnel manquant.\n\nCliquez sur « Enregistrer » pour appliquer les associations choisies. Les changements de kiné référent sont conservés dans l’historique de la prise en charge.\n\n« Annuler » abandonne les changements d’association dans cette fenêtre. Les fiches éventuellement créées depuis les écrans de gestion restent enregistrées."),
+        "episodeReferents_title":
+            MessageLookupByLibrary.simpleMessage("Modifier les référents"),
         "episodeReport_abakOrigin":
             MessageLookupByLibrary.simpleMessage("Origine ABAK"),
         "episodeReport_addConclusion":
@@ -626,6 +708,16 @@ class MessageLookup extends MessageLookupByLibrary {
             "Choisir le dossier d’échange ABAK"),
         "exchangeDirectoryUpdated": MessageLookupByLibrary.simpleMessage(
             "Dossier d\'échange ABAK mis à jour"),
+        "externalCorrespondentForm_addTitle":
+            MessageLookupByLibrary.simpleMessage("Ajouter un correspondant"),
+        "externalCorrespondentForm_editTitle":
+            MessageLookupByLibrary.simpleMessage("Modifier le correspondant"),
+        "externalCorrespondentForm_help": MessageLookupByLibrary.simpleMessage(
+            "Cette fenêtre permet de renseigner la fiche d’un correspondant externe.\n\nLe nom est obligatoire. Vous pouvez compléter le prénom, la profession, la spécialité, l’adresse, le code postal, la ville, l’adresse électronique et le téléphone.\n\nCliquez sur « Enregistrer » pour valider la fiche. « Annuler » ferme la fenêtre sans appliquer les modifications.\n\nL’ouverture et la fermeture de cette aide conservent votre saisie dans le formulaire."),
+        "externalCorrespondents_help": MessageLookupByLibrary.simpleMessage(
+            "Cet écran présente les correspondants externes enregistrés dans Companion. Chaque ligne indique le nom du correspondant et, lorsqu’elles sont renseignées, sa profession, sa spécialité et sa ville.\n\nCliquez sur « Ajouter » pour créer un correspondant. Renseignez son identité et les coordonnées utiles, puis cliquez sur « Enregistrer » pour l’ajouter à la liste. « Annuler » ferme le formulaire sans créer de correspondant.\n\nCes correspondants peuvent notamment être sélectionnés comme prescripteurs dans les épisodes de soins."),
+        "externalCorrespondents_title":
+            MessageLookupByLibrary.simpleMessage("Correspondants externes"),
         "externalSpeechToTextProvider_empty":
             MessageLookupByLibrary.simpleMessage(
                 "L’add-on n’a retourné aucune réponse."),
@@ -640,12 +732,22 @@ class MessageLookup extends MessageLookupByLibrary {
                 "L’add-on n’a retourné aucun texte."),
         "externalSpeechToTextProvider_transcription":
             MessageLookupByLibrary.simpleMessage("La transcription a échoué."),
+        "followUpNoteForm_createTitle":
+            MessageLookupByLibrary.simpleMessage("Nouvelle note de suivi"),
+        "followUpNoteForm_editTitle":
+            MessageLookupByLibrary.simpleMessage("Modifier la note de suivi"),
+        "followUpNoteForm_help": MessageLookupByLibrary.simpleMessage(
+            "Cette fenêtre permet de créer ou de modifier une note de suivi rattachée à l’épisode de soins.\n\nRenseignez un titre et le contenu de la note. Ces deux champs doivent contenir du texte pour que la note soit enregistrée.\n\nLors de la création, cliquez sur « Ajouter ». Lors d’une modification, cliquez sur « Enregistrer » pour conserver vos changements.\n\n« Annuler » ferme la fenêtre sans enregistrer votre saisie. Vous pouvez ouvrir puis fermer cette aide sans perdre le texte en cours de rédaction."),
+        "followUpNotes_help": MessageLookupByLibrary.simpleMessage(
+            "Cette vue présente les notes de suivi de la prise en charge, avec leur date, leur titre et un aperçu de leur contenu.\n\nLe bouton d’ajout permet de créer une note. L’icône de modification permet d’ouvrir une note existante pour la consulter ou la modifier.\n\nUtilisez les cases de sélection pour choisir les notes à inclure dans le bilan ou le rapport en cours. Décocher une note la retire de cette sélection sans supprimer la note de suivi.\n\nLa sélection est disponible lorsqu’un bilan ou un rapport est ouvert et que le chargement est terminé.\n\nCliquez sur la croix pour fermer la vue agrandie et revenir à l’espace Bilans/Rapports."),
         "g_arb_prefix": MessageLookupByLibrary.simpleMessage("Préfix ARB"),
         "g_close": MessageLookupByLibrary.simpleMessage("Fermer"),
         "g_comment": MessageLookupByLibrary.simpleMessage("Commentaire"),
         "g_context": MessageLookupByLibrary.simpleMessage("Contexte"),
         "g_copy": MessageLookupByLibrary.simpleMessage("Copier"),
         "g_file": MessageLookupByLibrary.simpleMessage("Fichier"),
+        "g_helpTooltip":
+            MessageLookupByLibrary.simpleMessage("Afficher l’aide"),
         "g_learn_more": MessageLookupByLibrary.simpleMessage("En savoir plus"),
         "g_technical_informations":
             MessageLookupByLibrary.simpleMessage("Informations techniques"),
@@ -654,7 +756,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "help_archived_patient": MessageLookupByLibrary.simpleMessage(
             "Les patients archivés peuvent être restaurés jusqu\'à la date indiquée.\nAprès cette date, ils sont supprimés automatiquement afin de ne pas conserver indéfiniment des dossiers inutilisés.\nLa durée de conservation peut être modifiée dans les paramètres de Companion."),
         "help_device_list_content": MessageLookupByLibrary.simpleMessage(
-            "Vous pouvez créer, modifier, archiver un appareil.\n\nPour des raisons de traçabilité il n\'est pas possible de supprimer un appareil\nVous pouvez si nécessaire le restaurer.\n\nLe QR Code est utilisé pour appairer un téléphone ou une tablette."),
+            "Il s\'agit des appareils (téléphone, tablette) utilisés pour réaliser les tests.\n- Un appareil peut être utilisé par des personnes différentes.\n- Une personne peut posséder plusieurs appareils.\n\nCette information permet de savoir quelle est la source matérielle de l\'information qui est transférée vers Companion.\nVous pouvez créer, modifier, archiver un appareil.\n\nPour des raisons de traçabilité il n\'est pas possible de supprimer un appareil\nVous pouvez si nécessaire restaurer un appareil archivé.\n\nC\'est un QR Code qui est utilisé pour appairer un téléphone ou une tablette. Il faut afficher le QR Code sur le poste fixe (Appareil > icone correspondant de l\'appareil) et sur le téléphone (ou la tablette) accéder aux paramètres > Organisation professionnelle > Appareils enregistrés > Ajouter un appareil.\n\nApprochez l\'appareil de l\'écran pour lire le QR Code.Un message vous informe de la réussite de l\'opération."),
         "help_device_list_title":
             MessageLookupByLibrary.simpleMessage("Liste des appareils"),
         "help_donnees_cliniques_patient": MessageLookupByLibrary.simpleMessage(
@@ -822,10 +924,18 @@ class MessageLookup extends MessageLookupByLibrary {
         "home_verify": MessageLookupByLibrary.simpleMessage("Vérifier"),
         "home_very_large_backups": MessageLookupByLibrary.simpleMessage(
             "Sauvegardes très volumineuses"),
+        "importHistory_help": MessageLookupByLibrary.simpleMessage(
+            "Cet écran présente l’historique des sessions d’import enregistrées dans Companion.\n\nChaque ligne indique la date de la session, son état, le nombre de fichiers traités et le nombre de résultats importés, ignorés ou en conflit.\n\nL’icône signale notamment un import en cours, un échec, des erreurs ou des conflits nécessitant votre attention.\n\nCliquez sur une session pour consulter son détail et mieux comprendre le traitement des résultats."),
+        "importPatientForm_help": MessageLookupByLibrary.simpleMessage(
+            "Cette fenêtre permet de créer un patient pour lui rattacher les résultats importés depuis ABAK Mobile.\n\nSaisissez son nom et son prénom. Vous pouvez compléter sa date de naissance au format AAAA-MM-JJ et renseigner son sexe, ou conserver « Non renseigné ».\n\nSi vous avez utilisé la lecture de la carte Vitale, vérifiez les informations préremplies et corrigez-les si nécessaire.\n\nCliquez sur « Créer » pour enregistrer le patient et le sélectionner. Choisissez ensuite la prise en charge à laquelle rattacher les résultats : la création du patient ne termine pas, à elle seule, le rattachement de l’import.\n\n« Annuler » ferme cette fenêtre sans créer de patient. L’ouverture puis la fermeture de cette aide conserve votre saisie."),
+        "importPatientForm_title":
+            MessageLookupByLibrary.simpleMessage("Nouveau patient"),
         "importResolutionAssistant_file":
             MessageLookupByLibrary.simpleMessage("fichier"),
         "importResolutionAssistant_files":
             MessageLookupByLibrary.simpleMessage("fichiers"),
+        "importResolutionAssistant_help": MessageLookupByLibrary.simpleMessage(
+            "Cet écran regroupe les imports qui nécessitent votre attention : association à un patient à compléter, échec de l’import, erreurs, résultats ignorés ou conflits à examiner.\n\nChaque ligne indique la date de l’import et les informations disponibles pour identifier le dossier concerné.\n\nCliquez sur un import pour ouvrir son suivi, consulter les explications et accéder aux actions proposées selon sa situation.\n\nLa liste est actualisée à votre retour depuis le suivi de l’import. Si aucun import ne répond à ces critères, un message indique qu’aucun problème n’a été détecté."),
         "importResolutionAssistant_import":
             MessageLookupByLibrary.simpleMessage("Import"),
         "importResolutionAssistant_importFailed":
@@ -856,6 +966,14 @@ class MessageLookup extends MessageLookupByLibrary {
             "Résolution des problèmes d’import"),
         "importResolutionAssistant_toReview":
             MessageLookupByLibrary.simpleMessage("à vérifier"),
+        "importResolution_help": MessageLookupByLibrary.simpleMessage(
+            "Cet écran permet de rattacher les résultats reçus depuis ABAK Mobile au bon patient et à la bonne prise en charge dans Companion.\n\nConsultez les informations de l’import reçu, puis sélectionnez le patient concerné dans la liste. Si nécessaire, créez sa fiche avec « Nouveau patient » ou « Depuis Carte Vitale », lorsque le dispositif de lecture est disponible.\n\nAprès avoir sélectionné le patient, choisissez une prise en charge active ou créez-en une. Une prise en charge archivée doit être restaurée avant de pouvoir être sélectionnée.\n\nVérifiez le patient et la prise en charge avant de choisir cette dernière : sa sélection valide le rattachement et permet de poursuivre l’import."),
+        "importResolution_title":
+            MessageLookupByLibrary.simpleMessage("Rattacher l\'import"),
+        "importSessionDetail_help": MessageLookupByLibrary.simpleMessage(
+            "Cet écran présente le suivi d’un import reçu dans Companion. Le message principal indique si l’import a réussi, nécessite une association à un patient ou comporte un problème.\n\nLorsqu’une association est nécessaire, cliquez sur « Associer à un patient » pour choisir le dossier auquel rattacher les résultats.\n\nLe compte rendu et la liste des fichiers permettent de consulter le détail du traitement et les éventuels avertissements.\n\nSi le fichier reçu est incomplet ou endommagé, demandez un nouvel envoi depuis ABAK Mobile.\n\nSelon la situation, le bouton « Supprimer cet import » est proposé. Consultez le message de confirmation avant de valider la suppression."),
+        "importSessionDetail_title":
+            MessageLookupByLibrary.simpleMessage("Suivi de l’import"),
         "information_backupCount": m11,
         "information_backups":
             MessageLookupByLibrary.simpleMessage("Sauvegardes"),
@@ -867,6 +985,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Informations"),
         "information_database":
             MessageLookupByLibrary.simpleMessage("Base de données"),
+        "information_help": MessageLookupByLibrary.simpleMessage(
+            "Cette page présente les informations générales de votre installation de Companion : version de l’application, cabinet configuré, présence du logo, système utilisé et langue.\n\nLa rubrique consacrée au stockage local indique la taille de la base de données ainsi que le nombre et la taille totale des sauvegardes enregistrées.\n\nLes boutons permettent de consulter les nouveautés, la licence et les avertissements relatifs à l’utilisation de l’application.\n\nLors d’un échange avec l’assistance, la version de Companion et le système affichés ici peuvent aider à identifier votre configuration."),
         "information_language": MessageLookupByLibrary.simpleMessage("Langue"),
         "information_legalNotice":
             MessageLookupByLibrary.simpleMessage("Avertissement légal"),
@@ -877,6 +997,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "information_logo": MessageLookupByLibrary.simpleMessage("Logo"),
         "information_new": MessageLookupByLibrary.simpleMessage(
             "Version 1.1.0 build 3\nPossibilité de dictée vocale pour les bilans et rapports, nécessite le module gratuit.\nSauvegarde automatique Bilan et Rapport.\nBouton duplication Bilan et Rapport.\nNotes modifiables.\nBouton pour voir tous les tests d\'un patient pour un épisode.\nModèles de bilans.\nGraphique automatique si plusieurs résultats pour un test\nCréation d\'un document au format docx.\nAffichage de l\'aide utilisée pour E72 et E76"),
+        "information_newHelp": MessageLookupByLibrary.simpleMessage(
+            "Cette page présente les nouveautés et les évolutions décrites pour Companion.\n\nFaites défiler le texte pour consulter l’ensemble des informations. Vous pouvez sélectionner et copier un passage si nécessaire.\n\nUtilisez la flèche de retour pour revenir à la page « À propos »."),
         "information_newTitle":
             MessageLookupByLibrary.simpleMessage("Nouveautés de la version"),
         "information_notConfigured":
@@ -907,6 +1029,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Avertissement"),
         "legalNotice_content": MessageLookupByLibrary.simpleMessage(
             "ABAK Desktop Companion est un logiciel d’aide à l’organisation, à l’importation et à la consultation de résultats cliniques issus de l’écosystème ABAK.\n\nIl ne constitue pas un dispositif médical certifié et ne remplace pas le jugement du professionnel de santé.\n\nLes résultats, scores, comptes rendus et indicateurs affichés doivent toujours être interprétés par un professionnel qualifié, en tenant compte de l’examen clinique, du contexte du patient et des recommandations en vigueur.\n\nL’utilisateur reste seul responsable de ses décisions cliniques, de la vérification des données importées et de la conformité de leur utilisation avec les règles professionnelles, réglementaires et déontologiques applicables.\n\nABAK Desktop Companion ne réalise pas de diagnostic autonome, ne prescrit aucun traitement et ne se substitue en aucun cas à une consultation médicale ou paramédicale."),
+        "legalNotice_help": MessageLookupByLibrary.simpleMessage(
+            "Cette page présente les avertissements et les informations relatifs à l’utilisation de Companion.\n\nFaites défiler la page pour lire l’intégralité du texte.\n\nUtilisez la flèche de retour pour revenir à la page « À propos »."),
         "legalNotice_title":
             MessageLookupByLibrary.simpleMessage("Avertissement Légal"),
         "loading": MessageLookupByLibrary.simpleMessage("Chargement..."),
@@ -940,6 +1064,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "open": MessageLookupByLibrary.simpleMessage("Ouvrir"),
         "organization_chooseLogo":
             MessageLookupByLibrary.simpleMessage("Choisir un logo"),
+        "organization_help": MessageLookupByLibrary.simpleMessage(
+            "Cet écran permet de renseigner le nom et les coordonnées de votre cabinet : adresse, code postal, ville, téléphone et adresse électronique.\n\nCliquez sur « Enregistrer les coordonnées » pour conserver vos modifications avant de quitter l’écran.\n\nVous pouvez également choisir une image sur votre ordinateur pour définir le logo du cabinet. Le choix du logo est enregistré immédiatement, indépendamment des coordonnées.\n\nLe bouton de suppression du logo permet de retirer le logo utilisé dans Companion."),
         "organization_identityTitle":
             MessageLookupByLibrary.simpleMessage("Identité de l’établissement"),
         "organization_logoRemoved": MessageLookupByLibrary.simpleMessage(
@@ -962,6 +1088,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Associer un téléphone"),
         "pairPhoneInstructions": MessageLookupByLibrary.simpleMessage(
             "Scannez ce QR code depuis ABAK Mobile pour configurer automatiquement la connexion au Desktop."),
+        "pairPhone_help": MessageLookupByLibrary.simpleMessage(
+            "Cette fenêtre affiche les informations permettant à ABAK Mobile de trouver Companion sur le réseau local.\n\nConnectez le téléphone ou la tablette et l’ordinateur au même réseau local, puis scannez ce QR code depuis la fonction d’association à Companion dans ABAK Mobile.\n\nLe QR code contient l’adresse réseau et le port de communication de cet ordinateur. Ces informations sont également affichées sous le code.\n\nGardez Companion ouvert sur l’ordinateur lors des échanges. Si l’adresse réseau de l’ordinateur change, ouvrez à nouveau cette fenêtre et scannez le nouveau code.\n\nL’affichage de ce QR code ne déclenche pas à lui seul l’envoi de résultats."),
         "patientClinicalDataEdit_address":
             MessageLookupByLibrary.simpleMessage("Adresse"),
         "patientClinicalDataEdit_administrativeIdentity":
@@ -978,6 +1106,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Pays du système de santé"),
         "patientClinicalDataEdit_height":
             MessageLookupByLibrary.simpleMessage("Taille"),
+        "patientClinicalDataEdit_help": MessageLookupByLibrary.simpleMessage(
+            "Cet écran permet de compléter les informations administratives et le profil du patient.\n\nVous pouvez renseigner son identifiant de santé, la source de son identité, son téléphone, son adresse électronique et son adresse postale.\n\nLe profil comprend le côté dominant, la profession, l’activité sportive, la taille en centimètres et le poids en kilogrammes.\n\nCliquez sur « Enregistrer » pour sauvegarder vos modifications et revenir à la fiche du patient. Revenir en arrière sans enregistrer abandonne les modifications."),
         "patientClinicalDataEdit_identitySource":
             MessageLookupByLibrary.simpleMessage("Source de l’identité"),
         "patientClinicalDataEdit_kilograms":
@@ -1032,6 +1162,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "patientDetail_edit": MessageLookupByLibrary.simpleMessage("Modifier"),
         "patientDetail_editCareEpisode":
             MessageLookupByLibrary.simpleMessage("Modifier la prise en charge"),
+        "patientDetail_editCareEpisodeHelp": MessageLookupByLibrary.simpleMessage(
+            "Cette fenêtre permet de modifier les informations de la prise en charge du patient.\n\nVous pouvez corriger la pathologie ou le motif de la prise en charge, compléter le texte initial et choisir le praticien référent ainsi que le médecin prescripteur.\n\nLa pathologie doit être renseignée pour que les modifications soient enregistrées.\n\nCliquez sur « Enregistrer » pour valider les modifications. « Annuler » ferme la fenêtre sans les appliquer.\n\nL’ouverture et la fermeture de cette aide conservent votre saisie dans le formulaire."),
         "patientDetail_editClinicalData": MessageLookupByLibrary.simpleMessage(
             "Modifier les données cliniques"),
         "patientDetail_email": MessageLookupByLibrary.simpleMessage("Email"),
@@ -1049,6 +1181,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Identifiant national"),
         "patientDetail_newCareEpisode":
             MessageLookupByLibrary.simpleMessage("Nouvelle prise en charge"),
+        "patientDetail_newCareEpisodeHelp": MessageLookupByLibrary.simpleMessage(
+            "Cette fenêtre permet de créer une nouvelle prise en charge pour le patient sélectionné.\n\nRenseignez la pathologie ou le motif de la prise en charge. Cette information est nécessaire pour créer l’épisode.\n\nVous pouvez compléter le texte initial et sélectionner un praticien référent. Ces informations sont facultatives.\n\nCliquez sur « Créer » pour enregistrer l’épisode. « Annuler » ferme la fenêtre sans le créer.\n\nL’ouverture et la fermeture de cette aide conservent votre saisie dans le formulaire."),
         "patientDetail_noBirthdate":
             MessageLookupByLibrary.simpleMessage("Non renseigné"),
         "patientDetail_noCareEpisode": MessageLookupByLibrary.simpleMessage(
@@ -1106,6 +1240,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "patientForm_firstName": MessageLookupByLibrary.simpleMessage("Prénom"),
         "patientForm_firstNameRequired":
             MessageLookupByLibrary.simpleMessage("Le prénom est obligatoire"),
+        "patientForm_help": MessageLookupByLibrary.simpleMessage(
+            "Cette fenêtre permet de renseigner ou de corriger l’identité du patient.\n\nLe nom et le prénom sont obligatoires. Vous pouvez sélectionner la date de naissance dans le calendrier et renseigner le sexe, ou conserver la valeur « Non précisé ».\n\nCliquez sur « Enregistrer » pour valider les modifications. Si le formulaire est ouvert en mode création, le bouton « Créer » permet de créer la fiche.\n\n« Annuler » ferme la fenêtre sans appliquer les modifications. L’ouverture et la fermeture de cette aide conservent votre saisie dans le formulaire."),
         "patientForm_lastName": MessageLookupByLibrary.simpleMessage("Nom"),
         "patientForm_lastNameRequired":
             MessageLookupByLibrary.simpleMessage("Le nom est obligatoire"),
@@ -1140,6 +1276,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Liste des patients"),
         "patientList_edit": MessageLookupByLibrary.simpleMessage("Modifier"),
         "patientList_error": m20,
+        "patientList_help": MessageLookupByLibrary.simpleMessage(
+            "Cet écran permet de retrouver vos patients et d’accéder à leur dossier.\n\nLes boutons « Actifs » et « Archivés » permettent de choisir la liste affichée. Le nombre indiqué correspond au total des patients de chaque catégorie.\n\nPour rechercher un patient dans la liste affichée, saisissez tout ou partie de son nom ou de son prénom dans le champ de recherche. Cliquez sur sa ligne pour ouvrir son dossier.\n\nLe bouton « Nouveau patient » ouvre l’écran de création d’un patient.\n\nPour un patient actif, l’icône crayon permet de modifier son identité. L’icône d’archivage permet de le retirer de la liste des patients actifs après confirmation.\n\nDans la liste des patients archivés, l’icône de restauration permet de remettre un patient dans la liste des actifs. Une aide spécifique, accessible près de la date d’archivage, précise les modalités de conservation."),
         "patientList_newPatient":
             MessageLookupByLibrary.simpleMessage("Nouveau patient"),
         "patientList_noArchivedPatients":
@@ -1202,6 +1340,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "patientNew_firstName": MessageLookupByLibrary.simpleMessage("Prénom"),
         "patientNew_firstNameRequired":
             MessageLookupByLibrary.simpleMessage("Le prénom est obligatoire"),
+        "patientNew_help": MessageLookupByLibrary.simpleMessage(
+            "Cet écran permet de créer un patient dans ABAK Companion.\n\nSaisissez son nom et son prénom : ces deux informations sont obligatoires. Vous pouvez compléter sa date de naissance à l’aide du calendrier et renseigner son sexe.\n\nLe bouton de lecture de la carte Vitale permet de récupérer l’identité du patient lorsque le lecteur et le module de lecture sont disponibles. Si plusieurs bénéficiaires sont proposés, sélectionnez la personne concernée, puis vérifiez les informations affichées. La saisie manuelle reste possible.\n\nSi Companion détecte un patient déjà présent, vérifiez les informations proposées avant de poursuivre afin d’éviter un doublon. Un patient archivé peut être proposé à la restauration.\n\nCliquez sur « Créer le patient » pour enregistrer la fiche, ou sur « Annuler » pour quitter sans créer de patient."),
         "patientNew_lastName": MessageLookupByLibrary.simpleMessage("Nom"),
         "patientNew_lastNameRequired":
             MessageLookupByLibrary.simpleMessage("Le nom est obligatoire"),
@@ -1316,6 +1456,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "practitionerNew_email": MessageLookupByLibrary.simpleMessage("Email"),
         "practitionerNew_firstName":
             MessageLookupByLibrary.simpleMessage("Prénom"),
+        "practitionerNew_help": MessageLookupByLibrary.simpleMessage(
+            "Cette fenêtre permet de créer ou de modifier la fiche d’un praticien.\n\nLe nom affiché est obligatoire : il permet d’identifier le praticien dans Companion. Vous pouvez également renseigner son prénom, son nom, son identifiant professionnel, son adresse électronique et son téléphone.\n\nCliquez sur « Créer » pour ajouter un praticien ou sur « Enregistrer » pour valider les modifications d’une fiche existante.\n\n« Annuler » ferme la fenêtre sans appliquer les modifications. L’ouverture et la fermeture de cette aide conservent votre saisie dans le formulaire."),
         "practitionerNew_lastName": MessageLookupByLibrary.simpleMessage("Nom"),
         "practitionerNew_newPractitioner":
             MessageLookupByLibrary.simpleMessage("Nouveau praticien"),
@@ -1330,6 +1472,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "practitionerQr_close": MessageLookupByLibrary.simpleMessage("Fermer"),
         "practitionerQr_defaultOrganizationName":
             MessageLookupByLibrary.simpleMessage("Cabinet"),
+        "practitionerQr_help": MessageLookupByLibrary.simpleMessage(
+            "Cette fenêtre affiche le QR code du profil professionnel du praticien, accompagné de son nom et du nom du cabinet.\n\nScannez ce QR code depuis ABAK Mobile pour y identifier le praticien dans cet établissement. Vérifiez que le nom affiché correspond au professionnel concerné.\n\nCe QR code sert à transmettre les informations d’identification du profil professionnel ; son affichage ne déclenche pas de transfert de résultats.\n\nFermez cette fenêtre pour revenir à la liste des praticiens."),
         "practitionerQr_professionalProfile":
             MessageLookupByLibrary.simpleMessage("Profil professionnel ABAK"),
         "practitionerQr_scanQrCodeInstruction":
@@ -1380,10 +1524,21 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Aucun résultat importé"),
         "recentImportCard_result":
             MessageLookupByLibrary.simpleMessage("résultat"),
+        "referringPractitionerHistory_help": MessageLookupByLibrary.simpleMessage(
+            "Cette fenêtre présente les praticiens qui ont été désignés comme référents pour cet épisode de soins.\n\nChaque ligne indique le nom du praticien et sa période d’affectation. La mention « Référent actuel » identifie le praticien actuellement associé à l’épisode.\n\nLa mention « archivé » signifie que la fiche du praticien est archivée ; son nom reste visible dans l’historique.\n\nCette fenêtre permet uniquement de consulter l’historique. Fermez-la pour revenir à l’épisode de soins."),
+        "referringPractitionerHistory_title":
+            MessageLookupByLibrary.simpleMessage(
+                "Historique des kinés référents"),
         "refreshDashboard": MessageLookupByLibrary.simpleMessage(
             "Actualiser le tableau de bord"),
         "reportArchive_title":
             MessageLookupByLibrary.simpleMessage("Archives des rapports"),
+        "reportDraft_help": MessageLookupByLibrary.simpleMessage(
+            "Le texte affiché correspond à un travail en cours sauvegardé automatiquement. Vous pouvez le conserver, le modifier ou le supprimer avant d’enregistrer votre rapport."),
+        "reportDraft_helpTitle": MessageLookupByLibrary.simpleMessage(
+            "Comprendre le brouillon du rapport"),
+        "reportHistory_help": MessageLookupByLibrary.simpleMessage(
+            "Cette vue présente les rapports enregistrés pour la prise en charge, avec leur titre et leur date.\n\nLes actions de chaque ligne permettent de modifier un rapport, de le dupliquer ou de le déplacer vers les documents archivés.\n\nLorsqu’un rapport est ouvert en modification, utilisez l’action de mise à jour pour enregistrer vos changements. Les commandes disponibles permettent également d’annuler les modifications ou de revenir au brouillon.\n\nLe déplacement vers les documents archivés n’est pas une suppression définitive.\n\nCliquez sur la croix pour fermer la vue agrandie et revenir à l’espace Bilans/Rapports."),
         "reset": MessageLookupByLibrary.simpleMessage("Réinitialiser"),
         "resultDetail_addCommentHint":
             MessageLookupByLibrary.simpleMessage("Ajouter un commentaire..."),
@@ -1407,6 +1562,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Date de l\'exercice"),
         "resultDetail_generalInformation":
             MessageLookupByLibrary.simpleMessage("Informations générales"),
+        "resultDetail_help": MessageLookupByLibrary.simpleMessage(
+            "Cet écran présente les informations d’un résultat importé depuis ABAK Mobile : patient, date de réalisation, score et, lorsqu’elles sont disponibles, aide utilisée, identité du praticien et appareil d’origine.\n\nVous pouvez consulter le compte rendu détaillé et les mesures complémentaires transmises par l’exercice.\n\nLa zone « Commentaire clinique » permet d’ajouter ou de modifier vos observations. Cliquez sur « Enregistrer » pour les conserver avant de quitter l’écran.\n\nLa rubrique consacrée à l’import indique l’état de synchronisation et la date de dernière modification du résultat.\n\nL’icône d’archivage permet d’archiver ce résultat après confirmation."),
         "resultDetail_identityUnverified":
             MessageLookupByLibrary.simpleMessage("Identité non vérifiée"),
         "resultDetail_identityVerified":
@@ -1451,6 +1608,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "settings_exchangeDirectoryUpdated":
             MessageLookupByLibrary.simpleMessage(
                 "Dossier d’échange ABAK mis à jour"),
+        "settings_help": MessageLookupByLibrary.simpleMessage(
+            "Cet écran regroupe les fonctions d’installation, de diagnostic et de maintenance de Companion. Utilisez-les selon les indications de la documentation ABAK ou d’un technicien.\n\nLa rubrique « Configuration » permet de consulter, ouvrir ou modifier le dossier utilisé pour les échanges de fichiers.\n\nLa rubrique « Diagnostic » donne accès aux vérifications du dispositif de lecture de la carte Vitale.\n\nLa rubrique « Maintenance » permet d’ouvrir l’assistant de résolution des imports, d’importer manuellement un fichier ABAK et d’accéder à la gestion des sauvegardes.\n\nLa réinitialisation de la base supprime les données locales. Cette opération est réservée aux situations d’assistance technique : lisez attentivement les messages de confirmation avant de poursuivre."),
         "settings_importAbakFile": MessageLookupByLibrary.simpleMessage(
             "Importer manuellement un fichier .abak"),
         "settings_invalidConfirmation":
@@ -1524,9 +1683,13 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Paramètres utilisateur"),
         "vitaleBeneficiarySelector_cancel":
             MessageLookupByLibrary.simpleMessage("Annuler"),
+        "vitaleBeneficiarySelector_help": MessageLookupByLibrary.simpleMessage(
+            "Cette fenêtre permet de choisir la personne concernée lorsque plusieurs bénéficiaires sont proposés après la lecture de la carte Vitale.\n\nVérifiez le nom, le prénom et la date de naissance lorsqu’elle est disponible, puis cliquez sur la ligne du bénéficiaire souhaité.\n\nLa sélection ferme cette fenêtre et transmet l’identité choisie à l’étape suivante.\n\n« Annuler » ferme la fenêtre sans sélectionner de bénéficiaire."),
         "vitaleBeneficiarySelector_selectBeneficiary":
             MessageLookupByLibrary.simpleMessage(
                 "Sélectionnez un bénéficiaire"),
+        "vitaleDiagnostic_help": MessageLookupByLibrary.simpleMessage(
+            "Cet écran permet de vérifier le fonctionnement du dispositif de lecture de la carte Vitale.\n\nSous Windows, la rubrique consacrée au module indique son état et permet d’actualiser cette information.\n\nLancez une lecture avec le lecteur connecté et la carte insérée. Si plusieurs bénéficiaires sont proposés, sélectionnez la personne concernée pour consulter les informations lues.\n\nLes messages affichés permettent de comprendre un éventuel échec et peuvent être communiqués à l’assistance.\n\nLa rubrique « Diagnostic avancé » propose un test technique de communication avec la carte. Utilisez-la selon les indications de la documentation ABAK ou d’un technicien.\n\nCet écran sert au diagnostic : la lecture d’une identité ne crée pas de fiche patient."),
         "vitaleIdentity_birthDate":
             MessageLookupByLibrary.simpleMessage("Date de naissance"),
         "vitaleIdentity_dataMasked":
@@ -1537,6 +1700,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Féminin"),
         "vitaleIdentity_firstName":
             MessageLookupByLibrary.simpleMessage("Prénom"),
+        "vitaleIdentity_help": MessageLookupByLibrary.simpleMessage(
+            "Cet écran permet de lire l’identité d’un bénéficiaire depuis une carte Vitale, lorsque le lecteur et le module de lecture sont disponibles.\n\nLa lecture démarre à l’ouverture de l’écran. Vous pouvez la relancer avec le bouton de lecture. Si plusieurs bénéficiaires sont présents sur la carte, sélectionnez la personne concernée.\n\nVérifiez le nom, le prénom, la date de naissance et les autres informations affichées. Le numéro d’identification est signalé comme détecté ou indisponible, sans être affiché intégralement.\n\nLorsque l’identité est utilisable, le bouton de création du patient permet de transmettre ces informations au formulaire de création.\n\nSi aucune identité n’est disponible, consultez le message affiché et vérifiez le dispositif de lecture avant de réessayer. Vous pouvez revenir à l’écran précédent pour effectuer une saisie manuelle."),
         "vitaleIdentity_identityRead":
             MessageLookupByLibrary.simpleMessage("Identité lue"),
         "vitaleIdentity_identityReceivedMasked":

@@ -202,7 +202,18 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
-          title: Text(S.of(context).pairPhoneDialogTitle),
+          title: Row(
+            children: [
+              Expanded(
+                child: Text(S.of(dialogContext).pairPhoneDialogTitle),
+              ),
+              ContextHelpButton(
+                technicalInformationLabel: S.of(dialogContext).g_helpTooltip,
+                title: S.of(dialogContext).pairPhoneDialogTitle,
+                content: S.of(dialogContext).pairPhone_help,
+              ),
+            ],
+          ),
           content: SizedBox(
             width: 360,
             child: Column(
@@ -296,7 +307,9 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            const SystemStatusCard(),
+                            SystemStatusCard(
+                              key: ValueKey('status-$_refreshToken'),
+                            ),
                             const SizedBox(height: 24),
                             PendingResolutionCard(
                               key: ValueKey('pending-$_refreshToken'),
@@ -311,7 +324,9 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            const SystemAlertsCard(),
+                            SystemAlertsCard(
+                              key: ValueKey('alerts-$_refreshToken'),
+                            ),
                             const SizedBox(height: 24),
                             QuickActionsCard(
                               onImportCompleted: (result) {
@@ -384,6 +399,7 @@ class _DashboardHeader extends StatelessWidget {
             ),
 
           ContextHelpButton(
+            technicalInformationLabel: S.of(context).g_helpTooltip,
             title: S.of(context).home_home,
             content: S.of(context).help_home,
             learnMoreLabel: S.of(context).g_learn_more,

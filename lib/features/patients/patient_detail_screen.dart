@@ -211,6 +211,7 @@ class _SectionCard extends StatelessWidget {
                   if (helpContent != null && helpContent!.trim().isNotEmpty) ...[
                     const SizedBox(width: 8),
                     ContextHelpButton(
+                      technicalInformationLabel: S.of(context).g_helpTooltip,
                       title: title,
                       content: helpContent!,
                     ),

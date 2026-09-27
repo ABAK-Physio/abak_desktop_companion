@@ -261,6 +261,11 @@ class _PatientListScreenState extends State<PatientListScreen> {
                   style: Theme.of(context).textTheme.headlineSmall,
                 ),
               ),
+              ContextHelpButton(
+                technicalInformationLabel: s.g_helpTooltip,
+                title: s.patientList_title,
+                content: s.patientList_help,
+              ),
               if (_expertModeEnabled) ExpertInfoButton(info: _expertInfo(s)),
             ],
           ),
@@ -360,6 +365,7 @@ class _PatientListScreenState extends State<PatientListScreen> {
                                         ),
                                       ),
                                       ContextHelpButton(
+                                        technicalInformationLabel: S.of(context).g_helpTooltip,
                                         title: s.patientList_archivedPatient,
                                         content: S
                                             .of(context)

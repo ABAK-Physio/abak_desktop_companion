@@ -226,7 +226,9 @@ class _SpeechDictationButtonState extends State<SpeechDictationButton> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          S.of(context).speechDictationButton_failure(error),
+          S.of(context).speechDictationButton_failure(
+            error is StateError ? error.message : error,
+          ),
         ),
       ),
     );

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:abak_shared/abak_shared.dart';
 
 import '../../core/expert/expert_context_info.dart';
 import '../../core/expert/expert_info_button.dart';
@@ -78,6 +79,11 @@ class _BackupHistoryScreenState extends State<BackupHistoryScreen> {
     return Scaffold(
       appBar: AppBar(
         actions: [
+          ContextHelpButton(
+            technicalInformationLabel: S.of(context).g_helpTooltip,
+            title: s.backupHistory_title,
+            content: s.backupHistory_help,
+          ),
           ExpertModeInfoButton(
             info: ExpertContextInfo(
               contextName: s.backupHistory_title,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:abak_shared/abak_shared.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../generated/l10n.dart';
@@ -138,6 +139,13 @@ class _DeviceFormDialogState extends State<DeviceFormDialog> {
                   ? s.deviceForm_editDevice
                   : s.deviceForm_contextName,
             ),
+          ),
+          ContextHelpButton(
+            technicalInformationLabel: S.of(context).g_helpTooltip,
+            title: _isEditing
+                ? s.deviceForm_editDevice
+                : s.deviceForm_contextName,
+            content: s.deviceForm_help,
           ),
           if (_expertModeEnabled)
             const ExpertInfoButton(

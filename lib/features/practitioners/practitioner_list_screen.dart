@@ -155,6 +155,7 @@ class _PractitionerListScreenState extends State<PractitionerListScreen> {
             title: Text(s.practitionerList_title),
             actions: [
               ContextHelpButton(
+                technicalInformationLabel: S.of(context).g_helpTooltip,
                 title: s.practitionerList_title,
                 content: s.help_practitionerList_helpText,
               ),

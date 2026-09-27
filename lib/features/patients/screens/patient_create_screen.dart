@@ -1,6 +1,7 @@
 // Gestion du flux métier patient - épisode
 import 'package:abak_vitale/abak_vitale.dart';
 import 'package:flutter/material.dart';
+import 'package:abak_shared/abak_shared.dart';
 import 'package:intl/intl.dart';
 import '../../../core/utils/date_format_utils.dart';
 import '../../../generated/l10n.dart';
@@ -916,6 +917,11 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
     return Scaffold(
       appBar: AppBar(title: Text(s.patientNew_contextName),
       actions: [
+        ContextHelpButton(
+          technicalInformationLabel: S.of(context).g_helpTooltip,
+          title: s.patientNew_contextName,
+          content: s.patientNew_help,
+        ),
         if (_expertModeEnabled)
           ExpertInfoButton(
             info: _expertInfo(s),

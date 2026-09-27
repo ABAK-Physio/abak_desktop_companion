@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:abak_shared/abak_shared.dart';
+import '../../../generated/l10n.dart';
 
 import '../../../core/expert/expert_context_info.dart';
 import '../../../core/expert/expert_info_button.dart';
@@ -61,6 +63,11 @@ class _ExternalCorrespondentsScreenState
             ? BackButton(onPressed: () => Navigator.of(context).maybePop())
             : null,
         actions: [
+          ContextHelpButton(
+            technicalInformationLabel: S.of(context).g_helpTooltip,
+            title: S.of(context).externalCorrespondents_title,
+            content: S.of(context).externalCorrespondents_help,
+          ),
           ExpertModeInfoButton(
             info: ExpertContextInfo(
               contextName: 'Correspondants externes',
@@ -68,7 +75,7 @@ class _ExternalCorrespondentsScreenState
             ),
           ),
         ],
-        title: const Text('Correspondants externes'),
+        title: Text(S.of(context).externalCorrespondents_title),
       ),
       body: FutureBuilder<List<ExternalCorrespondent>>(
         future: _correspondentsFuture,

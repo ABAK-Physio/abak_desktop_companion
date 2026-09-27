@@ -245,6 +245,7 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
                         info: _expertInfo(s),
                       ),
                     ContextHelpButton(
+                      technicalInformationLabel: S.of(context).g_helpTooltip,
                       title: S.of(context).user_settings,
                       content: S.of(context).help_parametres_utilisateur,
                     ),

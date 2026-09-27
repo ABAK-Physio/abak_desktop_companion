@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:abak_shared/abak_shared.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../generated/l10n.dart';
@@ -125,6 +126,13 @@ class _PractitionerFormDialogState extends State<PractitionerFormDialog> {
                   ? s.practitionerNew_editPractitioner
                   : s.practitionerNew_newPractitioner,
             ),
+          ),
+          ContextHelpButton(
+            technicalInformationLabel: S.of(context).g_helpTooltip,
+            title: _isEditing
+                ? s.practitionerNew_editPractitioner
+                : s.practitionerNew_newPractitioner,
+            content: s.practitionerNew_help,
           ),
           if (_expertModeEnabled)
             ExpertInfoButton(

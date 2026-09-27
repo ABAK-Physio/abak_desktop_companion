@@ -333,6 +333,7 @@ class _EpisodeDocumentsScreenState extends State<EpisodeDocumentsScreen> {
             ),
           ),
           ContextHelpButton(
+            technicalInformationLabel: S.of(context).g_helpTooltip,
             title: s.episodeDocuments_title,
             content:
             s.episodeDocuments_help,

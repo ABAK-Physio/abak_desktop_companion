@@ -60,6 +60,16 @@ class S {
     );
   }
 
+  /// `Cette vue regroupe les bilans et les rapports archivés de la prise en charge. Chaque ligne indique le type de document, son titre et sa date d’archivage.\n\nL’action de restauration permet de remettre le document dans l’historique des bilans ou des rapports.\n\nL’action de suppression définitive retire le document de Companion. Lisez attentivement le message de confirmation avant de valider : le document ne pourra plus être restauré depuis cette liste.\n\nCliquez sur la croix pour fermer la vue agrandie et revenir à l’espace Bilans/Rapports.`
+  String get archivedDocuments_help {
+    return Intl.message(
+      'Cette vue regroupe les bilans et les rapports archivés de la prise en charge. Chaque ligne indique le type de document, son titre et sa date d’archivage.\n\nL’action de restauration permet de remettre le document dans l’historique des bilans ou des rapports.\n\nL’action de suppression définitive retire le document de Companion. Lisez attentivement le message de confirmation avant de valider : le document ne pourra plus être restauré depuis cette liste.\n\nCliquez sur la croix pour fermer la vue agrandie et revenir à l’espace Bilans/Rapports.',
+      name: 'archivedDocuments_help',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Féminin`
   String get assessmentDocumentDataBuilder_female {
     return Intl.message(
@@ -390,6 +400,36 @@ class S {
     );
   }
 
+  /// `Le texte affiché correspond à un travail en cours sauvegardé automatiquement. Vous pouvez le conserver, le modifier ou le supprimer avant d’enregistrer votre bilan.`
+  String get assessmentDraft_help {
+    return Intl.message(
+      'Le texte affiché correspond à un travail en cours sauvegardé automatiquement. Vous pouvez le conserver, le modifier ou le supprimer avant d’enregistrer votre bilan.',
+      name: 'assessmentDraft_help',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Comprendre le brouillon du bilan`
+  String get assessmentDraft_helpTitle {
+    return Intl.message(
+      'Comprendre le brouillon du bilan',
+      name: 'assessmentDraft_helpTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cette vue présente les bilans enregistrés pour la prise en charge, avec leur titre et leur date.\n\nLes actions de chaque ligne permettent de modifier un bilan, de le dupliquer ou de le déplacer vers les documents archivés.\n\nLorsqu’un bilan est ouvert en modification, utilisez l’action de mise à jour pour enregistrer vos changements. Les commandes disponibles permettent également d’annuler les modifications ou de revenir au brouillon.\n\nLe déplacement vers les documents archivés n’est pas une suppression définitive.\n\nCliquez sur la croix pour fermer la vue agrandie et revenir à l’espace Bilans/Rapports.`
+  String get assessmentHistory_help {
+    return Intl.message(
+      'Cette vue présente les bilans enregistrés pour la prise en charge, avec leur titre et leur date.\n\nLes actions de chaque ligne permettent de modifier un bilan, de le dupliquer ou de le déplacer vers les documents archivés.\n\nLorsqu’un bilan est ouvert en modification, utilisez l’action de mise à jour pour enregistrer vos changements. Les commandes disponibles permettent également d’annuler les modifications ou de revenir au brouillon.\n\nLe déplacement vers les documents archivés n’est pas une suppression définitive.\n\nCliquez sur la croix pour fermer la vue agrandie et revenir à l’espace Bilans/Rapports.',
+      name: 'assessmentHistory_help',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Annuler`
   String get backupHistory_cancel {
     return Intl.message(
@@ -417,6 +457,16 @@ class S {
       name: 'backupHistory_fileSize',
       desc: '',
       args: [size],
+    );
+  }
+
+  /// `Cet écran présente les sauvegardes enregistrées dans Companion. Chaque ligne indique le nom du fichier, sa date de création, sa taille et son emplacement.\n\nLe bouton « Restaurer » permet de remplacer la base actuelle par celle de la sauvegarde choisie. Les données ajoutées ou modifiées après cette sauvegarde ne seront donc pas présentes dans la base restaurée.\n\nVérifiez la date de la sauvegarde et lisez le message de confirmation avant de poursuivre. Une copie de sécurité de la base actuelle est créée avant son remplacement.\n\nLe fichier de sauvegarde doit toujours être accessible à l’emplacement indiqué. S’il a été déplacé ou supprimé, la restauration ne pourra pas être effectuée.\n\nPour créer une nouvelle sauvegarde, utilisez l’action « Créer une sauvegarde » sur la page d’accueil.`
+  String get backupHistory_help {
+    return Intl.message(
+      'Cet écran présente les sauvegardes enregistrées dans Companion. Chaque ligne indique le nom du fichier, sa date de création, sa taille et son emplacement.\n\nLe bouton « Restaurer » permet de remplacer la base actuelle par celle de la sauvegarde choisie. Les données ajoutées ou modifiées après cette sauvegarde ne seront donc pas présentes dans la base restaurée.\n\nVérifiez la date de la sauvegarde et lisez le message de confirmation avant de poursuivre. Une copie de sécurité de la base actuelle est créée avant son remplacement.\n\nLe fichier de sauvegarde doit toujours être accessible à l’emplacement indiqué. S’il a été déplacé ou supprimé, la restauration ne pourra pas être effectuée.\n\nPour créer une nouvelle sauvegarde, utilisez l’action « Créer une sauvegarde » sur la page d’accueil.',
+      name: 'backupHistory_help',
+      desc: '',
+      args: [],
     );
   }
 
@@ -455,6 +505,26 @@ class S {
     return Intl.message(
       'Historique des sauvegardes',
       name: 'backupHistory_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `La carte des douleurs permet de repérer les zones douloureuses du patient pour l’épisode de soins en cours.\n\nChoisissez une vue, puis cliquez sur une zone de la silhouette ou sélectionnez-la dans la liste. Vous pouvez ajouter une observation et, si nécessaire, une intensité de 0 à 10. Utilisez la corbeille pour retirer une zone du relevé.\n\nCliquez sur « Enregistrer » pour conserver votre relevé dans Companion. Lorsque vous quittez l’écran avec des modifications non enregistrées, un choix vous permet de les enregistrer ou de les abandonner.\n\n« Exporter les deux cartes » crée une image PNG à l’emplacement choisi sur votre ordinateur. Cet export ne remplace pas l’enregistrement du relevé.\n\nCe module est une première proposition, destinée à évoluer selon vos retours. Testez-le dans votre pratique et indiquez les possibilités que vous souhaiteriez voir ajoutées ou améliorées.`
+  String get bodymap_help {
+    return Intl.message(
+      'La carte des douleurs permet de repérer les zones douloureuses du patient pour l’épisode de soins en cours.\n\nChoisissez une vue, puis cliquez sur une zone de la silhouette ou sélectionnez-la dans la liste. Vous pouvez ajouter une observation et, si nécessaire, une intensité de 0 à 10. Utilisez la corbeille pour retirer une zone du relevé.\n\nCliquez sur « Enregistrer » pour conserver votre relevé dans Companion. Lorsque vous quittez l’écran avec des modifications non enregistrées, un choix vous permet de les enregistrer ou de les abandonner.\n\n« Exporter les deux cartes » crée une image PNG à l’emplacement choisi sur votre ordinateur. Cet export ne remplace pas l’enregistrement du relevé.\n\nCe module est une première proposition, destinée à évoluer selon vos retours. Testez-le dans votre pratique et indiquez les possibilités que vous souhaiteriez voir ajoutées ou améliorées.',
+      name: 'bodymap_help',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Carte des douleurs`
+  String get bodymap_title {
+    return Intl.message(
+      'Carte des douleurs',
+      name: 'bodymap_title',
       desc: '',
       args: [],
     );
@@ -1160,6 +1230,26 @@ class S {
     );
   }
 
+  /// `Cet écran permet de préparer et d’enregistrer les bilans et rapports liés à la prise en charge.\n\nPour un bilan, vous pouvez rédiger le texte principal, sélectionner les résultats de tests et les notes de suivi à inclure, puis générer un document DOCX une fois le bilan enregistré.\n\nLes brouillons sont sauvegardés automatiquement tant qu’ils ne sont pas enregistrés comme bilan ou rapport.\n\nL’historique permet de retrouver les bilans et rapports déjà enregistrés.`
+  String get clinicalDocuments_help {
+    return Intl.message(
+      'Cet écran permet de préparer et d’enregistrer les bilans et rapports liés à la prise en charge.\n\nPour un bilan, vous pouvez rédiger le texte principal, sélectionner les résultats de tests et les notes de suivi à inclure, puis générer un document DOCX une fois le bilan enregistré.\n\nLes brouillons sont sauvegardés automatiquement tant qu’ils ne sont pas enregistrés comme bilan ou rapport.\n\nL’historique permet de retrouver les bilans et rapports déjà enregistrés.',
+      name: 'clinicalDocuments_help',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Bilans et rapports`
+  String get clinicalDocuments_title {
+    return Intl.message(
+      'Bilans et rapports',
+      name: 'clinicalDocuments_title',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Fermer`
   String get close {
     return Intl.message(
@@ -1450,6 +1540,16 @@ class S {
     );
   }
 
+  /// `Cette fenêtre permet de créer ou de modifier la fiche d’un appareil dans Companion.\n\nSaisissez un nom permettant de reconnaître facilement le téléphone ou la tablette. Ce nom est obligatoire.\n\nSélectionnez la plateforme de l’appareil : iOS ou Android.\n\nVous pouvez associer l’appareil à un praticien de la liste ou choisir l’option d’appareil partagé pour ne pas l’affecter à un praticien particulier.\n\nCliquez sur « Créer » pour ajouter l’appareil ou sur « Enregistrer » pour valider les modifications. « Annuler » ferme la fenêtre sans appliquer les modifications.\n\nL’ouverture et la fermeture de cette aide conservent votre saisie dans le formulaire.`
+  String get deviceForm_help {
+    return Intl.message(
+      'Cette fenêtre permet de créer ou de modifier la fiche d’un appareil dans Companion.\n\nSaisissez un nom permettant de reconnaître facilement le téléphone ou la tablette. Ce nom est obligatoire.\n\nSélectionnez la plateforme de l’appareil : iOS ou Android.\n\nVous pouvez associer l’appareil à un praticien de la liste ou choisir l’option d’appareil partagé pour ne pas l’affecter à un praticien particulier.\n\nCliquez sur « Créer » pour ajouter l’appareil ou sur « Enregistrer » pour valider les modifications. « Annuler » ferme la fenêtre sans appliquer les modifications.\n\nL’ouverture et la fermeture de cette aide conservent votre saisie dans le formulaire.',
+      name: 'deviceForm_help',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Erreur lors du chargement des praticiens`
   String get deviceForm_loadingPractitionersError {
     return Intl.message(
@@ -1705,6 +1805,296 @@ class S {
     return Intl.message(
       'Liste des appareils',
       name: 'deviceList_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cette fenêtre affiche le QR code d’identification de l’appareil, accompagné de son nom, du nom du cabinet et de sa plateforme.\n\nScannez ce QR code depuis ABAK Mobile pour identifier cet appareil dans cet établissement. Vérifiez que le nom affiché correspond bien au téléphone ou à la tablette concernée.\n\nCe QR code sert à identifier l’appareil ; son affichage ne déclenche pas de transfert de résultats.\n\nFermez cette fenêtre pour revenir à la liste des appareils.`
+  String get deviceQr_help {
+    return Intl.message(
+      'Cette fenêtre affiche le QR code d’identification de l’appareil, accompagné de son nom, du nom du cabinet et de sa plateforme.\n\nScannez ce QR code depuis ABAK Mobile pour identifier cet appareil dans cet établissement. Vérifiez que le nom affiché correspond bien au téléphone ou à la tablette concernée.\n\nCe QR code sert à identifier l’appareil ; son affichage ne déclenche pas de transfert de résultats.\n\nFermez cette fenêtre pour revenir à la liste des appareils.',
+      name: 'deviceQr_help',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Appareil ABAK`
+  String get deviceQr_title {
+    return Intl.message(
+      'Appareil ABAK',
+      name: 'deviceQr_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `La mise à la corbeille retire le bilan ou le rapport de son historique habituel.\n\nLe document reste conservé dans Companion. Vous pouvez le retrouver dans les documents archivés et le restaurer pour le faire réapparaître dans l’historique.\n\nLes fichiers DOCX déjà exportés sur votre ordinateur ne sont pas supprimés par cette action.\n\nCliquez sur « Mettre à la corbeille » pour confirmer, ou sur « Annuler » pour conserver le document dans l’historique.`
+  String get documentArchiveConfirm_help {
+    return Intl.message(
+      'La mise à la corbeille retire le bilan ou le rapport de son historique habituel.\n\nLe document reste conservé dans Companion. Vous pouvez le retrouver dans les documents archivés et le restaurer pour le faire réapparaître dans l’historique.\n\nLes fichiers DOCX déjà exportés sur votre ordinateur ne sont pas supprimés par cette action.\n\nCliquez sur « Mettre à la corbeille » pour confirmer, ou sur « Annuler » pour conserver le document dans l’historique.',
+      name: 'documentArchiveConfirm_help',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Mettre le document à la corbeille ?`
+  String get documentArchiveConfirm_title {
+    return Intl.message(
+      'Mettre le document à la corbeille ?',
+      name: 'documentArchiveConfirm_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cette fenêtre permet de choisir le praticien désigné comme rédacteur du bilan ou du rapport en cours.\n\nSélectionnez le praticien dans la liste, puis cliquez sur « Valider » pour enregistrer cette association au document.\n\nCe choix concerne le rédacteur du document ; il ne modifie pas le praticien référent de l’épisode de soins.\n\n« Annuler » ferme la fenêtre sans changer le rédacteur.`
+  String get documentAuthor_help {
+    return Intl.message(
+      'Cette fenêtre permet de choisir le praticien désigné comme rédacteur du bilan ou du rapport en cours.\n\nSélectionnez le praticien dans la liste, puis cliquez sur « Valider » pour enregistrer cette association au document.\n\nCe choix concerne le rédacteur du document ; il ne modifie pas le praticien référent de l’épisode de soins.\n\n« Annuler » ferme la fenêtre sans changer le rédacteur.',
+      name: 'documentAuthor_help',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Companion ne peut pas accéder au dossier prévu pour enregistrer les documents, ou son autorisation d’accès doit être renouvelée.\n\nSi ce dossier se trouve sur un disque externe ou un emplacement réseau, vérifiez d’abord qu’il est connecté et accessible.\n\nCliquez sur « Autoriser un dossier », puis sélectionnez le dossier dans la fenêtre qui s’ouvre. Vous pouvez sélectionner le dossier habituel ou choisir une autre destination.\n\nLe dossier sélectionné est enregistré dans vos préférences pour les prochains exports. Les fichiers déjà présents dans l’ancien dossier ne sont pas déplacés.\n\n« Annuler » interrompt l’export en cours sans modifier votre bilan ou votre rapport.`
+  String get documentDirectoryAccess_help {
+    return Intl.message(
+      'Companion ne peut pas accéder au dossier prévu pour enregistrer les documents, ou son autorisation d’accès doit être renouvelée.\n\nSi ce dossier se trouve sur un disque externe ou un emplacement réseau, vérifiez d’abord qu’il est connecté et accessible.\n\nCliquez sur « Autoriser un dossier », puis sélectionnez le dossier dans la fenêtre qui s’ouvre. Vous pouvez sélectionner le dossier habituel ou choisir une autre destination.\n\nLe dossier sélectionné est enregistré dans vos préférences pour les prochains exports. Les fichiers déjà présents dans l’ancien dossier ne sont pas déplacés.\n\n« Annuler » interrompt l’export en cours sans modifier votre bilan ou votre rapport.',
+      name: 'documentDirectoryAccess_help',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Autoriser le dossier des documents`
+  String get documentDirectoryAccess_title {
+    return Intl.message(
+      'Autoriser le dossier des documents',
+      name: 'documentDirectoryAccess_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Un fichier DOCX a déjà été associé à ce bilan ou à ce rapport.\n\n« Créer un nouveau » génère un nouveau fichier avec le contenu actuel du document. Si son nom existe déjà dans le dossier de destination, un numéro est ajouté pour conserver le fichier précédent. Le nouveau fichier devient celui associé au document dans Companion.\n\n« Remplacer » réécrit le fichier portant le nom associé au document dans le dossier de destination. Les éventuelles modifications apportées directement à ce fichier dans Word ou LibreOffice seront écrasées.\n\n« Annuler » abandonne l’export sans modifier les fichiers.`
+  String get documentDocxExisting_help {
+    return Intl.message(
+      'Un fichier DOCX a déjà été associé à ce bilan ou à ce rapport.\n\n« Créer un nouveau » génère un nouveau fichier avec le contenu actuel du document. Si son nom existe déjà dans le dossier de destination, un numéro est ajouté pour conserver le fichier précédent. Le nouveau fichier devient celui associé au document dans Companion.\n\n« Remplacer » réécrit le fichier portant le nom associé au document dans le dossier de destination. Les éventuelles modifications apportées directement à ce fichier dans Word ou LibreOffice seront écrasées.\n\n« Annuler » abandonne l’export sans modifier les fichiers.',
+      name: 'documentDocxExisting_help',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Un DOCX existe déjà`
+  String get documentDocxExisting_title {
+    return Intl.message(
+      'Un DOCX existe déjà',
+      name: 'documentDocxExisting_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Un texte en cours de rédaction a déjà été sauvegardé automatiquement pour ce type de document.\n\n« Reprendre le brouillon » vous permet de retrouver ce texte et de poursuivre votre rédaction.\n\n« Nouveau bilan » ou « Nouveau rapport » efface le titre et le texte de ce brouillon pour recommencer. Le brouillon précédent n’est pas conservé comme un document séparé. Si vous souhaitez garder votre travail, reprenez-le et enregistrez-le avant de commencer un nouveau document.\n\n« Annuler » ferme cette fenêtre sans modifier le brouillon.`
+  String get documentDraftChoice_help {
+    return Intl.message(
+      'Un texte en cours de rédaction a déjà été sauvegardé automatiquement pour ce type de document.\n\n« Reprendre le brouillon » vous permet de retrouver ce texte et de poursuivre votre rédaction.\n\n« Nouveau bilan » ou « Nouveau rapport » efface le titre et le texte de ce brouillon pour recommencer. Le brouillon précédent n’est pas conservé comme un document séparé. Si vous souhaitez garder votre travail, reprenez-le et enregistrez-le avant de commencer un nouveau document.\n\n« Annuler » ferme cette fenêtre sans modifier le brouillon.',
+      name: 'documentDraftChoice_help',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Un brouillon existe`
+  String get documentDraftChoice_title {
+    return Intl.message(
+      'Un brouillon existe',
+      name: 'documentDraftChoice_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cette fenêtre offre davantage d’espace pour rédiger ou modifier le texte du bilan ou du rapport en cours.\n\nVos modifications sont répercutées au fur et à mesure dans la zone de rédaction principale. Fermer la fenêtre ne les annule pas.\n\nCliquez sur la croix pour revenir à l’espace Bilans/Rapports, puis poursuivez la préparation et l’enregistrement de votre document.\n\nL’ouverture et la fermeture de cette aide conservent le texte saisi.`
+  String get documentExpandedEditor_help {
+    return Intl.message(
+      'Cette fenêtre offre davantage d’espace pour rédiger ou modifier le texte du bilan ou du rapport en cours.\n\nVos modifications sont répercutées au fur et à mesure dans la zone de rédaction principale. Fermer la fenêtre ne les annule pas.\n\nCliquez sur la croix pour revenir à l’espace Bilans/Rapports, puis poursuivez la préparation et l’enregistrement de votre document.\n\nL’ouverture et la fermeture de cette aide conservent le texte saisi.',
+      name: 'documentExpandedEditor_help',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choisir le rédacteur`
+  String get documentAuthor_title {
+    return Intl.message(
+      'Choisir le rédacteur',
+      name: 'documentAuthor_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Rédiger dans la vue agrandie`
+  String get documentExpandedEditor_helpTitle {
+    return Intl.message(
+      'Rédiger dans la vue agrandie',
+      name: 'documentExpandedEditor_helpTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cette fenêtre permet de renseigner les destinataires du bilan ou du rapport en cours.\n\nSaisissez librement le nom du destinataire ou les noms des différents destinataires, puis cliquez sur « Valider » pour conserver cette information dans le document.\n\nPour supprimer une mention existante, effacez le contenu du champ puis validez.\n\nCette saisie renseigne les destinataires du document ; elle ne déclenche aucun envoi.\n\n« Annuler » ferme la fenêtre sans appliquer les modifications. L’ouverture et la fermeture de cette aide conservent votre saisie.`
+  String get documentRecipient_help {
+    return Intl.message(
+      'Cette fenêtre permet de renseigner les destinataires du bilan ou du rapport en cours.\n\nSaisissez librement le nom du destinataire ou les noms des différents destinataires, puis cliquez sur « Valider » pour conserver cette information dans le document.\n\nPour supprimer une mention existante, effacez le contenu du champ puis validez.\n\nCette saisie renseigne les destinataires du document ; elle ne déclenche aucun envoi.\n\n« Annuler » ferme la fenêtre sans appliquer les modifications. L’ouverture et la fermeture de cette aide conservent votre saisie.',
+      name: 'documentRecipient_help',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Destinataire(s)`
+  String get documentRecipient_title {
+    return Intl.message(
+      'Destinataire(s)',
+      name: 'documentRecipient_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choisir un modèle de bilan`
+  String get documentTemplate_assessmentTitle {
+    return Intl.message(
+      'Choisir un modèle de bilan',
+      name: 'documentTemplate_assessmentTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Ce guide vous aide à préparer le contenu d’un bilan ou d’un rapport à partir du modèle sélectionné.\n\nUtilisez la liste des rubriques à gauche pour accéder aux différentes sections. Selon les champs proposés, saisissez du texte, sélectionnez des réponses ou complétez les tableaux.\n\nLe bouton de prévisualisation, situé en bas du formulaire, permet de consulter le texte produit à partir de vos réponses.\n\nDepuis l’aperçu, vous pouvez revenir au guide pour poursuivre votre saisie ou demander l’insertion du texte dans le bilan ou le rapport. Suivez les éventuelles propositions d’ajout ou de remplacement affichées par Companion.\n\nL’insertion du texte ne remplace pas l’enregistrement final du bilan ou du rapport.\n\nL’ouverture et la fermeture de cette aide conservent votre saisie.`
+  String get documentTemplateGuide_help {
+    return Intl.message(
+      'Ce guide vous aide à préparer le contenu d’un bilan ou d’un rapport à partir du modèle sélectionné.\n\nUtilisez la liste des rubriques à gauche pour accéder aux différentes sections. Selon les champs proposés, saisissez du texte, sélectionnez des réponses ou complétez les tableaux.\n\nLe bouton de prévisualisation, situé en bas du formulaire, permet de consulter le texte produit à partir de vos réponses.\n\nDepuis l’aperçu, vous pouvez revenir au guide pour poursuivre votre saisie ou demander l’insertion du texte dans le bilan ou le rapport. Suivez les éventuelles propositions d’ajout ou de remplacement affichées par Companion.\n\nL’insertion du texte ne remplace pas l’enregistrement final du bilan ou du rapport.\n\nL’ouverture et la fermeture de cette aide conservent votre saisie.',
+      name: 'documentTemplateGuide_help',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Utiliser le guide de saisie`
+  String get documentTemplateGuide_helpTitle {
+    return Intl.message(
+      'Utiliser le guide de saisie',
+      name: 'documentTemplateGuide_helpTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cette fenêtre présente les modèles disponibles pour le type de document en cours : bilan ou rapport.\n\nCliquez sur un modèle pour ouvrir le guide de saisie correspondant. Le choix du modèle ne crée pas immédiatement un document enregistré.\n\nSi un brouillon existe déjà pour ce modèle dans l’épisode de soins, Companion vous propose de le reprendre ou de commencer une nouvelle saisie.`
+  String get documentTemplate_help {
+    return Intl.message(
+      'Cette fenêtre présente les modèles disponibles pour le type de document en cours : bilan ou rapport.\n\nCliquez sur un modèle pour ouvrir le guide de saisie correspondant. Le choix du modèle ne crée pas immédiatement un document enregistré.\n\nSi un brouillon existe déjà pour ce modèle dans l’épisode de soins, Companion vous propose de le reprendre ou de commencer une nouvelle saisie.',
+      name: 'documentTemplate_help',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Des réponses ont déjà été enregistrées pour ce modèle de guide dans l’épisode de soins en cours.\n\n« Reprendre le brouillon » ouvre le guide avec ces réponses pour vous permettre de poursuivre ou de modifier votre saisie.\n\n« Nouveau bilan » ou « Nouveau rapport » efface les réponses enregistrées pour ce modèle et ouvre le guide sans reprendre ces réponses. Ce choix ne supprime pas le texte déjà présent dans la zone de rédaction du document.\n\n« Annuler » conserve les réponses enregistrées et revient à l’écran précédent sans ouvrir le guide.`
+  String get documentTemplateDraft_help {
+    return Intl.message(
+      'Des réponses ont déjà été enregistrées pour ce modèle de guide dans l’épisode de soins en cours.\n\n« Reprendre le brouillon » ouvre le guide avec ces réponses pour vous permettre de poursuivre ou de modifier votre saisie.\n\n« Nouveau bilan » ou « Nouveau rapport » efface les réponses enregistrées pour ce modèle et ouvre le guide sans reprendre ces réponses. Ce choix ne supprime pas le texte déjà présent dans la zone de rédaction du document.\n\n« Annuler » conserve les réponses enregistrées et revient à l’écran précédent sans ouvrir le guide.',
+      name: 'documentTemplateDraft_help',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Brouillon existant`
+  String get documentTemplateDraft_title {
+    return Intl.message(
+      'Brouillon existant',
+      name: 'documentTemplateDraft_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choisir un modèle de rapport`
+  String get documentTemplate_reportTitle {
+    return Intl.message(
+      'Choisir un modèle de rapport',
+      name: 'documentTemplate_reportTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cette fenêtre permet de relire le texte généré à partir des réponses saisies dans le guide.\n\nLe texte est consultable et sélectionnable. Pour modifier vos réponses, cliquez sur « Fermer » afin de revenir au guide, puis relancez la prévisualisation.\n\nCliquez sur « Insérer dans le bilan » ou « Insérer dans le rapport » pour transmettre le texte au document en cours. Suivez les éventuelles propositions d’ajout ou de remplacement affichées par Companion.\n\nSi aucun texte n’a été généré, le bouton d’insertion reste désactivé.\n\nAprès insertion, vérifiez le contenu du document et enregistrez votre bilan ou votre rapport.`
+  String get documentTemplatePreview_help {
+    return Intl.message(
+      'Cette fenêtre permet de relire le texte généré à partir des réponses saisies dans le guide.\n\nLe texte est consultable et sélectionnable. Pour modifier vos réponses, cliquez sur « Fermer » afin de revenir au guide, puis relancez la prévisualisation.\n\nCliquez sur « Insérer dans le bilan » ou « Insérer dans le rapport » pour transmettre le texte au document en cours. Suivez les éventuelles propositions d’ajout ou de remplacement affichées par Companion.\n\nSi aucun texte n’a été généré, le bouton d’insertion reste désactivé.\n\nAprès insertion, vérifiez le contenu du document et enregistrez votre bilan ou votre rapport.',
+      name: 'documentTemplatePreview_help',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Aperçu du texte généré`
+  String get documentTemplatePreview_title {
+    return Intl.message(
+      'Aperçu du texte généré',
+      name: 'documentTemplatePreview_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cette vue agrandie permet de consulter les tests réalisés dans la prise en charge et de choisir ceux à inclure dans le bilan ou le rapport en cours.\n\nUtilisez les cases de sélection pour inclure ou retirer un test du document. Cette sélection ne supprime pas les résultats enregistrés dans Companion.\n\nLes actions proposées dans la liste permettent de consulter le détail des résultats. La sélection est disponible lorsqu’un bilan ou un rapport est ouvert et que le chargement est terminé.\n\nCliquez sur la croix pour revenir à l’espace Bilans/Rapports.`
+  String get documentTests_help {
+    return Intl.message(
+      'Cette vue agrandie permet de consulter les tests réalisés dans la prise en charge et de choisir ceux à inclure dans le bilan ou le rapport en cours.\n\nUtilisez les cases de sélection pour inclure ou retirer un test du document. Cette sélection ne supprime pas les résultats enregistrés dans Companion.\n\nLes actions proposées dans la liste permettent de consulter le détail des résultats. La sélection est disponible lorsqu’un bilan ou un rapport est ouvert et que le chargement est terminé.\n\nCliquez sur la croix pour revenir à l’espace Bilans/Rapports.',
+      name: 'documentTests_help',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cette fenêtre permet de renseigner le titre du bilan ou du rapport.\n\nConservez le titre proposé ou remplacez-le par un intitulé permettant de reconnaître facilement le document. Le titre ne peut pas être vide.\n\nCliquez sur le bouton de validation ou appuyez sur Entrée pour confirmer. « Annuler » ferme la fenêtre sans valider le titre.\n\nL’ouverture et la fermeture de cette aide conservent le texte saisi.`
+  String get documentTitle_help {
+    return Intl.message(
+      'Cette fenêtre permet de renseigner le titre du bilan ou du rapport.\n\nConservez le titre proposé ou remplacez-le par un intitulé permettant de reconnaître facilement le document. Le titre ne peut pas être vide.\n\nCliquez sur le bouton de validation ou appuyez sur Entrée pour confirmer. « Annuler » ferme la fenêtre sans valider le titre.\n\nL’ouverture et la fermeture de cette aide conservent le texte saisi.',
+      name: 'documentTitle_help',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Votre bilan ou votre rapport contient déjà du texte. Choisissez comment y intégrer le contenu généré par le guide de saisie.\n\n« Ajouter à la suite » conserve le texte existant et ajoute le contenu généré à la fin.\n\n« Remplacer » remplace tout le texte de la zone de rédaction par le contenu généré. Les passages que vous aviez saisis dans cette zone seront donc remplacés eux aussi.\n\n« Annuler » abandonne cette insertion et conserve le texte actuel.\n\nVous pouvez consulter puis fermer cette aide avant de faire votre choix.`
+  String get documentTextInsertion_help {
+    return Intl.message(
+      'Votre bilan ou votre rapport contient déjà du texte. Choisissez comment y intégrer le contenu généré par le guide de saisie.\n\n« Ajouter à la suite » conserve le texte existant et ajoute le contenu généré à la fin.\n\n« Remplacer » remplace tout le texte de la zone de rédaction par le contenu généré. Les passages que vous aviez saisis dans cette zone seront donc remplacés eux aussi.\n\n« Annuler » abandonne cette insertion et conserve le texte actuel.\n\nVous pouvez consulter puis fermer cette aide avant de faire votre choix.',
+      name: 'documentTextInsertion_help',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Insérer le texte généré`
+  String get documentTextInsertion_title {
+    return Intl.message(
+      'Insérer le texte généré',
+      name: 'documentTextInsertion_title',
       desc: '',
       args: [],
     );
@@ -2440,6 +2830,26 @@ class S {
     );
   }
 
+  /// `Cette fenêtre permet de choisir le kiné référent et le médecin prescripteur associés à la prise en charge.\n\nSélectionnez les professionnels dans les listes. Vous pouvez également retirer une association en choisissant l’option sans professionnel.\n\nLes boutons de gestion situés à droite des listes permettent d’accéder aux fiches des praticiens et des correspondants externes, notamment pour ajouter un professionnel manquant.\n\nCliquez sur « Enregistrer » pour appliquer les associations choisies. Les changements de kiné référent sont conservés dans l’historique de la prise en charge.\n\n« Annuler » abandonne les changements d’association dans cette fenêtre. Les fiches éventuellement créées depuis les écrans de gestion restent enregistrées.`
+  String get episodeReferents_help {
+    return Intl.message(
+      'Cette fenêtre permet de choisir le kiné référent et le médecin prescripteur associés à la prise en charge.\n\nSélectionnez les professionnels dans les listes. Vous pouvez également retirer une association en choisissant l’option sans professionnel.\n\nLes boutons de gestion situés à droite des listes permettent d’accéder aux fiches des praticiens et des correspondants externes, notamment pour ajouter un professionnel manquant.\n\nCliquez sur « Enregistrer » pour appliquer les associations choisies. Les changements de kiné référent sont conservés dans l’historique de la prise en charge.\n\n« Annuler » abandonne les changements d’association dans cette fenêtre. Les fiches éventuellement créées depuis les écrans de gestion restent enregistrées.',
+      name: 'episodeReferents_help',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Modifier les référents`
+  String get episodeReferents_title {
+    return Intl.message(
+      'Modifier les référents',
+      name: 'episodeReferents_title',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Origine ABAK`
   String get episodeReport_abakOrigin {
     return Intl.message(
@@ -2780,6 +3190,56 @@ class S {
     );
   }
 
+  /// `Modifier le correspondant`
+  String get externalCorrespondentForm_editTitle {
+    return Intl.message(
+      'Modifier le correspondant',
+      name: 'externalCorrespondentForm_editTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Ajouter un correspondant`
+  String get externalCorrespondentForm_addTitle {
+    return Intl.message(
+      'Ajouter un correspondant',
+      name: 'externalCorrespondentForm_addTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cette fenêtre permet de renseigner la fiche d’un correspondant externe.\n\nLe nom est obligatoire. Vous pouvez compléter le prénom, la profession, la spécialité, l’adresse, le code postal, la ville, l’adresse électronique et le téléphone.\n\nCliquez sur « Enregistrer » pour valider la fiche. « Annuler » ferme la fenêtre sans appliquer les modifications.\n\nL’ouverture et la fermeture de cette aide conservent votre saisie dans le formulaire.`
+  String get externalCorrespondentForm_help {
+    return Intl.message(
+      'Cette fenêtre permet de renseigner la fiche d’un correspondant externe.\n\nLe nom est obligatoire. Vous pouvez compléter le prénom, la profession, la spécialité, l’adresse, le code postal, la ville, l’adresse électronique et le téléphone.\n\nCliquez sur « Enregistrer » pour valider la fiche. « Annuler » ferme la fenêtre sans appliquer les modifications.\n\nL’ouverture et la fermeture de cette aide conservent votre saisie dans le formulaire.',
+      name: 'externalCorrespondentForm_help',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Correspondants externes`
+  String get externalCorrespondents_title {
+    return Intl.message(
+      'Correspondants externes',
+      name: 'externalCorrespondents_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cet écran présente les correspondants externes enregistrés dans Companion. Chaque ligne indique le nom du correspondant et, lorsqu’elles sont renseignées, sa profession, sa spécialité et sa ville.\n\nCliquez sur « Ajouter » pour créer un correspondant. Renseignez son identité et les coordonnées utiles, puis cliquez sur « Enregistrer » pour l’ajouter à la liste. « Annuler » ferme le formulaire sans créer de correspondant.\n\nCes correspondants peuvent notamment être sélectionnés comme prescripteurs dans les épisodes de soins.`
+  String get externalCorrespondents_help {
+    return Intl.message(
+      'Cet écran présente les correspondants externes enregistrés dans Companion. Chaque ligne indique le nom du correspondant et, lorsqu’elles sont renseignées, sa profession, sa spécialité et sa ville.\n\nCliquez sur « Ajouter » pour créer un correspondant. Renseignez son identité et les coordonnées utiles, puis cliquez sur « Enregistrer » pour l’ajouter à la liste. « Annuler » ferme le formulaire sans créer de correspondant.\n\nCes correspondants peuvent notamment être sélectionnés comme prescripteurs dans les épisodes de soins.',
+      name: 'externalCorrespondents_help',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `L’add-on n’a retourné aucune réponse.`
   String get externalSpeechToTextProvider_empty {
     return Intl.message(
@@ -2825,6 +3285,46 @@ class S {
     return Intl.message(
       'La transcription a échoué.',
       name: 'externalSpeechToTextProvider_transcription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Nouvelle note de suivi`
+  String get followUpNoteForm_createTitle {
+    return Intl.message(
+      'Nouvelle note de suivi',
+      name: 'followUpNoteForm_createTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Modifier la note de suivi`
+  String get followUpNoteForm_editTitle {
+    return Intl.message(
+      'Modifier la note de suivi',
+      name: 'followUpNoteForm_editTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cette vue présente les notes de suivi de la prise en charge, avec leur date, leur titre et un aperçu de leur contenu.\n\nLe bouton d’ajout permet de créer une note. L’icône de modification permet d’ouvrir une note existante pour la consulter ou la modifier.\n\nUtilisez les cases de sélection pour choisir les notes à inclure dans le bilan ou le rapport en cours. Décocher une note la retire de cette sélection sans supprimer la note de suivi.\n\nLa sélection est disponible lorsqu’un bilan ou un rapport est ouvert et que le chargement est terminé.\n\nCliquez sur la croix pour fermer la vue agrandie et revenir à l’espace Bilans/Rapports.`
+  String get followUpNotes_help {
+    return Intl.message(
+      'Cette vue présente les notes de suivi de la prise en charge, avec leur date, leur titre et un aperçu de leur contenu.\n\nLe bouton d’ajout permet de créer une note. L’icône de modification permet d’ouvrir une note existante pour la consulter ou la modifier.\n\nUtilisez les cases de sélection pour choisir les notes à inclure dans le bilan ou le rapport en cours. Décocher une note la retire de cette sélection sans supprimer la note de suivi.\n\nLa sélection est disponible lorsqu’un bilan ou un rapport est ouvert et que le chargement est terminé.\n\nCliquez sur la croix pour fermer la vue agrandie et revenir à l’espace Bilans/Rapports.',
+      name: 'followUpNotes_help',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cette fenêtre permet de créer ou de modifier une note de suivi rattachée à l’épisode de soins.\n\nRenseignez un titre et le contenu de la note. Ces deux champs doivent contenir du texte pour que la note soit enregistrée.\n\nLors de la création, cliquez sur « Ajouter ». Lors d’une modification, cliquez sur « Enregistrer » pour conserver vos changements.\n\n« Annuler » ferme la fenêtre sans enregistrer votre saisie. Vous pouvez ouvrir puis fermer cette aide sans perdre le texte en cours de rédaction.`
+  String get followUpNoteForm_help {
+    return Intl.message(
+      'Cette fenêtre permet de créer ou de modifier une note de suivi rattachée à l’épisode de soins.\n\nRenseignez un titre et le contenu de la note. Ces deux champs doivent contenir du texte pour que la note soit enregistrée.\n\nLors de la création, cliquez sur « Ajouter ». Lors d’une modification, cliquez sur « Enregistrer » pour conserver vos changements.\n\n« Annuler » ferme la fenêtre sans enregistrer votre saisie. Vous pouvez ouvrir puis fermer cette aide sans perdre le texte en cours de rédaction.',
+      name: 'followUpNoteForm_help',
       desc: '',
       args: [],
     );
@@ -2890,6 +3390,16 @@ class S {
     );
   }
 
+  /// `Afficher l’aide`
+  String get g_helpTooltip {
+    return Intl.message(
+      'Afficher l’aide',
+      name: 'g_helpTooltip',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `En savoir plus`
   String get g_learn_more {
     return Intl.message(
@@ -2930,10 +3440,10 @@ class S {
     );
   }
 
-  /// `Vous pouvez créer, modifier, archiver un appareil.\n\nPour des raisons de traçabilité il n'est pas possible de supprimer un appareil\nVous pouvez si nécessaire le restaurer.\n\nLe QR Code est utilisé pour appairer un téléphone ou une tablette.`
+  /// `Il s'agit des appareils (téléphone, tablette) utilisés pour réaliser les tests.\n- Un appareil peut être utilisé par des personnes différentes.\n- Une personne peut posséder plusieurs appareils.\n\nCette information permet de savoir quelle est la source matérielle de l'information qui est transférée vers Companion.\nVous pouvez créer, modifier, archiver un appareil.\n\nPour des raisons de traçabilité il n'est pas possible de supprimer un appareil\nVous pouvez si nécessaire restaurer un appareil archivé.\n\nC'est un QR Code qui est utilisé pour appairer un téléphone ou une tablette. Il faut afficher le QR Code sur le poste fixe (Appareil > icone correspondant de l'appareil) et sur le téléphone (ou la tablette) accéder aux paramètres > Organisation professionnelle > Appareils enregistrés > Ajouter un appareil.\n\nApprochez l'appareil de l'écran pour lire le QR Code.Un message vous informe de la réussite de l'opération.`
   String get help_device_list_content {
     return Intl.message(
-      'Vous pouvez créer, modifier, archiver un appareil.\n\nPour des raisons de traçabilité il n\'est pas possible de supprimer un appareil\nVous pouvez si nécessaire le restaurer.\n\nLe QR Code est utilisé pour appairer un téléphone ou une tablette.',
+      'Il s\'agit des appareils (téléphone, tablette) utilisés pour réaliser les tests.\n- Un appareil peut être utilisé par des personnes différentes.\n- Une personne peut posséder plusieurs appareils.\n\nCette information permet de savoir quelle est la source matérielle de l\'information qui est transférée vers Companion.\nVous pouvez créer, modifier, archiver un appareil.\n\nPour des raisons de traçabilité il n\'est pas possible de supprimer un appareil\nVous pouvez si nécessaire restaurer un appareil archivé.\n\nC\'est un QR Code qui est utilisé pour appairer un téléphone ou une tablette. Il faut afficher le QR Code sur le poste fixe (Appareil > icone correspondant de l\'appareil) et sur le téléphone (ou la tablette) accéder aux paramètres > Organisation professionnelle > Appareils enregistrés > Ajouter un appareil.\n\nApprochez l\'appareil de l\'écran pour lire le QR Code.Un message vous informe de la réussite de l\'opération.',
       name: 'help_device_list_content',
       desc: '',
       args: [],
@@ -3850,6 +4360,36 @@ class S {
     );
   }
 
+  /// `Cette fenêtre permet de créer un patient pour lui rattacher les résultats importés depuis ABAK Mobile.\n\nSaisissez son nom et son prénom. Vous pouvez compléter sa date de naissance au format AAAA-MM-JJ et renseigner son sexe, ou conserver « Non renseigné ».\n\nSi vous avez utilisé la lecture de la carte Vitale, vérifiez les informations préremplies et corrigez-les si nécessaire.\n\nCliquez sur « Créer » pour enregistrer le patient et le sélectionner. Choisissez ensuite la prise en charge à laquelle rattacher les résultats : la création du patient ne termine pas, à elle seule, le rattachement de l’import.\n\n« Annuler » ferme cette fenêtre sans créer de patient. L’ouverture puis la fermeture de cette aide conserve votre saisie.`
+  String get importPatientForm_help {
+    return Intl.message(
+      'Cette fenêtre permet de créer un patient pour lui rattacher les résultats importés depuis ABAK Mobile.\n\nSaisissez son nom et son prénom. Vous pouvez compléter sa date de naissance au format AAAA-MM-JJ et renseigner son sexe, ou conserver « Non renseigné ».\n\nSi vous avez utilisé la lecture de la carte Vitale, vérifiez les informations préremplies et corrigez-les si nécessaire.\n\nCliquez sur « Créer » pour enregistrer le patient et le sélectionner. Choisissez ensuite la prise en charge à laquelle rattacher les résultats : la création du patient ne termine pas, à elle seule, le rattachement de l’import.\n\n« Annuler » ferme cette fenêtre sans créer de patient. L’ouverture puis la fermeture de cette aide conserve votre saisie.',
+      name: 'importPatientForm_help',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Nouveau patient`
+  String get importPatientForm_title {
+    return Intl.message(
+      'Nouveau patient',
+      name: 'importPatientForm_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Rattacher l'import`
+  String get importResolution_title {
+    return Intl.message(
+      'Rattacher l\'import',
+      name: 'importResolution_title',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `fichier`
   String get importResolutionAssistant_file {
     return Intl.message(
@@ -4000,6 +4540,16 @@ class S {
     );
   }
 
+  /// `Suivi de l’import`
+  String get importSessionDetail_title {
+    return Intl.message(
+      'Suivi de l’import',
+      name: 'importSessionDetail_title',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `{count} sauvegardes`
   String information_backupCount(Object count) {
     return Intl.message(
@@ -4060,6 +4610,16 @@ class S {
     );
   }
 
+  /// `Cette page présente les informations générales de votre installation de Companion : version de l’application, cabinet configuré, présence du logo, système utilisé et langue.\n\nLa rubrique consacrée au stockage local indique la taille de la base de données ainsi que le nombre et la taille totale des sauvegardes enregistrées.\n\nLes boutons permettent de consulter les nouveautés, la licence et les avertissements relatifs à l’utilisation de l’application.\n\nLors d’un échange avec l’assistance, la version de Companion et le système affichés ici peuvent aider à identifier votre configuration.`
+  String get information_help {
+    return Intl.message(
+      'Cette page présente les informations générales de votre installation de Companion : version de l’application, cabinet configuré, présence du logo, système utilisé et langue.\n\nLa rubrique consacrée au stockage local indique la taille de la base de données ainsi que le nombre et la taille totale des sauvegardes enregistrées.\n\nLes boutons permettent de consulter les nouveautés, la licence et les avertissements relatifs à l’utilisation de l’application.\n\nLors d’un échange avec l’assistance, la version de Companion et le système affichés ici peuvent aider à identifier votre configuration.',
+      name: 'information_help',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Langue`
   String get information_language {
     return Intl.message(
@@ -4115,6 +4675,16 @@ class S {
     return Intl.message(
       'Version 1.1.0 build 3\nPossibilité de dictée vocale pour les bilans et rapports, nécessite le module gratuit.\nSauvegarde automatique Bilan et Rapport.\nBouton duplication Bilan et Rapport.\nNotes modifiables.\nBouton pour voir tous les tests d\'un patient pour un épisode.\nModèles de bilans.\nGraphique automatique si plusieurs résultats pour un test\nCréation d\'un document au format docx.\nAffichage de l\'aide utilisée pour E72 et E76',
       name: 'information_new',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cette page présente les nouveautés et les évolutions décrites pour Companion.\n\nFaites défiler le texte pour consulter l’ensemble des informations. Vous pouvez sélectionner et copier un passage si nécessaire.\n\nUtilisez la flèche de retour pour revenir à la page « À propos ».`
+  String get information_newHelp {
+    return Intl.message(
+      'Cette page présente les nouveautés et les évolutions décrites pour Companion.\n\nFaites défiler le texte pour consulter l’ensemble des informations. Vous pouvez sélectionner et copier un passage si nécessaire.\n\nUtilisez la flèche de retour pour revenir à la page « À propos ».',
+      name: 'information_newHelp',
       desc: '',
       args: [],
     );
@@ -4250,6 +4820,46 @@ class S {
     );
   }
 
+  /// `Cet écran présente l’historique des sessions d’import enregistrées dans Companion.\n\nChaque ligne indique la date de la session, son état, le nombre de fichiers traités et le nombre de résultats importés, ignorés ou en conflit.\n\nL’icône signale notamment un import en cours, un échec, des erreurs ou des conflits nécessitant votre attention.\n\nCliquez sur une session pour consulter son détail et mieux comprendre le traitement des résultats.`
+  String get importHistory_help {
+    return Intl.message(
+      'Cet écran présente l’historique des sessions d’import enregistrées dans Companion.\n\nChaque ligne indique la date de la session, son état, le nombre de fichiers traités et le nombre de résultats importés, ignorés ou en conflit.\n\nL’icône signale notamment un import en cours, un échec, des erreurs ou des conflits nécessitant votre attention.\n\nCliquez sur une session pour consulter son détail et mieux comprendre le traitement des résultats.',
+      name: 'importHistory_help',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cet écran permet de rattacher les résultats reçus depuis ABAK Mobile au bon patient et à la bonne prise en charge dans Companion.\n\nConsultez les informations de l’import reçu, puis sélectionnez le patient concerné dans la liste. Si nécessaire, créez sa fiche avec « Nouveau patient » ou « Depuis Carte Vitale », lorsque le dispositif de lecture est disponible.\n\nAprès avoir sélectionné le patient, choisissez une prise en charge active ou créez-en une. Une prise en charge archivée doit être restaurée avant de pouvoir être sélectionnée.\n\nVérifiez le patient et la prise en charge avant de choisir cette dernière : sa sélection valide le rattachement et permet de poursuivre l’import.`
+  String get importResolution_help {
+    return Intl.message(
+      'Cet écran permet de rattacher les résultats reçus depuis ABAK Mobile au bon patient et à la bonne prise en charge dans Companion.\n\nConsultez les informations de l’import reçu, puis sélectionnez le patient concerné dans la liste. Si nécessaire, créez sa fiche avec « Nouveau patient » ou « Depuis Carte Vitale », lorsque le dispositif de lecture est disponible.\n\nAprès avoir sélectionné le patient, choisissez une prise en charge active ou créez-en une. Une prise en charge archivée doit être restaurée avant de pouvoir être sélectionnée.\n\nVérifiez le patient et la prise en charge avant de choisir cette dernière : sa sélection valide le rattachement et permet de poursuivre l’import.',
+      name: 'importResolution_help',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cet écran regroupe les imports qui nécessitent votre attention : association à un patient à compléter, échec de l’import, erreurs, résultats ignorés ou conflits à examiner.\n\nChaque ligne indique la date de l’import et les informations disponibles pour identifier le dossier concerné.\n\nCliquez sur un import pour ouvrir son suivi, consulter les explications et accéder aux actions proposées selon sa situation.\n\nLa liste est actualisée à votre retour depuis le suivi de l’import. Si aucun import ne répond à ces critères, un message indique qu’aucun problème n’a été détecté.`
+  String get importResolutionAssistant_help {
+    return Intl.message(
+      'Cet écran regroupe les imports qui nécessitent votre attention : association à un patient à compléter, échec de l’import, erreurs, résultats ignorés ou conflits à examiner.\n\nChaque ligne indique la date de l’import et les informations disponibles pour identifier le dossier concerné.\n\nCliquez sur un import pour ouvrir son suivi, consulter les explications et accéder aux actions proposées selon sa situation.\n\nLa liste est actualisée à votre retour depuis le suivi de l’import. Si aucun import ne répond à ces critères, un message indique qu’aucun problème n’a été détecté.',
+      name: 'importResolutionAssistant_help',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cet écran présente le suivi d’un import reçu dans Companion. Le message principal indique si l’import a réussi, nécessite une association à un patient ou comporte un problème.\n\nLorsqu’une association est nécessaire, cliquez sur « Associer à un patient » pour choisir le dossier auquel rattacher les résultats.\n\nLe compte rendu et la liste des fichiers permettent de consulter le détail du traitement et les éventuels avertissements.\n\nSi le fichier reçu est incomplet ou endommagé, demandez un nouvel envoi depuis ABAK Mobile.\n\nSelon la situation, le bouton « Supprimer cet import » est proposé. Consultez le message de confirmation avant de valider la suppression.`
+  String get importSessionDetail_help {
+    return Intl.message(
+      'Cet écran présente le suivi d’un import reçu dans Companion. Le message principal indique si l’import a réussi, nécessite une association à un patient ou comporte un problème.\n\nLorsqu’une association est nécessaire, cliquez sur « Associer à un patient » pour choisir le dossier auquel rattacher les résultats.\n\nLe compte rendu et la liste des fichiers permettent de consulter le détail du traitement et les éventuels avertissements.\n\nSi le fichier reçu est incomplet ou endommagé, demandez un nouvel envoi depuis ABAK Mobile.\n\nSelon la situation, le bouton « Supprimer cet import » est proposé. Consultez le message de confirmation avant de valider la suppression.',
+      name: 'importSessionDetail_help',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Langue de l'application`
   String get language_choice {
     return Intl.message(
@@ -4285,6 +4895,16 @@ class S {
     return Intl.message(
       'ABAK Desktop Companion est un logiciel d’aide à l’organisation, à l’importation et à la consultation de résultats cliniques issus de l’écosystème ABAK.\n\nIl ne constitue pas un dispositif médical certifié et ne remplace pas le jugement du professionnel de santé.\n\nLes résultats, scores, comptes rendus et indicateurs affichés doivent toujours être interprétés par un professionnel qualifié, en tenant compte de l’examen clinique, du contexte du patient et des recommandations en vigueur.\n\nL’utilisateur reste seul responsable de ses décisions cliniques, de la vérification des données importées et de la conformité de leur utilisation avec les règles professionnelles, réglementaires et déontologiques applicables.\n\nABAK Desktop Companion ne réalise pas de diagnostic autonome, ne prescrit aucun traitement et ne se substitue en aucun cas à une consultation médicale ou paramédicale.',
       name: 'legalNotice_content',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cette page présente les avertissements et les informations relatifs à l’utilisation de Companion.\n\nFaites défiler la page pour lire l’intégralité du texte.\n\nUtilisez la flèche de retour pour revenir à la page « À propos ».`
+  String get legalNotice_help {
+    return Intl.message(
+      'Cette page présente les avertissements et les informations relatifs à l’utilisation de Companion.\n\nFaites défiler la page pour lire l’intégralité du texte.\n\nUtilisez la flèche de retour pour revenir à la page « À propos ».',
+      name: 'legalNotice_help',
       desc: '',
       args: [],
     );
@@ -4480,6 +5100,16 @@ class S {
     );
   }
 
+  /// `Cet écran permet de renseigner le nom et les coordonnées de votre cabinet : adresse, code postal, ville, téléphone et adresse électronique.\n\nCliquez sur « Enregistrer les coordonnées » pour conserver vos modifications avant de quitter l’écran.\n\nVous pouvez également choisir une image sur votre ordinateur pour définir le logo du cabinet. Le choix du logo est enregistré immédiatement, indépendamment des coordonnées.\n\nLe bouton de suppression du logo permet de retirer le logo utilisé dans Companion.`
+  String get organization_help {
+    return Intl.message(
+      'Cet écran permet de renseigner le nom et les coordonnées de votre cabinet : adresse, code postal, ville, téléphone et adresse électronique.\n\nCliquez sur « Enregistrer les coordonnées » pour conserver vos modifications avant de quitter l’écran.\n\nVous pouvez également choisir une image sur votre ordinateur pour définir le logo du cabinet. Le choix du logo est enregistré immédiatement, indépendamment des coordonnées.\n\nLe bouton de suppression du logo permet de retirer le logo utilisé dans Companion.',
+      name: 'organization_help',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Identité de l’établissement`
   String get organization_identityTitle {
     return Intl.message(
@@ -4565,6 +5195,16 @@ class S {
     return Intl.message(
       'Associer un téléphone',
       name: 'pairPhone',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cette fenêtre affiche les informations permettant à ABAK Mobile de trouver Companion sur le réseau local.\n\nConnectez le téléphone ou la tablette et l’ordinateur au même réseau local, puis scannez ce QR code depuis la fonction d’association à Companion dans ABAK Mobile.\n\nLe QR code contient l’adresse réseau et le port de communication de cet ordinateur. Ces informations sont également affichées sous le code.\n\nGardez Companion ouvert sur l’ordinateur lors des échanges. Si l’adresse réseau de l’ordinateur change, ouvrez à nouveau cette fenêtre et scannez le nouveau code.\n\nL’affichage de ce QR code ne déclenche pas à lui seul l’envoi de résultats.`
+  String get pairPhone_help {
+    return Intl.message(
+      'Cette fenêtre affiche les informations permettant à ABAK Mobile de trouver Companion sur le réseau local.\n\nConnectez le téléphone ou la tablette et l’ordinateur au même réseau local, puis scannez ce QR code depuis la fonction d’association à Companion dans ABAK Mobile.\n\nLe QR code contient l’adresse réseau et le port de communication de cet ordinateur. Ces informations sont également affichées sous le code.\n\nGardez Companion ouvert sur l’ordinateur lors des échanges. Si l’adresse réseau de l’ordinateur change, ouvrez à nouveau cette fenêtre et scannez le nouveau code.\n\nL’affichage de ce QR code ne déclenche pas à lui seul l’envoi de résultats.',
+      name: 'pairPhone_help',
       desc: '',
       args: [],
     );
@@ -4665,6 +5305,16 @@ class S {
     return Intl.message(
       'Taille',
       name: 'patientClinicalDataEdit_height',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cet écran permet de compléter les informations administratives et le profil du patient.\n\nVous pouvez renseigner son identifiant de santé, la source de son identité, son téléphone, son adresse électronique et son adresse postale.\n\nLe profil comprend le côté dominant, la profession, l’activité sportive, la taille en centimètres et le poids en kilogrammes.\n\nCliquez sur « Enregistrer » pour sauvegarder vos modifications et revenir à la fiche du patient. Revenir en arrière sans enregistrer abandonne les modifications.`
+  String get patientClinicalDataEdit_help {
+    return Intl.message(
+      'Cet écran permet de compléter les informations administratives et le profil du patient.\n\nVous pouvez renseigner son identifiant de santé, la source de son identité, son téléphone, son adresse électronique et son adresse postale.\n\nLe profil comprend le côté dominant, la profession, l’activité sportive, la taille en centimètres et le poids en kilogrammes.\n\nCliquez sur « Enregistrer » pour sauvegarder vos modifications et revenir à la fiche du patient. Revenir en arrière sans enregistrer abandonne les modifications.',
+      name: 'patientClinicalDataEdit_help',
       desc: '',
       args: [],
     );
@@ -4940,6 +5590,16 @@ class S {
     );
   }
 
+  /// `Cette fenêtre permet de modifier les informations de la prise en charge du patient.\n\nVous pouvez corriger la pathologie ou le motif de la prise en charge, compléter le texte initial et choisir le praticien référent ainsi que le médecin prescripteur.\n\nLa pathologie doit être renseignée pour que les modifications soient enregistrées.\n\nCliquez sur « Enregistrer » pour valider les modifications. « Annuler » ferme la fenêtre sans les appliquer.\n\nL’ouverture et la fermeture de cette aide conservent votre saisie dans le formulaire.`
+  String get patientDetail_editCareEpisodeHelp {
+    return Intl.message(
+      'Cette fenêtre permet de modifier les informations de la prise en charge du patient.\n\nVous pouvez corriger la pathologie ou le motif de la prise en charge, compléter le texte initial et choisir le praticien référent ainsi que le médecin prescripteur.\n\nLa pathologie doit être renseignée pour que les modifications soient enregistrées.\n\nCliquez sur « Enregistrer » pour valider les modifications. « Annuler » ferme la fenêtre sans les appliquer.\n\nL’ouverture et la fermeture de cette aide conservent votre saisie dans le formulaire.',
+      name: 'patientDetail_editCareEpisodeHelp',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Modifier les données cliniques`
   String get patientDetail_editClinicalData {
     return Intl.message(
@@ -5035,6 +5695,16 @@ class S {
     return Intl.message(
       'Nouvelle prise en charge',
       name: 'patientDetail_newCareEpisode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cette fenêtre permet de créer une nouvelle prise en charge pour le patient sélectionné.\n\nRenseignez la pathologie ou le motif de la prise en charge. Cette information est nécessaire pour créer l’épisode.\n\nVous pouvez compléter le texte initial et sélectionner un praticien référent. Ces informations sont facultatives.\n\nCliquez sur « Créer » pour enregistrer l’épisode. « Annuler » ferme la fenêtre sans le créer.\n\nL’ouverture et la fermeture de cette aide conservent votre saisie dans le formulaire.`
+  String get patientDetail_newCareEpisodeHelp {
+    return Intl.message(
+      'Cette fenêtre permet de créer une nouvelle prise en charge pour le patient sélectionné.\n\nRenseignez la pathologie ou le motif de la prise en charge. Cette information est nécessaire pour créer l’épisode.\n\nVous pouvez compléter le texte initial et sélectionner un praticien référent. Ces informations sont facultatives.\n\nCliquez sur « Créer » pour enregistrer l’épisode. « Annuler » ferme la fenêtre sans le créer.\n\nL’ouverture et la fermeture de cette aide conservent votre saisie dans le formulaire.',
+      name: 'patientDetail_newCareEpisodeHelp',
       desc: '',
       args: [],
     );
@@ -5290,6 +5960,16 @@ class S {
     );
   }
 
+  /// `Cet écran permet de créer un patient dans ABAK Companion.\n\nSaisissez son nom et son prénom : ces deux informations sont obligatoires. Vous pouvez compléter sa date de naissance à l’aide du calendrier et renseigner son sexe.\n\nLe bouton de lecture de la carte Vitale permet de récupérer l’identité du patient lorsque le lecteur et le module de lecture sont disponibles. Si plusieurs bénéficiaires sont proposés, sélectionnez la personne concernée, puis vérifiez les informations affichées. La saisie manuelle reste possible.\n\nSi Companion détecte un patient déjà présent, vérifiez les informations proposées avant de poursuivre afin d’éviter un doublon. Un patient archivé peut être proposé à la restauration.\n\nCliquez sur « Créer le patient » pour enregistrer la fiche, ou sur « Annuler » pour quitter sans créer de patient.`
+  String get patientNew_help {
+    return Intl.message(
+      'Cet écran permet de créer un patient dans ABAK Companion.\n\nSaisissez son nom et son prénom : ces deux informations sont obligatoires. Vous pouvez compléter sa date de naissance à l’aide du calendrier et renseigner son sexe.\n\nLe bouton de lecture de la carte Vitale permet de récupérer l’identité du patient lorsque le lecteur et le module de lecture sont disponibles. Si plusieurs bénéficiaires sont proposés, sélectionnez la personne concernée, puis vérifiez les informations affichées. La saisie manuelle reste possible.\n\nSi Companion détecte un patient déjà présent, vérifiez les informations proposées avant de poursuivre afin d’éviter un doublon. Un patient archivé peut être proposé à la restauration.\n\nCliquez sur « Créer le patient » pour enregistrer la fiche, ou sur « Annuler » pour quitter sans créer de patient.',
+      name: 'patientNew_help',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Date de naissance`
   String get patientForm_birthDate {
     return Intl.message(
@@ -5365,6 +6045,16 @@ class S {
     return Intl.message(
       'Nom',
       name: 'patientForm_lastName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cette fenêtre permet de renseigner ou de corriger l’identité du patient.\n\nLe nom et le prénom sont obligatoires. Vous pouvez sélectionner la date de naissance dans le calendrier et renseigner le sexe, ou conserver la valeur « Non précisé ».\n\nCliquez sur « Enregistrer » pour valider les modifications. Si le formulaire est ouvert en mode création, le bouton « Créer » permet de créer la fiche.\n\n« Annuler » ferme la fenêtre sans appliquer les modifications. L’ouverture et la fermeture de cette aide conservent votre saisie dans le formulaire.`
+  String get patientForm_help {
+    return Intl.message(
+      'Cette fenêtre permet de renseigner ou de corriger l’identité du patient.\n\nLe nom et le prénom sont obligatoires. Vous pouvez sélectionner la date de naissance dans le calendrier et renseigner le sexe, ou conserver la valeur « Non précisé ».\n\nCliquez sur « Enregistrer » pour valider les modifications. Si le formulaire est ouvert en mode création, le bouton « Créer » permet de créer la fiche.\n\n« Annuler » ferme la fenêtre sans appliquer les modifications. L’ouverture et la fermeture de cette aide conservent votre saisie dans le formulaire.',
+      name: 'patientForm_help',
       desc: '',
       args: [],
     );
@@ -5587,6 +6277,16 @@ class S {
       name: 'patientList_error',
       desc: '',
       args: [error],
+    );
+  }
+
+  /// `Cet écran permet de retrouver vos patients et d’accéder à leur dossier.\n\nLes boutons « Actifs » et « Archivés » permettent de choisir la liste affichée. Le nombre indiqué correspond au total des patients de chaque catégorie.\n\nPour rechercher un patient dans la liste affichée, saisissez tout ou partie de son nom ou de son prénom dans le champ de recherche. Cliquez sur sa ligne pour ouvrir son dossier.\n\nLe bouton « Nouveau patient » ouvre l’écran de création d’un patient.\n\nPour un patient actif, l’icône crayon permet de modifier son identité. L’icône d’archivage permet de le retirer de la liste des patients actifs après confirmation.\n\nDans la liste des patients archivés, l’icône de restauration permet de remettre un patient dans la liste des actifs. Une aide spécifique, accessible près de la date d’archivage, précise les modalités de conservation.`
+  String get patientList_help {
+    return Intl.message(
+      'Cet écran permet de retrouver vos patients et d’accéder à leur dossier.\n\nLes boutons « Actifs » et « Archivés » permettent de choisir la liste affichée. Le nombre indiqué correspond au total des patients de chaque catégorie.\n\nPour rechercher un patient dans la liste affichée, saisissez tout ou partie de son nom ou de son prénom dans le champ de recherche. Cliquez sur sa ligne pour ouvrir son dossier.\n\nLe bouton « Nouveau patient » ouvre l’écran de création d’un patient.\n\nPour un patient actif, l’icône crayon permet de modifier son identité. L’icône d’archivage permet de le retirer de la liste des patients actifs après confirmation.\n\nDans la liste des patients archivés, l’icône de restauration permet de remettre un patient dans la liste des actifs. Une aide spécifique, accessible près de la date d’archivage, précise les modalités de conservation.',
+      name: 'patientList_help',
+      desc: '',
+      args: [],
     );
   }
 
@@ -6540,6 +7240,16 @@ class S {
     );
   }
 
+  /// `Cette fenêtre permet de créer ou de modifier la fiche d’un praticien.\n\nLe nom affiché est obligatoire : il permet d’identifier le praticien dans Companion. Vous pouvez également renseigner son prénom, son nom, son identifiant professionnel, son adresse électronique et son téléphone.\n\nCliquez sur « Créer » pour ajouter un praticien ou sur « Enregistrer » pour valider les modifications d’une fiche existante.\n\n« Annuler » ferme la fenêtre sans appliquer les modifications. L’ouverture et la fermeture de cette aide conservent votre saisie dans le formulaire.`
+  String get practitionerNew_help {
+    return Intl.message(
+      'Cette fenêtre permet de créer ou de modifier la fiche d’un praticien.\n\nLe nom affiché est obligatoire : il permet d’identifier le praticien dans Companion. Vous pouvez également renseigner son prénom, son nom, son identifiant professionnel, son adresse électronique et son téléphone.\n\nCliquez sur « Créer » pour ajouter un praticien ou sur « Enregistrer » pour valider les modifications d’une fiche existante.\n\n« Annuler » ferme la fenêtre sans appliquer les modifications. L’ouverture et la fermeture de cette aide conservent votre saisie dans le formulaire.',
+      name: 'practitionerNew_help',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Nom`
   String get practitionerNew_lastName {
     return Intl.message(
@@ -6615,6 +7325,16 @@ class S {
     return Intl.message(
       'Cabinet',
       name: 'practitionerQr_defaultOrganizationName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cette fenêtre affiche le QR code du profil professionnel du praticien, accompagné de son nom et du nom du cabinet.\n\nScannez ce QR code depuis ABAK Mobile pour y identifier le praticien dans cet établissement. Vérifiez que le nom affiché correspond au professionnel concerné.\n\nCe QR code sert à transmettre les informations d’identification du profil professionnel ; son affichage ne déclenche pas de transfert de résultats.\n\nFermez cette fenêtre pour revenir à la liste des praticiens.`
+  String get practitionerQr_help {
+    return Intl.message(
+      'Cette fenêtre affiche le QR code du profil professionnel du praticien, accompagné de son nom et du nom du cabinet.\n\nScannez ce QR code depuis ABAK Mobile pour y identifier le praticien dans cet établissement. Vérifiez que le nom affiché correspond au professionnel concerné.\n\nCe QR code sert à transmettre les informations d’identification du profil professionnel ; son affichage ne déclenche pas de transfert de résultats.\n\nFermez cette fenêtre pour revenir à la liste des praticiens.',
+      name: 'practitionerQr_help',
       desc: '',
       args: [],
     );
@@ -6870,6 +7590,26 @@ class S {
     );
   }
 
+  /// `Historique des kinés référents`
+  String get referringPractitionerHistory_title {
+    return Intl.message(
+      'Historique des kinés référents',
+      name: 'referringPractitionerHistory_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cette fenêtre présente les praticiens qui ont été désignés comme référents pour cet épisode de soins.\n\nChaque ligne indique le nom du praticien et sa période d’affectation. La mention « Référent actuel » identifie le praticien actuellement associé à l’épisode.\n\nLa mention « archivé » signifie que la fiche du praticien est archivée ; son nom reste visible dans l’historique.\n\nCette fenêtre permet uniquement de consulter l’historique. Fermez-la pour revenir à l’épisode de soins.`
+  String get referringPractitionerHistory_help {
+    return Intl.message(
+      'Cette fenêtre présente les praticiens qui ont été désignés comme référents pour cet épisode de soins.\n\nChaque ligne indique le nom du praticien et sa période d’affectation. La mention « Référent actuel » identifie le praticien actuellement associé à l’épisode.\n\nLa mention « archivé » signifie que la fiche du praticien est archivée ; son nom reste visible dans l’historique.\n\nCette fenêtre permet uniquement de consulter l’historique. Fermez-la pour revenir à l’épisode de soins.',
+      name: 'referringPractitionerHistory_help',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Actualiser le tableau de bord`
   String get refreshDashboard {
     return Intl.message(
@@ -6885,6 +7625,26 @@ class S {
     return Intl.message(
       'Archives des rapports',
       name: 'reportArchive_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Comprendre le brouillon du rapport`
+  String get reportDraft_helpTitle {
+    return Intl.message(
+      'Comprendre le brouillon du rapport',
+      name: 'reportDraft_helpTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cette vue présente les rapports enregistrés pour la prise en charge, avec leur titre et leur date.\n\nLes actions de chaque ligne permettent de modifier un rapport, de le dupliquer ou de le déplacer vers les documents archivés.\n\nLorsqu’un rapport est ouvert en modification, utilisez l’action de mise à jour pour enregistrer vos changements. Les commandes disponibles permettent également d’annuler les modifications ou de revenir au brouillon.\n\nLe déplacement vers les documents archivés n’est pas une suppression définitive.\n\nCliquez sur la croix pour fermer la vue agrandie et revenir à l’espace Bilans/Rapports.`
+  String get reportHistory_help {
+    return Intl.message(
+      'Cette vue présente les rapports enregistrés pour la prise en charge, avec leur titre et leur date.\n\nLes actions de chaque ligne permettent de modifier un rapport, de le dupliquer ou de le déplacer vers les documents archivés.\n\nLorsqu’un rapport est ouvert en modification, utilisez l’action de mise à jour pour enregistrer vos changements. Les commandes disponibles permettent également d’annuler les modifications ou de revenir au brouillon.\n\nLe déplacement vers les documents archivés n’est pas une suppression définitive.\n\nCliquez sur la croix pour fermer la vue agrandie et revenir à l’espace Bilans/Rapports.',
+      name: 'reportHistory_help',
       desc: '',
       args: [],
     );
@@ -6995,6 +7755,16 @@ class S {
     return Intl.message(
       'Date de l\'exercice',
       name: 'resultDetail_exerciseDate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cet écran présente les informations d’un résultat importé depuis ABAK Mobile : patient, date de réalisation, score et, lorsqu’elles sont disponibles, aide utilisée, identité du praticien et appareil d’origine.\n\nVous pouvez consulter le compte rendu détaillé et les mesures complémentaires transmises par l’exercice.\n\nLa zone « Commentaire clinique » permet d’ajouter ou de modifier vos observations. Cliquez sur « Enregistrer » pour les conserver avant de quitter l’écran.\n\nLa rubrique consacrée à l’import indique l’état de synchronisation et la date de dernière modification du résultat.\n\nL’icône d’archivage permet d’archiver ce résultat après confirmation.`
+  String get resultDetail_help {
+    return Intl.message(
+      'Cet écran présente les informations d’un résultat importé depuis ABAK Mobile : patient, date de réalisation, score et, lorsqu’elles sont disponibles, aide utilisée, identité du praticien et appareil d’origine.\n\nVous pouvez consulter le compte rendu détaillé et les mesures complémentaires transmises par l’exercice.\n\nLa zone « Commentaire clinique » permet d’ajouter ou de modifier vos observations. Cliquez sur « Enregistrer » pour les conserver avant de quitter l’écran.\n\nLa rubrique consacrée à l’import indique l’état de synchronisation et la date de dernière modification du résultat.\n\nL’icône d’archivage permet d’archiver ce résultat après confirmation.',
+      name: 'resultDetail_help',
       desc: '',
       args: [],
     );
@@ -7115,6 +7885,16 @@ class S {
     return Intl.message(
       'État sync',
       name: 'resultDetail_syncState',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Le texte affiché correspond à un travail en cours sauvegardé automatiquement. Vous pouvez le conserver, le modifier ou le supprimer avant d’enregistrer votre rapport.`
+  String get reportDraft_help {
+    return Intl.message(
+      'Le texte affiché correspond à un travail en cours sauvegardé automatiquement. Vous pouvez le conserver, le modifier ou le supprimer avant d’enregistrer votre rapport.',
+      name: 'reportDraft_help',
       desc: '',
       args: [],
     );
@@ -7255,6 +8035,16 @@ class S {
     return Intl.message(
       'Dossier d’échange ABAK mis à jour',
       name: 'settings_exchangeDirectoryUpdated',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cet écran regroupe les fonctions d’installation, de diagnostic et de maintenance de Companion. Utilisez-les selon les indications de la documentation ABAK ou d’un technicien.\n\nLa rubrique « Configuration » permet de consulter, ouvrir ou modifier le dossier utilisé pour les échanges de fichiers.\n\nLa rubrique « Diagnostic » donne accès aux vérifications du dispositif de lecture de la carte Vitale.\n\nLa rubrique « Maintenance » permet d’ouvrir l’assistant de résolution des imports, d’importer manuellement un fichier ABAK et d’accéder à la gestion des sauvegardes.\n\nLa réinitialisation de la base supprime les données locales. Cette opération est réservée aux situations d’assistance technique : lisez attentivement les messages de confirmation avant de poursuivre.`
+  String get settings_help {
+    return Intl.message(
+      'Cet écran regroupe les fonctions d’installation, de diagnostic et de maintenance de Companion. Utilisez-les selon les indications de la documentation ABAK ou d’un technicien.\n\nLa rubrique « Configuration » permet de consulter, ouvrir ou modifier le dossier utilisé pour les échanges de fichiers.\n\nLa rubrique « Diagnostic » donne accès aux vérifications du dispositif de lecture de la carte Vitale.\n\nLa rubrique « Maintenance » permet d’ouvrir l’assistant de résolution des imports, d’importer manuellement un fichier ABAK et d’accéder à la gestion des sauvegardes.\n\nLa réinitialisation de la base supprime les données locales. Cette opération est réservée aux situations d’assistance technique : lisez attentivement les messages de confirmation avant de poursuivre.',
+      name: 'settings_help',
       desc: '',
       args: [],
     );
@@ -7640,6 +8430,26 @@ class S {
     );
   }
 
+  /// `Cette fenêtre permet de choisir la personne concernée lorsque plusieurs bénéficiaires sont proposés après la lecture de la carte Vitale.\n\nVérifiez le nom, le prénom et la date de naissance lorsqu’elle est disponible, puis cliquez sur la ligne du bénéficiaire souhaité.\n\nLa sélection ferme cette fenêtre et transmet l’identité choisie à l’étape suivante.\n\n« Annuler » ferme la fenêtre sans sélectionner de bénéficiaire.`
+  String get vitaleBeneficiarySelector_help {
+    return Intl.message(
+      'Cette fenêtre permet de choisir la personne concernée lorsque plusieurs bénéficiaires sont proposés après la lecture de la carte Vitale.\n\nVérifiez le nom, le prénom et la date de naissance lorsqu’elle est disponible, puis cliquez sur la ligne du bénéficiaire souhaité.\n\nLa sélection ferme cette fenêtre et transmet l’identité choisie à l’étape suivante.\n\n« Annuler » ferme la fenêtre sans sélectionner de bénéficiaire.',
+      name: 'vitaleBeneficiarySelector_help',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cet écran permet de vérifier le fonctionnement du dispositif de lecture de la carte Vitale.\n\nSous Windows, la rubrique consacrée au module indique son état et permet d’actualiser cette information.\n\nLancez une lecture avec le lecteur connecté et la carte insérée. Si plusieurs bénéficiaires sont proposés, sélectionnez la personne concernée pour consulter les informations lues.\n\nLes messages affichés permettent de comprendre un éventuel échec et peuvent être communiqués à l’assistance.\n\nLa rubrique « Diagnostic avancé » propose un test technique de communication avec la carte. Utilisez-la selon les indications de la documentation ABAK ou d’un technicien.\n\nCet écran sert au diagnostic : la lecture d’une identité ne crée pas de fiche patient.`
+  String get vitaleDiagnostic_help {
+    return Intl.message(
+      'Cet écran permet de vérifier le fonctionnement du dispositif de lecture de la carte Vitale.\n\nSous Windows, la rubrique consacrée au module indique son état et permet d’actualiser cette information.\n\nLancez une lecture avec le lecteur connecté et la carte insérée. Si plusieurs bénéficiaires sont proposés, sélectionnez la personne concernée pour consulter les informations lues.\n\nLes messages affichés permettent de comprendre un éventuel échec et peuvent être communiqués à l’assistance.\n\nLa rubrique « Diagnostic avancé » propose un test technique de communication avec la carte. Utilisez-la selon les indications de la documentation ABAK ou d’un technicien.\n\nCet écran sert au diagnostic : la lecture d’une identité ne crée pas de fiche patient.',
+      name: 'vitaleDiagnostic_help',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Sélectionnez un bénéficiaire`
   String get vitaleBeneficiarySelector_selectBeneficiary {
     return Intl.message(
@@ -7695,6 +8505,16 @@ class S {
     return Intl.message(
       'Prénom',
       name: 'vitaleIdentity_firstName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cet écran permet de lire l’identité d’un bénéficiaire depuis une carte Vitale, lorsque le lecteur et le module de lecture sont disponibles.\n\nLa lecture démarre à l’ouverture de l’écran. Vous pouvez la relancer avec le bouton de lecture. Si plusieurs bénéficiaires sont présents sur la carte, sélectionnez la personne concernée.\n\nVérifiez le nom, le prénom, la date de naissance et les autres informations affichées. Le numéro d’identification est signalé comme détecté ou indisponible, sans être affiché intégralement.\n\nLorsque l’identité est utilisable, le bouton de création du patient permet de transmettre ces informations au formulaire de création.\n\nSi aucune identité n’est disponible, consultez le message affiché et vérifiez le dispositif de lecture avant de réessayer. Vous pouvez revenir à l’écran précédent pour effectuer une saisie manuelle.`
+  String get vitaleIdentity_help {
+    return Intl.message(
+      'Cet écran permet de lire l’identité d’un bénéficiaire depuis une carte Vitale, lorsque le lecteur et le module de lecture sont disponibles.\n\nLa lecture démarre à l’ouverture de l’écran. Vous pouvez la relancer avec le bouton de lecture. Si plusieurs bénéficiaires sont présents sur la carte, sélectionnez la personne concernée.\n\nVérifiez le nom, le prénom, la date de naissance et les autres informations affichées. Le numéro d’identification est signalé comme détecté ou indisponible, sans être affiché intégralement.\n\nLorsque l’identité est utilisable, le bouton de création du patient permet de transmettre ces informations au formulaire de création.\n\nSi aucune identité n’est disponible, consultez le message affiché et vérifiez le dispositif de lecture avant de réessayer. Vous pouvez revenir à l’écran précédent pour effectuer une saisie manuelle.',
+      name: 'vitaleIdentity_help',
       desc: '',
       args: [],
     );

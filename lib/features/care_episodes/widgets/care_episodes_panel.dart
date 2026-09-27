@@ -63,7 +63,18 @@ class _CareEpisodesPanelState extends State<CareEpisodesPanel> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text(s.patientDetail_editCareEpisode),
+          title: Row(
+            children: [
+              Expanded(
+                child: Text(s.patientDetail_editCareEpisode),
+              ),
+              ContextHelpButton(
+                technicalInformationLabel: s.g_helpTooltip,
+                title: s.patientDetail_editCareEpisode,
+                content: s.patientDetail_editCareEpisodeHelp,
+              ),
+            ],
+          ),
           content: SizedBox(
             width: 520,
             child: Column(
@@ -284,7 +295,16 @@ class _CareEpisodesPanelState extends State<CareEpisodesPanel> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text(s.patientDetail_newCareEpisode),
+          title: Row(
+            children: [
+              Expanded(child: Text(s.patientDetail_newCareEpisode)),
+              ContextHelpButton(
+                technicalInformationLabel: S.of(context).g_helpTooltip,
+                title: s.patientDetail_newCareEpisode,
+                content: s.patientDetail_newCareEpisodeHelp,
+              ),
+            ],
+          ),
           content: SizedBox(
             width: 520,
             child: Column(
@@ -446,8 +466,12 @@ class _SectionCard extends StatelessWidget {
                   if (helpContent != null &&
                       helpContent!.trim().isNotEmpty) ...[
                     const SizedBox(width: 8),
-                    ContextHelpButton(title: title, content: helpContent!),
-                  ],
+                    ContextHelpButton(
+                    technicalInformationLabel: S.of(context).g_helpTooltip,
+                    title: title,
+                    content: helpContent!,
+                  ),
+                 ],
                 ],
               ),
               const Divider(height: 28),

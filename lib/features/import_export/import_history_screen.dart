@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:abak_shared/abak_shared.dart';
+import '../../generated/l10n.dart';
 
 import '../../core/expert/expert_context_info.dart';
 import '../../core/expert/expert_info_button.dart';
@@ -15,18 +17,25 @@ class ImportHistoryScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final repository = ImportSessionRepository();
+    final s = S.of(context);
 
     return Scaffold(
       appBar: AppBar(
+        title: Text(s.home_import_history),
         actions: [
+          ContextHelpButton(
+            technicalInformationLabel: s.g_helpTooltip,
+            title: s.home_import_history,
+            content: s.importHistory_help,
+          ),
           ExpertModeInfoButton(
             info: ExpertContextInfo(
-              contextName: 'Historique des imports',
-              sourceFile: 'lib/features/import_export/import_history_screen.dart',
+              contextName: s.home_import_history,
+              sourceFile:
+              'lib/features/import_export/import_history_screen.dart',
             ),
           ),
         ],
-        title: const Text('Historique des imports'),
       ),
       body: FutureBuilder<List<ImportSession>>(
         future: repository.getSessions(),

@@ -186,6 +186,7 @@ trap 'rm -f "${SIGNED_ENTITLEMENTS}"' EXIT
 codesign --display --entitlements - --xml "${APP_PATH}" > "${SIGNED_ENTITLEMENTS}"
 for entitlement in \
   com.apple.security.app-sandbox \
+  com.apple.security.device.audio-input \
   com.apple.security.network.client \
   com.apple.security.network.server \
   com.apple.security.files.user-selected.read-write \

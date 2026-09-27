@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
+import 'package:abak_shared/abak_shared.dart';
+import '../../generated/l10n.dart';
 import 'package:flutter/rendering.dart';
 import 'package:file_picker/file_picker.dart';
 import 'body_map_adapter.dart';
@@ -473,7 +475,14 @@ class _EpisodeBodymapScreenState extends State<EpisodeBodymapScreen> {
           icon: const Icon(Icons.arrow_back),
           onPressed: busy || loading ? null : close,
         ),
-        title: Text('${widget.patientName} — Carte des douleurs'),
+        title: Text('${widget.patientName} — ${S.of(context).bodymap_title}'),
+        actions: [
+          ContextHelpButton(
+            technicalInformationLabel: S.of(context).g_helpTooltip,
+            title: S.of(context).bodymap_title,
+            content: S.of(context).bodymap_help,
+          ),
+        ],
       ),
       body: loading
           ? const Center(child: CircularProgressIndicator())

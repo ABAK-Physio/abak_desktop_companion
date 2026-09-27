@@ -144,7 +144,18 @@ class _CareEpisodeReportsWorkspaceScreenState
       final authorize = await showDialog<bool>(
         context: context,
         builder: (dialogContext) => AlertDialog(
-          title: const Text('Autoriser le dossier des documents'),
+          title: Row(
+            children: [
+              Expanded(
+                child: Text(S.of(dialogContext).documentDirectoryAccess_title),
+              ),
+              ContextHelpButton(
+                technicalInformationLabel: S.of(dialogContext).g_helpTooltip,
+                title: S.of(dialogContext).documentDirectoryAccess_title,
+                content: S.of(dialogContext).documentDirectoryAccess_help,
+              ),
+            ],
+          ),
           content: Text(
             'Le dossier configuré n’est pas accessible ou son autorisation '
                 'doit être renouvelée.\n\n${error.path}\n\n'
@@ -185,7 +196,18 @@ class _CareEpisodeReportsWorkspaceScreenState
         context: context,
         builder: (dialogContext) {
           return AlertDialog(
-            title: const Text('Un DOCX existe déjà'),
+            title: Row(
+              children: [
+                Expanded(
+                  child: Text(S.of(dialogContext).documentDocxExisting_title),
+                ),
+                ContextHelpButton(
+                  technicalInformationLabel: S.of(dialogContext).g_helpTooltip,
+                  title: S.of(dialogContext).documentDocxExisting_title,
+                  content: S.of(dialogContext).documentDocxExisting_help,
+                ),
+              ],
+            ),
             content: const Text(
               'Un DOCX est déjà associé à ce bilan. '
                   'Voulez-vous remplacer le fichier existant '
@@ -335,7 +357,18 @@ class _CareEpisodeReportsWorkspaceScreenState
         context: context,
         builder: (dialogContext) {
           return AlertDialog(
-            title: const Text('Un DOCX existe déjà'),
+            title: Row(
+              children: [
+                Expanded(
+                  child: Text(S.of(dialogContext).documentDocxExisting_title),
+                ),
+                ContextHelpButton(
+                  technicalInformationLabel: S.of(dialogContext).g_helpTooltip,
+                  title: S.of(dialogContext).documentDocxExisting_title,
+                  content: S.of(dialogContext).documentDocxExisting_help,
+                ),
+              ],
+            ),
             content: const Text(
               'Un DOCX est déjà associé à ce rapport. '
                   'Voulez-vous remplacer le fichier existant '
@@ -647,7 +680,18 @@ class _CareEpisodeReportsWorkspaceScreenState
         String? practitionerId = draft.authorPractitionerId;
 
         return AlertDialog(
-          title: const Text('Choisir le rédacteur'),
+          title: Row(
+            children: [
+              Expanded(
+                child: Text(S.of(dialogContext).documentAuthor_title),
+              ),
+              ContextHelpButton(
+                technicalInformationLabel: S.of(dialogContext).g_helpTooltip,
+                title: S.of(dialogContext).documentAuthor_title,
+                content: S.of(dialogContext).documentAuthor_help,
+              ),
+            ],
+          ),
           content: SizedBox(
             width: 420,
             child: PractitionerSelector(
@@ -717,7 +761,18 @@ class _CareEpisodeReportsWorkspaceScreenState
         String? practitionerId = report.authorPractitionerId;
 
         return AlertDialog(
-          title: const Text('Choisir le rédacteur'),
+          title: Row(
+            children: [
+              Expanded(
+                child: Text(S.of(dialogContext).documentAuthor_title),
+              ),
+              ContextHelpButton(
+                technicalInformationLabel: S.of(dialogContext).g_helpTooltip,
+                title: S.of(dialogContext).documentAuthor_title,
+                content: S.of(dialogContext).documentAuthor_help,
+              ),
+            ],
+          ),
           content: SizedBox(
             width: 420,
             child: PractitionerSelector(
@@ -789,7 +844,18 @@ class _CareEpisodeReportsWorkspaceScreenState
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
-          title: const Text('Destinataire(s)'),
+          title: Row(
+            children: [
+              Expanded(
+                child: Text(S.of(dialogContext).documentRecipient_title),
+              ),
+              ContextHelpButton(
+                technicalInformationLabel: S.of(dialogContext).g_helpTooltip,
+                title: S.of(dialogContext).documentRecipient_title,
+                content: S.of(dialogContext).documentRecipient_help,
+              ),
+            ],
+          ),
           content: SizedBox(
             width: 420,
             child: TextField(
@@ -1019,7 +1085,18 @@ class _CareEpisodeReportsWorkspaceScreenState
           context: context,
           builder: (dialogContext) {
             return AlertDialog(
-              title: const Text('Un brouillon de rapport existe'),
+              title: Row(
+                children: [
+                  Expanded(
+                    child: Text(S.of(dialogContext).documentDraftChoice_title),
+                  ),
+                  ContextHelpButton(
+                    technicalInformationLabel: S.of(dialogContext).g_helpTooltip,
+                    title: S.of(dialogContext).documentDraftChoice_title,
+                    content: S.of(dialogContext).documentDraftChoice_help,
+                  ),
+                ],
+              ),
               content: const Text(
                 'Un travail en cours a déjà été sauvegardé automatiquement.\n\n'
                     'Souhaitez-vous reprendre ce brouillon ou commencer un nouveau rapport ?',
@@ -1585,7 +1662,18 @@ class _CareEpisodeReportsWorkspaceScreenState
           context: context,
           builder: (dialogContext) {
             return AlertDialog(
-              title: const Text('Un brouillon de bilan existe'),
+              title: Row(
+                children: [
+                  Expanded(
+                    child: Text(S.of(dialogContext).documentDraftChoice_title),
+                  ),
+                  ContextHelpButton(
+                    technicalInformationLabel: S.of(dialogContext).g_helpTooltip,
+                    title: S.of(dialogContext).documentDraftChoice_title,
+                    content: S.of(dialogContext).documentDraftChoice_help,
+                  ),
+                ],
+              ),
               content: const Text(
                 'Un travail en cours a déjà été sauvegardé automatiquement.\n\n'
                     'Souhaitez-vous reprendre ce brouillon ou commencer un nouveau bilan ?',
@@ -1696,7 +1784,18 @@ class _CareEpisodeReportsWorkspaceScreenState
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
-          title: const Text('Mettre le bilan à la corbeille ?'),
+          title: Row(
+            children: [
+              Expanded(
+                child: Text(S.of(dialogContext).documentArchiveConfirm_title),
+              ),
+              ContextHelpButton(
+                technicalInformationLabel: S.of(dialogContext).g_helpTooltip,
+                title: S.of(dialogContext).documentArchiveConfirm_title,
+                content: S.of(dialogContext).documentArchiveConfirm_help,
+              ),
+            ],
+          ),
           content: Text(
             'Le bilan « ${assessment.title} » ne sera plus affiché '
                 'dans l’historique.',
@@ -1791,7 +1890,18 @@ class _CareEpisodeReportsWorkspaceScreenState
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
-          title: const Text('Mettre le rapport à la corbeille ?'),
+          title: Row(
+            children: [
+              Expanded(
+                child: Text(S.of(dialogContext).documentArchiveConfirm_title),
+              ),
+              ContextHelpButton(
+                technicalInformationLabel: S.of(dialogContext).g_helpTooltip,
+                title: S.of(dialogContext).documentArchiveConfirm_title,
+                content: S.of(dialogContext).documentArchiveConfirm_help,
+              ),
+            ],
+          ),
           content: Text(
             'Le rapport « ${report.title} » sera placé dans la corbeille. '
                 'Il pourra être restauré ultérieurement.',
@@ -2257,7 +2367,18 @@ class _CareEpisodeReportsWorkspaceScreenState
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
-          title: const Text('Nouvelle note de suivi'),
+          title: Row(
+            children: [
+              Expanded(
+                child: Text(S.of(dialogContext).followUpNoteForm_createTitle),
+              ),
+              ContextHelpButton(
+                technicalInformationLabel: S.of(dialogContext).g_helpTooltip,
+                title: S.of(dialogContext).followUpNoteForm_createTitle,
+                content: S.of(dialogContext).followUpNoteForm_help,
+              ),
+            ],
+          ),
           content: SizedBox(
             width: 520,
             child: Column(
@@ -2340,7 +2461,18 @@ class _CareEpisodeReportsWorkspaceScreenState
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
-          title: const Text('Modifier la note de suivi'),
+          title: Row(
+            children: [
+              Expanded(
+                child: Text(S.of(dialogContext).followUpNoteForm_editTitle),
+              ),
+              ContextHelpButton(
+                technicalInformationLabel: S.of(dialogContext).g_helpTooltip,
+                title: S.of(dialogContext).followUpNoteForm_editTitle,
+                content: S.of(dialogContext).followUpNoteForm_help,
+              ),
+            ],
+          ),
           content: SizedBox(
             width: 520,
             child: Column(
@@ -2456,6 +2588,11 @@ class _CareEpisodeReportsWorkspaceScreenState
                           style: Theme.of(dialogContext).textTheme.titleLarge,
                         ),
                       ),
+                      ContextHelpButton(
+                        technicalInformationLabel: S.of(dialogContext).g_helpTooltip,
+                        title: S.of(dialogContext).documentExpandedEditor_helpTitle,
+                        content: S.of(dialogContext).documentExpandedEditor_help,
+                      ),
                       IconButton(
                         onPressed: () => Navigator.of(dialogContext).pop(),
                         tooltip: 'Fermer',
@@ -2534,7 +2671,18 @@ class _CareEpisodeReportsWorkspaceScreenState
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
-          title: Text('Le $documentLabel contient déjà du texte'),
+          title: Row(
+            children: [
+              Expanded(
+                child: Text(S.of(dialogContext).documentTextInsertion_title),
+              ),
+              ContextHelpButton(
+                technicalInformationLabel: S.of(dialogContext).g_helpTooltip,
+                title: S.of(dialogContext).documentTextInsertion_title,
+                content: S.of(dialogContext).documentTextInsertion_help,
+              ),
+            ],
+          ),
           content: Text(
             'Souhaitez-vous ajouter le contenu généré '
                 'à la suite du $documentLabel actuel ou remplacer '
@@ -2605,10 +2753,23 @@ class _CareEpisodeReportsWorkspaceScreenState
       context: context,
       builder: (context) {
         return SimpleDialog(
-          title: Text(
-            isReport
-                ? 'Choisir un modèle de rapport'
-                : 'Choisir un modèle de bilan',
+          title: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  isReport
+                      ? S.of(context).documentTemplate_reportTitle
+                      : S.of(context).documentTemplate_assessmentTitle,
+                ),
+              ),
+              ContextHelpButton(
+                technicalInformationLabel: S.of(context).g_helpTooltip,
+                title: isReport
+                    ? S.of(context).documentTemplate_reportTitle
+                    : S.of(context).documentTemplate_assessmentTitle,
+                content: S.of(context).documentTemplate_help,
+              ),
+            ],
           ),
           children: [
             for (final template in templates)
@@ -2650,7 +2811,18 @@ class _CareEpisodeReportsWorkspaceScreenState
         context: context,
         builder: (dialogContext) {
           return AlertDialog(
-            title: const Text('Brouillon existant'),
+            title: Row(
+              children: [
+                Expanded(
+                  child: Text(S.of(dialogContext).documentTemplateDraft_title),
+                ),
+                ContextHelpButton(
+                  technicalInformationLabel: S.of(dialogContext).g_helpTooltip,
+                  title: S.of(dialogContext).documentTemplateDraft_title,
+                  content: S.of(dialogContext).documentTemplateDraft_help,
+                ),
+              ],
+            ),
             content: Text(
               'Un brouillon existe déjà pour ce modèle de $documentLabel.',
             ),
@@ -2717,6 +2889,7 @@ class _CareEpisodeReportsWorkspaceScreenState
   Future<void> _showExpandedWorkspaceContent({
     required String title,
     required Widget child,
+    String? helpContent,
   }) {
     return showDialog<void>(
       context: context,
@@ -2739,6 +2912,12 @@ class _CareEpisodeReportsWorkspaceScreenState
                           style: Theme.of(dialogContext).textTheme.titleLarge,
                         ),
                       ),
+                      if (helpContent != null)
+                        ContextHelpButton(
+                          technicalInformationLabel: S.of(dialogContext).g_helpTooltip,
+                          title: title,
+                          content: helpContent,
+                        ),
                       IconButton(
                         onPressed: () => Navigator.of(dialogContext).pop(),
                         tooltip: 'Fermer',
@@ -2836,7 +3015,18 @@ class _CareEpisodeReportsWorkspaceScreenState
       builder: (dialogContext) {
         return StatefulBuilder(
           builder: (dialogContext, setDialogState) => AlertDialog(
-          title: const Text('Modifier les référents'),
+            title: Row(
+              children: [
+                Expanded(
+                  child: Text(S.of(dialogContext).episodeReferents_title),
+                ),
+                ContextHelpButton(
+                  technicalInformationLabel: S.of(dialogContext).g_helpTooltip,
+                  title: S.of(dialogContext).episodeReferents_title,
+                  content: S.of(dialogContext).episodeReferents_help,
+                ),
+              ],
+            ),
           content: SizedBox(
             width: 480,
             child: Column(
@@ -3026,13 +3216,9 @@ class _CareEpisodeReportsWorkspaceScreenState
             ),
           ),
           ContextHelpButton(
-            title: 'Bilans et rapports',
-            content:
-            'Cet écran permet de préparer et d’enregistrer les bilans et rapports liés à la prise en charge.\n\n'
-                'Pour un bilan, vous pouvez rédiger le texte principal, sélectionner les résultats de tests et les notes de suivi à inclure, puis générer un document DOCX une fois le bilan enregistré.\n\n'
-                'Les brouillons sont sauvegardés automatiquement tant qu’ils ne sont pas enregistrés comme bilan ou rapport.\n\n'
-                'L’historique permet de retrouver les bilans et rapports déjà enregistrés.',
-            technicalInformationLabel: 'Comprendre l’écran',
+            technicalInformationLabel: S.of(context).g_helpTooltip,
+            title: S.of(context).clinicalDocuments_title,
+            content: S.of(context).clinicalDocuments_help,
             iconSize: 20,
           ),
           const SizedBox(width: 8),
@@ -3216,7 +3402,8 @@ class _CareEpisodeReportsWorkspaceScreenState
                                       !_testSelectionLoading,
                                   onExpand: () {
                                     _showExpandedWorkspaceContent(
-                                      title: 'Tests réalisés',
+                                      title: S.of(context).careEpisodeReportsWorkspace_latestTests,
+                                      helpContent: S.of(context).documentTests_help,
                                       child: StatefulBuilder(
                                         builder:
                                             (dialogContext, setDialogState) {
@@ -3299,7 +3486,8 @@ class _CareEpisodeReportsWorkspaceScreenState
                                   onArchiveAssessment: _archiveAssessment,
                                   onExpand: () {
                                     _showExpandedWorkspaceContent(
-                                      title: 'Historique des bilans',
+                                      title: S.of(context).careEpisodeReportsWorkspace_assessmentHistory,
+                                      helpContent: S.of(context).assessmentHistory_help,
                                       child: AssessmentHistoryCard(
                                         assessmentsFuture: _assessmentsFuture,
                                         isEditing:
@@ -3375,7 +3563,8 @@ class _CareEpisodeReportsWorkspaceScreenState
                                   onArchiveReport: _archiveReport,
                                   onExpand: () {
                                     _showExpandedWorkspaceContent(
-                                      title: 'Historique des rapports',
+                                      title: S.of(context).careEpisodeReportsWorkspace_reportHistory,
+                                      helpContent: S.of(context).reportHistory_help,
                                       child: ReportHistoryCard(
                                         reportsFuture: _reportsFuture,
                                         isEditingReport:
@@ -3451,7 +3640,8 @@ class _CareEpisodeReportsWorkspaceScreenState
                             onEditNote: _editFollowUpNote,
                             onExpand: () {
                               _showExpandedWorkspaceContent(
-                                title: 'Notes de suivi',
+                                title: S.of(context).careEpisodeReportsWorkspace_followUpNotes,
+                                helpContent: S.of(context).followUpNotes_help,
                                 child: FollowUpNotesCard(
                                   notesFuture: _notesFuture,
                                   selectedNoteIds: _selectedNoteIds,
@@ -3506,7 +3696,8 @@ class _CareEpisodeReportsWorkspaceScreenState
                             onDeleteReport: _deleteReportPermanently,
                             onExpand: () {
                               _showExpandedWorkspaceContent(
-                                title: 'Documents archivés',
+                                title: S.of(context).careEpisodeReportsWorkspace_archivedDocuments,
+                                helpContent: S.of(context).archivedDocuments_help,
                                 child: ArchivedDocumentsCard(
                                   archivedAssessmentsFuture:
                                   _archivedAssessmentsFuture,

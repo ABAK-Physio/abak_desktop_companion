@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:abak_vitale/abak_vitale.dart';
 import '../../../generated/l10n.dart';
+import 'package:abak_shared/abak_shared.dart';
 
 class VitaleBeneficiarySelector {
   static Future<VitaleIdentity?> show(
@@ -17,7 +18,18 @@ class VitaleBeneficiarySelector {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text(s.vitaleBeneficiarySelector_selectBeneficiary),
+          title: Row(
+            children: [
+              Expanded(
+                child: Text(s.vitaleBeneficiarySelector_selectBeneficiary),
+              ),
+              ContextHelpButton(
+                technicalInformationLabel: s.g_helpTooltip,
+                title: s.vitaleBeneficiarySelector_selectBeneficiary,
+                content: s.vitaleBeneficiarySelector_help,
+              ),
+            ],
+          ),
           content: SizedBox(
             width: 520,
             height: 420,

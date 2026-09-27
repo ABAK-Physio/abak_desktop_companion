@@ -1,6 +1,7 @@
 import 'dart:io';
 import '../../generated/l10n.dart';
 import 'package:flutter/material.dart';
+import 'package:abak_shared/abak_shared.dart';
 
 import '../../core/settings/exchange_directory_service.dart';
 import '../local_exchange/services/airdrop_import_watcher.dart';
@@ -308,6 +309,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         style: TextStyle(fontSize: 24),
                       ),
                     ),
+                    ContextHelpButton(
+                      technicalInformationLabel: S.of(context).g_helpTooltip,
+                      title: s.settings_title,
+                      content: s.settings_help,
+                    ),
                     if (_expertModeEnabled)
                       ExpertInfoButton(
                         info: _expertInfo(s),
@@ -430,7 +436,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     onPressed: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (_) => const VitaleDiagnosticScreen(),
+                          builder: (context) => VitaleDiagnosticScreen(
+                            helpAction: ContextHelpButton(
+                              technicalInformationLabel: S.of(context).g_helpTooltip,
+                              title: S.of(context).settings_vitaleDiagnostic,
+                              content: S.of(context).vitaleDiagnostic_help,
+                            ),
+                          ),
                         ),
                       );
                     },

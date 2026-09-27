@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../../generated/l10n.dart';
+import 'package:abak_shared/abak_shared.dart';
 
 class DocumentTitleDialog extends StatefulWidget {
   final String dialogTitle;
@@ -54,7 +55,18 @@ class _DocumentTitleDialogState extends State<DocumentTitleDialog> {
   Widget build(BuildContext context) {
     final s = S.of(context);
     return AlertDialog(
-      title: Text(widget.dialogTitle),
+      title: Row(
+        children: [
+          Expanded(
+            child: Text(widget.dialogTitle),
+          ),
+          ContextHelpButton(
+            technicalInformationLabel: s.g_helpTooltip,
+            title: widget.dialogTitle,
+            content: s.documentTitle_help,
+          ),
+        ],
+      ),
       content: SizedBox(
         width: 480,
         child: TextField(

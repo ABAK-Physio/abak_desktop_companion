@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:abak_shared/abak_shared.dart';
 import 'package:uuid/uuid.dart';
 import 'package:intl/intl.dart';
 import '../../../generated/l10n.dart';
@@ -133,7 +134,22 @@ class _PatientFormDialogState extends State<PatientFormDialog> {
   Widget build(BuildContext context) {
     final s = S.of(context);
     return AlertDialog(
-      title: Text(_isEditing ? s.patientForm_editPatient : s.patientForm_newPatient),
+      title: Row(
+        children: [
+          Expanded(
+            child: Text(
+              _isEditing ? s.patientForm_editPatient : s.patientForm_newPatient,
+            ),
+          ),
+          ContextHelpButton(
+            technicalInformationLabel: S.of(context).g_helpTooltip,
+            title: _isEditing
+                ? s.patientForm_editPatient
+                : s.patientForm_newPatient,
+            content: s.patientForm_help,
+          ),
+        ],
+      ),
       content: SizedBox(
         width: 420,
         child: Form(

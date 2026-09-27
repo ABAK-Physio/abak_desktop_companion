@@ -191,18 +191,17 @@ class SoapDraftCard extends StatelessWidget {
                               ),
                               if (!isEditing)
                                 ContextHelpButton(
+                                  technicalInformationLabel: S.of(context).g_helpTooltip,
                                   title:
                                   documentType ==
                                       ClinicalDocumentType.assessment
-                                      ? 'Comprendre le brouillon du bilan'
-                                      : 'Comprendre le brouillon du rapport',
+                                      ? S.of(context).assessmentDraft_helpTitle
+                                      : S.of(context).reportDraft_helpTitle,
                                   content:
                                   documentType ==
                                       ClinicalDocumentType.assessment
-                                      ? 'Le texte affiché correspond à un travail en cours sauvegardé automatiquement. Vous pouvez le conserver, le modifier ou le supprimer avant d’enregistrer votre bilan.'
-                                      : 'Le texte affiché correspond à un travail en cours sauvegardé automatiquement. Vous pouvez le conserver, le modifier ou le supprimer avant d’enregistrer votre rapport.',
-                                  technicalInformationLabel:
-                                  'Comprendre l’écran',
+                                      ? S.of(context).assessmentDraft_help
+                                      : S.of(context).reportDraft_help,
                                   iconSize: 20,
                                 ),
                             ],

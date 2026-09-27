@@ -254,6 +254,11 @@ class _ResultDetailScreenState extends State<ResultDetailScreen> {
       appBar: AppBar(
         title: Text(ClinicalActivityCatalog.displayLabel(_result.exoId)),
         actions: [
+          ContextHelpButton(
+            technicalInformationLabel: S.of(context).g_helpTooltip,
+            title: ClinicalActivityCatalog.displayLabel(_result.exoId),
+            content: s.resultDetail_help,
+          ),
           ExpertModeInfoButton(
             info: ExpertContextInfo(
               contextName: 'Détail du résultat — ${ClinicalActivityCatalog.displayLabel(_result.exoId)}',

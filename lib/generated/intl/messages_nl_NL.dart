@@ -94,6 +94,8 @@ class MessageLookup extends MessageLookupByLibrary {
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "abakWhisperSpeechProvider_name":
             MessageLookupByLibrary.simpleMessage("ABAK Spraakgestuurd dictee"),
+        "archivedDocuments_help": MessageLookupByLibrary.simpleMessage(
+            "Dit overzicht bevat de gearchiveerde balansen en rapporten van de behandeling. Elke regel geeft het type document, de titel en de archiveringsdatum weer.\n\nMet de actie ‘Terugzetten’ kunt u het document weer toevoegen aan de geschiedenis van de balansen of rapporten.\n\nMet de actie ‘Definitief verwijderen’ wordt het document uit Companion verwijderd. Lees het bevestigingsbericht aandachtig door voordat u bevestigt: het document kan vanuit deze lijst niet meer worden hersteld.\n\nKlik op het kruisje om het vergrote scherm te sluiten en terug te keren naar het gedeelte Balansen/Rapporten."),
         "assessmentDocumentDataBuilder_female":
             MessageLookupByLibrary.simpleMessage("Vrouwelijk"),
         "assessmentDocumentDataBuilder_male":
@@ -158,11 +160,19 @@ class MessageLookup extends MessageLookupByLibrary {
         "assessmentDocxService_weight":
             MessageLookupByLibrary.simpleMessage("Gewicht"),
         "assessmentDocxService_years": m3,
+        "assessmentDraft_help": MessageLookupByLibrary.simpleMessage(
+            "De weergegeven tekst is een automatisch opgeslagen concept. U kunt deze behouden, wijzigen of verwijderen voordat u uw balans opslaat."),
+        "assessmentDraft_helpTitle": MessageLookupByLibrary.simpleMessage(
+            "Inzicht krijgen in het concept van de balans"),
+        "assessmentHistory_help": MessageLookupByLibrary.simpleMessage(
+            "Dit overzicht toont de geregistreerde balansen voor de zorgverlening, met hun titel en datum.\n\nMet de acties in elke rij kunt u een balans wijzigen, dupliceren of verplaatsen naar de gearchiveerde documenten.\n\nWanneer een balans is geopend om te worden gewijzigd, gebruikt u de actie ‘Bijwerken’ om uw wijzigingen op te slaan. Met de beschikbare knoppen kunt u ook de wijzigingen ongedaan maken of terugkeren naar het concept.\n\nHet verplaatsen naar de gearchiveerde documenten is geen definitieve verwijdering.\n\nKlik op het kruisje om het vergrote scherm te sluiten en terug te keren naar het gedeelte Balansen/Rapporten."),
         "backupHistory_cancel":
             MessageLookupByLibrary.simpleMessage("Annuleren"),
         "backupHistory_empty": MessageLookupByLibrary.simpleMessage(
             "Er is geen back-up opgeslagen."),
         "backupHistory_fileSize": m4,
+        "backupHistory_help": MessageLookupByLibrary.simpleMessage(
+            "Op dit scherm worden de back-ups weergegeven die in Companion zijn opgeslagen. Elke regel geeft de bestandsnaam, de aanmaakdatum, de bestandsgrootte en de locatie weer.\n\nMet de knop ‘Herstellen’ kunt u de huidige database vervangen door die uit de geselecteerde back-up. Gegevens die na deze back-up zijn toegevoegd of gewijzigd, zullen dus niet in de herstelde database aanwezig zijn.\n\nControleer de datum van de back-up en lees het bevestigingsbericht voordat u doorgaat. Er wordt een back-up van de huidige database gemaakt voordat deze wordt vervangen.\n\nHet back-upbestand moet altijd toegankelijk zijn op de aangegeven locatie. Als het is verplaatst of verwijderd, kan het herstel niet worden uitgevoerd.\n\nGebruik de actie ‘Back-up maken’ op de startpagina om een nieuwe back-up te maken."),
         "backupHistory_restore":
             MessageLookupByLibrary.simpleMessage("Herstellen"),
         "backupHistory_restoreTitle":
@@ -171,6 +181,9 @@ class MessageLookup extends MessageLookupByLibrary {
             "Deze bewerking zal de huidige database volledig vervangen.\n\nEr wordt een automatische back-up gemaakt voordat het herstel wordt uitgevoerd.\n\nDoorgaan?"),
         "backupHistory_title":
             MessageLookupByLibrary.simpleMessage("Overzicht van back-ups"),
+        "bodymap_help": MessageLookupByLibrary.simpleMessage(
+            "Met de pijnkaart kunt u de pijnlijke zones van de patiënt in kaart brengen voor de lopende zorgperiode.\n\nKies een weergave, klik vervolgens op een gebied van het silhouet of selecteer het in de lijst. U kunt een opmerking toevoegen en, indien nodig, een intensiteit van 0 tot 10 aangeven. Gebruik de prullenbak om een gebied uit het rapport te verwijderen.\n\nKlik op ‘Opslaan’ om uw rapport in Companion op te slaan. Wanneer u het scherm verlaat met niet-opgeslagen wijzigingen, kunt u kiezen of u deze wilt opslaan of negeren.\n\nMet ‘Beide kaarten exporteren’ wordt een PNG-afbeelding aangemaakt op de door u gekozen locatie op uw computer. Deze export vervangt het opslaan van de meting niet.\n\nDeze module is een eerste voorstel, dat op basis van uw feedback verder zal worden ontwikkeld. Test het in de praktijk en geef aan welke mogelijkheden u graag toegevoegd of verbeterd zou willen zien."),
+        "bodymap_title": MessageLookupByLibrary.simpleMessage("Pijnkaart"),
         "careEpisodeDetail_abakOrigin":
             MessageLookupByLibrary.simpleMessage("Oorsprong ABAK"),
         "careEpisodeDetail_evolution":
@@ -332,6 +345,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Ondersteuning"),
         "careEpisode_treatment":
             MessageLookupByLibrary.simpleMessage("Geen behandelplan."),
+        "clinicalDocuments_help": MessageLookupByLibrary.simpleMessage(
+            "Op dit scherm kunt u de evaluaties en rapporten met betrekking tot de behandeling opstellen en opslaan.\n\nVoor een evaluatie kunt u de hoofdtekst opstellen, de testresultaten en opmerkingen voor de follow-up selecteren die u wilt opnemen, en vervolgens een DOCX-document genereren zodra de evaluatie is opgeslagen.\n\nConceptversies worden automatisch opgeslagen zolang ze niet als evaluatie of rapport zijn opgeslagen.\n\nVia de geschiedenis kunt u reeds opgeslagen evaluaties en rapporten terugvinden."),
+        "clinicalDocuments_title":
+            MessageLookupByLibrary.simpleMessage("Verslagen en rapporten"),
         "close": MessageLookupByLibrary.simpleMessage("Sluiten"),
         "contactFormTemplateDiagnostic_category":
             MessageLookupByLibrary.simpleMessage("Categorie"),
@@ -388,6 +405,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "De naam van het apparaat is verplicht"),
         "deviceForm_editDevice":
             MessageLookupByLibrary.simpleMessage("Het apparaat wijzigen"),
+        "deviceForm_help": MessageLookupByLibrary.simpleMessage(
+            "In dit venster kunt u de gegevens van een apparaat in Companion aanmaken of wijzigen.\n\nVoer een naam in waarmee u de telefoon of tablet gemakkelijk kunt herkennen. Deze naam is verplicht.\n\nSelecteer het platform van het apparaat: iOS of Android.\n\nU kunt het apparaat koppelen aan een zorgverlener uit de lijst of de optie ‘gedeeld apparaat’ kiezen om het niet aan een specifieke zorgverlener toe te wijzen.\n\nKlik op ‘Aanmaken’ om het apparaat toe te voegen of op ‘Opslaan’ om de wijzigingen te bevestigen. Met ‘Annuleren’ sluit u het venster zonder de wijzigingen toe te passen.\n\nAls u deze helptekst opent en weer sluit, blijven uw invoergegevens in het formulier behouden."),
         "deviceForm_loadingPractitionersError":
             MessageLookupByLibrary.simpleMessage(
                 "Fout bij het laden van de zorgverleners"),
@@ -433,6 +452,64 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("QR-code weergeven"),
         "deviceList_title":
             MessageLookupByLibrary.simpleMessage("Lijst met apparaten"),
+        "deviceQr_help": MessageLookupByLibrary.simpleMessage(
+            "In dit venster wordt de QR-code voor de identificatie van het apparaat weergegeven, samen met de naam van het apparaat, de naam van de praktijk en het platform.\n\nScan deze QR-code met ABAK Mobile om dit apparaat in deze praktijk te identificeren. Controleer of de weergegeven naam overeenkomt met de betreffende telefoon of tablet.\n\nDeze QR-code dient om het apparaat te identificeren; het weergeven ervan leidt niet tot het doorsturen van resultaten.\n\nSluit dit venster om terug te keren naar de lijst met apparaten."),
+        "deviceQr_title": MessageLookupByLibrary.simpleMessage("ABAK-apparaat"),
+        "documentArchiveConfirm_help": MessageLookupByLibrary.simpleMessage(
+            "Door het document naar de prullenbak te verplaatsen, wordt de balans of het rapport uit de gebruikelijke geschiedenis verwijderd.\n\nHet document blijft bewaard in Companion. U kunt het terugvinden in de gearchiveerde documenten en het herstellen om het weer in de geschiedenis te laten verschijnen.\n\nDOCX-bestanden die al naar uw computer zijn geëxporteerd, worden door deze actie niet verwijderd.\n\nKlik op ‘Naar prullenbak’ om te bevestigen, of op ‘Annuleren’ om het document in de geschiedenis te behouden."),
+        "documentArchiveConfirm_title": MessageLookupByLibrary.simpleMessage(
+            "Het document naar de prullenbak verplaatsen?"),
+        "documentAuthor_help": MessageLookupByLibrary.simpleMessage(
+            "In dit venster kunt u de zorgverlener selecteren die is aangewezen als opsteller van het huidige verslag of rapport.\n\nSelecteer de zorgverlener in de lijst en klik vervolgens op ‘Bevestigen’ om deze koppeling aan het document op te slaan.\n\nDeze keuze heeft betrekking op de opsteller van het document; de verwijzende zorgverlener van de zorgperiode blijft ongewijzigd.\n\nMet ‘Annuleren’ sluit u het venster zonder de opsteller te wijzigen."),
+        "documentAuthor_title":
+            MessageLookupByLibrary.simpleMessage("Een redacteur kiezen"),
+        "documentDirectoryAccess_help": MessageLookupByLibrary.simpleMessage(
+            "Companion heeft geen toegang tot de map die is aangewezen voor het opslaan van documenten, of de toegangsrechten moeten worden vernieuwd.\n\nAls deze map zich op een externe schijf of een netwerklocatie bevindt, controleer dan eerst of deze is aangesloten en toegankelijk is.\n\nKlik op ‘Een map toestaan’ en selecteer vervolgens de map in het venster dat wordt geopend. U kunt de gebruikelijke map selecteren of een andere bestemming kiezen.\n\nDe geselecteerde map wordt opgeslagen in uw voorkeuren voor toekomstige exporten. Bestanden die al in de oude map staan, worden niet verplaatst.\n\nMet „Annuleren“ wordt de lopende export onderbroken zonder dat uw balans of rapport wordt gewijzigd."),
+        "documentDirectoryAccess_title": MessageLookupByLibrary.simpleMessage(
+            "Toegang verlenen tot de documentenmap"),
+        "documentDocxExisting_help": MessageLookupByLibrary.simpleMessage(
+            "Er is al een DOCX-bestand gekoppeld aan dit overzicht of dit rapport.\n\nMet ‘Nieuw aanmaken’ wordt een nieuw bestand aangemaakt met de huidige inhoud van het document. Als de bestandsnaam al bestaat in de doelmap, wordt er een nummer aan toegevoegd om het vorige bestand te behouden. Het nieuwe bestand wordt het bestand dat in Companion aan het document is gekoppeld.\n\nMet ‘Vervangen’ wordt het bestand met de aan het document gekoppelde naam in de doelmap overschreven. Eventuele wijzigingen die rechtstreeks in dit bestand in Word of LibreOffice zijn aangebracht, worden overschreven.\n\nMet ‘Annuleren’ wordt het exporteren afgebroken zonder de bestanden te wijzigen."),
+        "documentDocxExisting_title": MessageLookupByLibrary.simpleMessage(
+            "Er bestaat al een DOCX-bestand"),
+        "documentDraftChoice_help": MessageLookupByLibrary.simpleMessage(
+            "Een tekst waaraan u momenteel werkt, is voor dit documenttype al automatisch opgeslagen.\n\nMet ‘Concept hervatten’ kunt u deze tekst terugvinden en verdergaan met schrijven.\n\nMet ‘Nieuw overzicht’ of ‘Nieuw rapport’ worden de titel en de tekst van dit concept gewist, zodat u opnieuw kunt beginnen. Het vorige concept wordt niet als apart document bewaard. Als u uw werk wilt bewaren, open het dan opnieuw en sla het op voordat u aan een nieuw document begint.\n\nMet ‘Annuleren’ sluit u dit venster zonder het concept te wijzigen."),
+        "documentDraftChoice_title": MessageLookupByLibrary.simpleMessage(
+            "Er bestaat een conceptversie"),
+        "documentExpandedEditor_help": MessageLookupByLibrary.simpleMessage(
+            "Dit venster biedt meer ruimte om de tekst van de balans of het rapport dat u aan het opstellen bent, te schrijven of te wijzigen.\n\nUw wijzigingen worden direct doorgevoerd in het hoofdschrijfvenster. Als u het venster sluit, gaan deze wijzigingen niet verloren.\n\nKlik op het kruisje om terug te keren naar het gedeelte Balansen/Verslagen en ga vervolgens verder met het opstellen en opslaan van uw document.\n\nBij het openen en sluiten van deze helpfunctie blijft de ingevoerde tekst behouden."),
+        "documentExpandedEditor_helpTitle":
+            MessageLookupByLibrary.simpleMessage(
+                "Schrijven in de vergrote weergave"),
+        "documentRecipient_help": MessageLookupByLibrary.simpleMessage(
+            "In dit venster kunt u de ontvangers van het huidige overzicht of rapport invoeren.\n\nVoer de naam van de ontvanger of de namen van de verschillende ontvangers in en klik vervolgens op ‘Bevestigen’ om deze informatie in het document op te slaan.\n\nOm een bestaande vermelding te verwijderen, wist u de inhoud van het veld en klikt u vervolgens op ‘Bevestigen’.\n\nDeze invoer vult de ontvangers van het document in; er wordt hierdoor geen verzending in gang gezet.\n\nMet ‘Annuleren’ sluit u het venster zonder de wijzigingen toe te passen. Bij het openen en sluiten van deze helppagina blijft uw invoer behouden."),
+        "documentRecipient_title":
+            MessageLookupByLibrary.simpleMessage("Ontvanger(s)"),
+        "documentTemplateDraft_help": MessageLookupByLibrary.simpleMessage(
+            "Er zijn al antwoorden opgeslagen voor dit sjabloon in de lopende zorgfase.\n\nMet ‘Concept hervatten’ opent u het sjabloon met deze antwoorden, zodat u verder kunt gaan met het invullen of uw invoer kunt wijzigen.\n\n\"Nieuwe balans\" of \"Nieuw rapport\" wist de opgeslagen antwoorden voor dit sjabloon en opent de gids zonder deze antwoorden over te nemen. Deze keuze verwijdert de tekst die al in het tekstveld van het document staat niet.\n\n\"Annuleren\" behoudt de opgeslagen antwoorden en keert terug naar het vorige scherm zonder de gids te openen."),
+        "documentTemplateDraft_title":
+            MessageLookupByLibrary.simpleMessage("Bestaand concept"),
+        "documentTemplateGuide_help": MessageLookupByLibrary.simpleMessage(
+            "Deze handleiding helpt u bij het opstellen van de inhoud van een balans of een verslag aan de hand van het geselecteerde sjabloon.\n\nGebruik de lijst met rubrieken aan de linkerkant om naar de verschillende onderdelen te gaan. Voer, afhankelijk van de aangeboden velden, tekst in, selecteer antwoorden of vul de tabellen in.\n\nMet de knop ‘Voorbeeld’ onderaan het formulier kunt u de tekst bekijken die op basis van uw antwoorden is gegenereerd.\n\nVanuit het voorbeeld kunt u terugkeren naar de handleiding om verder te gaan met invoeren of om te vragen dat de tekst in het verslag of rapport wordt opgenomen. Volg eventuele voorstellen voor toevoegingen of vervangingen die door Companion worden weergegeven.\n\nHet invoegen van de tekst vervangt niet het definitief opslaan van het overzicht of het rapport.\n\nBij het openen en sluiten van deze handleiding blijft uw invoer bewaard."),
+        "documentTemplateGuide_helpTitle":
+            MessageLookupByLibrary.simpleMessage("De invoergids gebruiken"),
+        "documentTemplatePreview_help": MessageLookupByLibrary.simpleMessage(
+            "In dit venster kunt u de tekst bekijken die is gegenereerd op basis van de antwoorden die u in de gids hebt ingevoerd.\n\nDe tekst kan worden bekeken en geselecteerd. Als u uw antwoorden wilt wijzigen, klikt u op ‘Sluiten’ om terug te keren naar de gids en start u het voorbeeld vervolgens opnieuw.\n\nKlik op ‘In het overzicht invoegen’ of ‘In het rapport invoegen’ om de tekst naar het huidige document over te brengen. Volg eventuele suggesties voor toevoegingen of vervangingen die door Companion worden weergegeven.\n\nAls er geen tekst is gegenereerd, blijft de invoegknop uitgeschakeld.\n\nControleer na het invoegen de inhoud van het document en sla uw balans of rapport op."),
+        "documentTemplatePreview_title": MessageLookupByLibrary.simpleMessage(
+            "Overzicht van de gegenereerde tekst"),
+        "documentTemplate_assessmentTitle":
+            MessageLookupByLibrary.simpleMessage("Een balansmodel kiezen"),
+        "documentTemplate_help": MessageLookupByLibrary.simpleMessage(
+            "In dit venster worden de beschikbare sjablonen voor het huidige documenttype weergegeven: balans of verslag.\n\nKlik op een sjabloon om de bijbehorende invoergids te openen. De keuze van het sjabloon leidt niet onmiddellijk tot het aanmaken van een opgeslagen document.\n\nAls er voor dit sjabloon al een concept bestaat in de zorgperiode, biedt Companion u de mogelijkheid om dit over te nemen of een nieuwe invoer te starten."),
+        "documentTemplate_reportTitle":
+            MessageLookupByLibrary.simpleMessage("Een rapportmodel kiezen"),
+        "documentTests_help": MessageLookupByLibrary.simpleMessage(
+            "In dit uitvergrote overzicht kunt u de tests bekijken die tijdens de behandeling zijn uitgevoerd en kiezen welke u wilt opnemen in het huidige verslag of rapport.\n\nGebruik de selectievakjes om een test toe te voegen aan of te verwijderen uit het document. Deze selectie verwijdert de resultaten niet die in Companion zijn opgeslagen.\n\nMet de acties in de lijst kunt u de details van de resultaten bekijken. De selectie is beschikbaar wanneer een overzicht of rapport is geopend en het laden is voltooid.\n\nKlik op het kruisje om terug te keren naar het gedeelte Overzichten/Rapporten."),
+        "documentTextInsertion_help": MessageLookupByLibrary.simpleMessage(
+            "Uw verslag of rapport bevat al tekst. Kies hoe u de door de invoergids gegenereerde inhoud hierin wilt opnemen.\n\nMet ‘Toevoegen aan het einde’ blijft de bestaande tekst behouden en wordt de gegenereerde inhoud aan het einde toegevoegd.\n\nMet ‘Vervangen’ wordt de volledige tekst in het bewerkingsveld vervangen door de gegenereerde inhoud. De passages die u in dit veld had ingevoerd, worden dus ook vervangen.\n\nMet ‘Annuleren’ wordt deze invoegactie geannuleerd en blijft de huidige tekst behouden.\n\nU kunt deze helptekst raadplegen en vervolgens sluiten voordat u uw keuze maakt."),
+        "documentTextInsertion_title": MessageLookupByLibrary.simpleMessage(
+            "De gegenereerde tekst invoegen"),
+        "documentTitle_help": MessageLookupByLibrary.simpleMessage(
+            "In dit venster kunt u de titel van de balans of het rapport invoeren.\n\nBehoud de voorgestelde titel of vervang deze door een titel waarmee het document gemakkelijk te herkennen is. De titel mag niet leeg zijn.\n\nKlik op de bevestigingsknop of druk op Enter om te bevestigen. Met ‘Annuleren’ sluit u het venster zonder de titel te bevestigen.\n\nBij het openen en sluiten van deze helpfunctie blijft de ingevoerde tekst behouden."),
         "episodeDashboard_documents":
             MessageLookupByLibrary.simpleMessage("Documenten"),
         "episodeDashboard_documentsDescription":
@@ -574,6 +651,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Opmerkingen"),
         "episodeNotes_titleRequired":
             MessageLookupByLibrary.simpleMessage("De titel is verplicht."),
+        "episodeReferents_help": MessageLookupByLibrary.simpleMessage(
+            "In dit venster kunt u de behandelend fysiotherapeut en de voorschrijvende arts selecteren die bij de behandeling betrokken zijn.\n\nSelecteer de zorgverleners uit de lijsten. U kunt een koppeling ook verwijderen door de optie ‘zonder zorgverlener’ te kiezen.\n\nMet de beheer-knoppen rechts van de lijsten kunt u de profielen van de zorgverleners en externe contactpersonen openen, bijvoorbeeld om een ontbrekende zorgverlener toe te voegen.\n\nKlik op ‘Opslaan’ om de gekozen koppelingen toe te passen. Wijzigingen in de verwijzende fysiotherapeut worden bewaard in de behandelgeschiedenis.\n\nMet ‘Annuleren’ worden de wijzigingen in de koppelingen in dit venster ongedaan gemaakt. Eventuele profielen die vanuit de beheer schermen zijn aangemaakt, blijven opgeslagen."),
+        "episodeReferents_title":
+            MessageLookupByLibrary.simpleMessage("De referenties wijzigen"),
         "episodeReport_abakOrigin":
             MessageLookupByLibrary.simpleMessage("Oorsprong ABAK"),
         "episodeReport_addConclusion":
@@ -636,6 +717,17 @@ class MessageLookup extends MessageLookupByLibrary {
             "Kies het ABAK-uitwisselingsdossier"),
         "exchangeDirectoryUpdated": MessageLookupByLibrary.simpleMessage(
             "Bijgewerkt ABAK-uitwisselingsdossier"),
+        "externalCorrespondentForm_addTitle":
+            MessageLookupByLibrary.simpleMessage(
+                "Een contactpersoon toevoegen"),
+        "externalCorrespondentForm_editTitle":
+            MessageLookupByLibrary.simpleMessage("De contactpersoon wijzigen"),
+        "externalCorrespondentForm_help": MessageLookupByLibrary.simpleMessage(
+            "In dit venster kunt u de gegevens van een externe contactpersoon invoeren.\n\nDe achternaam is verplicht. U kunt de voornaam, het beroep, het specialisme, het adres, de postcode, de plaats, het e-mailadres en het telefoonnummer invullen.\n\nKlik op ‘Opslaan’ om de gegevens te bevestigen. Met ‘Annuleren’ sluit u het venster zonder de wijzigingen op te slaan.\n\nWanneer u deze helptekst opent en weer sluit, blijven de gegevens die u in het formulier hebt ingevoerd behouden."),
+        "externalCorrespondents_help": MessageLookupByLibrary.simpleMessage(
+            "Op dit scherm worden de externe contactpersonen weergegeven die in Companion zijn opgeslagen. Elke regel bevat de naam van de contactpersoon en, indien ingevuld, zijn of haar beroep, specialisme en woonplaats.\n\nKlik op ‘Toevoegen’ om een contactpersoon aan te maken. Vul de identiteitsgegevens en de relevante contactgegevens in en klik vervolgens op ‘Opslaan’ om de contactpersoon aan de lijst toe te voegen. Met ‘Annuleren’ sluit u het formulier zonder een contactpersoon aan te maken.\n\nDeze contactpersonen kunnen onder andere worden geselecteerd als voorschrijvers in zorgtrajecten."),
+        "externalCorrespondents_title":
+            MessageLookupByLibrary.simpleMessage("Externe correspondenten"),
         "externalSpeechToTextProvider_empty":
             MessageLookupByLibrary.simpleMessage(
                 "De add-on heeft geen reactie gegeven."),
@@ -650,12 +742,21 @@ class MessageLookup extends MessageLookupByLibrary {
                 "De add-on heeft geen tekst teruggegeven."),
         "externalSpeechToTextProvider_transcription":
             MessageLookupByLibrary.simpleMessage("De transcriptie is mislukt."),
+        "followUpNoteForm_createTitle":
+            MessageLookupByLibrary.simpleMessage("Nieuwe voortgangsnotitie"),
+        "followUpNoteForm_editTitle": MessageLookupByLibrary.simpleMessage(
+            "De opvolgingsnotitie wijzigen"),
+        "followUpNoteForm_help": MessageLookupByLibrary.simpleMessage(
+            "In dit venster kunt u een opvolgingsnotitie aanmaken of wijzigen die aan de zorgaflevering is gekoppeld.\n\nVul een titel en de inhoud van de notitie in. Beide velden moeten tekst bevatten om de notitie op te slaan.\n\nKlik bij het aanmaken op ‘Toevoegen’. Klik bij het wijzigen op ‘Opslaan’ om uw wijzigingen op te slaan.\n\nMet ‘Annuleren’ sluit u het venster zonder uw invoer op te slaan. U kunt deze helptekst openen en vervolgens sluiten zonder de tekst die u aan het schrijven bent te verliezen."),
+        "followUpNotes_help": MessageLookupByLibrary.simpleMessage(
+            "In dit overzicht worden de opvolgnota’s van de behandeling weergegeven, met de datum, de titel en een samenvatting van de inhoud.\n\nMet de knop ‘Toevoegen’ kunt u een notitie aanmaken. Met het pictogram ‘Bewerken’ kunt u een bestaande notitie openen om deze te bekijken of te wijzigen.\n\nGebruik de selectievakjes om de notities te kiezen die u in het huidige overzicht of rapport wilt opnemen. Als u het vinkje bij een notitie verwijdert, wordt deze uit de selectie verwijderd zonder dat de follow-upnotitie zelf wordt verwijderd.\n\nDe selectie is beschikbaar wanneer een overzicht of rapport is geopend en het laden is voltooid.\n\nKlik op het kruisje om het vergrote scherm te sluiten en terug te keren naar het gedeelte Overzichten/Rapporten."),
         "g_arb_prefix": MessageLookupByLibrary.simpleMessage("Voorvoegsel ARB"),
         "g_close": MessageLookupByLibrary.simpleMessage("Sluiten"),
         "g_comment": MessageLookupByLibrary.simpleMessage("Commentaar"),
         "g_context": MessageLookupByLibrary.simpleMessage("Achtergrond"),
         "g_copy": MessageLookupByLibrary.simpleMessage("Kopiëren"),
         "g_file": MessageLookupByLibrary.simpleMessage("Bestand"),
+        "g_helpTooltip": MessageLookupByLibrary.simpleMessage("Help weergeven"),
         "g_learn_more": MessageLookupByLibrary.simpleMessage("Meer informatie"),
         "g_technical_informations":
             MessageLookupByLibrary.simpleMessage("Technische informatie"),
@@ -664,7 +765,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "help_archived_patient": MessageLookupByLibrary.simpleMessage(
             "Gearchiveerde patiënten kunnen tot de aangegeven datum worden hersteld.\nNa deze datum worden ze automatisch verwijderd, zodat ongebruikte dossiers niet voor onbepaalde tijd worden bewaard.\nDe bewaartermijn kan worden aangepast in de instellingen van Companion."),
         "help_device_list_content": MessageLookupByLibrary.simpleMessage(
-            "U kunt een apparaat aanmaken, wijzigen of archiveren.\n\nOmwille van de traceerbaarheid is het niet mogelijk om een apparaat te verwijderen.\nIndien nodig kunt u het herstellen.\n\nDe QR-code wordt gebruikt om een telefoon of tablet te koppelen."),
+            "Het gaat om de apparaten (telefoon, tablet) die worden gebruikt om de tests uit te voeren.\n- Een apparaat kan door verschillende personen worden gebruikt.\n- Eén persoon kan meerdere apparaten bezitten.\n\nAan de hand van deze informatie kan worden vastgesteld wat de materiële bron is van de informatie die naar Companion wordt overgedragen.\nU kunt een apparaat aanmaken, wijzigen of archiveren.\n\nOmwille van de traceerbaarheid is het niet mogelijk om een apparaat te verwijderen.\nIndien nodig kunt u een gearchiveerd apparaat herstellen.\n\nEr wordt een QR-code gebruikt om een telefoon of tablet te koppelen. U moet de QR-code weergeven op de vaste telefoon (Apparaat > het bijbehorende pictogram van het apparaat) en op de telefoon (of tablet) naar Instellingen > Bedrijfsorganisatie > Geregistreerde apparaten > Apparaat toevoegen gaan.\n\nHoud het apparaat dicht bij het scherm om de QR-code te scannen.Er verschijnt een bericht dat de handeling is geslaagd."),
         "help_device_list_title":
             MessageLookupByLibrary.simpleMessage("Lijst met apparaten"),
         "help_donnees_cliniques_patient": MessageLookupByLibrary.simpleMessage(
@@ -832,10 +933,18 @@ class MessageLookup extends MessageLookupByLibrary {
         "home_verify": MessageLookupByLibrary.simpleMessage("Controleren"),
         "home_very_large_backups":
             MessageLookupByLibrary.simpleMessage("Zeer omvangrijke back-ups"),
+        "importHistory_help": MessageLookupByLibrary.simpleMessage(
+            "Dit scherm toont de geschiedenis van de importsessies die in Companion zijn opgeslagen.\n\nElke regel geeft de datum van de sessie weer, de status ervan, het aantal verwerkte bestanden en het aantal geïmporteerde, genegeerde of conflicterende resultaten.\n\nHet pictogram geeft onder andere aan of er een import gaande is, of deze is mislukt, of er fouten zijn opgetreden of conflicten zijn die uw aandacht vereisen.\n\nKlik op een sessie om de details te bekijken en meer inzicht te krijgen in de verwerking van de resultaten."),
+        "importPatientForm_help": MessageLookupByLibrary.simpleMessage(
+            "In dit venster kunt u een patiënt aanmaken om de vanuit ABAK Mobile geïmporteerde resultaten aan hem of haar te koppelen.\n\nVoer de voor- en achternaam in. U kunt de geboortedatum invullen in het formaat JJJJ-MM-DD en het geslacht opgeven, of ‘Niet opgegeven’ laten staan.\n\nAls u de Vitale-kaart hebt gescand, controleer dan de vooraf ingevulde gegevens en corrigeer deze indien nodig.\n\nKlik op ‘Aanmaken’ om de patiënt op te slaan en te selecteren. Kies vervolgens de behandeling waaraan de resultaten moeten worden gekoppeld: het aanmaken van de patiënt is op zich nog niet voldoende om de koppeling van de geïmporteerde gegevens te voltooien.\n\nMet ‘Annuleren’ sluit u dit venster zonder een patiënt aan te maken. Als u deze helptekst opent en vervolgens weer sluit, blijven uw invoergegevens bewaard."),
+        "importPatientForm_title":
+            MessageLookupByLibrary.simpleMessage("Nieuwe patiënt"),
         "importResolutionAssistant_file":
             MessageLookupByLibrary.simpleMessage("bestand"),
         "importResolutionAssistant_files":
             MessageLookupByLibrary.simpleMessage("bestanden"),
+        "importResolutionAssistant_help": MessageLookupByLibrary.simpleMessage(
+            "Op dit scherm worden de imports weergegeven die uw aandacht vereisen: koppeling aan een patiënt die nog moet worden voltooid, mislukte import, fouten, genegeerde resultaten of conflicten die moeten worden onderzocht.\n\nElke regel geeft de datum van de import weer en de beschikbare informatie om het betreffende dossier te identificeren.\n\nKlik op een import om de statuspagina te openen, de uitleg te bekijken en de voorgestelde acties te bekijken, afhankelijk van de situatie.\n\nDe lijst wordt bijgewerkt zodra u terugkeert van de statuspagina van de import. Als geen enkele import aan deze criteria voldoet, verschijnt er een bericht dat er geen problemen zijn gedetecteerd."),
         "importResolutionAssistant_import":
             MessageLookupByLibrary.simpleMessage("Importeren"),
         "importResolutionAssistant_importFailed":
@@ -867,6 +976,14 @@ class MessageLookup extends MessageLookupByLibrary {
             "Oplossen van importproblemen"),
         "importResolutionAssistant_toReview":
             MessageLookupByLibrary.simpleMessage("te controleren"),
+        "importResolution_help": MessageLookupByLibrary.simpleMessage(
+            "Via dit scherm kunt u de resultaten die u via ABAK Mobile hebt ontvangen, koppelen aan de juiste patiënt en de juiste behandeling in Companion.\n\nBekijk de informatie van de ontvangen import en selecteer vervolgens de betreffende patiënt in de lijst. Maak indien nodig een patiëntendossier aan via ‘Nieuwe patiënt’ of ‘Via Carte Vitale’, wanneer het leesapparaat beschikbaar is.\n\nNadat u de patiënt hebt geselecteerd, kiest u een actieve behandeling of maakt u er een aan. Een gearchiveerde behandeling moet eerst worden hersteld voordat deze kan worden geselecteerd.\n\nControleer de patiënt en de behandeling voordat u deze selecteert: door deze te selecteren wordt de koppeling bevestigd en kunt u doorgaan met het importeren."),
+        "importResolution_title":
+            MessageLookupByLibrary.simpleMessage("De import koppelen"),
+        "importSessionDetail_help": MessageLookupByLibrary.simpleMessage(
+            "Dit scherm toont het verloop van een import die in Companion is ontvangen. Het hoofdbericht geeft aan of de import is geslaagd, aan een patiënt moet worden gekoppeld of een probleem vertoont.\n\nWanneer een koppeling nodig is, klikt u op ‘Koppelen aan een patiënt’ om het dossier te kiezen waaraan de resultaten moeten worden gekoppeld.\n\nVia het rapport en de lijst met bestanden kunt u de details van de verwerking en eventuele waarschuwingen bekijken.\n\nAls het ontvangen bestand onvolledig of beschadigd is, vraag dan via ABAK Mobile om een nieuwe verzending.\n\nAfhankelijk van de situatie wordt de knop ‘Deze import verwijderen’ weergegeven. Bekijk het bevestigingsbericht voordat u het verwijderen bevestigt."),
+        "importSessionDetail_title":
+            MessageLookupByLibrary.simpleMessage("Volg de import"),
         "information_backupCount": m11,
         "information_backups": MessageLookupByLibrary.simpleMessage("Back-ups"),
         "information_configured":
@@ -877,6 +994,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Informatie"),
         "information_database":
             MessageLookupByLibrary.simpleMessage("Database"),
+        "information_help": MessageLookupByLibrary.simpleMessage(
+            "Op deze pagina vindt u algemene informatie over uw Companion-installatie: de versie van de app, de geconfigureerde praktijk, de aanwezigheid van het logo, het gebruikte besturingssysteem en de taal.\n\nIn het gedeelte over lokale opslag worden de grootte van de database en het aantal en de totale grootte van de opgeslagen back-ups weergegeven.\n\nMet de knoppen kunt u de nieuwigheden, de licentie en de waarschuwingen met betrekking tot het gebruik van de app bekijken.\n\nTijdens een gesprek met de helpdesk kunnen de hier weergegeven Companion-versie en het besturingssysteem helpen om uw configuratie te identificeren."),
         "information_language": MessageLookupByLibrary.simpleMessage("Taal"),
         "information_legalNotice":
             MessageLookupByLibrary.simpleMessage("Wettelijke kennisgeving"),
@@ -887,6 +1006,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "information_logo": MessageLookupByLibrary.simpleMessage("Logo"),
         "information_new": MessageLookupByLibrary.simpleMessage(
             "Versie 1.1.0 build 3\nMogelijkheid tot spraakdicteer voor overzichten en rapporten; hiervoor is de gratis module vereist.\nAutomatische opslag van overzichten en rapporten.\nKnop voor het dupliceren van overzichten en rapporten.\nBewerkbare notities.\nKnop om alle tests van een patiënt voor een bepaalde episode te bekijken.\nSjablonen voor beoordelingen.\nAutomatische grafiek bij meerdere resultaten voor één test.\nEen document aanmaken in docx-formaat.\nWeergave van de helptekst voor E72 en E76"),
+        "information_newHelp": MessageLookupByLibrary.simpleMessage(
+            "Op deze pagina worden de nieuwigheden en wijzigingen beschreven die voor Companion gelden.\n\nScroll door de tekst om alle informatie te bekijken. U kunt indien nodig een fragment selecteren en kopiëren.\n\nGebruik de pijl ‘Terug’ om terug te keren naar de pagina ‘Over’."),
         "information_newTitle":
             MessageLookupByLibrary.simpleMessage("Nieuwigheden in deze versie"),
         "information_notConfigured":
@@ -917,6 +1038,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Waarschuwing"),
         "legalNotice_content": MessageLookupByLibrary.simpleMessage(
             "ABAK Desktop Companion is software die helpt bij het organiseren, importeren en raadplegen van klinische resultaten uit het ABAK-ecosysteem.\n\nHet is geen gecertificeerd medisch hulpmiddel en vervangt niet het oordeel van de zorgverlener.\n\nDe weergegeven resultaten, scores, rapporten en indicatoren moeten altijd worden geïnterpreteerd door een gekwalificeerde zorgverlener, waarbij rekening moet worden gehouden met het klinisch onderzoek, de context van de patiënt en de geldende aanbevelingen.\n\nDe gebruiker blijft als enige verantwoordelijk voor zijn klinische beslissingen, voor de controle van de geïmporteerde gegevens en voor de naleving van de toepasselijke beroeps-, wettelijke en deontologische regels bij het gebruik ervan.\n\nABAK Desktop Companion stelt geen zelfstandige diagnose, schrijft geen behandeling voor en is in geen geval een vervanging voor een medisch of paramedisch consult."),
+        "legalNotice_help": MessageLookupByLibrary.simpleMessage(
+            "Op deze pagina vind je de waarschuwingen en informatie over het gebruik van Companion.\n\nScroll naar beneden om de volledige tekst te lezen.\n\nGebruik de pijl ‘Terug’ om terug te gaan naar de pagina ‘Over’."),
         "legalNotice_title":
             MessageLookupByLibrary.simpleMessage("Juridische kennisgeving"),
         "loading": MessageLookupByLibrary.simpleMessage("Bezig met laden..."),
@@ -950,6 +1073,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "open": MessageLookupByLibrary.simpleMessage("Openen"),
         "organization_chooseLogo":
             MessageLookupByLibrary.simpleMessage("Een logo kiezen"),
+        "organization_help": MessageLookupByLibrary.simpleMessage(
+            "Op dit scherm kunt u de naam en contactgegevens van uw praktijk invoeren: adres, postcode, plaats, telefoonnummer en e-mailadres.\n\nKlik op ‘Contactgegevens opslaan’ om uw wijzigingen op te slaan voordat u het scherm verlaat.\n\nU kunt ook een afbeelding op uw computer selecteren om het logo van uw praktijk in te stellen. De keuze van het logo wordt onmiddellijk opgeslagen, ongeacht de contactgegevens.\n\nMet de knop ‘Logo verwijderen’ kunt u het logo dat in Companion wordt gebruikt, verwijderen."),
         "organization_identityTitle": MessageLookupByLibrary.simpleMessage(
             "Identiteit van de instelling"),
         "organization_logoRemoved": MessageLookupByLibrary.simpleMessage(
@@ -971,6 +1096,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Een telefoon koppelen"),
         "pairPhoneInstructions": MessageLookupByLibrary.simpleMessage(
             "Scan deze QR-code via ABAK Mobile om de verbinding met Desktop automatisch in te stellen."),
+        "pairPhone_help": MessageLookupByLibrary.simpleMessage(
+            "In dit venster wordt de informatie weergegeven waarmee ABAK Mobile Companion op het lokale netwerk kan vinden.\n\nSluit de telefoon of tablet en de computer aan op hetzelfde lokale netwerk en scan vervolgens deze QR-code via de koppelingsfunctie met Companion in ABAK Mobile.\n\nDe QR-code bevat het netwerkadres en de communicatiepoort van deze computer. Deze gegevens worden ook onder de code weergegeven.\n\nHoud Companion op de computer geopend tijdens de gegevensuitwisseling. Als het netwerkadres van de computer verandert, open dan dit venster opnieuw en scan de nieuwe code.\n\nHet weergeven van deze QR-code leidt op zichzelf niet tot het verzenden van resultaten."),
         "patientClinicalDataEdit_address":
             MessageLookupByLibrary.simpleMessage("Adres"),
         "patientClinicalDataEdit_administrativeIdentity":
@@ -988,6 +1115,8 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Land met een gezondheidszorgstelsel"),
         "patientClinicalDataEdit_height":
             MessageLookupByLibrary.simpleMessage("Grootte"),
+        "patientClinicalDataEdit_help": MessageLookupByLibrary.simpleMessage(
+            "Op dit scherm kunt u de administratieve gegevens en het profiel van de patiënt invullen.\n\nU kunt zijn gezondheidsnummer, de bron van zijn identiteit, zijn telefoonnummer, zijn e-mailadres en zijn postadres invullen.\n\nHet profiel omvat de dominante hand, het beroep, de sportactiviteit, de lengte in centimeters en het gewicht in kilogram.\n\nKlik op „Opslaan“ om uw wijzigingen op te slaan en terug te keren naar het patiëntendossier. Als u teruggaat zonder op te slaan, gaan de wijzigingen verloren."),
         "patientClinicalDataEdit_identitySource":
             MessageLookupByLibrary.simpleMessage("Bron van identiteit"),
         "patientClinicalDataEdit_kilograms":
@@ -1041,6 +1170,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "patientDetail_edit": MessageLookupByLibrary.simpleMessage("Wijzigen"),
         "patientDetail_editCareEpisode":
             MessageLookupByLibrary.simpleMessage("De ondersteuning aanpassen"),
+        "patientDetail_editCareEpisodeHelp": MessageLookupByLibrary.simpleMessage(
+            "In dit venster kunt u de gegevens van de patiëntbehandeling wijzigen.\n\nU kunt de aandoening of de reden voor de behandeling corrigeren, de oorspronkelijke tekst aanvullen en de verwijzende arts en de voorschrijvende arts selecteren.\n\nDe aandoening moet worden ingevuld om de wijzigingen op te slaan.\n\nKlik op ‘Opslaan’ om de wijzigingen te bevestigen. Met ‘Annuleren’ sluit u het venster zonder de wijzigingen toe te passen.\n\nWanneer u deze helptekst opent en sluit, blijven uw invoergegevens in het formulier bewaard."),
         "patientDetail_editClinicalData":
             MessageLookupByLibrary.simpleMessage("Klinische gegevens wijzigen"),
         "patientDetail_email": MessageLookupByLibrary.simpleMessage("E-mail"),
@@ -1060,6 +1191,8 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Nationaal identificatienummer"),
         "patientDetail_newCareEpisode":
             MessageLookupByLibrary.simpleMessage("Nieuwe dekking"),
+        "patientDetail_newCareEpisodeHelp": MessageLookupByLibrary.simpleMessage(
+            "In dit venster kunt u een nieuwe behandeling aanmaken voor de geselecteerde patiënt.\n\nVul de aandoening of de reden voor de behandeling in. Deze informatie is nodig om de behandelingsperiode aan te maken.\n\nU kunt de eerste tekst aanvullen en een verwijzende arts selecteren. Deze gegevens zijn optioneel.\n\nKlik op ‘Aanmaken’ om de behandelingsperiode op te slaan. Met ‘Annuleren’ sluit u het venster zonder de behandelingsperiode aan te maken.\n\nWanneer u deze hulp opent en sluit, blijven uw gegevens in het formulier bewaard."),
         "patientDetail_noBirthdate":
             MessageLookupByLibrary.simpleMessage("Niet opgegeven"),
         "patientDetail_noCareEpisode": MessageLookupByLibrary.simpleMessage(
@@ -1117,6 +1250,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Voornaam"),
         "patientForm_firstNameRequired":
             MessageLookupByLibrary.simpleMessage("De voornaam is verplicht"),
+        "patientForm_help": MessageLookupByLibrary.simpleMessage(
+            "In dit venster kunt u de gegevens van de patiënt invoeren of corrigeren.\n\nDe voor- en achternaam zijn verplicht. U kunt de geboortedatum in de kalender selecteren en het geslacht invullen, of de waarde „Niet opgegeven” behouden.\n\nKlik op „Opslaan“ om de wijzigingen te bevestigen. Als het formulier in de aanmaakmodus is geopend, kunt u met de knop „Aanmaken“ het dossier aanmaken.\n\nMet „Annuleren“ sluit u het venster zonder de wijzigingen toe te passen. Bij het openen en sluiten van deze helpfunctie blijven uw invoergegevens in het formulier behouden."),
         "patientForm_lastName": MessageLookupByLibrary.simpleMessage("Naam"),
         "patientForm_lastNameRequired":
             MessageLookupByLibrary.simpleMessage("De naam is verplicht"),
@@ -1152,6 +1287,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Lijst van patiënten"),
         "patientList_edit": MessageLookupByLibrary.simpleMessage("Wijzigen"),
         "patientList_error": m20,
+        "patientList_help": MessageLookupByLibrary.simpleMessage(
+            "Via dit scherm kunt u uw patiënten opzoeken en hun dossier openen.\n\nMet de knoppen ‘Actief’ en ‘Gearchiveerd’ kunt u kiezen welke lijst wordt weergegeven. Het weergegeven aantal komt overeen met het totale aantal patiënten in elke categorie.\n\nOm een patiënt in de weergegeven lijst te zoeken, voert u de volledige of een deel van zijn achternaam of voornaam in het zoekveld in. Klik op de betreffende regel om het dossier te openen.\n\nMet de knop ‘Nieuwe patiënt’ opent u het scherm voor het aanmaken van een patiënt.\n\nBij een actieve patiënt kunt u met het potloodpictogram de gegevens wijzigen. Met het archiveringspictogram kunt u de patiënt na bevestiging uit de lijst met actieve patiënten verwijderen.\n\nIn de lijst met gearchiveerde patiënten kunt u met het pictogram ‘Herstellen’ een patiënt weer in de lijst met actieve patiënten plaatsen. Een specifieke helptekst, die naast de archiveringsdatum te vinden is, geeft uitleg over de bewaartermijnen."),
         "patientList_newPatient":
             MessageLookupByLibrary.simpleMessage("Nieuwe patiënt"),
         "patientList_noArchivedPatients": MessageLookupByLibrary.simpleMessage(
@@ -1216,6 +1353,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Voornaam"),
         "patientNew_firstNameRequired":
             MessageLookupByLibrary.simpleMessage("De voornaam is verplicht"),
+        "patientNew_help": MessageLookupByLibrary.simpleMessage(
+            "Via dit scherm kunt u een patiënt aanmaken in ABAK Companion.\n\nVoer de voor- en achternaam in: deze twee gegevens zijn verplicht. U kunt de geboortedatum invullen met behulp van de kalender en het geslacht opgeven.\n\nMet de knop voor het lezen van de Vitale-kaart kunt u de identiteit van de patiënt ophalen wanneer de lezer en de leesmodule beschikbaar zijn. Als er meerdere begunstigden worden voorgesteld, selecteer dan de betreffende persoon en controleer vervolgens de weergegeven gegevens. Handmatige invoer blijft mogelijk.\n\nAls Companion een reeds bestaande patiënt detecteert, controleer dan de voorgestelde gegevens voordat u verdergaat om een dubbele registratie te voorkomen. Een gearchiveerde patiënt kan worden voorgesteld om te worden hersteld.\n\nKlik op ‘Patiënt aanmaken’ om het dossier op te slaan, of op ‘Annuleren’ om af te sluiten zonder een patiënt aan te maken."),
         "patientNew_lastName": MessageLookupByLibrary.simpleMessage("Naam"),
         "patientNew_lastNameRequired":
             MessageLookupByLibrary.simpleMessage("De naam is verplicht"),
@@ -1333,6 +1472,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "practitionerNew_email": MessageLookupByLibrary.simpleMessage("E-mail"),
         "practitionerNew_firstName":
             MessageLookupByLibrary.simpleMessage("Voornaam"),
+        "practitionerNew_help": MessageLookupByLibrary.simpleMessage(
+            "In dit venster kunt u het profiel van een zorgverlener aanmaken of wijzigen.\n\nDe weergegeven naam is verplicht: hiermee kan de zorgverlener in Companion worden geïdentificeerd. U kunt ook zijn voornaam, achternaam, beroepsidentificatienummer, e-mailadres en telefoonnummer invullen.\n\nKlik op ‘Aanmaken’ om een zorgverlener toe te voegen of op ‘Opslaan’ om de wijzigingen in een bestaand profiel te bevestigen.\n\nMet ‘Annuleren’ sluit u het venster zonder de wijzigingen toe te passen. Wanneer u deze helptekst opent en sluit, blijven uw invoergegevens in het formulier bewaard."),
         "practitionerNew_lastName":
             MessageLookupByLibrary.simpleMessage("Naam"),
         "practitionerNew_newPractitioner":
@@ -1347,6 +1488,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "practitionerQr_close": MessageLookupByLibrary.simpleMessage("Sluiten"),
         "practitionerQr_defaultOrganizationName":
             MessageLookupByLibrary.simpleMessage("Kantoor"),
+        "practitionerQr_help": MessageLookupByLibrary.simpleMessage(
+            "In dit venster wordt de QR-code van het beroepsprofiel van de zorgverlener weergegeven, samen met zijn of haar naam en de naam van de praktijk.\n\nScan deze QR-code met ABAK Mobile om de zorgverlener in deze instelling te identificeren. Controleer of de weergegeven naam overeenkomt met die van de betreffende zorgverlener.\n\nDeze QR-code dient om de identificatiegegevens van het professionele profiel door te geven; het weergeven ervan leidt niet tot het doorsturen van resultaten.\n\nSluit dit venster om terug te keren naar de lijst met zorgverleners."),
         "practitionerQr_professionalProfile":
             MessageLookupByLibrary.simpleMessage("ABAK-beroepsprofiel"),
         "practitionerQr_scanQrCodeInstruction":
@@ -1398,10 +1541,21 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Er zijn geen resultaten geïmporteerd"),
         "recentImportCard_result":
             MessageLookupByLibrary.simpleMessage("resultaat"),
+        "referringPractitionerHistory_help": MessageLookupByLibrary.simpleMessage(
+            "In dit venster worden de zorgverleners weergegeven die als contactpersoon voor dit zorgtraject zijn aangewezen.\n\nElke regel vermeldt de naam van de zorgverlener en de periode waarin hij of zij is aangewezen. De vermelding „Huidige contactpersoon” geeft aan welke zorgverlener momenteel aan het zorgtraject is gekoppeld.\n\nDe vermelding „Gearchiveerd“ betekent dat het dossier van de zorgverlener is gearchiveerd; zijn of haar naam blijft zichtbaar in de geschiedenis.\n\nIn dit venster kunt u alleen de geschiedenis raadplegen. Sluit het venster om terug te keren naar het zorgtraject."),
+        "referringPractitionerHistory_title":
+            MessageLookupByLibrary.simpleMessage(
+                "Overzicht van de verwijzende kinesisten"),
         "refreshDashboard":
             MessageLookupByLibrary.simpleMessage("Het dashboard vernieuwen"),
         "reportArchive_title":
             MessageLookupByLibrary.simpleMessage("Archief van de verslagen"),
+        "reportDraft_help": MessageLookupByLibrary.simpleMessage(
+            "De weergegeven tekst is een automatisch opgeslagen concept. U kunt deze behouden, wijzigen of verwijderen voordat u uw rapport opslaat."),
+        "reportDraft_helpTitle": MessageLookupByLibrary.simpleMessage(
+            "Inzicht krijgen in het conceptverslag"),
+        "reportHistory_help": MessageLookupByLibrary.simpleMessage(
+            "In dit overzicht worden de opgeslagen rapporten voor de zorgverlening weergegeven, met hun titel en datum.\n\nMet de acties in elke rij kunt u een rapport bewerken, dupliceren of verplaatsen naar de gearchiveerde documenten.\n\nWanneer een rapport is geopend om te bewerken, gebruikt u de actie ‘Bijwerken’ om uw wijzigingen op te slaan. Met de beschikbare knoppen kunt u ook de wijzigingen ongedaan maken of terugkeren naar het concept.\n\nHet verplaatsen naar de gearchiveerde documenten is geen definitieve verwijdering.\n\nKlik op het kruisje om de vergrote weergave te sluiten en terug te keren naar het gedeelte Balansen/Rapporten."),
         "reset": MessageLookupByLibrary.simpleMessage("Resetten"),
         "resultDetail_addCommentHint":
             MessageLookupByLibrary.simpleMessage("Een opmerking toevoegen..."),
@@ -1425,6 +1579,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Boekjaar"),
         "resultDetail_generalInformation":
             MessageLookupByLibrary.simpleMessage("Algemene informatie"),
+        "resultDetail_help": MessageLookupByLibrary.simpleMessage(
+            "Dit scherm toont de gegevens van een resultaat dat is geïmporteerd vanuit ABAK Mobile: patiënt, datum van uitvoering, score en, indien beschikbaar, gebruikte hulpmiddelen, identiteit van de behandelaar en het apparaat van herkomst.\n\nU kunt het gedetailleerde rapport en de aanvullende metingen die bij de test zijn verstrekt, raadplegen.\n\nIn het veld ‘Klinische opmerking’ kunt u uw opmerkingen toevoegen of wijzigen. Klik op ‘Opslaan’ om deze op te slaan voordat u het scherm verlaat.\n\nIn het gedeelte over het importeren wordt de synchronisatiestatus en de datum van de laatste wijziging van het resultaat weergegeven.\n\nMet het archiveringspictogram kunt u dit resultaat na bevestiging archiveren."),
         "resultDetail_identityUnverified": MessageLookupByLibrary.simpleMessage(
             "Identiteit niet geverifieerd"),
         "resultDetail_identityVerified":
@@ -1466,6 +1622,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "settings_exchangeDirectoryUpdated":
             MessageLookupByLibrary.simpleMessage(
                 "Bijgewerkt ABAK-uitwisselingsdossier"),
+        "settings_help": MessageLookupByLibrary.simpleMessage(
+            "Op dit scherm zijn de installatie-, diagnose- en onderhoudsfuncties van Companion gebundeld. Gebruik deze functies volgens de aanwijzingen in de ABAK-documentatie of op advies van een technicus.\n\nVia het tabblad ‘Configuratie’ kunt u de map raadplegen, openen of wijzigen die wordt gebruikt voor de uitwisseling van bestanden.\n\nVia het tabblad ‘Diagnose’ kunt u controles uitvoeren op het leesapparaat voor de Vitale-kaart.\n\nVia het tabblad ‘Onderhoud’ kunt u de wizard voor het oplossen van importproblemen openen, handmatig een ABAK-bestand importeren en het beheer van back-ups openen.\n\nHet resetten van de database verwijdert de lokale gegevens. Deze handeling is uitsluitend bedoeld voor technische ondersteuning: lees de bevestigingsberichten aandachtig door voordat u doorgaat."),
         "settings_importAbakFile": MessageLookupByLibrary.simpleMessage(
             "Een .abak-bestand handmatig importeren"),
         "settings_invalidConfirmation":
@@ -1539,8 +1697,12 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Gebruikersinstellingen"),
         "vitaleBeneficiarySelector_cancel":
             MessageLookupByLibrary.simpleMessage("Annuleren"),
+        "vitaleBeneficiarySelector_help": MessageLookupByLibrary.simpleMessage(
+            "In dit venster kunt u de betreffende persoon selecteren wanneer er na het inlezen van de Vitale-kaart meerdere begunstigden worden voorgesteld.\n\nControleer de achternaam, de voornaam en de geboortedatum (indien beschikbaar) en klik vervolgens op de regel van de gewenste begunstigde.\n\nDoor deze keuze te maken, wordt dit venster gesloten en wordt de gekozen identiteit doorgegeven naar de volgende stap.\n\nMet ‘Annuleren’ sluit u het venster zonder een begunstigde te selecteren."),
         "vitaleBeneficiarySelector_selectBeneficiary":
             MessageLookupByLibrary.simpleMessage("Kies een begunstigde"),
+        "vitaleDiagnostic_help": MessageLookupByLibrary.simpleMessage(
+            "Op dit scherm kunt u controleren of de Vitale-kaartlezer goed werkt.\n\nIn Windows geeft het gedeelte over de module de status weer en kunt u deze informatie vernieuwen.\n\nStart een leessessie met de aangesloten lezer en de kaart erin. Als er meerdere begunstigden worden voorgesteld, selecteer dan de betreffende persoon om de gelezen gegevens te bekijken.\n\nDe weergegeven meldingen geven inzicht in een eventuele fout en kunnen aan de helpdesk worden doorgegeven.\n\nHet onderdeel „Geavanceerde diagnose“ biedt een technische test voor de communicatie met de kaart. Gebruik deze volgens de aanwijzingen in de ABAK-documentatie of van een technicus.\n\nDit scherm dient voor diagnostische doeleinden: het uitlezen van een identiteit leidt niet tot het aanmaken van een patiëntendossier."),
         "vitaleIdentity_birthDate":
             MessageLookupByLibrary.simpleMessage("Geboortedatum"),
         "vitaleIdentity_dataMasked":
@@ -1551,6 +1713,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Vrouwelijk"),
         "vitaleIdentity_firstName":
             MessageLookupByLibrary.simpleMessage("Voornaam"),
+        "vitaleIdentity_help": MessageLookupByLibrary.simpleMessage(
+            "Op dit scherm kunt u de gegevens van een verzekerde van een Vitale-kaart uitlezen, mits de lezer en de leesmodule beschikbaar zijn.\n\nHet uitlezen begint zodra het scherm wordt geopend. U kunt het proces opnieuw starten met de uitleesknop. Als er meerdere verzekerden op de kaart staan, selecteer dan de betreffende persoon.\n\nControleer de achternaam, de voornaam, de geboortedatum en de overige weergegeven gegevens. Het identificatienummer wordt aangeduid als ‘gedetecteerd’ of ‘niet beschikbaar’, zonder dat het volledig wordt weergegeven.\n\nWanneer de identiteit bruikbaar is, kunt u met de knop ‘Patiënt aanmaken’ deze gegevens doorsturen naar het aanmaakformulier.\n\nAls er geen identiteit beschikbaar is, raadpleeg dan het weergegeven bericht en controleer het leesapparaat voordat u het opnieuw probeert. U kunt terugkeren naar het vorige scherm om de gegevens handmatig in te voeren."),
         "vitaleIdentity_identityRead":
             MessageLookupByLibrary.simpleMessage("Identiteit gelezen"),
         "vitaleIdentity_identityReceivedMasked":

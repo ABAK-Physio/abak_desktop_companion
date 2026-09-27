@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:abak_shared/abak_shared.dart';
 
 import '../../core/expert/expert_context_info.dart';
 import '../../core/expert/expert_info_button.dart';
@@ -187,6 +188,11 @@ class _OrganizationScreenState extends State<OrganizationScreen> {
     return Scaffold(
       appBar: AppBar(
         actions: [
+          ContextHelpButton(
+            technicalInformationLabel: S.of(context).g_helpTooltip,
+            title: s.organization_title,
+            content: s.organization_help,
+          ),
           ExpertModeInfoButton(
             info: ExpertContextInfo(
               contextName: s.organization_title,

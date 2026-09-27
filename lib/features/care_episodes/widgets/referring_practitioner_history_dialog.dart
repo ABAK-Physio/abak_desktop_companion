@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import '../../../core/utils/date_format_utils.dart';
 import '../data/care_episode_referring_practitioner_repository.dart';
 import '../models/care_episode_referring_practitioner_history_item.dart';
+import 'package:abak_shared/abak_shared.dart';
+import '../../../generated/l10n.dart';
 
 class ReferringPractitionerHistoryDialog extends StatelessWidget {
   final String careEpisodeId;
@@ -38,7 +40,18 @@ class ReferringPractitionerHistoryDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Historique des kinés référents'),
+      title: Row(
+        children: [
+          Expanded(
+            child: Text(S.of(context).referringPractitionerHistory_title),
+          ),
+          ContextHelpButton(
+            technicalInformationLabel: S.of(context).g_helpTooltip,
+            title: S.of(context).referringPractitionerHistory_title,
+            content: S.of(context).referringPractitionerHistory_help,
+          ),
+        ],
+      ),
       content: SizedBox(
         width: 520,
         child:

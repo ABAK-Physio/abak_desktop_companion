@@ -1,6 +1,8 @@
 class PairedDevice {
   final String deviceId;
   final String? practitionerId;
+  // Display-only value loaded from the associated practitioner.
+  final String? practitionerDisplayName;
   final String deviceLabel;
   final String? platform;
   final String? publicKey;
@@ -11,6 +13,7 @@ class PairedDevice {
   const PairedDevice({
     required this.deviceId,
     this.practitionerId,
+    this.practitionerDisplayName,
     required this.deviceLabel,
     this.platform,
     this.publicKey,
@@ -23,6 +26,7 @@ class PairedDevice {
     return PairedDevice(
       deviceId: map['device_id'] as String,
       practitionerId: map['practitioner_id'] as String?,
+      practitionerDisplayName: map['practitioner_display_name'] as String?,
       deviceLabel: map['device_label'] as String,
       platform: map['platform'] as String?,
       publicKey: map['public_key'] as String?,

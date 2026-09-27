@@ -5,6 +5,7 @@ import '../../../core/settings/cabinet_identity_service.dart';
 import '../../../core/settings/practitioner_qr_data.dart';
 import '../../../generated/l10n.dart';
 import '../models/practitioner.dart';
+import 'package:abak_shared/abak_shared.dart';
 
 class PractitionerQrDialog extends StatelessWidget {
   final Practitioner practitioner;
@@ -34,7 +35,18 @@ class PractitionerQrDialog extends StatelessWidget {
         final data = snapshot.data!;
 
         return AlertDialog(
-          title:  Text(s.practitionerQr_professionalProfile),
+          title: Row(
+            children: [
+              Expanded(
+                child: Text(s.practitionerQr_professionalProfile),
+              ),
+              ContextHelpButton(
+                technicalInformationLabel: s.g_helpTooltip,
+                title: s.practitionerQr_professionalProfile,
+                content: s.practitionerQr_help,
+              ),
+            ],
+          ),
           content: SizedBox(
             width: 360,
             child: Column(

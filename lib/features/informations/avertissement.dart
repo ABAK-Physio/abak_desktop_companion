@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:abak_shared/abak_shared.dart';
 
 import '../../core/expert/expert_context_info.dart';
 import '../../core/expert/expert_info_button.dart';
@@ -14,6 +15,11 @@ class AvertissementScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         actions: [
+          ContextHelpButton(
+            technicalInformationLabel: S.of(context).g_helpTooltip,
+            title: s.legalNotice_appBarTitle,
+            content: s.legalNotice_help,
+          ),
           ExpertModeInfoButton(
             info: ExpertContextInfo(
               contextName: s.legalNotice_appBarTitle,

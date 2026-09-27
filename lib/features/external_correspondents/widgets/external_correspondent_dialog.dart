@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:abak_shared/abak_shared.dart';
+import '../../../generated/l10n.dart';
 
 import '../models/external_correspondent.dart';
 
@@ -109,11 +111,19 @@ class _ExternalCorrespondentDialogState
 
   @override
   Widget build(BuildContext context) {
+    final title = widget.correspondent == null
+        ? S.of(context).externalCorrespondentForm_addTitle
+        : S.of(context).externalCorrespondentForm_editTitle;
     return AlertDialog(
-      title: Text(
-        widget.correspondent == null
-            ? 'Ajouter un correspondant'
-            : 'Modifier le correspondant',
+      title: Row(
+        children: [
+          Expanded(child: Text(title)),
+          ContextHelpButton(
+            technicalInformationLabel: S.of(context).g_helpTooltip,
+            title: title,
+            content: S.of(context).externalCorrespondentForm_help,
+          ),
+        ],
       ),
       content: SizedBox(
         width: 560,

@@ -180,6 +180,7 @@ class _DeviceListScreenState extends State<DeviceListScreen> {
                 ),
               ),
               ContextHelpButton(
+                technicalInformationLabel: S.of(context).g_helpTooltip,
                 title: S.of(context).help_device_list_title,
                 content: S.of(context).help_device_list_content,
               ),
@@ -264,7 +265,7 @@ class _DeviceListScreenState extends State<DeviceListScreen> {
                             if (device.platform != null)
                               '${s.deviceList_platform} : ${device.platform}',
                             if (device.practitionerId != null)
-                              '${s.deviceList_associatedPractitioner} : ${device.practitionerId}',
+                              '${s.deviceList_associatedPractitioner} : ${device.practitionerDisplayName ?? '—'}',
                           ].join(' · '),
                         ),
                       trailing: _showArchived

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:abak_shared/abak_shared.dart';
+import '../../generated/l10n.dart';
 
 import '../../core/expert/expert_context_info.dart';
 import '../../core/expert/expert_info_button.dart';
@@ -131,6 +133,11 @@ class ImportSessionDetailScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         actions: [
+          ContextHelpButton(
+            technicalInformationLabel: S.of(context).g_helpTooltip,
+            title: S.of(context).importSessionDetail_title,
+            content: S.of(context).importSessionDetail_help,
+          ),
           ExpertModeInfoButton(
             info: ExpertContextInfo(
               contextName: "Suivi de l’import",
@@ -138,7 +145,7 @@ class ImportSessionDetailScreen extends StatelessWidget {
             ),
           ),
         ],
-        title: const Text("Suivi de l'import"),
+        title: Text(S.of(context).importSessionDetail_title),
       ),
         body: ListView(
           padding: const EdgeInsets.all(24),

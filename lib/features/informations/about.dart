@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart' show kDebugMode, kReleaseMode;
 import 'package:flutter/material.dart';
+import 'package:abak_shared/abak_shared.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -167,6 +168,11 @@ class _AboutScreenState extends State<AboutScreen> {
       appBar: AppBar(
         title: Text(s.information_contextName),
         actions: [
+          ContextHelpButton(
+            technicalInformationLabel: S.of(context).g_helpTooltip,
+            title: s.information_contextName,
+            content: s.information_help,
+          ),
           if (_expertModeEnabled) ExpertInfoButton(info: _expertInfo(s)),
         ],
       ),

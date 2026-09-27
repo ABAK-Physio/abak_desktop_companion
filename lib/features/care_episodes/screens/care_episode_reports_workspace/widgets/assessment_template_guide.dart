@@ -5,6 +5,8 @@ import '../../../models/assessment_templates/assessment_template_field.dart';
 import '../../../models/assessment_templates/assessment_template_field_type.dart';
 import '../../../models/assessment_templates/assessment_template_answers.dart';
 import '../../../models/assessment_templates/assessment_template_text_builder.dart';
+import 'package:abak_shared/abak_shared.dart';
+import '../../../../../generated/l10n.dart';
 
 class AssessmentTemplateGuide extends StatefulWidget {
   final AssessmentTemplate template;
@@ -144,7 +146,18 @@ class _AssessmentTemplateGuideState extends State<AssessmentTemplateGuide> {
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
-          title: const Text('Aperçu du bilan'),
+          title: Row(
+            children: [
+              Expanded(
+                child: Text(S.of(dialogContext).documentTemplatePreview_title),
+              ),
+              ContextHelpButton(
+                technicalInformationLabel: S.of(dialogContext).g_helpTooltip,
+                title: S.of(dialogContext).documentTemplatePreview_title,
+                content: S.of(dialogContext).documentTemplatePreview_help,
+              ),
+            ],
+          ),
           content: SizedBox(
             width: 700,
             height: 520,
@@ -260,9 +273,20 @@ class _AssessmentTemplateGuideState extends State<AssessmentTemplateGuide> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(
-            widget.template.name,
-            style: Theme.of(context).textTheme.headlineSmall,
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  widget.template.name,
+                  style: Theme.of(context).textTheme.headlineSmall,
+                ),
+              ),
+              ContextHelpButton(
+                technicalInformationLabel: S.of(context).g_helpTooltip,
+                title: S.of(context).documentTemplateGuide_helpTitle,
+                content: S.of(context).documentTemplateGuide_help,
+              ),
+            ],
           ),
           if (widget.template.description != null) ...[
             const SizedBox(height: 4),

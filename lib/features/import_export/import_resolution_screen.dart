@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:abak_shared/abak_shared.dart';
+import '../../generated/l10n.dart';
 
 import '../../core/expert/expert_context_info.dart';
 import '../../core/expert/expert_info_button.dart';
@@ -117,7 +119,18 @@ class _ImportResolutionScreenState extends State<ImportResolutionScreen> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Nouveau patient'),
+          title: Row(
+            children: [
+              Expanded(
+                child: Text(S.of(context).importPatientForm_title),
+              ),
+              ContextHelpButton(
+                technicalInformationLabel: S.of(context).g_helpTooltip,
+                title: S.of(context).importPatientForm_title,
+                content: S.of(context).importPatientForm_help,
+              ),
+            ],
+          ),
           content: StatefulBuilder(
             builder: (context, setDialogState) {
               return SizedBox(
@@ -228,16 +241,21 @@ class _ImportResolutionScreenState extends State<ImportResolutionScreen> {
 
     return Scaffold(
       appBar: AppBar(
+        title: Text(S.of(context).importResolution_title),
         actions: [
+          ContextHelpButton(
+            technicalInformationLabel: S.of(context).g_helpTooltip,
+            title: S.of(context).importResolution_title,
+            content: S.of(context).importResolution_help,
+          ),
           ExpertModeInfoButton(
             info: ExpertContextInfo(
-              contextName: 'Rattacher l’import',
+              contextName: S.of(context).importResolution_title,
               sourceFile:
-                  'lib/features/import_export/import_resolution_screen.dart',
+              'lib/features/import_export/import_resolution_screen.dart',
             ),
           ),
         ],
-        title: const Text('Rattacher l’import'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(24),
