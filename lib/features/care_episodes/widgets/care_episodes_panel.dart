@@ -38,7 +38,7 @@ class _CareEpisodesPanelState extends State<CareEpisodesPanel> {
   final CareEpisodeRepository _careEpisodeRepository = CareEpisodeRepository();
   final CareEpisodeReferringPractitionerRepository
   _referringPractitionerRepository =
-      CareEpisodeReferringPractitionerRepository();
+  CareEpisodeReferringPractitionerRepository();
 
   Future<void> _editCareEpisode(CareEpisode episode) async {
     final s = S.of(context);
@@ -109,7 +109,7 @@ class _CareEpisodesPanelState extends State<CareEpisodesPanel> {
                 ),
                 const SizedBox(height: 16),
                 ExternalCorrespondentSelector(
-                  label: 'Médecin prescripteur',
+                  label: s.careEpisodePanel_prescribingDoctor,
                   selectedCorrespondentId: selectedPrescribingCorrespondentId,
                   allowEmpty: true,
                   onChanged: (correspondentId) {
@@ -197,12 +197,11 @@ class _CareEpisodesPanelState extends State<CareEpisodesPanel> {
       final confirmed = await showDialog<bool>(
         context: context,
         builder: (dialogContext) => AlertDialog(
-          title: const Text('Archiver cette prise en charge ?'),
+          title: Text(s.careEpisodePanel_archiveCareEpisodeTitle),
           content: Text(
             '${episode.title}\n'
-            '${s.patientDetail_pathology} : ${episode.pathologyLabel}\n\n'
-            'Cette prise en charge sera retirée de la liste. '
-            'Ses données seront conservées par archivage.',
+                '${s.patientDetail_pathology} : ${episode.pathologyLabel}\n\n'
+                '${s.careEpisodePanel_archiveCareEpisodeMessage}',
           ),
           actions: [
             TextButton(
@@ -215,7 +214,7 @@ class _CareEpisodesPanelState extends State<CareEpisodesPanel> {
                 foregroundColor: Theme.of(dialogContext).colorScheme.onError,
               ),
               onPressed: () => Navigator.of(dialogContext).pop(true),
-              child: const Text('Archiver'),
+              child: Text(s.careEpisodePanel_archive),
             ),
           ],
         ),
@@ -228,16 +227,17 @@ class _CareEpisodesPanelState extends State<CareEpisodesPanel> {
 
       _refresh();
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Prise en charge archivée.')),
+        SnackBar(content: Text(s.careEpisodePanel_careEpisodeArchived)),
       );
     } catch (error, stackTrace) {
       debugPrint('Échec de l’archivage de la prise en charge : $error');
       debugPrintStack(stackTrace: stackTrace);
       if (!mounted) return;
+      final s = S.of(context);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
+        SnackBar(
           content: Text(
-            'Impossible d’archiver la prise en charge. Veuillez réessayer.',
+            s.careEpisodePanel_archiveCareEpisodeError,
           ),
         ),
       );
@@ -251,21 +251,23 @@ class _CareEpisodesPanelState extends State<CareEpisodesPanel> {
     setState(() => _restoringCareEpisode = true);
 
     try {
+      final s = S.of(context);
       await _careEpisodeRepository.restoreCareEpisode(episode.careEpisodeId);
       if (!mounted) return;
 
       _refresh();
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Prise en charge restaurée.')),
+        SnackBar(content: Text(s.careEpisodePanel_careEpisodeRestored)),
       );
     } catch (error, stackTrace) {
       debugPrint('Échec de la restauration de la prise en charge : $error');
       debugPrintStack(stackTrace: stackTrace);
       if (!mounted) return;
+      final s = S.of(context);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
+        SnackBar(
           content: Text(
-            'Impossible de restaurer la prise en charge. Veuillez réessayer.',
+            s.careEpisodePanel_restoreCareEpisodeError,
           ),
         ),
       );
@@ -467,11 +469,11 @@ class _SectionCard extends StatelessWidget {
                       helpContent!.trim().isNotEmpty) ...[
                     const SizedBox(width: 8),
                     ContextHelpButton(
-                    technicalInformationLabel: S.of(context).g_helpTooltip,
-                    title: title,
-                    content: helpContent!,
-                  ),
-                 ],
+                      technicalInformationLabel: S.of(context).g_helpTooltip,
+                      title: title,
+                      content: helpContent!,
+                    ),
+                  ],
                 ],
               ),
               const Divider(height: 28),
@@ -554,17 +556,21 @@ class _CareEpisodesSection extends StatelessWidget {
         final summaries = snapshot.data ?? [];
 
         return _SectionCard(
-          title: archived ? 'Prises en charge archivées' : 'Prises en charge',
+          title: archived
+              ? s.careEpisodePanel_archivedCareEpisodes
+              : s.careEpisodePanel_careEpisodes,
           icon: archived
               ? Icons.archive_outlined
               : Icons.folder_special_outlined,
-          helpContent: S.of(context).help_prise_en_charge,
+          helpContent: archived
+              ? s.careEpisodePanel_archivedCareEpisodesHelp
+              : s.help_prise_en_charge,
           children: [
             if (!archived) ...[
               OutlinedButton.icon(
                 onPressed: onCreateCareEpisode,
                 icon: const Icon(Icons.add),
-                label: const Text('Nouvelle prise en charge'),
+                label: Text(s.careEpisodePanel_newCareEpisode),
               ),
               const SizedBox(height: 16),
             ],
@@ -574,94 +580,99 @@ class _CareEpisodesSection extends StatelessWidget {
                 child: CircularProgressIndicator(),
               )
             else if (snapshot.hasError)
-              const Text('Impossible de charger les prises en charge.')
+              Text(s.careEpisodePanel_loadCareEpisodesError)
             else if (summaries.isEmpty)
-              _EmptySectionMessage(
-                text: archived
-                    ? 'Aucune prise en charge archivée pour ce patient.'
-                    : 'Aucune prise en charge créée pour ce patient.',
-              )
-            else
-              ...summaries.map((summary) {
-                final episode = summary.episode;
+                _EmptySectionMessage(
+                  text: archived
+                      ? s.careEpisodePanel_noArchivedCareEpisodes
+                      : s.careEpisodePanel_noCareEpisodes,
+                )
+              else
+                ...summaries.map((summary) {
+                  final episode = summary.episode;
 
-                final createdAt = DateTime.fromMillisecondsSinceEpoch(
-                  episode.createdAt,
-                );
+                  final createdAt = DateTime.fromMillisecondsSinceEpoch(
+                    episode.createdAt,
+                  );
 
-                final monthYear = DateFormatUtils.formatMonthYear(
-                  context,
-                  createdAt,
-                );
+                  final monthYear = DateFormatUtils.formatMonthYear(
+                    context,
+                    createdAt,
+                  );
 
-                return ListTile(
-                  contentPadding: EdgeInsets.zero,
-                  leading: const Icon(Icons.folder_open_outlined),
-                  title: Text('Prise en charge ouverte en $monthYear'),
-                  subtitle: Text(
-                    [
-                      '${s.patientDetail_pathology} : ${episode.pathologyLabel}',
-                      '${s.patientDetail_referringPractitioner} : '
-                          '${_referringPractitionerLabel(summary, s)}',
-                      'Médecin prescripteur : '
-                          '${summary.prescribingCorrespondentDisplayName ?? s.patientDetail_notProvided}',
-                      if (archived && episode.archivedAt != null)
-                        'Archivée le ${DateFormatUtils.formatTimestampForDisplay(context, episode.archivedAt!)}',
-                    ].join('\n'),
-                  ),
-                  trailing: archived
-                      ? OutlinedButton.icon(
-                          onPressed: restoring
-                              ? null
-                              : () => onRestoreCareEpisode(episode),
-                          icon: const Icon(Icons.restore),
-                          label: const Text('Restaurer'),
-                        )
-                      : Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            if (onSelectEpisode != null)
-                              FilledButton(
-                                onPressed: () => onSelectEpisode!(episode),
-                                child: const Text('Choisir'),
-                              ),
-                            IconButton(
-                              tooltip: 'Modifier',
-                              icon: const Icon(Icons.edit_outlined),
-                              onPressed: () => onEditCareEpisode(episode),
+                  return ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    leading: const Icon(Icons.folder_open_outlined),
+                    title: Text(s.careEpisodePanel_careEpisodeOpenedIn(monthYear)),
+                    subtitle: Text(
+                      [
+                        '${s.patientDetail_pathology} : ${episode.pathologyLabel}',
+                        '${s.patientDetail_referringPractitioner} : '
+                            '${_referringPractitionerLabel(summary, s)}',
+                        '${s.careEpisodePanel_prescribingDoctor} : '
+                            '${summary.prescribingCorrespondentDisplayName ?? s.patientDetail_notProvided}',
+                        if (archived && episode.archivedAt != null)
+                          s.careEpisodePanel_archivedOn(
+                            DateFormatUtils.formatTimestampForDisplay(
+                              context,
+                              episode.archivedAt!,
                             ),
-                            IconButton(
-                              tooltip: 'Archiver la prise en charge',
-                              icon: const Icon(Icons.archive_outlined),
-                              color: Theme.of(context).colorScheme.error,
-                              onPressed: () => onArchiveCareEpisode(episode),
-                            ),
-                          ],
+                          ),
+                      ].join('\n'),
+                    ),
+                    trailing: archived
+                        ? OutlinedButton.icon(
+                      onPressed: restoring
+                          ? null
+                          : () => onRestoreCareEpisode(episode),
+                      icon: const Icon(Icons.restore),
+                      label: Text(s.careEpisodePanel_restore),
+                    )
+                        : Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (onSelectEpisode != null)
+                          FilledButton(
+                            onPressed: () => onSelectEpisode!(episode),
+                            child: Text(s.careEpisodePanel_choose),
+                          ),
+                        IconButton(
+                          tooltip: s.careEpisodePanel_edit,
+                          icon: const Icon(Icons.edit_outlined),
+                          onPressed: () => onEditCareEpisode(episode),
                         ),
-                  onTap: () async {
-                    if (!archived && onSelectEpisode != null) {
-                      onSelectEpisode!(episode);
-                      return;
-                    }
-                    await Navigator.of(context).push<void>(
-                      MaterialPageRoute(
-                        builder: (_) => CareEpisodeReportsWorkspaceScreen(
-                          episode: episode,
-                          patientName: patientName,
-                          resultRepository: DesktopResultRepository(),
+                        IconButton(
+                          tooltip: s.careEpisodePanel_archiveCareEpisode,
+                          icon: const Icon(Icons.archive_outlined),
+                          color: Theme.of(context).colorScheme.error,
+                          onPressed: () => onArchiveCareEpisode(episode),
                         ),
-                      ),
-                    );
+                      ],
+                    ),
+                    onTap: () async {
+                      if (!archived && onSelectEpisode != null) {
+                        onSelectEpisode!(episode);
+                        return;
+                      }
+                      await Navigator.of(context).push<void>(
+                        MaterialPageRoute(
+                          builder: (_) => CareEpisodeReportsWorkspaceScreen(
+                            episode: episode,
+                            patientName: patientName,
+                            resultRepository: DesktopResultRepository(),
+                          ),
+                        ),
+                      );
 
-                    if (context.mounted) {
-                      final state = context
-                          .findAncestorStateOfType<_CareEpisodesPanelState>();
+                      if (context.mounted) {
+                        final state = context
+                            .findAncestorStateOfType<_CareEpisodesPanelState>();
 
-                      state?._refresh();
-                    }
-                  },
-                );
-              }),
+                        state?._refresh();
+                      }
+                    },
+                  );
+                }),
           ],
         );
       },

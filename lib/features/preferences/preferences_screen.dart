@@ -9,14 +9,11 @@ import '../organization/organization_screen.dart';
 import '../../core/expert/expert_context_info.dart';
 import '../../core/expert/expert_info_button.dart';
 import '../../core/settings/generated_documents_directory_service.dart';
-import '../external_correspondents/screens/external_correspondents_screen.dart';
 
 class PreferencesScreen extends StatefulWidget {
   final VoidCallback onLanguageChanged;
 
   const PreferencesScreen({super.key, required this.onLanguageChanged});
-
-
 
   @override
   State<PreferencesScreen> createState() => _PreferencesScreenState();
@@ -35,8 +32,6 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
   bool _choosingDocumentsDirectory = false;
   bool _openGeneratedDocument = true;
 
-
-
   ExpertContextInfo _expertInfo(S s) {
     return ExpertContextInfo(
       contextName: s.preferences_contextName,
@@ -47,8 +42,7 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
   }
 
   String? _languageCode;
-  int _retentionDays =
-      PatientArchiveSettingsService.defaultRetentionDays;
+  int _retentionDays = PatientArchiveSettingsService.defaultRetentionDays;
 
   bool _loading = true;
   bool _expertModeEnabled = false;
@@ -75,22 +69,18 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
   }
 
   Future<void> _loadPreferences() async {
-    final languageCode =
-    await _languageService.getLanguageCode();
+    final languageCode = await _languageService.getLanguageCode();
 
-    final retentionDays =
-    await _archiveSettingsService.getRetentionDays();
+    final retentionDays = await _archiveSettingsService.getRetentionDays();
 
-    final expertModeEnabled =
-    await _applicationSettingsService.isExpertModeEnabled();
+    final expertModeEnabled = await _applicationSettingsService
+        .isExpertModeEnabled();
 
-    final openGeneratedDocument =
-    await _applicationSettingsService.isOpenGeneratedDocumentEnabled();
+    final openGeneratedDocument = await _applicationSettingsService
+        .isOpenGeneratedDocumentEnabled();
 
-    final assessmentDocumentsDirectoryPath =
-    await _applicationSettingsService.getString(
-      ApplicationSettingsService.assessmentDocumentsDirectoryKey,
-    );
+    final assessmentDocumentsDirectoryPath = await _applicationSettingsService
+        .getString(ApplicationSettingsService.assessmentDocumentsDirectoryKey);
 
     if (!mounted) return;
 
@@ -99,8 +89,7 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
       _retentionDays = retentionDays;
       _expertModeEnabled = expertModeEnabled;
       _openGeneratedDocument = openGeneratedDocument;
-      _assessmentDocumentsDirectoryPath =
-          assessmentDocumentsDirectoryPath;
+      _assessmentDocumentsDirectoryPath = assessmentDocumentsDirectoryPath;
       _loading = false;
     });
   }
@@ -136,11 +125,9 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
       _retentionDays = days;
     });
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(s.preferences_retentionSaved),
-      ),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(s.preferences_retentionSaved)));
   }
 
   Future<void> _changeExpertMode(bool enabled) async {
@@ -154,18 +141,13 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
       _expertModeEnabled = enabled;
     });
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          s.preferences_expertModeSaved,
-        ),
-      ),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(s.preferences_expertModeSaved)));
   }
 
   Future<void> _changeOpenGeneratedDocument(bool enabled) async {
-    await _applicationSettingsService
-        .setOpenGeneratedDocumentEnabled(enabled);
+    await _applicationSettingsService.setOpenGeneratedDocumentEnabled(enabled);
 
     if (!mounted) return;
 
@@ -175,9 +157,7 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
 
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
-        content: Text(
-          'Préférence d’ouverture des documents mise à jour',
-        ),
+        content: Text('Préférence d’ouverture des documents mise à jour'),
       ),
     );
   }
@@ -241,9 +221,7 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
                       ),
                     ),
                     if (_expertModeEnabled)
-                      ExpertInfoButton(
-                        info: _expertInfo(s),
-                      ),
+                      ExpertInfoButton(info: _expertInfo(s)),
                     ContextHelpButton(
                       technicalInformationLabel: S.of(context).g_helpTooltip,
                       title: S.of(context).user_settings,
@@ -298,14 +276,14 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
                             labelText: s.preferences_retentionDuration,
                             border: const OutlineInputBorder(),
                           ),
-                          items: PatientArchiveSettingsService.retentionOptions.map((days) {
+                          items: PatientArchiveSettingsService.retentionOptions
+                              .map((days) {
                             return DropdownMenuItem<int>(
                               value: days,
-                              child: Text(
-                                '$days ${s.preferences_days}',
-                              ),
+                              child: Text('$days ${s.preferences_days}'),
                             );
-                          }).toList(),
+                          })
+                              .toList(),
                           onChanged: _loading ? null : _changeRetentionDays,
                         ),
                         const SizedBox(height: 8),
@@ -323,9 +301,7 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
                   child: SwitchListTile(
                     secondary: const Icon(Icons.developer_mode_outlined),
                     title: Text(s.preferences_expertMode),
-                    subtitle: Text(
-                      s.preferences_expertModeDescription,
-                    ),
+                    subtitle: Text(s.preferences_expertModeDescription),
                     value: _expertModeEnabled,
                     onChanged: _loading ? null : _changeExpertMode,
                   ),
@@ -335,32 +311,12 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
                   child: ListTile(
                     leading: const Icon(Icons.business_outlined),
                     title: Text(s.preferences_organization),
-                    subtitle: Text(
-                      s.preferences_organizationDescription,
-                    ),
+                    subtitle: Text(s.preferences_organizationDescription),
                     trailing: const Icon(Icons.chevron_right),
                     onTap: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (_) => const OrganizationScreen(),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-                const SizedBox(height: 16),
-                Card(
-                  child: ListTile(
-                    leading: const Icon(Icons.contact_page_outlined),
-                    title: const Text('Correspondants externes'),
-                    subtitle: const Text(
-                      'Médecins prescripteurs et autres correspondants.',
-                    ),
-                    trailing: const Icon(Icons.chevron_right),
-                    onTap: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) => const ExternalCorrespondentsScreen(),
                         ),
                       );
                     },
@@ -389,9 +345,7 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
                         ListTile(
                           contentPadding: EdgeInsets.zero,
                           leading: const Icon(Icons.folder_outlined),
-                          title: const Text(
-                            'Dossier des documents générés',
-                          ),
+                          title: const Text('Dossier des documents générés'),
                           subtitle: Text(
                             _assessmentDocumentsDirectoryPath ??
                                 'Aucun dossier défini',
@@ -416,8 +370,9 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
                             'S’applique aux bilans et aux rapports.',
                           ),
                           value: _openGeneratedDocument,
-                          onChanged:
-                          _loading ? null : _changeOpenGeneratedDocument,
+                          onChanged: _loading
+                              ? null
+                              : _changeOpenGeneratedDocument,
                         ),
                       ],
                     ),

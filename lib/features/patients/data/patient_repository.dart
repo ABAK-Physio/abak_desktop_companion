@@ -29,11 +29,131 @@ class PatientRepository {
   Future<void> deletePatientPermanently(String patientId) async {
     final db = await DatabaseService.database;
 
-    await db.delete(
-      'patients',
-      where: 'patient_id = ?',
-      whereArgs: [patientId],
-    );
+    // Delete children explicitly: existing databases do not cascade patient
+    // deletion, and foreign-key enforcement may be disabled. No archive filter
+    // is applied, so both active and archived episodes are removed.
+    await db.transaction((txn) async {
+      const episodes =
+          'SELECT care_episode_id FROM care_episodes WHERE patient_id = ?';
+      const assessments =
+          'SELECT assessment_id FROM care_episode_assessments '
+          'WHERE care_episode_id IN ($episodes)';
+      const reports =
+          'SELECT report_id FROM care_episode_reports '
+          'WHERE care_episode_id IN ($episodes)';
+      const notes =
+          'SELECT note_id FROM care_episode_notes '
+          'WHERE care_episode_id IN ($episodes)';
+      const results =
+          'SELECT result_id FROM desktop_results '
+          'WHERE patient_id = ? OR care_episode_id IN ($episodes)';
+      const sessions =
+          'SELECT import_session_id FROM desktop_import_sessions '
+          'WHERE selected_patient_id = ? '
+          'OR selected_care_episode_id IN ($episodes)';
+
+      await txn.delete(
+        'care_episode_document_edit_drafts',
+        where: '(document_type = ? AND document_id IN ($assessments)) '
+            'OR (document_type = ? AND document_id IN ($reports))',
+        whereArgs: ['assessment', patientId, 'report', patientId],
+      );
+      for (final table in [
+        'care_episode_report_tests',
+        'care_episode_report_notes',
+      ]) {
+        await txn.delete(
+          table,
+          where: 'report_id IN ($reports)',
+          whereArgs: [patientId],
+        );
+      }
+      for (final table in [
+        'care_episode_assessment_tests',
+        'care_episode_assessment_notes',
+      ]) {
+        await txn.delete(
+          table,
+          where: 'assessment_id IN ($assessments)',
+          whereArgs: [patientId],
+        );
+      }
+      // Also remove references to these notes from any other document.
+      for (final table in [
+        'care_episode_report_notes',
+        'care_episode_assessment_notes',
+      ]) {
+        await txn.delete(
+          table,
+          where: 'note_id IN ($notes)',
+          whereArgs: [patientId],
+        );
+      }
+      await txn.update(
+        'care_episode_reports',
+        {'source_assessment_id': null},
+        where: 'source_assessment_id IN ($assessments)',
+        whereArgs: [patientId],
+      );
+      for (final table in [
+        'desktop_result_metrics',
+        'desktop_result_conflicts',
+      ]) {
+        await txn.delete(
+          table,
+          where: 'result_id IN ($results)',
+          whereArgs: [patientId, patientId],
+        );
+      }
+      await txn.delete(
+        'desktop_results',
+        where: 'patient_id = ? OR care_episode_id IN ($episodes)',
+        whereArgs: [patientId, patientId],
+      );
+      await txn.delete(
+        'desktop_import_session_files',
+        where: 'import_session_id IN ($sessions)',
+        whereArgs: [patientId, patientId],
+      );
+      await txn.delete(
+        'desktop_import_sessions',
+        where: 'selected_patient_id = ? '
+            'OR selected_care_episode_id IN ($episodes)',
+        whereArgs: [patientId, patientId],
+      );
+      await txn.delete(
+        'episode_documents',
+        where: 'case_id IN ($episodes)',
+        whereArgs: [patientId],
+      );
+      for (final table in [
+        'care_episode_reports',
+        'care_episode_assessments',
+        'care_episode_notes',
+        'care_episode_referring_practitioners',
+        'care_episode_bodymaps',
+        'assessment_template_drafts',
+      ]) {
+        await txn.delete(
+          table,
+          where: 'care_episode_id IN ($episodes)',
+          whereArgs: [patientId],
+        );
+      }
+      for (final table in [
+        'care_episodes',
+        'patient_identity',
+        'patient_attributes',
+        'patient_fr_health_identity',
+        'patients',
+      ]) {
+        await txn.delete(
+          table,
+          where: 'patient_id = ?',
+          whereArgs: [patientId],
+        );
+      }
+    });
   }
 
   Future<Patient> createPatient({

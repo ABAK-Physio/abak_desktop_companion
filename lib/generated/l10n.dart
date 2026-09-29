@@ -650,6 +650,216 @@ class S {
     );
   }
 
+  /// `Médecin prescripteur`
+  String get careEpisodePanel_prescribingDoctor {
+    return Intl.message(
+      'Médecin prescripteur',
+      name: 'careEpisodePanel_prescribingDoctor',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Archiver cette prise en charge ?`
+  String get careEpisodePanel_archiveCareEpisodeTitle {
+    return Intl.message(
+      'Archiver cette prise en charge ?',
+      name: 'careEpisodePanel_archiveCareEpisodeTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cette prise en charge sera retirée de la liste. Ses données seront conservées par archivage.`
+  String get careEpisodePanel_archiveCareEpisodeMessage {
+    return Intl.message(
+      'Cette prise en charge sera retirée de la liste. Ses données seront conservées par archivage.',
+      name: 'careEpisodePanel_archiveCareEpisodeMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Archiver`
+  String get careEpisodePanel_archive {
+    return Intl.message(
+      'Archiver',
+      name: 'careEpisodePanel_archive',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Prise en charge archivée.`
+  String get careEpisodePanel_careEpisodeArchived {
+    return Intl.message(
+      'Prise en charge archivée.',
+      name: 'careEpisodePanel_careEpisodeArchived',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Impossible d’archiver la prise en charge. Veuillez réessayer.`
+  String get careEpisodePanel_archiveCareEpisodeError {
+    return Intl.message(
+      'Impossible d’archiver la prise en charge. Veuillez réessayer.',
+      name: 'careEpisodePanel_archiveCareEpisodeError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Vous trouvez ici vos épisodes de soins archivés.`
+  String get careEpisodePanel_archivedCareEpisodesHelp {
+    return Intl.message(
+      'Vous trouvez ici vos épisodes de soins archivés.',
+      name: 'careEpisodePanel_archivedCareEpisodesHelp',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Prise en charge restaurée.`
+  String get careEpisodePanel_careEpisodeRestored {
+    return Intl.message(
+      'Prise en charge restaurée.',
+      name: 'careEpisodePanel_careEpisodeRestored',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Impossible de restaurer la prise en charge. Veuillez réessayer.`
+  String get careEpisodePanel_restoreCareEpisodeError {
+    return Intl.message(
+      'Impossible de restaurer la prise en charge. Veuillez réessayer.',
+      name: 'careEpisodePanel_restoreCareEpisodeError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Prises en charge`
+  String get careEpisodePanel_careEpisodes {
+    return Intl.message(
+      'Prises en charge',
+      name: 'careEpisodePanel_careEpisodes',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Prises en charge archivées`
+  String get careEpisodePanel_archivedCareEpisodes {
+    return Intl.message(
+      'Prises en charge archivées',
+      name: 'careEpisodePanel_archivedCareEpisodes',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Nouvelle prise en charge`
+  String get careEpisodePanel_newCareEpisode {
+    return Intl.message(
+      'Nouvelle prise en charge',
+      name: 'careEpisodePanel_newCareEpisode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Impossible de charger les prises en charge.`
+  String get careEpisodePanel_loadCareEpisodesError {
+    return Intl.message(
+      'Impossible de charger les prises en charge.',
+      name: 'careEpisodePanel_loadCareEpisodesError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Aucune prise en charge archivée pour ce patient.`
+  String get careEpisodePanel_noArchivedCareEpisodes {
+    return Intl.message(
+      'Aucune prise en charge archivée pour ce patient.',
+      name: 'careEpisodePanel_noArchivedCareEpisodes',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Aucune prise en charge créée pour ce patient.`
+  String get careEpisodePanel_noCareEpisodes {
+    return Intl.message(
+      'Aucune prise en charge créée pour ce patient.',
+      name: 'careEpisodePanel_noCareEpisodes',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Prise en charge ouverte en {monthYear}`
+  String careEpisodePanel_careEpisodeOpenedIn(Object monthYear) {
+    return Intl.message(
+      'Prise en charge ouverte en $monthYear',
+      name: 'careEpisodePanel_careEpisodeOpenedIn',
+      desc: '',
+      args: [monthYear],
+    );
+  }
+
+  /// `Archivée le {date}`
+  String careEpisodePanel_archivedOn(Object date) {
+    return Intl.message(
+      'Archivée le $date',
+      name: 'careEpisodePanel_archivedOn',
+      desc: '',
+      args: [date],
+    );
+  }
+
+  /// `Restaurer`
+  String get careEpisodePanel_restore {
+    return Intl.message(
+      'Restaurer',
+      name: 'careEpisodePanel_restore',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choisir`
+  String get careEpisodePanel_choose {
+    return Intl.message(
+      'Choisir',
+      name: 'careEpisodePanel_choose',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Modifier`
+  String get careEpisodePanel_edit {
+    return Intl.message(
+      'Modifier',
+      name: 'careEpisodePanel_edit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Archiver la prise en charge`
+  String get careEpisodePanel_archiveCareEpisode {
+    return Intl.message(
+      'Archiver la prise en charge',
+      name: 'careEpisodePanel_archiveCareEpisode',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Ajouter une note de suivi`
   String get careEpisodeReportsWorkspace_addFollowUpNote {
     return Intl.message(
@@ -3550,10 +3760,10 @@ class S {
     );
   }
 
-  /// `Vous trouvez ici les différentes prises en charge de votre patient\Vous pouvez utiliser un épisode existant\Vous pouvez en créer un nouveau`
+  /// `Une prise en charge correspond à un épisode de soin.\nVous trouvez ici les différentes prises en charge  actives de votre patient.\nPour rattacher un résultat, vous pouvez utiliser un épisode existant ou en créer un nouveau.\nUne fois l'épisode terminé vous pouvez l'archiver.`
   String get help_prise_en_charge {
     return Intl.message(
-      'Vous trouvez ici les différentes prises en charge de votre patient\\Vous pouvez utiliser un épisode existant\\Vous pouvez en créer un nouveau',
+      'Une prise en charge correspond à un épisode de soin.\nVous trouvez ici les différentes prises en charge  actives de votre patient.\nPour rattacher un résultat, vous pouvez utiliser un épisode existant ou en créer un nouveau.\nUne fois l\'épisode terminé vous pouvez l\'archiver.',
       name: 'help_prise_en_charge',
       desc: '',
       args: [],
@@ -3665,6 +3875,16 @@ class S {
     return Intl.message(
       'Conflit détecté',
       name: 'home_conflict_detected',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Correspondants`
+  String get home_correspondents {
+    return Intl.message(
+      'Correspondants',
+      name: 'home_correspondents',
       desc: '',
       args: [],
     );
@@ -6625,6 +6845,26 @@ class S {
     return Intl.message(
       'Le prénom est obligatoire',
       name: 'patientNew_firstNameRequired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `La lecture de la carte Vitale proposée dans Companion concerne actuellement la France. Elle permet de récupérer des informations d’identité pour faciliter la création de la fiche patient.\n\nABAK Companion souhaite étendre cette démarche aux moyens d’identification utilisés dans d’autres pays. Les cartes, identifiants et services de santé y fonctionnent différemment : leur prise en charge n’est pas encore intégrée à Companion. La saisie manuelle reste disponible.\n\nNous souhaitons explorer ces possibilités avec les kinésithérapeutes qui utilisent ABAK. Vous souhaitez nous accompagner dans votre pays ? Votre connaissance des pratiques locales et votre participation aux essais nous aideront à définir une solution utile et adaptée.\n\nLes évolutions seront construites progressivement avec les praticiens volontaires, selon les besoins exprimés, les possibilités techniques et les autorisations nécessaires.`
+  String get patientNew_identificationCountriesHelp {
+    return Intl.message(
+      'La lecture de la carte Vitale proposée dans Companion concerne actuellement la France. Elle permet de récupérer des informations d’identité pour faciliter la création de la fiche patient.\n\nABAK Companion souhaite étendre cette démarche aux moyens d’identification utilisés dans d’autres pays. Les cartes, identifiants et services de santé y fonctionnent différemment : leur prise en charge n’est pas encore intégrée à Companion. La saisie manuelle reste disponible.\n\nNous souhaitons explorer ces possibilités avec les kinésithérapeutes qui utilisent ABAK. Vous souhaitez nous accompagner dans votre pays ? Votre connaissance des pratiques locales et votre participation aux essais nous aideront à définir une solution utile et adaptée.\n\nLes évolutions seront construites progressivement avec les praticiens volontaires, selon les besoins exprimés, les possibilités techniques et les autorisations nécessaires.',
+      name: 'patientNew_identificationCountriesHelp',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Identification des patients selon les pays`
+  String get patientNew_identificationCountriesTitle {
+    return Intl.message(
+      'Identification des patients selon les pays',
+      name: 'patientNew_identificationCountriesTitle',
       desc: '',
       args: [],
     );

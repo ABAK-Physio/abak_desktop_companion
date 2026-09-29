@@ -968,6 +968,13 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
                                     : s.patientNew_readVitale,
                               ),
                             ),
+                            const SizedBox(width: 8),
+                            ContextHelpButton(
+                              icon: Icons.public,
+                              technicalInformationLabel: s.patientNew_identificationCountriesTitle,
+                              title: s.patientNew_identificationCountriesTitle,
+                              content: s.patientNew_identificationCountriesHelp,
+                            ),
                           ],
                         ),
                         const SizedBox(height: 16),

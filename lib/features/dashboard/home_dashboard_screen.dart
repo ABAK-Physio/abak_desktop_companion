@@ -15,6 +15,7 @@ import '../settings/settings_screen.dart';
 import '../informations/about.dart';
 import '../practitioners/practitioner_list_screen.dart';
 import '../devices/device_list_screen.dart';
+import '../external_correspondents/screens/external_correspondents_screen.dart';
 import '../import_export/abak_import_launcher.dart';
 import 'package:abak_desktop_companion/features/home/widgets/recent_imports_card.dart';
 import 'package:abak_desktop_companion/features/home/widgets/system_status_card.dart';
@@ -25,7 +26,6 @@ import 'package:abak_desktop_companion/features/home/widgets/pending_resolution_
 import '../preferences/preferences_screen.dart';
 
 import 'package:abak_shared/abak_shared.dart';
-
 
 class HomeDashboardScreen extends StatefulWidget {
   static final _homeRequests = ValueNotifier<int>(0);
@@ -55,6 +55,7 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
       S.of(context).home_home,
       S.of(context).home_patients,
       'Kinés',
+      S.of(context).home_correspondents,
       'Appareils',
       'Paramètres',
       'Réglages',
@@ -92,8 +93,8 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
   }
 
   Future<void> _loadExpertMode() async {
-    final expertModeEnabled =
-    await _applicationSettingsService.isExpertModeEnabled();
+    final expertModeEnabled = await _applicationSettingsService
+        .isExpertModeEnabled();
 
     if (!mounted) return;
 
@@ -137,6 +138,11 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
                 label: Text(S.of(context).home_practitioners),
               ),
               NavigationRailDestination(
+                icon: Icon(Icons.contact_page_outlined),
+                selectedIcon: Icon(Icons.contact_page),
+                label: Text(S.of(context).home_correspondents),
+              ),
+              NavigationRailDestination(
                 icon: Icon(Icons.devices_other_outlined),
                 selectedIcon: Icon(Icons.devices_other),
                 label: Text(S.of(context).home_devices),
@@ -177,8 +183,7 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
         builder: (dialogContext) {
           return AlertDialog(
             title: Text(S.of(context).home_ipAddressNotFound),
-            content: Text(S.of(context).home_ipAddressNotFoundMessage
-            ),
+            content: Text(S.of(context).home_ipAddressNotFoundMessage),
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(dialogContext).pop(),
@@ -204,9 +209,7 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
         return AlertDialog(
           title: Row(
             children: [
-              Expanded(
-                child: Text(S.of(dialogContext).pairPhoneDialogTitle),
-              ),
+              Expanded(child: Text(S.of(dialogContext).pairPhoneDialogTitle)),
               ContextHelpButton(
                 technicalInformationLabel: S.of(dialogContext).g_helpTooltip,
                 title: S.of(dialogContext).pairPhoneDialogTitle,
@@ -228,11 +231,12 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
                 const SizedBox(height: 16),
                 SelectableText(
                   '${S.of(context).desktopAddress} : $host\n'
-                  '${S.of(context).desktopPort} : $port',
+                      '${S.of(context).desktopPort} : $port',
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 12),
-                Text(S.of(context).home_select_qr_code,
+                Text(
+                  S.of(context).home_select_qr_code,
                   textAlign: TextAlign.center,
                 ),
               ],
@@ -288,9 +292,7 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
                     expertModeEnabled: _expertModeEnabled,
                   ),
                   const SizedBox(height: 8),
-                  SystemOverviewBar(
-                    key: ValueKey('overview-$_refreshToken'),
-                  ),
+                  SystemOverviewBar(key: ValueKey('overview-$_refreshToken')),
                   const SizedBox(height: 24),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -352,12 +354,14 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
       case 2:
         return const PractitionerListScreen();
       case 3:
-        return const DeviceListScreen();
+        return const ExternalCorrespondentsScreen();
       case 4:
-        return PreferencesScreen(onLanguageChanged: widget.onLocaleChanged);
+        return const DeviceListScreen();
       case 5:
-        return const SettingsScreen();
+        return PreferencesScreen(onLanguageChanged: widget.onLocaleChanged);
       case 6:
+        return const SettingsScreen();
+      case 7:
         return const AboutScreen();
       default:
         return const SizedBox.shrink();
@@ -393,10 +397,7 @@ class _DashboardHeader extends StatelessWidget {
         children: [
           Text(title, style: Theme.of(context).textTheme.headlineSmall),
           const Spacer(),
-          if (expertModeEnabled)
-            ExpertInfoButton(
-              info: expertInfo,
-            ),
+          if (expertModeEnabled) ExpertInfoButton(info: expertInfo),
 
           ContextHelpButton(
             technicalInformationLabel: S.of(context).g_helpTooltip,
@@ -406,7 +407,9 @@ class _DashboardHeader extends StatelessWidget {
             links: [
               ContextHelpLink(
                 title: S.of(context).help_home_active_archived_patients_title,
-                content: S.of(context).help_home_active_archived_patients_content,
+                content: S
+                    .of(context)
+                    .help_home_active_archived_patients_content,
               ),
               ContextHelpLink(
                 title: S.of(context).help_home_import_assignment_title,
