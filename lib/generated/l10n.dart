@@ -70,6 +70,26 @@ class S {
     );
   }
 
+  /// `Une série graphique doit contenir au moins deux points.`
+  String get assessmentChartImageService_insufficientPoints {
+    return Intl.message(
+      'Une série graphique doit contenir au moins deux points.',
+      name: 'assessmentChartImageService_insufficientPoints',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Impossible de convertir le graphique en image PNG.`
+  String get assessmentChartImageService_pngConversionError {
+    return Intl.message(
+      'Impossible de convertir le graphique en image PNG.',
+      name: 'assessmentChartImageService_pngConversionError',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Féminin`
   String get assessmentDocumentDataBuilder_female {
     return Intl.message(
@@ -595,6 +615,16 @@ class S {
     return Intl.message(
       'Évolution',
       name: 'careEpisodeDetail_evolution',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Détail de la prise en charge`
+  String get careEpisodeDetail_detail_de_la_prise_en_charge {
+    return Intl.message(
+      'Détail de la prise en charge',
+      name: 'careEpisodeDetail_detail_de_la_prise_en_charge',
       desc: '',
       args: [],
     );
@@ -1437,6 +1467,843 @@ class S {
       name: 'careEpisodeReportsWorkspace_updateReport',
       desc: '',
       args: [],
+    );
+  }
+
+  /// `Annuler`
+  String get careEpisodeReportsWorkspaceScreen_cancel {
+    return Intl.message(
+      'Annuler',
+      name: 'careEpisodeReportsWorkspaceScreen_cancel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Autoriser un dossier`
+  String get careEpisodeReportsWorkspaceScreen_authorizeDirectory {
+    return Intl.message(
+      'Autoriser un dossier',
+      name: 'careEpisodeReportsWorkspaceScreen_authorizeDirectory',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Un DOCX est déjà associé à ce bilan. Voulez-vous remplacer le fichier existant ou créer un nouveau fichier ?`
+  String get careEpisodeReportsWorkspaceScreen_existingAssessmentDocx {
+    return Intl.message(
+      'Un DOCX est déjà associé à ce bilan. Voulez-vous remplacer le fichier existant ou créer un nouveau fichier ?',
+      name: 'careEpisodeReportsWorkspaceScreen_existingAssessmentDocx',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Un DOCX est déjà associé à ce rapport. Voulez-vous remplacer le fichier existant ou créer un nouveau fichier ?`
+  String get careEpisodeReportsWorkspaceScreen_existingReportDocx {
+    return Intl.message(
+      'Un DOCX est déjà associé à ce rapport. Voulez-vous remplacer le fichier existant ou créer un nouveau fichier ?',
+      name: 'careEpisodeReportsWorkspaceScreen_existingReportDocx',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Créer un nouveau`
+  String get careEpisodeReportsWorkspaceScreen_createNew {
+    return Intl.message(
+      'Créer un nouveau',
+      name: 'careEpisodeReportsWorkspaceScreen_createNew',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Remplacer`
+  String get careEpisodeReportsWorkspaceScreen_replace {
+    return Intl.message(
+      'Remplacer',
+      name: 'careEpisodeReportsWorkspaceScreen_replace',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Rédacteur`
+  String get careEpisodeReportsWorkspaceScreen_author {
+    return Intl.message(
+      'Rédacteur',
+      name: 'careEpisodeReportsWorkspaceScreen_author',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Valider`
+  String get careEpisodeReportsWorkspaceScreen_confirm {
+    return Intl.message(
+      'Valider',
+      name: 'careEpisodeReportsWorkspaceScreen_confirm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Destinataire(s)`
+  String get careEpisodeReportsWorkspaceScreen_recipients {
+    return Intl.message(
+      'Destinataire(s)',
+      name: 'careEpisodeReportsWorkspaceScreen_recipients',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Un travail en cours a déjà été sauvegardé automatiquement.<br><br>Souhaitez-vous reprendre ce brouillon ou commencer un nouveau rapport ?`
+  String get careEpisodeReportsWorkspaceScreen_resumeReportDraftMessage {
+    return Intl.message(
+      'Un travail en cours a déjà été sauvegardé automatiquement.<br><br>Souhaitez-vous reprendre ce brouillon ou commencer un nouveau rapport ?',
+      name: 'careEpisodeReportsWorkspaceScreen_resumeReportDraftMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Un travail en cours a déjà été sauvegardé automatiquement.<br><br>Souhaitez-vous reprendre ce brouillon ou commencer un nouveau bilan ?`
+  String get careEpisodeReportsWorkspaceScreen_resumeAssessmentDraftMessage {
+    return Intl.message(
+      'Un travail en cours a déjà été sauvegardé automatiquement.<br><br>Souhaitez-vous reprendre ce brouillon ou commencer un nouveau bilan ?',
+      name: 'careEpisodeReportsWorkspaceScreen_resumeAssessmentDraftMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reprendre le brouillon`
+  String get careEpisodeReportsWorkspaceScreen_resumeDraft {
+    return Intl.message(
+      'Reprendre le brouillon',
+      name: 'careEpisodeReportsWorkspaceScreen_resumeDraft',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Nouveau rapport`
+  String get careEpisodeReportsWorkspaceScreen_newReport {
+    return Intl.message(
+      'Nouveau rapport',
+      name: 'careEpisodeReportsWorkspaceScreen_newReport',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Nouveau bilan`
+  String get careEpisodeReportsWorkspaceScreen_newAssessment {
+    return Intl.message(
+      'Nouveau bilan',
+      name: 'careEpisodeReportsWorkspaceScreen_newAssessment',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Impossible d’ouvrir le brouillon du rapport.`
+  String get careEpisodeReportsWorkspaceScreen_openReportDraftError {
+    return Intl.message(
+      'Impossible d’ouvrir le brouillon du rapport.',
+      name: 'careEpisodeReportsWorkspaceScreen_openReportDraftError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Le rapport est introuvable.`
+  String get careEpisodeReportsWorkspaceScreen_reportNotFound {
+    return Intl.message(
+      'Le rapport est introuvable.',
+      name: 'careEpisodeReportsWorkspaceScreen_reportNotFound',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Impossible d’ouvrir le rapport.`
+  String get careEpisodeReportsWorkspaceScreen_openReportError {
+    return Intl.message(
+      'Impossible d’ouvrir le rapport.',
+      name: 'careEpisodeReportsWorkspaceScreen_openReportError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Impossible de revenir au brouillon du rapport.`
+  String get careEpisodeReportsWorkspaceScreen_returnToReportDraftError {
+    return Intl.message(
+      'Impossible de revenir au brouillon du rapport.',
+      name: 'careEpisodeReportsWorkspaceScreen_returnToReportDraftError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Impossible d’annuler les modifications du rapport.`
+  String get careEpisodeReportsWorkspaceScreen_cancelReportChangesError {
+    return Intl.message(
+      'Impossible d’annuler les modifications du rapport.',
+      name: 'careEpisodeReportsWorkspaceScreen_cancelReportChangesError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Le bilan est introuvable.`
+  String get careEpisodeReportsWorkspaceScreen_assessmentNotFound {
+    return Intl.message(
+      'Le bilan est introuvable.',
+      name: 'careEpisodeReportsWorkspaceScreen_assessmentNotFound',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Dupliquer le bilan`
+  String get careEpisodeReportsWorkspaceScreen_duplicateAssessment {
+    return Intl.message(
+      'Dupliquer le bilan',
+      name: 'careEpisodeReportsWorkspaceScreen_duplicateAssessment',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Titre du nouveau bilan`
+  String get careEpisodeReportsWorkspaceScreen_newAssessmentTitle {
+    return Intl.message(
+      'Titre du nouveau bilan',
+      name: 'careEpisodeReportsWorkspaceScreen_newAssessmentTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Dupliquer`
+  String get careEpisodeReportsWorkspaceScreen_duplicate {
+    return Intl.message(
+      'Dupliquer',
+      name: 'careEpisodeReportsWorkspaceScreen_duplicate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Impossible de dupliquer le bilan.`
+  String get careEpisodeReportsWorkspaceScreen_duplicateAssessmentError {
+    return Intl.message(
+      'Impossible de dupliquer le bilan.',
+      name: 'careEpisodeReportsWorkspaceScreen_duplicateAssessmentError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Dupliquer le rapport`
+  String get careEpisodeReportsWorkspaceScreen_duplicateReport {
+    return Intl.message(
+      'Dupliquer le rapport',
+      name: 'careEpisodeReportsWorkspaceScreen_duplicateReport',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Titre du nouveau rapport`
+  String get careEpisodeReportsWorkspaceScreen_newReportTitle {
+    return Intl.message(
+      'Titre du nouveau rapport',
+      name: 'careEpisodeReportsWorkspaceScreen_newReportTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Impossible de dupliquer le rapport.`
+  String get careEpisodeReportsWorkspaceScreen_duplicateReportError {
+    return Intl.message(
+      'Impossible de dupliquer le rapport.',
+      name: 'careEpisodeReportsWorkspaceScreen_duplicateReportError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Impossible d’enregistrer la sélection du test.`
+  String get careEpisodeReportsWorkspaceScreen_saveTestSelectionError {
+    return Intl.message(
+      'Impossible d’enregistrer la sélection du test.',
+      name: 'careEpisodeReportsWorkspaceScreen_saveTestSelectionError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Impossible d’enregistrer la sélection de la note.`
+  String get careEpisodeReportsWorkspaceScreen_saveNoteSelectionError {
+    return Intl.message(
+      'Impossible d’enregistrer la sélection de la note.',
+      name: 'careEpisodeReportsWorkspaceScreen_saveNoteSelectionError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Impossible de revenir au brouillon.`
+  String get careEpisodeReportsWorkspaceScreen_returnToDraftError {
+    return Intl.message(
+      'Impossible de revenir au brouillon.',
+      name: 'careEpisodeReportsWorkspaceScreen_returnToDraftError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Impossible d’annuler les modifications.`
+  String get careEpisodeReportsWorkspaceScreen_cancelChangesError {
+    return Intl.message(
+      'Impossible d’annuler les modifications.',
+      name: 'careEpisodeReportsWorkspaceScreen_cancelChangesError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Mettre à la corbeille`
+  String get careEpisodeReportsWorkspaceScreen_moveToTrash {
+    return Intl.message(
+      'Mettre à la corbeille',
+      name: 'careEpisodeReportsWorkspaceScreen_moveToTrash',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Impossible de mettre le bilan à la corbeille.`
+  String get careEpisodeReportsWorkspaceScreen_archiveAssessmentError {
+    return Intl.message(
+      'Impossible de mettre le bilan à la corbeille.',
+      name: 'careEpisodeReportsWorkspaceScreen_archiveAssessmentError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Impossible de mettre le rapport à la corbeille.`
+  String get careEpisodeReportsWorkspaceScreen_archiveReportError {
+    return Intl.message(
+      'Impossible de mettre le rapport à la corbeille.',
+      name: 'careEpisodeReportsWorkspaceScreen_archiveReportError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Impossible de restaurer le bilan`
+  String get careEpisodeReportsWorkspaceScreen_restoreAssessmentError {
+    return Intl.message(
+      'Impossible de restaurer le bilan',
+      name: 'careEpisodeReportsWorkspaceScreen_restoreAssessmentError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Impossible de restaurer le rapport.`
+  String get careEpisodeReportsWorkspaceScreen_restoreReportError {
+    return Intl.message(
+      'Impossible de restaurer le rapport.',
+      name: 'careEpisodeReportsWorkspaceScreen_restoreReportError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Supprimer définitivement le bilan ?`
+  String get careEpisodeReportsWorkspaceScreen_deleteAssessmentTitle {
+    return Intl.message(
+      'Supprimer définitivement le bilan ?',
+      name: 'careEpisodeReportsWorkspaceScreen_deleteAssessmentTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Supprimer définitivement`
+  String get careEpisodeReportsWorkspaceScreen_deletePermanently {
+    return Intl.message(
+      'Supprimer définitivement',
+      name: 'careEpisodeReportsWorkspaceScreen_deletePermanently',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Impossible de supprimer définitivement le bilan.`
+  String get careEpisodeReportsWorkspaceScreen_deleteAssessmentError {
+    return Intl.message(
+      'Impossible de supprimer définitivement le bilan.',
+      name: 'careEpisodeReportsWorkspaceScreen_deleteAssessmentError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Supprimer définitivement le rapport ?`
+  String get careEpisodeReportsWorkspaceScreen_deleteReportTitle {
+    return Intl.message(
+      'Supprimer définitivement le rapport ?',
+      name: 'careEpisodeReportsWorkspaceScreen_deleteReportTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Impossible de supprimer définitivement le rapport.`
+  String get careEpisodeReportsWorkspaceScreen_deleteReportError {
+    return Intl.message(
+      'Impossible de supprimer définitivement le rapport.',
+      name: 'careEpisodeReportsWorkspaceScreen_deleteReportError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Mettre à jour le bilan`
+  String get careEpisodeReportsWorkspaceScreen_updateAssessment {
+    return Intl.message(
+      'Mettre à jour le bilan',
+      name: 'careEpisodeReportsWorkspaceScreen_updateAssessment',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enregistrer le bilan`
+  String get careEpisodeReportsWorkspaceScreen_saveAssessment {
+    return Intl.message(
+      'Enregistrer le bilan',
+      name: 'careEpisodeReportsWorkspaceScreen_saveAssessment',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Titre du bilan`
+  String get careEpisodeReportsWorkspaceScreen_assessmentTitle {
+    return Intl.message(
+      'Titre du bilan',
+      name: 'careEpisodeReportsWorkspaceScreen_assessmentTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Mettre à jour`
+  String get careEpisodeReportsWorkspaceScreen_update {
+    return Intl.message(
+      'Mettre à jour',
+      name: 'careEpisodeReportsWorkspaceScreen_update',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enregistrer`
+  String get careEpisodeReportsWorkspaceScreen_save {
+    return Intl.message(
+      'Enregistrer',
+      name: 'careEpisodeReportsWorkspaceScreen_save',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Impossible de mettre à jour le bilan.`
+  String get careEpisodeReportsWorkspaceScreen_updateAssessmentError {
+    return Intl.message(
+      'Impossible de mettre à jour le bilan.',
+      name: 'careEpisodeReportsWorkspaceScreen_updateAssessmentError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Impossible d’enregistrer le bilan.`
+  String get careEpisodeReportsWorkspaceScreen_saveAssessmentError {
+    return Intl.message(
+      'Impossible d’enregistrer le bilan.',
+      name: 'careEpisodeReportsWorkspaceScreen_saveAssessmentError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Mettre à jour le rapport`
+  String get careEpisodeReportsWorkspaceScreen_updateReport {
+    return Intl.message(
+      'Mettre à jour le rapport',
+      name: 'careEpisodeReportsWorkspaceScreen_updateReport',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enregistrer le rapport`
+  String get careEpisodeReportsWorkspaceScreen_saveReport {
+    return Intl.message(
+      'Enregistrer le rapport',
+      name: 'careEpisodeReportsWorkspaceScreen_saveReport',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Titre du rapport`
+  String get careEpisodeReportsWorkspaceScreen_reportTitle {
+    return Intl.message(
+      'Titre du rapport',
+      name: 'careEpisodeReportsWorkspaceScreen_reportTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Impossible de mettre à jour le rapport.`
+  String get careEpisodeReportsWorkspaceScreen_updateReportError {
+    return Intl.message(
+      'Impossible de mettre à jour le rapport.',
+      name: 'careEpisodeReportsWorkspaceScreen_updateReportError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Impossible d’enregistrer le rapport.`
+  String get careEpisodeReportsWorkspaceScreen_saveReportError {
+    return Intl.message(
+      'Impossible d’enregistrer le rapport.',
+      name: 'careEpisodeReportsWorkspaceScreen_saveReportError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Titre`
+  String get careEpisodeReportsWorkspaceScreen_title {
+    return Intl.message(
+      'Titre',
+      name: 'careEpisodeReportsWorkspaceScreen_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Note`
+  String get careEpisodeReportsWorkspaceScreen_note {
+    return Intl.message(
+      'Note',
+      name: 'careEpisodeReportsWorkspaceScreen_note',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Ajouter`
+  String get careEpisodeReportsWorkspaceScreen_add {
+    return Intl.message(
+      'Ajouter',
+      name: 'careEpisodeReportsWorkspaceScreen_add',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Fermer`
+  String get careEpisodeReportsWorkspaceScreen_close {
+    return Intl.message(
+      'Fermer',
+      name: 'careEpisodeReportsWorkspaceScreen_close',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Zone de rédaction du bilan SOAP.<br><br>S — Subjectif<br><br>O — Objectif<br><br>A — Analyse<br><br>P — Plan`
+  String get careEpisodeReportsWorkspaceScreen_soapEditorHint {
+    return Intl.message(
+      'Zone de rédaction du bilan SOAP.<br><br>S — Subjectif<br><br>O — Objectif<br><br>A — Analyse<br><br>P — Plan',
+      name: 'careEpisodeReportsWorkspaceScreen_soapEditorHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Ajouter à la suite`
+  String get careEpisodeReportsWorkspaceScreen_append {
+    return Intl.message(
+      'Ajouter à la suite',
+      name: 'careEpisodeReportsWorkspaceScreen_append',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `rapport`
+  String get careEpisodeReportsWorkspaceScreen_reportLabel {
+    return Intl.message(
+      'rapport',
+      name: 'careEpisodeReportsWorkspaceScreen_reportLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `bilan`
+  String get careEpisodeReportsWorkspaceScreen_assessmentLabel {
+    return Intl.message(
+      'bilan',
+      name: 'careEpisodeReportsWorkspaceScreen_assessmentLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Kiné référent`
+  String get careEpisodeReportsWorkspaceScreen_referringPractitioner {
+    return Intl.message(
+      'Kiné référent',
+      name: 'careEpisodeReportsWorkspaceScreen_referringPractitioner',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Gérer les kinés`
+  String get careEpisodeReportsWorkspaceScreen_managePractitioners {
+    return Intl.message(
+      'Gérer les kinés',
+      name: 'careEpisodeReportsWorkspaceScreen_managePractitioners',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Médecin prescripteur`
+  String get careEpisodeReportsWorkspaceScreen_prescribingDoctor {
+    return Intl.message(
+      'Médecin prescripteur',
+      name: 'careEpisodeReportsWorkspaceScreen_prescribingDoctor',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Gérer les médecins prescripteurs`
+  String get careEpisodeReportsWorkspaceScreen_managePrescribingDoctors {
+    return Intl.message(
+      'Gérer les médecins prescripteurs',
+      name: 'careEpisodeReportsWorkspaceScreen_managePrescribingDoctors',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Bilans et rapports`
+  String get careEpisodeReportsWorkspaceScreen_assessmentsAndReports {
+    return Intl.message(
+      'Bilans et rapports',
+      name: 'careEpisodeReportsWorkspaceScreen_assessmentsAndReports',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Votre bilan est prêt. Le DOCX regroupera les informations saisies et les éléments sélectionnés.`
+  String get careEpisodeReportsWorkspaceScreen_assessmentReadyMessage {
+    return Intl.message(
+      'Votre bilan est prêt. Le DOCX regroupera les informations saisies et les éléments sélectionnés.',
+      name: 'careEpisodeReportsWorkspaceScreen_assessmentReadyMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Votre rapport est prêt. Le DOCX regroupera les informations du patient, du rédacteur et du correspondant.`
+  String get careEpisodeReportsWorkspaceScreen_reportReadyMessage {
+    return Intl.message(
+      'Votre rapport est prêt. Le DOCX regroupera les informations du patient, du rédacteur et du correspondant.',
+      name: 'careEpisodeReportsWorkspaceScreen_reportReadyMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Générer le DOCX`
+  String get careEpisodeReportsWorkspaceScreen_generateDocx {
+    return Intl.message(
+      'Générer le DOCX',
+      name: 'careEpisodeReportsWorkspaceScreen_generateDocx',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Document Word créé : {path}`
+  String careEpisodeReportsWorkspaceScreen_wordDocumentCreated(Object path) {
+    return Intl.message(
+      'Document Word créé : $path',
+      name: 'careEpisodeReportsWorkspaceScreen_wordDocumentCreated',
+      desc: '',
+      args: [path],
+    );
+  }
+
+  /// `Erreur lors de la création du document Word : {error}`
+  String careEpisodeReportsWorkspaceScreen_wordDocumentCreationError(
+      Object error) {
+    return Intl.message(
+      'Erreur lors de la création du document Word : $error',
+      name: 'careEpisodeReportsWorkspaceScreen_wordDocumentCreationError',
+      desc: '',
+      args: [error],
+    );
+  }
+
+  /// `Bilan_{patientName}_{title}`
+  String careEpisodeReportsWorkspaceScreen_assessmentFileName(
+      Object patientName, Object title) {
+    return Intl.message(
+      'Bilan_${patientName}_$title',
+      name: 'careEpisodeReportsWorkspaceScreen_assessmentFileName',
+      desc: '',
+      args: [patientName, title],
+    );
+  }
+
+  /// `Rapport_{patientName}_{title}`
+  String careEpisodeReportsWorkspaceScreen_reportFileName(
+      Object patientName, Object title) {
+    return Intl.message(
+      'Rapport_${patientName}_$title',
+      name: 'careEpisodeReportsWorkspaceScreen_reportFileName',
+      desc: '',
+      args: [patientName, title],
+    );
+  }
+
+  /// `Copie de {title}`
+  String careEpisodeReportsWorkspaceScreen_copyTitle(Object title) {
+    return Intl.message(
+      'Copie de $title',
+      name: 'careEpisodeReportsWorkspaceScreen_copyTitle',
+      desc: '',
+      args: [title],
+    );
+  }
+
+  /// `Le bilan « {title} » ne sera plus affiché dans l’historique.`
+  String careEpisodeReportsWorkspaceScreen_archiveAssessmentMessage(
+      Object title) {
+    return Intl.message(
+      'Le bilan « $title » ne sera plus affiché dans l’historique.',
+      name: 'careEpisodeReportsWorkspaceScreen_archiveAssessmentMessage',
+      desc: '',
+      args: [title],
+    );
+  }
+
+  /// `"careEpisodeReportsWorkspaceScreen_directoryAccessMessage": "Le dossier configuré n’est pas accessible ou son autorisation doit être renouvelée.\n\n{path}\n\nReconnectez son volume si nécessaire, puis sélectionnez ce dossier pour autoriser son accès. Le dossier sélectionné sera enregistré dans vos préférences.",\n"@careEpisodeReportsWorkspaceScreen_directoryAccessMessage": {\n  "placeholders": {\n    "path": {\n      "type": "String"\n    }\n  }\n}`
+  String careEpisodeReportsWorkspaceScreen_directoryAccessMessage(Object path) {
+    return Intl.message(
+      '"careEpisodeReportsWorkspaceScreen_directoryAccessMessage": "Le dossier configuré n’est pas accessible ou son autorisation doit être renouvelée.\n\n$path\n\nReconnectez son volume si nécessaire, puis sélectionnez ce dossier pour autoriser son accès. Le dossier sélectionné sera enregistré dans vos préférences.",\n"@careEpisodeReportsWorkspaceScreen_directoryAccessMessage": {\n  "placeholders": {\n    "path": {\n      "type": "String"\n    }\n  }\n}',
+      name: 'careEpisodeReportsWorkspaceScreen_directoryAccessMessage',
+      desc: '',
+      args: [path],
+    );
+  }
+
+  /// `Le rapport « {title} » sera placé dans la corbeille. Il pourra être restauré ultérieurement.`
+  String careEpisodeReportsWorkspaceScreen_archiveReportMessage(Object title) {
+    return Intl.message(
+      'Le rapport « $title » sera placé dans la corbeille. Il pourra être restauré ultérieurement.',
+      name: 'careEpisodeReportsWorkspaceScreen_archiveReportMessage',
+      desc: '',
+      args: [title],
+    );
+  }
+
+  /// `Le bilan « {title} » sera définitivement supprimé. Cette action est irréversible.`
+  String careEpisodeReportsWorkspaceScreen_deleteAssessmentMessage(
+      Object title) {
+    return Intl.message(
+      'Le bilan « $title » sera définitivement supprimé. Cette action est irréversible.',
+      name: 'careEpisodeReportsWorkspaceScreen_deleteAssessmentMessage',
+      desc: '',
+      args: [title],
+    );
+  }
+
+  /// `Le rapport « {title} » sera définitivement supprimé. Cette action est irréversible.`
+  String careEpisodeReportsWorkspaceScreen_deleteReportMessage(Object title) {
+    return Intl.message(
+      'Le rapport « $title » sera définitivement supprimé. Cette action est irréversible.',
+      name: 'careEpisodeReportsWorkspaceScreen_deleteReportMessage',
+      desc: '',
+      args: [title],
+    );
+  }
+
+  /// `Souhaitez-vous ajouter le contenu généré à la suite du {documentLabel} actuel ou remplacer le contenu existant ?`
+  String careEpisodeReportsWorkspaceScreen_insertTextMessage(
+      Object documentLabel) {
+    return Intl.message(
+      'Souhaitez-vous ajouter le contenu généré à la suite du $documentLabel actuel ou remplacer le contenu existant ?',
+      name: 'careEpisodeReportsWorkspaceScreen_insertTextMessage',
+      desc: '',
+      args: [documentLabel],
+    );
+  }
+
+  /// `Un brouillon existe déjà pour ce modèle de {documentLabel}.`
+  String careEpisodeReportsWorkspaceScreen_existingTemplateDraftMessage(
+      Object documentLabel) {
+    return Intl.message(
+      'Un brouillon existe déjà pour ce modèle de $documentLabel.',
+      name: 'careEpisodeReportsWorkspaceScreen_existingTemplateDraftMessage',
+      desc: '',
+      args: [documentLabel],
+    );
+  }
+
+  /// `Nouveau {documentLabel}`
+  String careEpisodeReportsWorkspaceScreen_newDocument(Object documentLabel) {
+    return Intl.message(
+      'Nouveau $documentLabel',
+      name: 'careEpisodeReportsWorkspaceScreen_newDocument',
+      desc: '',
+      args: [documentLabel],
+    );
+  }
+
+  /// `{patientName} — Bilans et rapports`
+  String careEpisodeReportsWorkspaceScreen_workspaceTitle(Object patientName) {
+    return Intl.message(
+      '$patientName — Bilans et rapports',
+      name: 'careEpisodeReportsWorkspaceScreen_workspaceTitle',
+      desc: '',
+      args: [patientName],
     );
   }
 
@@ -7825,6 +8692,76 @@ class S {
     return Intl.message(
       'résultat',
       name: 'recentImportCard_result',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Depuis le {start}`
+  String referringPractitionerHistoryDialog_since(Object start) {
+    return Intl.message(
+      'Depuis le $start',
+      name: 'referringPractitionerHistoryDialog_since',
+      desc: '',
+      args: [start],
+    );
+  }
+
+  /// `Du {start} au {end}`
+  String referringPractitionerHistoryDialog_fromTo(Object start, Object end) {
+    return Intl.message(
+      'Du $start au $end',
+      name: 'referringPractitionerHistoryDialog_fromTo',
+      desc: '',
+      args: [start, end],
+    );
+  }
+
+  /// `Erreur lors du chargement de l’historique : {error}`
+  String referringPractitionerHistoryDialog_loadHistoryError(Object error) {
+    return Intl.message(
+      'Erreur lors du chargement de l’historique : $error',
+      name: 'referringPractitionerHistoryDialog_loadHistoryError',
+      desc: '',
+      args: [error],
+    );
+  }
+
+  /// `Aucun kiné référent n’a encore été enregistré pour cet épisode.`
+  String get referringPractitionerHistoryDialog_noHistory {
+    return Intl.message(
+      'Aucun kiné référent n’a encore été enregistré pour cet épisode.',
+      name: 'referringPractitionerHistoryDialog_noHistory',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{name} — archivé`
+  String referringPractitionerHistoryDialog_archivedPractitioner(Object name) {
+    return Intl.message(
+      '$name — archivé',
+      name: 'referringPractitionerHistoryDialog_archivedPractitioner',
+      desc: '',
+      args: [name],
+    );
+  }
+
+  /// `Référent actuel`
+  String get referringPractitionerHistoryDialog_currentPractitioner {
+    return Intl.message(
+      'Référent actuel',
+      name: 'referringPractitionerHistoryDialog_currentPractitioner',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Fermer`
+  String get referringPractitionerHistoryDialog_close {
+    return Intl.message(
+      'Fermer',
+      name: 'referringPractitionerHistoryDialog_close',
       desc: '',
       args: [],
     );

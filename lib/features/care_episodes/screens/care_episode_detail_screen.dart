@@ -81,7 +81,7 @@ class _CareEpisodeDetailScreenState extends State<CareEpisodeDetailScreen> {
           actions: [
             ExpertModeInfoButton(
               info: ExpertContextInfo(
-                contextName: 'Détail de la prise en charge',
+                contextName: s.careEpisodeDetail_detail_de_la_prise_en_charge,
                 sourceFile: 'lib/features/care_episodes/screens/care_episode_detail_screen.dart',
                 arbPrefix: 'careEpisodeDetail',
               ),

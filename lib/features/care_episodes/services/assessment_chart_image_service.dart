@@ -3,6 +3,7 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 
+import '../../../generated/l10n.dart';
 import '../models/assessment_document_data.dart';
 
 class AssessmentChartImageService {
@@ -15,7 +16,7 @@ class AssessmentChartImageService {
   }) async {
     if (series.points.length < 2) {
       throw ArgumentError(
-        'Une série graphique doit contenir au moins deux points.',
+        S.current.assessmentChartImageService_insufficientPoints,
       );
     }
 
@@ -164,7 +165,9 @@ class AssessmentChartImageService {
     final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
 
     if (byteData == null) {
-      throw StateError('Impossible de convertir le graphique en image PNG.');
+      throw StateError(
+        S.current.assessmentChartImageService_pngConversionError,
+      );
     }
 
     return byteData.buffer.asUint8List();

@@ -27,18 +27,20 @@ class ReferringPractitionerHistoryDialog extends StatelessWidget {
       BuildContext context,
       CareEpisodeReferringPractitionerHistoryItem item,
       ) {
+    final s = S.of(context);
     final start = _formatDate(context, item.startedAt);
 
     if (item.endedAt == null) {
-      return 'Depuis le $start';
+      return s.referringPractitionerHistoryDialog_since(start);
     }
 
     final end = _formatDate(context, item.endedAt!);
-    return 'Du $start au $end';
+    return s.referringPractitionerHistoryDialog_fromTo(start, end);
   }
 
   @override
   Widget build(BuildContext context) {
+    final s = S.of(context);
     return AlertDialog(
       title: Row(
         children: [
@@ -71,8 +73,9 @@ class ReferringPractitionerHistoryDialog extends StatelessWidget {
 
             if (snapshot.hasError) {
               return Text(
-                'Erreur lors du chargement de l’historique : '
-                    '${snapshot.error}',
+                s.referringPractitionerHistoryDialog_loadHistoryError(
+                  snapshot.error.toString(),
+                ),
               );
             }
 
@@ -80,9 +83,8 @@ class ReferringPractitionerHistoryDialog extends StatelessWidget {
                 const <CareEpisodeReferringPractitionerHistoryItem>[];
 
             if (items.isEmpty) {
-              return const Text(
-                'Aucun kiné référent n’a encore été enregistré '
-                    'pour cet épisode.',
+              return Text(
+                s.referringPractitionerHistoryDialog_noHistory,
               );
             }
 
@@ -106,7 +108,7 @@ class ReferringPractitionerHistoryDialog extends StatelessWidget {
                       Expanded(
                         child: Text(
                           item.isArchived
-                              ? '${item.displayName} — archivé'
+                              ? s.referringPractitionerHistoryDialog_archivedPractitioner(item.displayName)
                               : item.displayName,
                         ),
                       ),
@@ -123,7 +125,7 @@ class ReferringPractitionerHistoryDialog extends StatelessWidget {
                             ),
                           ),
                           child: Text(
-                            'Référent actuel',
+                            s.referringPractitionerHistoryDialog_currentPractitioner,
                             style: Theme.of(context).textTheme.labelSmall,
                           ),
                         ),
@@ -144,7 +146,7 @@ class ReferringPractitionerHistoryDialog extends StatelessWidget {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Fermer'),
+          child: Text(s.referringPractitionerHistoryDialog_close),
         ),
       ],
     );

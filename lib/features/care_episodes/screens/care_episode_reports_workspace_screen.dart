@@ -157,20 +157,16 @@ class _CareEpisodeReportsWorkspaceScreenState
             ],
           ),
           content: Text(
-            'Le dossier configuré n’est pas accessible ou son autorisation '
-                'doit être renouvelée.\n\n${error.path}\n\n'
-                'Reconnectez son volume si nécessaire, puis sélectionnez ce '
-                'dossier pour autoriser son accès. Le dossier sélectionné sera '
-                'enregistré dans vos préférences.',
+            S.of(context).careEpisodeReportsWorkspaceScreen_directoryAccessMessage(error.path),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(false),
-              child: const Text('Annuler'),
+              child: Text(S.of(context).careEpisodeReportsWorkspaceScreen_cancel),
             ),
             FilledButton(
               onPressed: () => Navigator.of(dialogContext).pop(true),
-              child: const Text('Autoriser un dossier'),
+              child: Text(S.of(context).careEpisodeReportsWorkspaceScreen_authorizeDirectory),
             ),
           ],
         ),
@@ -183,6 +179,7 @@ class _CareEpisodeReportsWorkspaceScreenState
   }
 
   Future<void> _exportAssessmentDocx() async {
+    final s = S.of(context);
     final assessment = _draft;
 
     if (assessment == null) {
@@ -208,29 +205,27 @@ class _CareEpisodeReportsWorkspaceScreenState
                 ),
               ],
             ),
-            content: const Text(
-              'Un DOCX est déjà associé à ce bilan. '
-                  'Voulez-vous remplacer le fichier existant '
-                  'ou créer un nouveau fichier ?',
+            content: Text(
+              S.of(context).careEpisodeReportsWorkspaceScreen_existingAssessmentDocx,
             ),
             actions: [
               TextButton(
                 onPressed: () {
                   Navigator.of(dialogContext).pop();
                 },
-                child: const Text('Annuler'),
+                child: Text(S.of(context).careEpisodeReportsWorkspaceScreen_cancel),
               ),
               OutlinedButton(
                 onPressed: () {
                   Navigator.of(dialogContext).pop('new');
                 },
-                child: const Text('Créer un nouveau'),
+                child: Text(S.of(context).careEpisodeReportsWorkspaceScreen_createNew),
               ),
               FilledButton(
                 onPressed: () {
                   Navigator.of(dialogContext).pop('replace');
                 },
-                child: const Text('Remplacer'),
+                child: Text(S.of(context).careEpisodeReportsWorkspaceScreen_replace),
               ),
             ],
           );
@@ -277,7 +272,7 @@ class _CareEpisodeReportsWorkspaceScreenState
           ? await exportService.exportToDocxFile(
         bytes: bytes,
         directory: Directory(selectedDirectory),
-        fileName: 'Bilan_${widget.patientName}_${assessment.title}',
+        fileName: s.careEpisodeReportsWorkspaceScreen_assessmentFileName(widget.patientName, assessment.title),
       )
           : await exportService.overwriteDocxFile(
         bytes: bytes,
@@ -321,7 +316,7 @@ class _CareEpisodeReportsWorkspaceScreenState
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Document Word créé : ${file.path}')),
+        SnackBar(content: Text(S.of(context).careEpisodeReportsWorkspaceScreen_wordDocumentCreated(file.path))),
       );
     } catch (e, stackTrace) {
       debugPrint('[DOCX] Erreur : $e');
@@ -331,7 +326,7 @@ class _CareEpisodeReportsWorkspaceScreenState
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Erreur lors de la création du document Word : $e'),
+          content: Text(S.of(context).careEpisodeReportsWorkspaceScreen_wordDocumentCreationError(e.toString())),
         ),
       );
     } finally {
@@ -344,6 +339,7 @@ class _CareEpisodeReportsWorkspaceScreenState
   }
 
   Future<void> _exportReportDocx() async {
+    final s = S.of(context);
     final report = _reportDraft;
 
     if (report == null || report.status != 'saved') {
@@ -369,29 +365,27 @@ class _CareEpisodeReportsWorkspaceScreenState
                 ),
               ],
             ),
-            content: const Text(
-              'Un DOCX est déjà associé à ce rapport. '
-                  'Voulez-vous remplacer le fichier existant '
-                  'ou créer un nouveau fichier ?',
+            content: Text(
+              S.of(context).careEpisodeReportsWorkspaceScreen_existingReportDocx,
             ),
             actions: [
               TextButton(
                 onPressed: () {
                   Navigator.of(dialogContext).pop();
                 },
-                child: const Text('Annuler'),
+                child: Text(S.of(context).careEpisodeReportsWorkspaceScreen_cancel),
               ),
               OutlinedButton(
                 onPressed: () {
                   Navigator.of(dialogContext).pop('new');
                 },
-                child: const Text('Créer un nouveau'),
+                child: Text(S.of(context).careEpisodeReportsWorkspaceScreen_createNew),
               ),
               FilledButton(
                 onPressed: () {
                   Navigator.of(dialogContext).pop('replace');
                 },
-                child: const Text('Remplacer'),
+                child: Text(S.of(context).careEpisodeReportsWorkspaceScreen_replace),
               ),
             ],
           );
@@ -470,7 +464,7 @@ class _CareEpisodeReportsWorkspaceScreenState
           ? await exportService.exportToDocxFile(
         bytes: bytes,
         directory: Directory(selectedDirectory),
-        fileName: 'Rapport_${widget.patientName}_${report.title}',
+        fileName: s.careEpisodeReportsWorkspaceScreen_reportFileName(widget.patientName, report.title),
       )
           : await exportService.overwriteDocxFile(
         bytes: bytes,
@@ -515,7 +509,7 @@ class _CareEpisodeReportsWorkspaceScreenState
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            'Document Word créé : ${file.path}',
+            S.of(context).careEpisodeReportsWorkspaceScreen_wordDocumentCreated(file.path),
           ),
         ),
       );
@@ -528,7 +522,7 @@ class _CareEpisodeReportsWorkspaceScreenState
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            'Erreur lors de la création du document Word : $e',
+            S.of(context).careEpisodeReportsWorkspaceScreen_wordDocumentCreationError(e.toString()),
           ),
         ),
       );
@@ -695,7 +689,7 @@ class _CareEpisodeReportsWorkspaceScreenState
           content: SizedBox(
             width: 420,
             child: PractitionerSelector(
-              label: 'Rédacteur',
+              label: S.of(context).careEpisodeReportsWorkspaceScreen_author,
               selectedPractitionerId: practitionerId,
               allowEmpty: false,
               onChanged: (value) {
@@ -708,13 +702,13 @@ class _CareEpisodeReportsWorkspaceScreenState
               onPressed: () {
                 Navigator.of(dialogContext).pop();
               },
-              child: const Text('Annuler'),
+              child: Text(S.of(context).careEpisodeReportsWorkspaceScreen_cancel),
             ),
             FilledButton(
               onPressed: () {
                 Navigator.of(dialogContext).pop(practitionerId);
               },
-              child: const Text('Valider'),
+              child: Text(S.of(context).careEpisodeReportsWorkspaceScreen_confirm),
             ),
           ],
         );
@@ -776,7 +770,7 @@ class _CareEpisodeReportsWorkspaceScreenState
           content: SizedBox(
             width: 420,
             child: PractitionerSelector(
-              label: 'Rédacteur',
+              label: S.of(context).careEpisodeReportsWorkspaceScreen_author,
               selectedPractitionerId: practitionerId,
               allowEmpty: false,
               onChanged: (value) {
@@ -789,13 +783,13 @@ class _CareEpisodeReportsWorkspaceScreenState
               onPressed: () {
                 Navigator.of(dialogContext).pop();
               },
-              child: const Text('Annuler'),
+              child: Text(S.of(context).careEpisodeReportsWorkspaceScreen_cancel),
             ),
             FilledButton(
               onPressed: () {
                 Navigator.of(dialogContext).pop(practitionerId);
               },
-              child: const Text('Valider'),
+              child: Text(S.of(context).careEpisodeReportsWorkspaceScreen_confirm),
             ),
           ],
         );
@@ -861,8 +855,8 @@ class _CareEpisodeReportsWorkspaceScreenState
             child: TextField(
               controller: controller,
               autofocus: true,
-              decoration: const InputDecoration(
-                labelText: 'Destinataire(s)',
+              decoration: InputDecoration(
+                labelText: S.of(context).careEpisodeReportsWorkspaceScreen_recipients,
                 border: OutlineInputBorder(),
               ),
             ),
@@ -872,13 +866,13 @@ class _CareEpisodeReportsWorkspaceScreenState
               onPressed: () {
                 Navigator.of(dialogContext).pop();
               },
-              child: const Text('Annuler'),
+              child: Text(S.of(context).careEpisodeReportsWorkspaceScreen_cancel),
             ),
             FilledButton(
               onPressed: () {
                 Navigator.of(dialogContext).pop(controller.text.trim());
               },
-              child: const Text('Valider'),
+              child: Text(S.of(context).careEpisodeReportsWorkspaceScreen_confirm),
             ),
           ],
         );
@@ -928,14 +922,14 @@ class _CareEpisodeReportsWorkspaceScreenState
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
-          title: const Text('Destinataire(s)'),
+          title: Text(S.of(context).careEpisodeReportsWorkspaceScreen_recipients),
           content: SizedBox(
             width: 420,
             child: TextField(
               controller: controller,
               autofocus: true,
-              decoration: const InputDecoration(
-                labelText: 'Destinataire(s)',
+              decoration: InputDecoration(
+                labelText: S.of(context).careEpisodeReportsWorkspaceScreen_recipients,
                 border: OutlineInputBorder(),
               ),
             ),
@@ -945,13 +939,13 @@ class _CareEpisodeReportsWorkspaceScreenState
               onPressed: () {
                 Navigator.of(dialogContext).pop();
               },
-              child: const Text('Annuler'),
+              child: Text(S.of(context).careEpisodeReportsWorkspaceScreen_cancel),
             ),
             FilledButton(
               onPressed: () {
                 Navigator.of(dialogContext).pop(controller.text.trim());
               },
-              child: const Text('Valider'),
+              child: Text(S.of(context).careEpisodeReportsWorkspaceScreen_confirm),
             ),
           ],
         );
@@ -1097,22 +1091,21 @@ class _CareEpisodeReportsWorkspaceScreenState
                   ),
                 ],
               ),
-              content: const Text(
-                'Un travail en cours a déjà été sauvegardé automatiquement.\n\n'
-                    'Souhaitez-vous reprendre ce brouillon ou commencer un nouveau rapport ?',
+              content: Text(
+                S.of(context).careEpisodeReportsWorkspaceScreen_resumeReportDraftMessage,
               ),
               actions: [
                 TextButton(
                   onPressed: () => Navigator.of(dialogContext).pop('cancel'),
-                  child: const Text('Annuler'),
+                  child: Text(S.of(context).careEpisodeReportsWorkspaceScreen_cancel),
                 ),
                 TextButton(
                   onPressed: () => Navigator.of(dialogContext).pop('resume'),
-                  child: const Text('Reprendre le brouillon'),
+                  child: Text(S.of(context).careEpisodeReportsWorkspaceScreen_resumeDraft),
                 ),
                 FilledButton(
                   onPressed: () => Navigator.of(dialogContext).pop('new'),
-                  child: const Text('Nouveau rapport'),
+                  child: Text(S.of(context).careEpisodeReportsWorkspaceScreen_newReport),
                 ),
               ],
             );
@@ -1161,8 +1154,8 @@ class _CareEpisodeReportsWorkspaceScreenState
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Impossible d’ouvrir le brouillon du rapport.'),
+        SnackBar(
+          content: Text(S.of(context).careEpisodeReportsWorkspaceScreen_openReportDraftError),
         ),
       );
     }
@@ -1225,7 +1218,7 @@ class _CareEpisodeReportsWorkspaceScreenState
         if (!mounted) return;
 
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Le rapport est introuvable.')),
+          SnackBar(content: Text(S.of(context).careEpisodeReportsWorkspaceScreen_reportNotFound)),
         );
         return;
       }
@@ -1242,7 +1235,7 @@ class _CareEpisodeReportsWorkspaceScreenState
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Impossible d’ouvrir le rapport.')),
+        SnackBar(content: Text(S.of(context).careEpisodeReportsWorkspaceScreen_openReportError)),
       );
     }
   }
@@ -1257,8 +1250,8 @@ class _CareEpisodeReportsWorkspaceScreenState
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Impossible de revenir au brouillon du rapport.'),
+        SnackBar(
+          content: Text(S.of(context).careEpisodeReportsWorkspaceScreen_returnToReportDraftError),
         ),
       );
     }
@@ -1287,7 +1280,7 @@ class _CareEpisodeReportsWorkspaceScreenState
         if (!mounted) return;
 
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Le rapport est introuvable.')),
+          SnackBar(content: Text(S.of(context).careEpisodeReportsWorkspaceScreen_reportNotFound)),
         );
         return;
       }
@@ -1297,8 +1290,8 @@ class _CareEpisodeReportsWorkspaceScreenState
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Impossible d’annuler les modifications du rapport.'),
+        SnackBar(
+          content: Text(S.of(context).careEpisodeReportsWorkspaceScreen_cancelReportChangesError),
         ),
       );
     }
@@ -1323,7 +1316,7 @@ class _CareEpisodeReportsWorkspaceScreenState
 
     if (reloadedAssessment == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Le bilan est introuvable.')),
+        SnackBar(content: Text(S.of(context).careEpisodeReportsWorkspaceScreen_assessmentNotFound)),
       );
       return;
     }
@@ -1362,10 +1355,10 @@ class _CareEpisodeReportsWorkspaceScreenState
 
   Future<void> _duplicateAssessment(CareEpisodeAssessment assessment) async {
     final title = await _showDocumentTitleDialog(
-      dialogTitle: 'Dupliquer le bilan',
-      fieldLabel: 'Titre du nouveau bilan',
-      actionLabel: 'Dupliquer',
-      initialTitle: 'Copie de ${assessment.title}',
+      dialogTitle: S.of(context).careEpisodeReportsWorkspaceScreen_duplicateAssessment,
+      fieldLabel: S.of(context).careEpisodeReportsWorkspaceScreen_newAssessmentTitle,
+      actionLabel: S.of(context).careEpisodeReportsWorkspaceScreen_duplicate,
+      initialTitle: S.of(context).careEpisodeReportsWorkspaceScreen_copyTitle(assessment.title),
     );
 
     if (title == null) {
@@ -1399,17 +1392,17 @@ class _CareEpisodeReportsWorkspaceScreenState
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Impossible de dupliquer le bilan.')),
+        SnackBar(content: Text(S.of(context).careEpisodeReportsWorkspaceScreen_duplicateAssessmentError)),
       );
     }
   }
 
   Future<void> _duplicateReport(CareEpisodeReport report) async {
     final title = await _showDocumentTitleDialog(
-      dialogTitle: 'Dupliquer le rapport',
-      fieldLabel: 'Titre du nouveau rapport',
-      actionLabel: 'Dupliquer',
-      initialTitle: 'Copie de ${report.title}',
+      dialogTitle: S.of(context).careEpisodeReportsWorkspaceScreen_duplicateReport,
+      fieldLabel: S.of(context).careEpisodeReportsWorkspaceScreen_newReportTitle,
+      actionLabel: S.of(context).careEpisodeReportsWorkspaceScreen_duplicate,
+      initialTitle: S.of(context).careEpisodeReportsWorkspaceScreen_copyTitle(report.title),
     );
 
     if (title == null) {
@@ -1447,7 +1440,7 @@ class _CareEpisodeReportsWorkspaceScreenState
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Impossible de dupliquer le rapport.')),
+        SnackBar(content: Text(S.of(context).careEpisodeReportsWorkspaceScreen_duplicateReportError)),
       );
     }
   }
@@ -1517,8 +1510,8 @@ class _CareEpisodeReportsWorkspaceScreenState
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Impossible d’enregistrer la sélection du test.'),
+        SnackBar(
+          content: Text(S.of(context).careEpisodeReportsWorkspaceScreen_saveTestSelectionError),
         ),
       );
     }
@@ -1589,8 +1582,8 @@ class _CareEpisodeReportsWorkspaceScreenState
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Impossible d’enregistrer la sélection de la note.'),
+        SnackBar(
+          content: Text(S.of(context).careEpisodeReportsWorkspaceScreen_saveNoteSelectionError),
         ),
       );
     }
@@ -1674,22 +1667,21 @@ class _CareEpisodeReportsWorkspaceScreenState
                   ),
                 ],
               ),
-              content: const Text(
-                'Un travail en cours a déjà été sauvegardé automatiquement.\n\n'
-                    'Souhaitez-vous reprendre ce brouillon ou commencer un nouveau bilan ?',
+              content: Text(
+                S.of(context).careEpisodeReportsWorkspaceScreen_resumeAssessmentDraftMessage,
               ),
               actions: [
                 TextButton(
                   onPressed: () => Navigator.of(dialogContext).pop('cancel'),
-                  child: const Text('Annuler'),
+                  child: Text(S.of(context).careEpisodeReportsWorkspaceScreen_cancel),
                 ),
                 TextButton(
                   onPressed: () => Navigator.of(dialogContext).pop('resume'),
-                  child: const Text('Reprendre le brouillon'),
+                  child: Text(S.of(context).careEpisodeReportsWorkspaceScreen_resumeDraft),
                 ),
                 FilledButton(
                   onPressed: () => Navigator.of(dialogContext).pop('new'),
-                  child: const Text('Nouveau bilan'),
+                  child: Text(S.of(context).careEpisodeReportsWorkspaceScreen_newAssessment),
                 ),
               ],
             );
@@ -1734,7 +1726,7 @@ class _CareEpisodeReportsWorkspaceScreenState
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Impossible de revenir au brouillon.')),
+        SnackBar(content: Text(S.of(context).careEpisodeReportsWorkspaceScreen_returnToDraftError)),
       );
     }
   }
@@ -1762,7 +1754,7 @@ class _CareEpisodeReportsWorkspaceScreenState
         if (!mounted) return;
 
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Le bilan est introuvable.')),
+          SnackBar(content: Text(S.of(context).careEpisodeReportsWorkspaceScreen_assessmentNotFound)),
         );
         return;
       }
@@ -1772,8 +1764,8 @@ class _CareEpisodeReportsWorkspaceScreenState
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Impossible d’annuler les modifications.'),
+        SnackBar(
+          content: Text(S.of(context).careEpisodeReportsWorkspaceScreen_cancelChangesError),
         ),
       );
     }
@@ -1797,17 +1789,16 @@ class _CareEpisodeReportsWorkspaceScreenState
             ],
           ),
           content: Text(
-            'Le bilan « ${assessment.title} » ne sera plus affiché '
-                'dans l’historique.',
+            S.of(context).careEpisodeReportsWorkspaceScreen_archiveAssessmentMessage(assessment.title),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(false),
-              child: const Text('Annuler'),
+              child: Text(S.of(context).careEpisodeReportsWorkspaceScreen_cancel),
             ),
             FilledButton(
               onPressed: () => Navigator.of(dialogContext).pop(true),
-              child: const Text('Mettre à la corbeille'),
+              child: Text(S.of(context).careEpisodeReportsWorkspaceScreen_moveToTrash),
             ),
           ],
         );
@@ -1878,8 +1869,8 @@ class _CareEpisodeReportsWorkspaceScreenState
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Impossible de mettre le bilan à la corbeille.'),
+        SnackBar(
+          content: Text(S.of(context).careEpisodeReportsWorkspaceScreen_archiveAssessmentError),
         ),
       );
     }
@@ -1903,17 +1894,16 @@ class _CareEpisodeReportsWorkspaceScreenState
             ],
           ),
           content: Text(
-            'Le rapport « ${report.title} » sera placé dans la corbeille. '
-                'Il pourra être restauré ultérieurement.',
+            S.of(context).careEpisodeReportsWorkspaceScreen_archiveReportMessage(report.title),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(false),
-              child: const Text('Annuler'),
+              child: Text(S.of(context).careEpisodeReportsWorkspaceScreen_cancel),
             ),
             FilledButton(
               onPressed: () => Navigator.of(dialogContext).pop(true),
-              child: const Text('Mettre à la corbeille'),
+              child: Text(S.of(context).careEpisodeReportsWorkspaceScreen_moveToTrash),
             ),
           ],
         );
@@ -1941,8 +1931,8 @@ class _CareEpisodeReportsWorkspaceScreenState
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Impossible de mettre le rapport à la corbeille.'),
+        SnackBar(
+          content: Text(S.of(context).careEpisodeReportsWorkspaceScreen_archiveReportError),
         ),
       );
     }
@@ -1965,7 +1955,7 @@ class _CareEpisodeReportsWorkspaceScreenState
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Impossible de restaurer le bilan.')),
+        SnackBar(content: Text(S.of(context).careEpisodeReportsWorkspaceScreen_restoreAssessmentError)),
       );
     }
   }
@@ -1988,7 +1978,7 @@ class _CareEpisodeReportsWorkspaceScreenState
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Impossible de restaurer le rapport.')),
+        SnackBar(content: Text(S.of(context).careEpisodeReportsWorkspaceScreen_restoreReportError)),
       );
     }
   }
@@ -2000,19 +1990,18 @@ class _CareEpisodeReportsWorkspaceScreenState
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
-          title: const Text('Supprimer définitivement le bilan ?'),
+          title: Text(S.of(context).careEpisodeReportsWorkspaceScreen_deleteAssessmentTitle),
           content: Text(
-            'Le bilan « ${assessment.title} » sera définitivement supprimé. '
-                'Cette action est irréversible.',
+            S.of(context).careEpisodeReportsWorkspaceScreen_deleteAssessmentMessage(assessment.title),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(false),
-              child: const Text('Annuler'),
+              child: Text(S.of(context).careEpisodeReportsWorkspaceScreen_cancel),
             ),
             FilledButton(
               onPressed: () => Navigator.of(dialogContext).pop(true),
-              child: const Text('Supprimer définitivement'),
+              child: Text(S.of(context).careEpisodeReportsWorkspaceScreen_deletePermanently),
             ),
           ],
         );
@@ -2036,8 +2025,8 @@ class _CareEpisodeReportsWorkspaceScreenState
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Impossible de supprimer définitivement le bilan.'),
+        SnackBar(
+          content: Text(S.of(context).careEpisodeReportsWorkspaceScreen_deleteAssessmentError),
         ),
       );
     }
@@ -2048,19 +2037,18 @@ class _CareEpisodeReportsWorkspaceScreenState
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
-          title: const Text('Supprimer définitivement le rapport ?'),
+          title: Text(S.of(context).careEpisodeReportsWorkspaceScreen_deleteReportTitle),
           content: Text(
-            'Le rapport « ${report.title} » sera définitivement supprimé. '
-                'Cette action est irréversible.',
+            S.of(context).careEpisodeReportsWorkspaceScreen_deleteReportMessage(report.title),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(false),
-              child: const Text('Annuler'),
+              child: Text(S.of(context).careEpisodeReportsWorkspaceScreen_cancel),
             ),
             FilledButton(
               onPressed: () => Navigator.of(dialogContext).pop(true),
-              child: const Text('Supprimer définitivement'),
+              child: Text(S.of(context).careEpisodeReportsWorkspaceScreen_deletePermanently),
             ),
           ],
         );
@@ -2085,8 +2073,8 @@ class _CareEpisodeReportsWorkspaceScreenState
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Impossible de supprimer définitivement le rapport.'),
+        SnackBar(
+          content: Text(S.of(context).careEpisodeReportsWorkspaceScreen_deleteReportError),
         ),
       );
     }
@@ -2122,10 +2110,10 @@ class _CareEpisodeReportsWorkspaceScreenState
 
     final title = await _showDocumentTitleDialog(
       dialogTitle: isEditing
-          ? 'Mettre à jour le bilan'
-          : 'Enregistrer le bilan',
-      fieldLabel: 'Titre du bilan',
-      actionLabel: isEditing ? 'Mettre à jour' : 'Enregistrer',
+          ? S.of(context).careEpisodeReportsWorkspaceScreen_updateAssessment
+          : S.of(context).careEpisodeReportsWorkspaceScreen_saveAssessment,
+      fieldLabel: S.of(context).careEpisodeReportsWorkspaceScreen_assessmentTitle,
+      actionLabel: isEditing ? S.of(context).careEpisodeReportsWorkspaceScreen_update : S.of(context).careEpisodeReportsWorkspaceScreen_save,
       initialTitle: isEditing ? assessment.title : '',
     );
 
@@ -2224,8 +2212,8 @@ class _CareEpisodeReportsWorkspaceScreenState
         SnackBar(
           content: Text(
             isEditing
-                ? 'Impossible de mettre à jour le bilan.'
-                : 'Impossible d’enregistrer le bilan.',
+                ? S.of(context).careEpisodeReportsWorkspaceScreen_updateAssessmentError
+                : S.of(context).careEpisodeReportsWorkspaceScreen_saveAssessmentError,
           ),
         ),
       );
@@ -2243,10 +2231,10 @@ class _CareEpisodeReportsWorkspaceScreenState
 
     final title = await _showDocumentTitleDialog(
       dialogTitle: isEditing
-          ? 'Mettre à jour le rapport'
-          : 'Enregistrer le rapport',
-      fieldLabel: 'Titre du rapport',
-      actionLabel: isEditing ? 'Mettre à jour' : 'Enregistrer',
+          ? S.of(context).careEpisodeReportsWorkspaceScreen_updateReport
+          : S.of(context).careEpisodeReportsWorkspaceScreen_saveReport,
+      fieldLabel: S.of(context).careEpisodeReportsWorkspaceScreen_reportTitle,
+      actionLabel: isEditing ? S.of(context).careEpisodeReportsWorkspaceScreen_update : S.of(context).careEpisodeReportsWorkspaceScreen_save,
       initialTitle: isEditing ? report.title : '',
     );
 
@@ -2351,8 +2339,8 @@ class _CareEpisodeReportsWorkspaceScreenState
         SnackBar(
           content: Text(
             isEditing
-                ? 'Impossible de mettre à jour le rapport.'
-                : 'Impossible d’enregistrer le rapport.',
+                ? S.of(context).careEpisodeReportsWorkspaceScreen_updateReportError
+                : S.of(context).careEpisodeReportsWorkspaceScreen_saveReportError,
           ),
         ),
       );
@@ -2387,16 +2375,16 @@ class _CareEpisodeReportsWorkspaceScreenState
                 TextField(
                   controller: titleController,
                   autofocus: true,
-                  decoration: const InputDecoration(
-                    labelText: 'Titre',
+                  decoration: InputDecoration(
+                    labelText: S.of(context).careEpisodeReportsWorkspaceScreen_title,
                     border: OutlineInputBorder(),
                   ),
                 ),
                 const SizedBox(height: 12),
                 TextField(
                   controller: contentController,
-                  decoration: const InputDecoration(
-                    labelText: 'Note',
+                  decoration: InputDecoration(
+                    labelText: S.of(context).careEpisodeReportsWorkspaceScreen_note,
                     border: OutlineInputBorder(),
                     alignLabelWithHint: true,
                   ),
@@ -2409,11 +2397,11 @@ class _CareEpisodeReportsWorkspaceScreenState
           actions: [
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(false),
-              child: const Text('Annuler'),
+              child: Text(S.of(context).careEpisodeReportsWorkspaceScreen_cancel),
             ),
             FilledButton(
               onPressed: () => Navigator.of(dialogContext).pop(true),
-              child: const Text('Ajouter'),
+              child: Text(S.of(context).careEpisodeReportsWorkspaceScreen_add),
             ),
           ],
         );
@@ -2481,16 +2469,16 @@ class _CareEpisodeReportsWorkspaceScreenState
                 TextField(
                   controller: titleController,
                   autofocus: true,
-                  decoration: const InputDecoration(
-                    labelText: 'Titre',
+                  decoration: InputDecoration(
+                    labelText: S.of(context).careEpisodeReportsWorkspaceScreen_title,
                     border: OutlineInputBorder(),
                   ),
                 ),
                 const SizedBox(height: 12),
                 TextField(
                   controller: contentController,
-                  decoration: const InputDecoration(
-                    labelText: 'Note',
+                  decoration: InputDecoration(
+                    labelText: S.of(context).careEpisodeReportsWorkspaceScreen_note,
                     border: OutlineInputBorder(),
                     alignLabelWithHint: true,
                   ),
@@ -2503,11 +2491,11 @@ class _CareEpisodeReportsWorkspaceScreenState
           actions: [
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(false),
-              child: const Text('Annuler'),
+              child: Text(S.of(context).careEpisodeReportsWorkspaceScreen_cancel),
             ),
             FilledButton(
               onPressed: () => Navigator.of(dialogContext).pop(true),
-              child: const Text('Enregistrer'),
+              child: Text(S.of(context).careEpisodeReportsWorkspaceScreen_save),
             ),
           ],
         );
@@ -2595,7 +2583,7 @@ class _CareEpisodeReportsWorkspaceScreenState
                       ),
                       IconButton(
                         onPressed: () => Navigator.of(dialogContext).pop(),
-                        tooltip: 'Fermer',
+                        tooltip: S.of(context).careEpisodeReportsWorkspaceScreen_close,
                         icon: const Icon(Icons.close),
                       ),
                     ],
@@ -2608,13 +2596,9 @@ class _CareEpisodeReportsWorkspaceScreenState
                       enabled: _documentType == ClinicalDocumentType.assessment
                           ? _draft != null
                           : _reportDraft != null,
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         hintText:
-                        'Zone de rédaction du bilan SOAP.\n\n'
-                            'S — Subjectif\n\n'
-                            'O — Objectif\n\n'
-                            'A — Analyse\n\n'
-                            'P — Plan',
+                        S.of(context).careEpisodeReportsWorkspaceScreen_soapEditorHint,
                         border: OutlineInputBorder(),
                         alignLabelWithHint: true,
                       ),
@@ -2665,7 +2649,7 @@ class _CareEpisodeReportsWorkspaceScreenState
       return true;
     }
 
-    final documentLabel = isReport ? 'rapport' : 'bilan';
+    final documentLabel = isReport ? S.of(context).careEpisodeReportsWorkspaceScreen_reportLabel : S.of(context).careEpisodeReportsWorkspaceScreen_assessmentLabel;
 
     final choice = await showDialog<String>(
       context: context,
@@ -2684,22 +2668,20 @@ class _CareEpisodeReportsWorkspaceScreenState
             ],
           ),
           content: Text(
-            'Souhaitez-vous ajouter le contenu généré '
-                'à la suite du $documentLabel actuel ou remplacer '
-                'le contenu existant ?',
+            S.of(context).careEpisodeReportsWorkspaceScreen_insertTextMessage(documentLabel),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop('cancel'),
-              child: const Text('Annuler'),
+              child: Text(S.of(context).careEpisodeReportsWorkspaceScreen_cancel),
             ),
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop('append'),
-              child: const Text('Ajouter à la suite'),
+              child: Text(S.of(context).careEpisodeReportsWorkspaceScreen_append),
             ),
             FilledButton(
               onPressed: () => Navigator.of(dialogContext).pop('replace'),
-              child: const Text('Remplacer'),
+              child: Text(S.of(context).careEpisodeReportsWorkspaceScreen_replace),
             ),
           ],
         );
@@ -2803,8 +2785,8 @@ class _CareEpisodeReportsWorkspaceScreenState
 
     final documentLabel =
     _documentType == ClinicalDocumentType.report
-        ? 'rapport'
-        : 'bilan';
+        ? S.of(context).careEpisodeReportsWorkspaceScreen_reportLabel
+        : S.of(context).careEpisodeReportsWorkspaceScreen_assessmentLabel;
 
     if (savedAnswers != null) {
       final choice = await showDialog<String>(
@@ -2824,22 +2806,22 @@ class _CareEpisodeReportsWorkspaceScreenState
               ],
             ),
             content: Text(
-              'Un brouillon existe déjà pour ce modèle de $documentLabel.',
+              S.of(context).careEpisodeReportsWorkspaceScreen_existingTemplateDraftMessage(documentLabel),
             ),
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(dialogContext).pop(),
-                child: const Text('Annuler'),
+                child: Text(S.of(context).careEpisodeReportsWorkspaceScreen_cancel),
               ),
               TextButton(
                 onPressed: () =>
                     Navigator.of(dialogContext).pop('new'),
-                child: Text('Nouveau $documentLabel'),
+                child: Text(S.of(context).careEpisodeReportsWorkspaceScreen_newDocument(documentLabel)),
               ),
               FilledButton(
                 onPressed: () =>
                     Navigator.of(dialogContext).pop('resume'),
-                child: const Text('Reprendre le brouillon'),
+                child: Text(S.of(context).careEpisodeReportsWorkspaceScreen_resumeDraft),
               ),
             ],
           );
@@ -2877,8 +2859,8 @@ class _CareEpisodeReportsWorkspaceScreenState
               onInsertGeneratedText: _insertAssessmentTemplateText,
               documentLabel:
               _documentType == ClinicalDocumentType.report
-                  ? 'rapport'
-                  : 'bilan',
+                  ? S.of(context).careEpisodeReportsWorkspaceScreen_reportLabel
+                  : S.of(context).careEpisodeReportsWorkspaceScreen_assessmentLabel,
             ),
           ),
         );
@@ -2920,7 +2902,7 @@ class _CareEpisodeReportsWorkspaceScreenState
                         ),
                       IconButton(
                         onPressed: () => Navigator.of(dialogContext).pop(),
-                        tooltip: 'Fermer',
+                        tooltip: S.of(context).careEpisodeReportsWorkspaceScreen_close,
                         icon: const Icon(Icons.close),
                       ),
                     ],
@@ -3036,7 +3018,7 @@ class _CareEpisodeReportsWorkspaceScreenState
                   children: [
                     Expanded(
                       child: PractitionerSelector(
-                  label: 'Kiné référent',
+                  label: S.of(context).careEpisodeReportsWorkspaceScreen_referringPractitioner,
                   selectedPractitionerId: selectedPractitionerId,
                   allowEmpty: true,
                   onChanged: (practitionerId) {
@@ -3046,7 +3028,7 @@ class _CareEpisodeReportsWorkspaceScreenState
                     ),
                     const SizedBox(width: 8),
                     IconButton(
-                      tooltip: 'Gérer les kinés',
+                      tooltip: S.of(context).careEpisodeReportsWorkspaceScreen_managePractitioners,
                       icon: const Icon(Icons.manage_accounts_outlined),
                       onPressed: () async {
                         await Navigator.of(dialogContext).push<void>(
@@ -3065,7 +3047,7 @@ class _CareEpisodeReportsWorkspaceScreenState
                   children: [
                     Expanded(
                       child: ExternalCorrespondentSelector(
-                  label: 'Médecin prescripteur',
+                  label: S.of(context).careEpisodeReportsWorkspaceScreen_prescribingDoctor,
                   selectedCorrespondentId: selectedCorrespondentId,
                   allowEmpty: true,
                   onChanged: (correspondentId) {
@@ -3075,7 +3057,7 @@ class _CareEpisodeReportsWorkspaceScreenState
                     ),
                     const SizedBox(width: 8),
                     IconButton(
-                      tooltip: 'Gérer les médecins prescripteurs',
+                      tooltip: S.of(context).careEpisodeReportsWorkspaceScreen_managePrescribingDoctors,
                       icon: const Icon(Icons.manage_accounts_outlined),
                       onPressed: () async {
                         await Navigator.of(dialogContext).push<void>(
@@ -3102,11 +3084,11 @@ class _CareEpisodeReportsWorkspaceScreenState
           actions: [
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(false),
-              child: const Text('Annuler'),
+              child: Text(S.of(context).careEpisodeReportsWorkspaceScreen_cancel),
             ),
             FilledButton(
               onPressed: () => Navigator.of(dialogContext).pop(true),
-              child: const Text('Enregistrer'),
+              child: Text(S.of(context).careEpisodeReportsWorkspaceScreen_save),
             ),
           ],
           ),
@@ -3202,7 +3184,7 @@ class _CareEpisodeReportsWorkspaceScreenState
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('${widget.patientName} — Bilans et rapports'),
+        title: Text(S.of(context).careEpisodeReportsWorkspaceScreen_workspaceTitle(widget.patientName)),
         actions: [
           TextButton.icon(
             onPressed: _returningHome || _draftLoading ? null : _returnHome,
@@ -3211,7 +3193,7 @@ class _CareEpisodeReportsWorkspaceScreenState
           ),
           ExpertModeInfoButton(
             info: ExpertContextInfo(
-              contextName: 'Bilans et rapports',
+              contextName: S.of(context).careEpisodeReportsWorkspaceScreen_assessmentsAndReports,
               sourceFile: 'lib/features/care_episodes/screens/care_episode_reports_workspace_screen.dart',
             ),
           ),
@@ -3335,8 +3317,7 @@ class _CareEpisodeReportsWorkspaceScreenState
                                     children: [
                                       Expanded(
                                         child: Text(
-                                          'Votre bilan est prêt. Le DOCX regroupera les informations '
-                                              'saisies et les éléments sélectionnés.',
+                                          S.of(context).careEpisodeReportsWorkspaceScreen_assessmentReadyMessage,
                                           style: Theme.of(
                                             context,
                                           ).textTheme.bodySmall,
@@ -3348,7 +3329,7 @@ class _CareEpisodeReportsWorkspaceScreenState
                                         icon: const Icon(
                                           Icons.description_outlined,
                                         ),
-                                        label: const Text('Générer le DOCX'),
+                                        label: Text(S.of(context).careEpisodeReportsWorkspaceScreen_generateDocx),
                                       ),
                                     ],
                                   ),
@@ -3363,8 +3344,7 @@ class _CareEpisodeReportsWorkspaceScreenState
                                     children: [
                                       Expanded(
                                         child: Text(
-                                          'Votre rapport est prêt. Le DOCX regroupera les informations '
-                                              'du patient, du rédacteur et du correspondant.',
+                                          S.of(context).careEpisodeReportsWorkspaceScreen_reportReadyMessage,
                                           style: Theme.of(
                                             context,
                                           ).textTheme.bodySmall,
@@ -3376,7 +3356,7 @@ class _CareEpisodeReportsWorkspaceScreenState
                                         icon: const Icon(
                                           Icons.description_outlined,
                                         ),
-                                        label: const Text('Générer le DOCX'),
+                                        label: Text(S.of(context).careEpisodeReportsWorkspaceScreen_generateDocx),
                                       ),
                                     ],
                                   ),
