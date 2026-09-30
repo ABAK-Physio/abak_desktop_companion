@@ -450,6 +450,86 @@ class S {
     );
   }
 
+  /// `Autoriser l’accès au dossier : {path}`
+  String backupArchive_authorizeFolder(Object path) {
+    return Intl.message(
+      'Autoriser l’accès au dossier : $path',
+      name: 'backupArchive_authorizeFolder',
+      desc: '',
+      args: [path],
+    );
+  }
+
+  /// `Choisir le dossier où restaurer les documents de : {path}`
+  String backupArchive_restoreFolder(Object path) {
+    return Intl.message(
+      'Choisir le dossier où restaurer les documents de : $path',
+      name: 'backupArchive_restoreFolder',
+      desc: '',
+      args: [path],
+    );
+  }
+
+  /// `Une sauvegarde ou une restauration est déjà en cours."`
+  String get backupArchive_busy {
+    return Intl.message(
+      'Une sauvegarde ou une restauration est déjà en cours."',
+      name: 'backupArchive_busy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sauvegarde ou restauration en cours… Veuillez patienter.`
+  String get backupArchive_working {
+    return Intl.message(
+      'Sauvegarde ou restauration en cours… Veuillez patienter.',
+      name: 'backupArchive_working',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Copies de sécurité conservées :`
+  String get backupArchive_safetyCopies {
+    return Intl.message(
+      'Copies de sécurité conservées :',
+      name: 'backupArchive_safetyCopies',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cette ancienne sauvegarde contient uniquement la base. Les fichiers des dossiers patients n’ont pas été restaurés.`
+  String get backupArchive_legacy {
+    return Intl.message(
+      'Cette ancienne sauvegarde contient uniquement la base. Les fichiers des dossiers patients n’ont pas été restaurés.',
+      name: 'backupArchive_legacy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Ouvrir une sauvegarde…`
+  String get backupArchive_chooseFile {
+    return Intl.message(
+      'Ouvrir une sauvegarde…',
+      name: 'backupArchive_chooseFile',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Résultat de la restauration`
+  String get backupArchive_resultTitle {
+    return Intl.message(
+      'Résultat de la restauration',
+      name: 'backupArchive_resultTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Annuler`
   String get backupHistory_cancel {
     return Intl.message(
@@ -480,10 +560,10 @@ class S {
     );
   }
 
-  /// `Les nouvelles sauvegardes ZIP contiennent la base et les fichiers de tous les dossiers patients associés, y compris Bilan, Rapport et Autre. Un dossier associé inaccessible fait échouer la sauvegarde. Les documents non rattachés à un dossier patient ne sont pas inclus.\n\nRestaurer remplace la base actuelle : les données ajoutées après la sauvegarde ne figurent plus dans la base restaurée. Les versions sauvegardées des documents sont rétablies, avec une copie des dossiers actuels remplacés. Les fichiers actuels absents de la sauvegarde sont conservés. Les emplacements des copies de sécurité sont affichés à la fin.\n\nSi le dossier d’origine est indisponible, choisissez son nouvel emplacement. « Ouvrir une sauvegarde » permet de restaurer un fichier ZIP ou une ancienne sauvegarde .db ; cette dernière ne restaure que la base.`
+  /// `Cet écran présente les sauvegardes enregistrées dans Companion. Chaque ligne indique le nom du fichier, sa date de création, sa taille et son emplacement.\n\nLe bouton « Restaurer » permet de remplacer la base actuelle par celle de la sauvegarde choisie. Les données ajoutées ou modifiées après cette sauvegarde ne seront donc pas présentes dans la base restaurée.\n\nVérifiez la date de la sauvegarde et lisez le message de confirmation avant de poursuivre. Une copie de sécurité de la base actuelle est créée avant son remplacement.\n\nLe fichier de sauvegarde doit toujours être accessible à l’emplacement indiqué. S’il a été déplacé ou supprimé, la restauration ne pourra pas être effectuée.\n\nPour créer une nouvelle sauvegarde, utilisez l’action « Créer une sauvegarde » sur la page d’accueil.`
   String get backupHistory_help {
     return Intl.message(
-      'Les nouvelles sauvegardes ZIP contiennent la base et les fichiers de tous les dossiers patients associés, y compris Bilan, Rapport et Autre. Un dossier associé inaccessible fait échouer la sauvegarde. Les documents non rattachés à un dossier patient ne sont pas inclus.\n\nRestaurer remplace la base actuelle : les données ajoutées après la sauvegarde ne figurent plus dans la base restaurée. Les versions sauvegardées des documents sont rétablies, avec une copie des dossiers actuels remplacés. Les fichiers actuels absents de la sauvegarde sont conservés. Les emplacements des copies de sécurité sont affichés à la fin.\n\nSi le dossier d’origine est indisponible, choisissez son nouvel emplacement. « Ouvrir une sauvegarde » permet de restaurer un fichier ZIP ou une ancienne sauvegarde .db ; cette dernière ne restaure que la base.',
+      'Cet écran présente les sauvegardes enregistrées dans Companion. Chaque ligne indique le nom du fichier, sa date de création, sa taille et son emplacement.\n\nLe bouton « Restaurer » permet de remplacer la base actuelle par celle de la sauvegarde choisie. Les données ajoutées ou modifiées après cette sauvegarde ne seront donc pas présentes dans la base restaurée.\n\nVérifiez la date de la sauvegarde et lisez le message de confirmation avant de poursuivre. Une copie de sécurité de la base actuelle est créée avant son remplacement.\n\nLe fichier de sauvegarde doit toujours être accessible à l’emplacement indiqué. S’il a été déplacé ou supprimé, la restauration ne pourra pas être effectuée.\n\nPour créer une nouvelle sauvegarde, utilisez l’action « Créer une sauvegarde » sur la page d’accueil.',
       name: 'backupHistory_help',
       desc: '',
       args: [],
@@ -510,10 +590,10 @@ class S {
     );
   }
 
-  /// `La base actuelle sera remplacée par celle de la sauvegarde. Les documents sauvegardés seront rétablis ; une copie des dossiers actuels remplacés sera conservée. Les fichiers actuels absents de la sauvegarde seront conservés.\n\nUne copie de sécurité de la base actuelle sera également créée. Les anciennes sauvegardes .db ne contiennent pas de documents.\n\nContinuer ?`
+  /// `Cette opération remplacera totalement la base actuelle.\n\nUne sauvegarde automatique de sécurité sera créée avant restauration.\n\nContinuer ?`
   String get backupHistory_restoreWarning {
     return Intl.message(
-      'La base actuelle sera remplacée par celle de la sauvegarde. Les documents sauvegardés seront rétablis ; une copie des dossiers actuels remplacés sera conservée. Les fichiers actuels absents de la sauvegarde seront conservés.\n\nUne copie de sécurité de la base actuelle sera également créée. Les anciennes sauvegardes .db ne contiennent pas de documents.\n\nContinuer ?',
+      'Cette opération remplacera totalement la base actuelle.\n\nUne sauvegarde automatique de sécurité sera créée avant restauration.\n\nContinuer ?',
       name: 'backupHistory_restoreWarning',
       desc: '',
       args: [],
@@ -7047,6 +7127,96 @@ class S {
     );
   }
 
+  /// `Documents du patient`
+  String get patientDocuments_title {
+    return Intl.message(
+      'Documents du patient',
+      name: 'patientDocuments_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Bilan / Rapport / Autre`
+  String get patientDocuments_structure {
+    return Intl.message(
+      'Bilan / Rapport / Autre',
+      name: 'patientDocuments_structure',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Aucun dossier de stockage défini. Choisissez le dossier commun à tous les patients.`
+  String get patientDocuments_unconfigured {
+    return Intl.message(
+      'Aucun dossier de stockage défini. Choisissez le dossier commun à tous les patients.',
+      name: 'patientDocuments_unconfigured',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Le dossier doit être autorisé à nouveau. Sélectionnez le dossier commun défini dans les paramètres.`
+  String get patientDocuments_authorization {
+    return Intl.message(
+      'Le dossier doit être autorisé à nouveau. Sélectionnez le dossier commun défini dans les paramètres.',
+      name: 'patientDocuments_authorization',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Impossible de préparer ou d’ouvrir le dossier. Vérifiez sa disponibilité et vos droits d’accès, puis réessayez."`
+  String get patientDocuments_error {
+    return Intl.message(
+      'Impossible de préparer ou d’ouvrir le dossier. Vérifiez sa disponibilité et vos droits d’accès, puis réessayez."',
+      name: 'patientDocuments_error',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Réessayer`
+  String get patientDocuments_retry {
+    return Intl.message(
+      'Réessayer',
+      name: 'patientDocuments_retry',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choisir le dossier commun`
+  String get patientDocuments_chooseRoot {
+    return Intl.message(
+      'Choisir le dossier commun',
+      name: 'patientDocuments_chooseRoot',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Ouvrir le dossier patient"`
+  String get patientDocuments_open {
+    return Intl.message(
+      'Ouvrir le dossier patient"',
+      name: 'patientDocuments_open',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Un dossier par patient, contenant Bilan, Rapport et Autre. Création à l’ouverture de la fiche ; les fichiers existants ne sont pas déplacés.`
+  String get patientDocuments_settingsHelp {
+    return Intl.message(
+      'Un dossier par patient, contenant Bilan, Rapport et Autre. Création à l’ouverture de la fiche ; les fichiers existants ne sont pas déplacés.',
+      name: 'patientDocuments_settingsHelp',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Cet écran permet de créer un patient dans ABAK Companion.\n\nSaisissez son nom et son prénom : ces deux informations sont obligatoires. Vous pouvez compléter sa date de naissance à l’aide du calendrier et renseigner son sexe.\n\nLe bouton de lecture de la carte Vitale permet de récupérer l’identité du patient lorsque le lecteur et le module de lecture sont disponibles. Si plusieurs bénéficiaires sont proposés, sélectionnez la personne concernée, puis vérifiez les informations affichées. La saisie manuelle reste possible.\n\nSi Companion détecte un patient déjà présent, vérifiez les informations proposées avant de poursuivre afin d’éviter un doublon. Un patient archivé peut être proposé à la restauration.\n\nCliquez sur « Créer le patient » pour enregistrer la fiche, ou sur « Annuler » pour quitter sans créer de patient.`
   String get patientNew_help {
     return Intl.message(
@@ -9407,6 +9577,187 @@ class S {
     );
   }
 
+  /// `Exporter mes données`
+  String get settings_exportMyData {
+    return Intl.message(
+      'Exporter mes données',
+      name: 'settings_exportMyData',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Une archive contenant les informations de vos patients ainsi que leurs bilans et rapports va être créée.`
+  String get settings_exportDataDescription {
+    return Intl.message(
+      'Une archive contenant les informations de vos patients ainsi que leurs bilans et rapports va être créée.',
+      name: 'settings_exportDataDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Inclure les patients archivés`
+  String get settings_exportIncludeArchivedPatients {
+    return Intl.message(
+      'Inclure les patients archivés',
+      name: 'settings_exportIncludeArchivedPatients',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Annuler`
+  String get settings_exportCancel {
+    return Intl.message(
+      'Annuler',
+      name: 'settings_exportCancel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Exporter`
+  String get settings_exportAction {
+    return Intl.message(
+      'Exporter',
+      name: 'settings_exportAction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choisir le dossier de destination`
+  String get settings_exportChooseDestination {
+    return Intl.message(
+      'Choisir le dossier de destination',
+      name: 'settings_exportChooseDestination',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Export annulé`
+  String get settings_exportCancelled {
+    return Intl.message(
+      'Export annulé',
+      name: 'settings_exportCancelled',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Impossible d’exporter les données`
+  String get settings_exportFailed {
+    return Intl.message(
+      'Impossible d’exporter les données',
+      name: 'settings_exportFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Export terminé : {patientCount} patient(s), {fileCount} fichier(s).`
+  String settings_exportCompleted(Object patientCount, Object fileCount) {
+    return Intl.message(
+      'Export terminé : $patientCount patient(s), $fileCount fichier(s).',
+      name: 'settings_exportCompleted',
+      desc: '',
+      args: [patientCount, fileCount],
+    );
+  }
+
+  /// `Export terminé avec {errorCount} erreur(s) : {patientCount} patient(s), {fileCount} fichier(s) exporté(s).`
+  String settings_exportCompletedWithErrors(
+      Object errorCount, Object patientCount, Object fileCount) {
+    return Intl.message(
+      'Export terminé avec $errorCount erreur(s) : $patientCount patient(s), $fileCount fichier(s) exporté(s).',
+      name: 'settings_exportCompletedWithErrors',
+      desc: '',
+      args: [errorCount, patientCount, fileCount],
+    );
+  }
+
+  /// `Nom`
+  String get settings_exportPatientLastName {
+    return Intl.message(
+      'Nom',
+      name: 'settings_exportPatientLastName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Prénom`
+  String get settings_exportPatientFirstName {
+    return Intl.message(
+      'Prénom',
+      name: 'settings_exportPatientFirstName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Date de naissance`
+  String get settings_exportPatientBirthDate {
+    return Intl.message(
+      'Date de naissance',
+      name: 'settings_exportPatientBirthDate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sexe`
+  String get settings_exportPatientSex {
+    return Intl.message(
+      'Sexe',
+      name: 'settings_exportPatientSex',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Masculin`
+  String get settings_exportPatientMale {
+    return Intl.message(
+      'Masculin',
+      name: 'settings_exportPatientMale',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Féminin`
+  String get settings_exportPatientFemale {
+    return Intl.message(
+      'Féminin',
+      name: 'settings_exportPatientFemale',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Non renseigné`
+  String get settings_exportPatientUnknown {
+    return Intl.message(
+      'Non renseigné',
+      name: 'settings_exportPatientUnknown',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Non renseignée`
+  String get settings_exportPatientUnknownFemale {
+    return Intl.message(
+      'Non renseignée',
+      name: 'settings_exportPatientUnknownFemale',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Diagnostic Carte Vitale`
   String get smartCardDiagnostic {
     return Intl.message(
@@ -9902,176 +10253,6 @@ class S {
     return Intl.message(
       'Aide utilisée',
       name: 'walkingAid_label',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Documents du patient`
-  String get patientDocuments_title {
-    return Intl.message(
-      'Documents du patient',
-      name: 'patientDocuments_title',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Bilan / Rapport / Autre`
-  String get patientDocuments_structure {
-    return Intl.message(
-      'Bilan / Rapport / Autre',
-      name: 'patientDocuments_structure',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Aucun dossier de stockage défini. Choisissez le dossier commun à tous les patients.`
-  String get patientDocuments_unconfigured {
-    return Intl.message(
-      'Aucun dossier de stockage défini. Choisissez le dossier commun à tous les patients.',
-      name: 'patientDocuments_unconfigured',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Le dossier doit être autorisé à nouveau. Sélectionnez le dossier commun défini dans les paramètres.`
-  String get patientDocuments_authorization {
-    return Intl.message(
-      'Le dossier doit être autorisé à nouveau. Sélectionnez le dossier commun défini dans les paramètres.',
-      name: 'patientDocuments_authorization',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Impossible de préparer ou d’ouvrir le dossier. Vérifiez sa disponibilité et vos droits d’accès, puis réessayez.`
-  String get patientDocuments_error {
-    return Intl.message(
-      'Impossible de préparer ou d’ouvrir le dossier. Vérifiez sa disponibilité et vos droits d’accès, puis réessayez.',
-      name: 'patientDocuments_error',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Réessayer`
-  String get patientDocuments_retry {
-    return Intl.message(
-      'Réessayer',
-      name: 'patientDocuments_retry',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Choisir le dossier commun`
-  String get patientDocuments_chooseRoot {
-    return Intl.message(
-      'Choisir le dossier commun',
-      name: 'patientDocuments_chooseRoot',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Ouvrir le dossier patient`
-  String get patientDocuments_open {
-    return Intl.message(
-      'Ouvrir le dossier patient',
-      name: 'patientDocuments_open',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Un dossier par patient, contenant Bilan, Rapport et Autre. Création à l’ouverture de la fiche ; les fichiers existants ne sont pas déplacés.`
-  String get patientDocuments_settingsHelp {
-    return Intl.message(
-      'Un dossier par patient, contenant Bilan, Rapport et Autre. Création à l’ouverture de la fiche ; les fichiers existants ne sont pas déplacés.',
-      name: 'patientDocuments_settingsHelp',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Autoriser l’accès au dossier : {path}`
-  String backupArchive_authorizeFolder(Object path) {
-    return Intl.message(
-      'Autoriser l’accès au dossier : $path',
-      name: 'backupArchive_authorizeFolder',
-      desc: '',
-      args: [path],
-    );
-  }
-
-  /// `Choisir le dossier où restaurer les documents de : {path}`
-  String backupArchive_restoreFolder(Object path) {
-    return Intl.message(
-      'Choisir le dossier où restaurer les documents de : $path',
-      name: 'backupArchive_restoreFolder',
-      desc: '',
-      args: [path],
-    );
-  }
-
-  /// `Une sauvegarde ou une restauration est déjà en cours.`
-  String get backupArchive_busy {
-    return Intl.message(
-      'Une sauvegarde ou une restauration est déjà en cours.',
-      name: 'backupArchive_busy',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Sauvegarde ou restauration en cours… Veuillez patienter.`
-  String get backupArchive_working {
-    return Intl.message(
-      'Sauvegarde ou restauration en cours… Veuillez patienter.',
-      name: 'backupArchive_working',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Copies de sécurité conservées :`
-  String get backupArchive_safetyCopies {
-    return Intl.message(
-      'Copies de sécurité conservées :',
-      name: 'backupArchive_safetyCopies',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Cette ancienne sauvegarde contient uniquement la base. Les fichiers des dossiers patients n’ont pas été restaurés.`
-  String get backupArchive_legacy {
-    return Intl.message(
-      'Cette ancienne sauvegarde contient uniquement la base. Les fichiers des dossiers patients n’ont pas été restaurés.',
-      name: 'backupArchive_legacy',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Ouvrir une sauvegarde…`
-  String get backupArchive_chooseFile {
-    return Intl.message(
-      'Ouvrir une sauvegarde…',
-      name: 'backupArchive_chooseFile',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Résultat de la restauration`
-  String get backupArchive_resultTitle {
-    return Intl.message(
-      'Résultat de la restauration',
-      name: 'backupArchive_resultTitle',
       desc: '',
       args: [],
     );

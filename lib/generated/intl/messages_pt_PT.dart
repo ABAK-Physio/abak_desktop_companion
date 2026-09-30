@@ -29,9 +29,10 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m3(age) => "${age} anos";
 
-  static String m4(path) => "Autorizar acesso à pasta: ${path}";
+  static String m4(path) => "Autorizar o acesso à pasta: ${path}";
 
-  static String m5(path) => "Escolher onde restaurar os documentos de: ${path}";
+  static String m5(path) =>
+      "Escolha a pasta onde deseja restaurar os documentos de: ${path}";
 
   static String m6(size) => "${size}";
 
@@ -139,7 +140,13 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m51(error) => "Erro durante a reinicialização: ${error}";
 
-  static String m52(error) => "A ditado por voz falhou: ${error}";
+  static String m52(patientCount, fileCount) =>
+      "Exportação concluída: ${patientCount} do(s) doente(s), ${fileCount} ficheiro(s).";
+
+  static String m53(errorCount, patientCount, fileCount) =>
+      "A exportação foi concluída com ${errorCount} erro(s): ${patientCount} doente(s), ${fileCount} ficheiro(s) exportado(s).";
+
+  static String m54(error) => "A ditado por voz falhou: ${error}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -225,31 +232,31 @@ class MessageLookup extends MessageLookupByLibrary {
             "Esta vista apresenta os balanços registados para o acompanhamento, com o respetivo título e data.\n\nAs ações em cada linha permitem alterar um balanço, duplicá-lo ou movê-lo para os documentos arquivados.\n\nQuando um balanço estiver aberto para edição, utilize a ação de atualização para guardar as suas alterações. Os comandos disponíveis permitem também anular as alterações ou voltar ao rascunho.\n\nA transferência para os documentos arquivados não constitui uma eliminação definitiva.\n\nClique na cruz para fechar a vista ampliada e regressar à área Balanços/Relatórios."),
         "backupArchive_authorizeFolder": m4,
         "backupArchive_busy": MessageLookupByLibrary.simpleMessage(
-            "Já está em curso uma cópia de segurança ou um restauro."),
-        "backupArchive_chooseFile":
-            MessageLookupByLibrary.simpleMessage("Abrir uma cópia…"),
+            "«Está já a decorrer um processo de cópia de segurança ou de restauração.»"),
+        "backupArchive_chooseFile": MessageLookupByLibrary.simpleMessage(
+            "Abrir uma cópia de segurança…"),
         "backupArchive_legacy": MessageLookupByLibrary.simpleMessage(
-            "Esta cópia antiga contém apenas a base de dados. Os ficheiros das pastas dos pacientes não foram restaurados."),
+            "Este backup antigo contém apenas a base de dados. Os ficheiros das pastas dos doentes não foram restaurados."),
         "backupArchive_restoreFolder": m5,
         "backupArchive_resultTitle":
-            MessageLookupByLibrary.simpleMessage("Resultado do restauro"),
+            MessageLookupByLibrary.simpleMessage("Resultado da restauração"),
         "backupArchive_safetyCopies": MessageLookupByLibrary.simpleMessage(
-            "Cópias de segurança conservadas:"),
+            "Cópias de segurança guardadas:"),
         "backupArchive_working": MessageLookupByLibrary.simpleMessage(
-            "Cópia de segurança ou restauro em curso… Aguarde."),
+            "A realizar uma cópia de segurança ou uma restauração… Por favor, aguarde."),
         "backupHistory_cancel":
             MessageLookupByLibrary.simpleMessage("Cancelar"),
         "backupHistory_empty": MessageLookupByLibrary.simpleMessage(
             "Não há nenhuma cópia de segurança registada."),
         "backupHistory_fileSize": m6,
         "backupHistory_help": MessageLookupByLibrary.simpleMessage(
-            "As novas cópias ZIP contêm a base de dados e todas as pastas de pacientes associadas, incluindo Bilan, Rapport e Autre. A cópia falha se uma pasta associada estiver indisponível. Os documentos fora destas pastas não são incluídos.\n\nO restauro substitui a base atual: os dados adicionados após a cópia deixam de constar nela. As versões guardadas dos documentos são restauradas, conservando cópias das pastas substituídas e os ficheiros atuais ausentes da cópia. No final são mostradas as localizações das cópias de segurança.\n\nSe a pasta original estiver indisponível, escolha uma nova localização. «Abrir uma cópia» permite restaurar um ZIP ou uma cópia antiga .db; esta última restaura apenas a base de dados."),
+            "Este ecrã apresenta as cópias de segurança guardadas no Companion. Cada linha indica o nome do ficheiro, a data de criação, o tamanho e a localização.\n\nO botão «Restaurar» permite substituir a base de dados atual pela da cópia de segurança selecionada. Os dados adicionados ou alterados após este backup não estarão, portanto, presentes na base de dados restaurada.\n\nVerifique a data do backup e leia a mensagem de confirmação antes de continuar. É criada uma cópia de segurança da base de dados atual antes da sua substituição.\n\nO ficheiro de cópia de segurança deve estar sempre acessível no local indicado. Se tiver sido movido ou eliminado, a restauração não poderá ser efetuada.\n\nPara criar uma nova cópia de segurança, utilize a ação «Criar uma cópia de segurança» na página inicial."),
         "backupHistory_restore":
             MessageLookupByLibrary.simpleMessage("Restaurar"),
         "backupHistory_restoreTitle": MessageLookupByLibrary.simpleMessage(
             "Restaurar esta cópia de segurança?"),
         "backupHistory_restoreWarning": MessageLookupByLibrary.simpleMessage(
-            "A base de dados atual será substituída pela cópia. Os documentos guardados serão restaurados, conservando uma cópia das pastas atuais substituídas. Os ficheiros atuais ausentes da cópia serão conservados.\n\nSerá também criada uma cópia de segurança da base atual. As cópias antigas .db não contêm documentos.\n\nContinuar?"),
+            "Esta operação substituirá totalmente a base de dados atual.\n\nSerá criada uma cópia de segurança automática antes da restauração.\n\nDeseja continuar?"),
         "backupHistory_title": MessageLookupByLibrary.simpleMessage(
             "Histórico de cópias de segurança"),
         "bodymap_help": MessageLookupByLibrary.simpleMessage(
@@ -1547,23 +1554,23 @@ class MessageLookup extends MessageLookupByLibrary {
         "patientDetail_weight": MessageLookupByLibrary.simpleMessage("Peso"),
         "patientDetail_years": MessageLookupByLibrary.simpleMessage("anos"),
         "patientDocuments_authorization": MessageLookupByLibrary.simpleMessage(
-            "É necessário autorizar novamente o acesso. Selecione a pasta comum definida nas configurações."),
+            "A pasta tem de ser autorizada novamente. Selecione a pasta partilhada definida nas definições."),
         "patientDocuments_chooseRoot":
-            MessageLookupByLibrary.simpleMessage("Escolher pasta comum"),
+            MessageLookupByLibrary.simpleMessage("Escolher a pasta comum"),
         "patientDocuments_error": MessageLookupByLibrary.simpleMessage(
-            "Não foi possível preparar ou abrir a pasta. Verifique a disponibilidade e as permissões de acesso e tente novamente."),
+            "Não foi possível preparar ou abrir a pasta. Verifique se a pasta está disponível e os seus direitos de acesso e, em seguida, tente novamente.\""),
         "patientDocuments_open":
-            MessageLookupByLibrary.simpleMessage("Abrir pasta do paciente"),
+            MessageLookupByLibrary.simpleMessage("Abrir o processo clínico\""),
         "patientDocuments_retry":
             MessageLookupByLibrary.simpleMessage("Tentar novamente"),
         "patientDocuments_settingsHelp": MessageLookupByLibrary.simpleMessage(
-            "Uma pasta por paciente, com Bilan, Rapport e Autre. Criada ao abrir a ficha; os ficheiros existentes não são movidos."),
+            "Um dossier por doente, contendo o Balanço, o Relatório e Outros. É criado aquando da abertura do registo; os ficheiros existentes não são movidos."),
         "patientDocuments_structure":
-            MessageLookupByLibrary.simpleMessage("Bilan / Rapport / Autre"),
+            MessageLookupByLibrary.simpleMessage("Balanço / Relatório / Outro"),
         "patientDocuments_title":
-            MessageLookupByLibrary.simpleMessage("Documentos do paciente"),
+            MessageLookupByLibrary.simpleMessage("Documentos do doente"),
         "patientDocuments_unconfigured": MessageLookupByLibrary.simpleMessage(
-            "Não foi definida uma pasta de armazenamento. Escolha a pasta comum a todos os pacientes."),
+            "Não foi definida nenhuma pasta de armazenamento. Escolha a pasta comum a todos os doentes."),
         "patientForm_birthDate":
             MessageLookupByLibrary.simpleMessage("Data de nascimento"),
         "patientForm_cancel": MessageLookupByLibrary.simpleMessage("Cancelar"),
@@ -1961,6 +1968,41 @@ class MessageLookup extends MessageLookupByLibrary {
         "settings_exchangeDirectoryUpdated":
             MessageLookupByLibrary.simpleMessage(
                 "Dossier de intercâmbio ABAK atualizado"),
+        "settings_exportAction":
+            MessageLookupByLibrary.simpleMessage("Exportar"),
+        "settings_exportCancel":
+            MessageLookupByLibrary.simpleMessage("Cancelar"),
+        "settings_exportCancelled":
+            MessageLookupByLibrary.simpleMessage("Exportação cancelada"),
+        "settings_exportChooseDestination":
+            MessageLookupByLibrary.simpleMessage("Escolher a pasta de destino"),
+        "settings_exportCompleted": m52,
+        "settings_exportCompletedWithErrors": m53,
+        "settings_exportDataDescription": MessageLookupByLibrary.simpleMessage(
+            "Vai ser criado um arquivo que contém as informações dos seus doentes, bem como os seus exames e relatórios."),
+        "settings_exportFailed": MessageLookupByLibrary.simpleMessage(
+            "Não é possível exportar os dados"),
+        "settings_exportIncludeArchivedPatients":
+            MessageLookupByLibrary.simpleMessage(
+                "Incluir os doentes arquivados"),
+        "settings_exportMyData":
+            MessageLookupByLibrary.simpleMessage("Exportar os meus dados"),
+        "settings_exportPatientBirthDate":
+            MessageLookupByLibrary.simpleMessage("Data de nascimento"),
+        "settings_exportPatientFemale":
+            MessageLookupByLibrary.simpleMessage("Feminino"),
+        "settings_exportPatientFirstName":
+            MessageLookupByLibrary.simpleMessage("Nome próprio"),
+        "settings_exportPatientLastName":
+            MessageLookupByLibrary.simpleMessage("Nome"),
+        "settings_exportPatientMale":
+            MessageLookupByLibrary.simpleMessage("Masculino"),
+        "settings_exportPatientSex":
+            MessageLookupByLibrary.simpleMessage("Sexo"),
+        "settings_exportPatientUnknown":
+            MessageLookupByLibrary.simpleMessage("Não preenchido"),
+        "settings_exportPatientUnknownFemale":
+            MessageLookupByLibrary.simpleMessage("Não preenchido"),
         "settings_help": MessageLookupByLibrary.simpleMessage(
             "Este ecrã reúne as funções de instalação, diagnóstico e manutenção do Companion. Utilize-as de acordo com as indicações da documentação da ABAK ou de um técnico.\n\nA secção «Configuração» permite consultar, abrir ou alterar a pasta utilizada para a troca de ficheiros.\n\nA secção «Diagnóstico» dá acesso às verificações do dispositivo de leitura do cartão Vitale.\n\nA secção «Manutenção» permite abrir o assistente de resolução de problemas de importação, importar manualmente um ficheiro ABAK e aceder à gestão das cópias de segurança.\n\nA reinicialização da base de dados elimina os dados locais. Esta operação está reservada a situações de assistência técnica: leia atentamente as mensagens de confirmação antes de prosseguir."),
         "settings_importAbakFile": MessageLookupByLibrary.simpleMessage(
@@ -2007,7 +2049,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Raiva"),
         "speechDictationButton_download":
             MessageLookupByLibrary.simpleMessage("Descarregar o módulo"),
-        "speechDictationButton_failure": m52,
+        "speechDictationButton_failure": m54,
         "speechDictationButton_information": MessageLookupByLibrary.simpleMessage(
             "A ditado por voz requer a instalação do módulo opcional ABAK Ditado por voz.\n\nEste módulo é gratuito e funciona localmente no seu computador, sem enviar as gravações de voz para a Internet.\n\nO download tem cerca de 1,5 GB."),
         "speechDictationButton_stop":

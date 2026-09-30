@@ -29,10 +29,10 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m3(age) => "${age} jaar";
 
-  static String m4(path) => "Toegang tot map toestaan: ${path}";
+  static String m4(path) => "Toegang tot het dossier verlenen: ${path}";
 
   static String m5(path) =>
-      "Kies waar documenten uit deze map worden hersteld: ${path}";
+      "Kies de map waarin de documenten uit ${path} moeten worden hersteld:";
 
   static String m6(size) => "${size}";
 
@@ -143,7 +143,13 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m51(error) => "Fout bij het resetten: ${error}";
 
-  static String m52(error) => "Het spraakdictee is mislukt: ${error}";
+  static String m52(patientCount, fileCount) =>
+      "Export voltooid: ${patientCount} patiënt(en), ${fileCount} bestand(en).";
+
+  static String m53(errorCount, patientCount, fileCount) =>
+      "Export voltooid met ${errorCount} fout(en): ${patientCount} patiënt(en), ${fileCount} bestand(en) geëxporteerd.";
+
+  static String m54(error) => "Het spraakdictee is mislukt: ${error}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -229,31 +235,31 @@ class MessageLookup extends MessageLookupByLibrary {
             "Dit overzicht toont de geregistreerde balansen voor de zorgverlening, met hun titel en datum.\n\nMet de acties in elke rij kunt u een balans wijzigen, dupliceren of verplaatsen naar de gearchiveerde documenten.\n\nWanneer een balans is geopend om te worden gewijzigd, gebruikt u de actie ‘Bijwerken’ om uw wijzigingen op te slaan. Met de beschikbare knoppen kunt u ook de wijzigingen ongedaan maken of terugkeren naar het concept.\n\nHet verplaatsen naar de gearchiveerde documenten is geen definitieve verwijdering.\n\nKlik op het kruisje om het vergrote scherm te sluiten en terug te keren naar het gedeelte Balansen/Rapporten."),
         "backupArchive_authorizeFolder": m4,
         "backupArchive_busy": MessageLookupByLibrary.simpleMessage(
-            "Er wordt al een back-up gemaakt of hersteld."),
+            "\"Er is al een back-up of herstelbewerking aan de gang.\""),
         "backupArchive_chooseFile":
-            MessageLookupByLibrary.simpleMessage("Back-up openen…"),
+            MessageLookupByLibrary.simpleMessage("Een back-up openen…"),
         "backupArchive_legacy": MessageLookupByLibrary.simpleMessage(
-            "Deze oudere back-up bevat alleen de database. Bestanden in patiëntmappen zijn niet hersteld."),
+            "Deze oude back-up bevat alleen de database. De bestanden uit de patiëntendossiers zijn niet hersteld."),
         "backupArchive_restoreFolder": m5,
-        "backupArchive_resultTitle":
-            MessageLookupByLibrary.simpleMessage("Resultaat van herstel"),
-        "backupArchive_safetyCopies": MessageLookupByLibrary.simpleMessage(
-            "Bewaarde veiligheidskopieën:"),
+        "backupArchive_resultTitle": MessageLookupByLibrary.simpleMessage(
+            "Resultaat van de restauratie"),
+        "backupArchive_safetyCopies":
+            MessageLookupByLibrary.simpleMessage("Bewaarde back-ups:"),
         "backupArchive_working": MessageLookupByLibrary.simpleMessage(
-            "Back-up maken of herstellen… Even geduld."),
+            "Er wordt een back-up gemaakt of een herstel uitgevoerd… Even geduld a.u.b."),
         "backupHistory_cancel":
             MessageLookupByLibrary.simpleMessage("Annuleren"),
         "backupHistory_empty": MessageLookupByLibrary.simpleMessage(
             "Er is geen back-up opgeslagen."),
         "backupHistory_fileSize": m6,
         "backupHistory_help": MessageLookupByLibrary.simpleMessage(
-            "Nieuwe ZIP-back-ups bevatten de database en alle gekoppelde patiëntmappen, inclusief Bilan, Rapport en Autre. De back-up mislukt als een gekoppelde map niet beschikbaar is. Documenten buiten deze mappen worden niet opgenomen.\n\nHerstellen vervangt de huidige database: later toegevoegde gegevens staan er niet meer in. Opgeslagen documentversies worden hersteld, met behoud van kopieën van vervangen mappen en huidige bestanden die niet in de back-up staan. De locaties van veiligheidskopieën worden na afloop getoond.\n\nAls de oorspronkelijke map niet beschikbaar is, kiest u een nieuwe locatie. Met «Back-up openen» kunt u een ZIP-bestand of een oudere .db-back-up herstellen; de laatste herstelt alleen de database."),
+            "Op dit scherm worden de back-ups weergegeven die in Companion zijn opgeslagen. Elke regel geeft de bestandsnaam, de aanmaakdatum, de bestandsgrootte en de locatie weer.\n\nMet de knop ‘Herstellen’ kunt u de huidige database vervangen door die uit de geselecteerde back-up. Gegevens die na deze back-up zijn toegevoegd of gewijzigd, zullen dus niet in de herstelde database aanwezig zijn.\n\nControleer de datum van de back-up en lees het bevestigingsbericht voordat u doorgaat. Er wordt een back-up van de huidige database gemaakt voordat deze wordt vervangen.\n\nHet back-upbestand moet altijd toegankelijk zijn op de aangegeven locatie. Als het is verplaatst of verwijderd, kan het herstel niet worden uitgevoerd.\n\nGebruik de actie ‘Back-up maken’ op de startpagina om een nieuwe back-up te maken."),
         "backupHistory_restore":
             MessageLookupByLibrary.simpleMessage("Herstellen"),
         "backupHistory_restoreTitle":
             MessageLookupByLibrary.simpleMessage("Deze back-up herstellen?"),
         "backupHistory_restoreWarning": MessageLookupByLibrary.simpleMessage(
-            "De huidige database wordt vervangen door de back-up. Opgeslagen documenten worden hersteld en een kopie van de vervangen huidige mappen blijft bewaard. Huidige bestanden die niet in de back-up staan, blijven behouden.\n\nEr wordt ook een veiligheidskopie van de huidige database gemaakt. Oudere .db-back-ups bevatten geen documenten.\n\nDoorgaan?"),
+            "Deze bewerking zal de huidige database volledig vervangen.\n\nEr wordt een automatische back-up gemaakt voordat het herstel wordt uitgevoerd.\n\nDoorgaan?"),
         "backupHistory_title":
             MessageLookupByLibrary.simpleMessage("Overzicht van back-ups"),
         "bodymap_help": MessageLookupByLibrary.simpleMessage(
@@ -1555,23 +1561,23 @@ class MessageLookup extends MessageLookupByLibrary {
         "patientDetail_weight": MessageLookupByLibrary.simpleMessage("Gewicht"),
         "patientDetail_years": MessageLookupByLibrary.simpleMessage("jaar"),
         "patientDocuments_authorization": MessageLookupByLibrary.simpleMessage(
-            "De toegang moet opnieuw worden toegestaan. Selecteer de gemeenschappelijke map uit de instellingen."),
+            "De map moet opnieuw worden geautoriseerd. Selecteer de gedeelde map die in de instellingen is gedefinieerd."),
         "patientDocuments_chooseRoot": MessageLookupByLibrary.simpleMessage(
-            "Gemeenschappelijke map kiezen"),
+            "De gemeenschappelijke map selecteren"),
         "patientDocuments_error": MessageLookupByLibrary.simpleMessage(
-            "De map kan niet worden aangemaakt of geopend. Controleer de beschikbaarheid en toegangsrechten en probeer het opnieuw."),
-        "patientDocuments_open":
-            MessageLookupByLibrary.simpleMessage("Patiëntmap openen"),
+            "Het is niet mogelijk om het bestand voor te bereiden of te openen. Controleer of het bestand beschikbaar is en of u de juiste toegangsrechten hebt, en probeer het vervolgens opnieuw.\""),
+        "patientDocuments_open": MessageLookupByLibrary.simpleMessage(
+            "\"De patiëntendossier openen\""),
         "patientDocuments_retry":
             MessageLookupByLibrary.simpleMessage("Opnieuw proberen"),
         "patientDocuments_settingsHelp": MessageLookupByLibrary.simpleMessage(
-            "Eén map per patiënt, met Bilan, Rapport en Autre. Aangemaakt bij het openen van het dossier; bestaande bestanden worden niet verplaatst."),
-        "patientDocuments_structure":
-            MessageLookupByLibrary.simpleMessage("Bilan / Rapport / Autre"),
+            "Eén dossier per patiënt, met daarin ‘Overzicht’, ‘Verslag’ en ‘Overige’. Wordt aangemaakt bij het openen van het dossier; bestaande bestanden worden niet verplaatst."),
+        "patientDocuments_structure": MessageLookupByLibrary.simpleMessage(
+            "Overzicht / Verslag / Overig"),
         "patientDocuments_title":
-            MessageLookupByLibrary.simpleMessage("Patiëntdocumenten"),
+            MessageLookupByLibrary.simpleMessage("Patiëntendocumenten"),
         "patientDocuments_unconfigured": MessageLookupByLibrary.simpleMessage(
-            "Er is geen opslagmap ingesteld. Kies de gemeenschappelijke map voor alle patiënten."),
+            "Er is geen opslagmap gedefinieerd. Kies de map die voor alle patiënten geldt."),
         "patientForm_birthDate":
             MessageLookupByLibrary.simpleMessage("Geboortedatum"),
         "patientForm_cancel": MessageLookupByLibrary.simpleMessage("Annuleren"),
@@ -1972,6 +1978,41 @@ class MessageLookup extends MessageLookupByLibrary {
         "settings_exchangeDirectoryUpdated":
             MessageLookupByLibrary.simpleMessage(
                 "Bijgewerkt ABAK-uitwisselingsdossier"),
+        "settings_exportAction":
+            MessageLookupByLibrary.simpleMessage("Exporteren"),
+        "settings_exportCancel":
+            MessageLookupByLibrary.simpleMessage("Annuleren"),
+        "settings_exportCancelled":
+            MessageLookupByLibrary.simpleMessage("Export geannuleerd"),
+        "settings_exportChooseDestination":
+            MessageLookupByLibrary.simpleMessage("De bestemmingsmap kiezen"),
+        "settings_exportCompleted": m52,
+        "settings_exportCompletedWithErrors": m53,
+        "settings_exportDataDescription": MessageLookupByLibrary.simpleMessage(
+            "Er wordt een archief aangemaakt met de gegevens van uw patiënten, evenals hun onderzoeksresultaten en rapporten."),
+        "settings_exportFailed": MessageLookupByLibrary.simpleMessage(
+            "Het is niet mogelijk om de gegevens te exporteren"),
+        "settings_exportIncludeArchivedPatients":
+            MessageLookupByLibrary.simpleMessage(
+                "Gearchiveerde patiënten meenemen"),
+        "settings_exportMyData":
+            MessageLookupByLibrary.simpleMessage("Mijn gegevens exporteren"),
+        "settings_exportPatientBirthDate":
+            MessageLookupByLibrary.simpleMessage("Geboortedatum"),
+        "settings_exportPatientFemale":
+            MessageLookupByLibrary.simpleMessage("Vrouwelijk"),
+        "settings_exportPatientFirstName":
+            MessageLookupByLibrary.simpleMessage("Voornaam"),
+        "settings_exportPatientLastName":
+            MessageLookupByLibrary.simpleMessage("Naam"),
+        "settings_exportPatientMale":
+            MessageLookupByLibrary.simpleMessage("Mannelijk"),
+        "settings_exportPatientSex":
+            MessageLookupByLibrary.simpleMessage("Seks"),
+        "settings_exportPatientUnknown":
+            MessageLookupByLibrary.simpleMessage("Niet opgegeven"),
+        "settings_exportPatientUnknownFemale":
+            MessageLookupByLibrary.simpleMessage("Niet opgegeven"),
         "settings_help": MessageLookupByLibrary.simpleMessage(
             "Op dit scherm zijn de installatie-, diagnose- en onderhoudsfuncties van Companion gebundeld. Gebruik deze functies volgens de aanwijzingen in de ABAK-documentatie of op advies van een technicus.\n\nVia het tabblad ‘Configuratie’ kunt u de map raadplegen, openen of wijzigen die wordt gebruikt voor de uitwisseling van bestanden.\n\nVia het tabblad ‘Diagnose’ kunt u controles uitvoeren op het leesapparaat voor de Vitale-kaart.\n\nVia het tabblad ‘Onderhoud’ kunt u de wizard voor het oplossen van importproblemen openen, handmatig een ABAK-bestand importeren en het beheer van back-ups openen.\n\nHet resetten van de database verwijdert de lokale gegevens. Deze handeling is uitsluitend bedoeld voor technische ondersteuning: lees de bevestigingsberichten aandachtig door voordat u doorgaat."),
         "settings_importAbakFile": MessageLookupByLibrary.simpleMessage(
@@ -2017,7 +2058,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Woede"),
         "speechDictationButton_download":
             MessageLookupByLibrary.simpleMessage("De module downloaden"),
-        "speechDictationButton_failure": m52,
+        "speechDictationButton_failure": m54,
         "speechDictationButton_information": MessageLookupByLibrary.simpleMessage(
             "Voor spraakdictee moet de optionele module ABAK Spraakdictee worden geïnstalleerd.\n\nDeze module is gratis en werkt lokaal op uw computer, zonder dat de spraakopnames via internet worden verzonden.\n\nDe download is ongeveer 1,5 GB groot."),
         "speechDictationButton_stop":

@@ -29,10 +29,10 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m3(age) => "${age} Jahre";
 
-  static String m4(path) => "Zugriff auf diesen Ordner erlauben: ${path}";
+  static String m4(path) => "Zugriff auf den Ordner gewähren: ${path}";
 
   static String m5(path) =>
-      "Zielordner für Dokumente aus diesem Ordner wählen: ${path}";
+      "Wählen Sie den Ordner aus, in den die Dokumente aus ${path} wiederhergestellt werden sollen:";
 
   static String m6(size) => "${size}";
 
@@ -145,7 +145,13 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m51(error) => "Fehler beim Zurücksetzen: ${error}";
 
-  static String m52(error) =>
+  static String m52(patientCount, fileCount) =>
+      "Export abgeschlossen: ${patientCount} Patient(en), ${fileCount} Datei(en).";
+
+  static String m53(errorCount, patientCount, fileCount) =>
+      "Der Export wurde mit ${errorCount} Fehlern abgeschlossen: ${patientCount} Patienten, ${fileCount} Dateien wurden exportiert.";
+
+  static String m54(error) =>
       "Die Sprachsteuerung ist fehlgeschlagen: ${error}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -231,31 +237,31 @@ class MessageLookup extends MessageLookupByLibrary {
             "Diese Ansicht zeigt die für die Betreuung gespeicherten Berichte mit deren Titel und Datum an.\n\nÜber die Aktionen in jeder Zeile können Sie einen Bericht bearbeiten, duplizieren oder in die archivierten Dokumente verschieben.\n\nWenn ein Bericht zur Bearbeitung geöffnet ist, verwenden Sie die Aktion „Aktualisieren“, um Ihre Änderungen zu speichern. Mit den verfügbaren Befehlen können Sie außerdem die Änderungen rückgängig machen oder zum Entwurf zurückkehren.\n\nDas Verschieben in die archivierten Dokumente ist keine endgültige Löschung.\n\nKlicken Sie auf das Kreuz, um die vergrößerte Ansicht zu schließen und zum Bereich „Bilanzen/Berichte“ zurückzukehren."),
         "backupArchive_authorizeFolder": m4,
         "backupArchive_busy": MessageLookupByLibrary.simpleMessage(
-            "Eine Sicherung oder Wiederherstellung läuft bereits."),
+            "„Eine Sicherung oder Wiederherstellung ist bereits im Gange.“"),
         "backupArchive_chooseFile":
-            MessageLookupByLibrary.simpleMessage("Sicherung öffnen…"),
+            MessageLookupByLibrary.simpleMessage("Ein Backup öffnen…"),
         "backupArchive_legacy": MessageLookupByLibrary.simpleMessage(
-            "Diese ältere Sicherung enthält nur die Datenbank. Dateien in Patientenordnern wurden nicht wiederhergestellt."),
+            "Diese alte Sicherung enthält nur die Datenbank. Die Dateien aus den Patientenordnern wurden nicht wiederhergestellt."),
         "backupArchive_restoreFolder": m5,
-        "backupArchive_resultTitle": MessageLookupByLibrary.simpleMessage(
-            "Ergebnis der Wiederherstellung"),
+        "backupArchive_resultTitle":
+            MessageLookupByLibrary.simpleMessage("Ergebnis der Restaurierung"),
         "backupArchive_safetyCopies": MessageLookupByLibrary.simpleMessage(
-            "Aufbewahrte Sicherheitskopien:"),
+            "Aufbewahrte Sicherungskopien:"),
         "backupArchive_working": MessageLookupByLibrary.simpleMessage(
-            "Sicherung oder Wiederherstellung läuft… Bitte warten."),
+            "Sicherung oder Wiederherstellung läuft… Bitte haben Sie einen Moment Geduld."),
         "backupHistory_cancel":
             MessageLookupByLibrary.simpleMessage("Abbrechen"),
         "backupHistory_empty": MessageLookupByLibrary.simpleMessage(
             "Es wurde kein Backup gespeichert."),
         "backupHistory_fileSize": m6,
         "backupHistory_help": MessageLookupByLibrary.simpleMessage(
-            "Neue ZIP-Sicherungen enthalten die Datenbank und alle zugeordneten Patientenordner einschließlich Bilan, Rapport und Autre. Ist ein zugeordneter Ordner nicht verfügbar, schlägt die Sicherung fehl. Dokumente außerhalb dieser Ordner werden nicht gesichert.\n\nDie Wiederherstellung ersetzt die aktuelle Datenbank. Später hinzugefügte Daten sind darin nicht mehr enthalten. Gesicherte Dokumentversionen werden wiederhergestellt; Kopien der ersetzten Ordner und zusätzliche aktuelle Dateien bleiben erhalten. Die Speicherorte der Sicherheitskopien werden am Ende angezeigt.\n\nIst ein ursprünglicher Ordner nicht verfügbar, wählen Sie einen neuen Speicherort. Über „Sicherung öffnen“ können ZIP-Dateien oder ältere .db-Sicherungen geöffnet werden; Letztere stellen nur die Datenbank wieder her."),
+            "Auf diesem Bildschirm werden die in Companion gespeicherten Sicherungen angezeigt. In jeder Zeile sind der Dateiname, das Erstellungsdatum, die Dateigröße und der Speicherort angegeben.\n\nMit der Schaltfläche „Wiederherstellen“ können Sie die aktuelle Datenbank durch die aus der ausgewählten Sicherung ersetzen. Daten, die nach dieser Sicherung hinzugefügt oder geändert wurden, sind daher in der wiederhergestellten Datenbank nicht enthalten.\n\nÜberprüfen Sie das Datum der Sicherung und lesen Sie die Bestätigungsmeldung, bevor Sie fortfahren. Vor dem Ersetzen wird eine Sicherungskopie der aktuellen Datenbank erstellt.\n\nDie Sicherungsdatei muss immer am angegebenen Speicherort verfügbar sein. Wurde sie verschoben oder gelöscht, kann die Wiederherstellung nicht durchgeführt werden.\n\nUm eine neue Sicherung zu erstellen, verwenden Sie die Aktion „Sicherung erstellen“ auf der Startseite."),
         "backupHistory_restore":
             MessageLookupByLibrary.simpleMessage("Wiederherstellen"),
         "backupHistory_restoreTitle": MessageLookupByLibrary.simpleMessage(
             "Diese Sicherung wiederherstellen?"),
         "backupHistory_restoreWarning": MessageLookupByLibrary.simpleMessage(
-            "Die aktuelle Datenbank wird durch die Sicherung ersetzt. Gesicherte Dokumente werden wiederhergestellt; eine Kopie der ersetzten aktuellen Ordner bleibt erhalten. Aktuelle Dateien, die nicht in der Sicherung enthalten sind, bleiben erhalten.\n\nZusätzlich wird eine Sicherheitskopie der aktuellen Datenbank erstellt. Ältere .db-Sicherungen enthalten keine Dokumente.\n\nFortfahren?"),
+            "Dieser Vorgang wird die aktuelle Datenbank vollständig ersetzen.\n\nVor der Wiederherstellung wird automatisch eine Sicherheitskopie erstellt.\n\nWeiter?"),
         "backupHistory_title":
             MessageLookupByLibrary.simpleMessage("Sicherungshistorie"),
         "bodymap_help": MessageLookupByLibrary.simpleMessage(
@@ -1562,23 +1568,23 @@ class MessageLookup extends MessageLookupByLibrary {
         "patientDetail_weight": MessageLookupByLibrary.simpleMessage("Gewicht"),
         "patientDetail_years": MessageLookupByLibrary.simpleMessage("Jahre"),
         "patientDocuments_authorization": MessageLookupByLibrary.simpleMessage(
-            "Der Zugriff muss erneut erlaubt werden. Wählen Sie den in den Einstellungen festgelegten gemeinsamen Ordner."),
-        "patientDocuments_chooseRoot":
-            MessageLookupByLibrary.simpleMessage("Gemeinsamen Ordner wählen"),
+            "Der Ordner muss erneut autorisiert werden. Wählen Sie den in den Einstellungen festgelegten gemeinsamen Ordner aus."),
+        "patientDocuments_chooseRoot": MessageLookupByLibrary.simpleMessage(
+            "Gemeinsamen Ordner auswählen"),
         "patientDocuments_error": MessageLookupByLibrary.simpleMessage(
-            "Der Ordner konnte nicht vorbereitet oder geöffnet werden. Prüfen Sie Verfügbarkeit und Zugriffsrechte und versuchen Sie es erneut."),
+            "Der Ordner kann nicht vorbereitet oder geöffnet werden. Überprüfen Sie, ob der Ordner verfügbar ist und ob Sie über die entsprechenden Zugriffsrechte verfügen, und versuchen Sie es dann erneut."),
         "patientDocuments_open":
-            MessageLookupByLibrary.simpleMessage("Patientenordner öffnen"),
+            MessageLookupByLibrary.simpleMessage("„Patientenakte öffnen“"),
         "patientDocuments_retry":
-            MessageLookupByLibrary.simpleMessage("Erneut versuchen"),
+            MessageLookupByLibrary.simpleMessage("Es noch einmal versuchen"),
         "patientDocuments_settingsHelp": MessageLookupByLibrary.simpleMessage(
-            "Ein Ordner pro Patient mit Bilan, Rapport und Autre. Er wird beim Öffnen der Patientenakte erstellt; vorhandene Dateien werden nicht verschoben."),
-        "patientDocuments_structure":
-            MessageLookupByLibrary.simpleMessage("Bilan / Rapport / Autre"),
+            "Eine Akte pro Patient, bestehend aus „Befund“, „Bericht“ und „Sonstiges“. Wird beim Anlegen der Patientenakte erstellt; bereits vorhandene Dateien werden nicht verschoben."),
+        "patientDocuments_structure": MessageLookupByLibrary.simpleMessage(
+            "Bilanz / Bericht / Sonstiges"),
         "patientDocuments_title":
-            MessageLookupByLibrary.simpleMessage("Patientendokumente"),
+            MessageLookupByLibrary.simpleMessage("Patientenunterlagen"),
         "patientDocuments_unconfigured": MessageLookupByLibrary.simpleMessage(
-            "Kein Speicherordner festgelegt. Wählen Sie den gemeinsamen Ordner für alle Patienten."),
+            "Es wurde kein Speicherordner festgelegt. Wählen Sie den Ordner aus, der für alle Patienten gilt."),
         "patientForm_birthDate":
             MessageLookupByLibrary.simpleMessage("Geburtsdatum"),
         "patientForm_cancel": MessageLookupByLibrary.simpleMessage("Abbrechen"),
@@ -1984,6 +1990,41 @@ class MessageLookup extends MessageLookupByLibrary {
         "settings_exchangeDirectoryUpdated":
             MessageLookupByLibrary.simpleMessage(
                 "Aktualisierte ABAK-Austauschdatei"),
+        "settings_exportAction":
+            MessageLookupByLibrary.simpleMessage("Exportieren"),
+        "settings_exportCancel":
+            MessageLookupByLibrary.simpleMessage("Abbrechen"),
+        "settings_exportCancelled":
+            MessageLookupByLibrary.simpleMessage("Export abgebrochen"),
+        "settings_exportChooseDestination":
+            MessageLookupByLibrary.simpleMessage("Zielordner auswählen"),
+        "settings_exportCompleted": m52,
+        "settings_exportCompletedWithErrors": m53,
+        "settings_exportDataDescription": MessageLookupByLibrary.simpleMessage(
+            "Es wird ein Archiv angelegt, das die Daten Ihrer Patienten sowie deren Befunde und Berichte enthält."),
+        "settings_exportFailed": MessageLookupByLibrary.simpleMessage(
+            "Die Daten können nicht exportiert werden"),
+        "settings_exportIncludeArchivedPatients":
+            MessageLookupByLibrary.simpleMessage(
+                "Archivierte Patienten einbeziehen"),
+        "settings_exportMyData":
+            MessageLookupByLibrary.simpleMessage("Meine Daten exportieren"),
+        "settings_exportPatientBirthDate":
+            MessageLookupByLibrary.simpleMessage("Geburtsdatum"),
+        "settings_exportPatientFemale":
+            MessageLookupByLibrary.simpleMessage("Weiblich"),
+        "settings_exportPatientFirstName":
+            MessageLookupByLibrary.simpleMessage("Vorname"),
+        "settings_exportPatientLastName":
+            MessageLookupByLibrary.simpleMessage("Name"),
+        "settings_exportPatientMale":
+            MessageLookupByLibrary.simpleMessage("Männlich"),
+        "settings_exportPatientSex":
+            MessageLookupByLibrary.simpleMessage("Sex"),
+        "settings_exportPatientUnknown":
+            MessageLookupByLibrary.simpleMessage("Keine Angabe"),
+        "settings_exportPatientUnknownFemale":
+            MessageLookupByLibrary.simpleMessage("Keine Angabe"),
         "settings_help": MessageLookupByLibrary.simpleMessage(
             "Dieser Bildschirm fasst die Funktionen für Installation, Diagnose und Wartung von Companion zusammen. Verwenden Sie diese gemäß den Anweisungen in der ABAK-Dokumentation oder den Anweisungen eines Technikers.\n\nÜber den Menüpunkt „Konfiguration“ können Sie den für den Dateiaustausch verwendeten Ordner anzeigen, öffnen oder ändern.\n\nÜber den Bereich „Diagnose“ können Sie Überprüfungen des Lesegeräts für die Vitale-Karte durchführen.\n\nIm Bereich „Wartung“ können Sie den Assistenten zur Behebung von Importproblemen öffnen, eine ABAK-Datei manuell importieren und auf die Verwaltung der Sicherungskopien zugreifen.\n\nDurch das Zurücksetzen der Datenbank werden die lokalen Daten gelöscht. Dieser Vorgang ist ausschließlich für den technischen Support vorgesehen: Lesen Sie die Bestätigungsmeldungen sorgfältig durch, bevor Sie fortfahren."),
         "settings_importAbakFile": MessageLookupByLibrary.simpleMessage(
@@ -2028,7 +2069,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Wut"),
         "speechDictationButton_download":
             MessageLookupByLibrary.simpleMessage("Modul herunterladen"),
-        "speechDictationButton_failure": m52,
+        "speechDictationButton_failure": m54,
         "speechDictationButton_information": MessageLookupByLibrary.simpleMessage(
             "Für die Sprachsteuerung muss das optionale Modul „ABAK Sprachsteuerung“ installiert werden.\n\nDieses Modul ist kostenlos und läuft lokal auf Ihrem Computer, ohne dass die Sprachaufnahmen ins Internet gesendet werden.\n\nDie Downloadgröße beträgt etwa 1,5 GB."),
         "speechDictationButton_stop":

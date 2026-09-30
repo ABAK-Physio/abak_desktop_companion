@@ -29,10 +29,10 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m3(age) => "${age} anni";
 
-  static String m4(path) => "Autorizzare l’accesso alla cartella: ${path}";
+  static String m4(path) => "Autorizza l\'accesso alla cartella: ${path}";
 
   static String m5(path) =>
-      "Scegliere dove ripristinare i documenti di: ${path}";
+      "Scegli la cartella in cui ripristinare i documenti da: ${path}";
 
   static String m6(size) => "${size}";
 
@@ -144,7 +144,13 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m51(error) => "Errore durante il ripristino: ${error}";
 
-  static String m52(error) =>
+  static String m52(patientCount, fileCount) =>
+      "Esportazione completata: ${patientCount} paziente/i, ${fileCount} file.";
+
+  static String m53(errorCount, patientCount, fileCount) =>
+      "Esportazione completata con ${errorCount} errore/i: ${patientCount} paziente/i, ${fileCount} file esportato/i.";
+
+  static String m54(error) =>
       "Il dettato vocale non è andato a buon fine: ${error}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -231,30 +237,30 @@ class MessageLookup extends MessageLookupByLibrary {
             "Questa schermata mostra i bilanci registrati per la gestione, con il titolo e la data.\n\nLe azioni disponibili in ciascuna riga consentono di modificare un bilancio, duplicarlo o spostarlo tra i documenti archiviati.\n\nQuando un bilancio è aperto in modalità modifica, utilizzare l’azione di aggiornamento per salvare le modifiche. I comandi disponibili consentono inoltre di annullare le modifiche o di tornare alla bozza.\n\nLo spostamento verso i documenti archiviati non costituisce una cancellazione definitiva.\n\nFare clic sulla croce per chiudere la vista ingrandita e tornare all’area Bilanci/Rapporti."),
         "backupArchive_authorizeFolder": m4,
         "backupArchive_busy": MessageLookupByLibrary.simpleMessage(
-            "È già in corso un backup o un ripristino."),
+            "\"È già in corso un\'operazione di backup o di ripristino.\""),
         "backupArchive_chooseFile":
-            MessageLookupByLibrary.simpleMessage("Apri un backup…"),
+            MessageLookupByLibrary.simpleMessage("Aprire un backup…"),
         "backupArchive_legacy": MessageLookupByLibrary.simpleMessage(
-            "Questo vecchio backup contiene solo il database. I file delle cartelle pazienti non sono stati ripristinati."),
+            "Questo vecchio backup contiene solo il database. I file delle cartelle cliniche non sono stati ripristinati."),
         "backupArchive_restoreFolder": m5,
         "backupArchive_resultTitle":
-            MessageLookupByLibrary.simpleMessage("Risultato del ripristino"),
+            MessageLookupByLibrary.simpleMessage("Risultato del restauro"),
         "backupArchive_safetyCopies": MessageLookupByLibrary.simpleMessage(
             "Copie di sicurezza conservate:"),
         "backupArchive_working": MessageLookupByLibrary.simpleMessage(
-            "Backup o ripristino in corso… Attendere."),
+            "Backup o ripristino in corso… Attendere, per favore."),
         "backupHistory_cancel": MessageLookupByLibrary.simpleMessage("Annulla"),
         "backupHistory_empty": MessageLookupByLibrary.simpleMessage(
             "Non è stato salvato alcun backup."),
         "backupHistory_fileSize": m6,
         "backupHistory_help": MessageLookupByLibrary.simpleMessage(
-            "I nuovi backup ZIP contengono il database e tutte le cartelle pazienti associate, incluse Bilan, Rapport e Autre. Se una cartella associata non è accessibile, il backup non riesce. I documenti esterni a queste cartelle non sono inclusi.\n\nIl ripristino sostituisce il database attuale: i dati aggiunti dopo il backup non vi saranno più presenti. Le versioni salvate dei documenti vengono ripristinate conservando copie delle cartelle sostituite e i file attuali assenti dal backup. Al termine vengono mostrati i percorsi delle copie di sicurezza.\n\nSe la cartella originale non è disponibile, scegliere una nuova posizione. «Apri un backup» consente di ripristinare un file ZIP o un vecchio backup .db; quest’ultimo ripristina solo il database."),
+            "Questa schermata mostra i backup salvati in Companion. Ogni riga riporta il nome del file, la data di creazione, la dimensione e il percorso.\n\nIl pulsante «Ripristina» consente di sostituire il database attuale con quello del backup selezionato. I dati aggiunti o modificati dopo questo backup non saranno quindi presenti nel database ripristinato.\n\nVerificate la data del backup e leggete il messaggio di conferma prima di procedere. Prima della sostituzione viene creata una copia di sicurezza del database attuale.\n\nIl file di backup deve essere sempre accessibile nel percorso indicato. Se è stato spostato o eliminato, il ripristino non potrà essere effettuato.\n\nPer creare un nuovo backup, utilizzare l’azione «Crea un backup» nella pagina iniziale."),
         "backupHistory_restore":
             MessageLookupByLibrary.simpleMessage("Ripristina"),
         "backupHistory_restoreTitle":
             MessageLookupByLibrary.simpleMessage("Ripristinare questo backup?"),
         "backupHistory_restoreWarning": MessageLookupByLibrary.simpleMessage(
-            "Il database attuale sarà sostituito dal backup. Saranno ripristinati i documenti salvati, conservando una copia delle cartelle attuali sostituite. I file attuali assenti dal backup saranno conservati.\n\nVerrà creata anche una copia di sicurezza del database attuale. I vecchi backup .db non contengono documenti.\n\nContinuare?"),
+            "Questa operazione sostituirà completamente il database attuale.\n\nPrima del ripristino verrà creato un backup di sicurezza automatico.\n\nVuoi continuare?"),
         "backupHistory_title":
             MessageLookupByLibrary.simpleMessage("Cronologia dei backup"),
         "bodymap_help": MessageLookupByLibrary.simpleMessage(
@@ -1551,23 +1557,23 @@ class MessageLookup extends MessageLookupByLibrary {
         "patientDetail_weight": MessageLookupByLibrary.simpleMessage("Peso"),
         "patientDetail_years": MessageLookupByLibrary.simpleMessage("anni"),
         "patientDocuments_authorization": MessageLookupByLibrary.simpleMessage(
-            "Occorre autorizzare nuovamente l’accesso. Selezionare la cartella comune definita nelle impostazioni."),
-        "patientDocuments_chooseRoot":
-            MessageLookupByLibrary.simpleMessage("Scegli cartella comune"),
+            "La cartella deve essere autorizzata nuovamente. Selezionare la cartella condivisa definita nelle impostazioni."),
+        "patientDocuments_chooseRoot": MessageLookupByLibrary.simpleMessage(
+            "Selezionare la cartella condivisa"),
         "patientDocuments_error": MessageLookupByLibrary.simpleMessage(
-            "Impossibile preparare o aprire la cartella. Verificare la disponibilità e i permessi di accesso, quindi riprovare."),
-        "patientDocuments_open":
-            MessageLookupByLibrary.simpleMessage("Apri cartella paziente"),
+            "Impossibile preparare o aprire la cartella. Verificare la sua disponibilità e i propri diritti di accesso, quindi riprovare.\""),
+        "patientDocuments_open": MessageLookupByLibrary.simpleMessage(
+            "\"Aprire la cartella clinica\""),
         "patientDocuments_retry":
-            MessageLookupByLibrary.simpleMessage("Riprova"),
+            MessageLookupByLibrary.simpleMessage("Riprovare"),
         "patientDocuments_settingsHelp": MessageLookupByLibrary.simpleMessage(
-            "Una cartella per paziente, contenente Bilan, Rapport e Autre. Creata all’apertura della scheda; i file esistenti non vengono spostati."),
-        "patientDocuments_structure":
-            MessageLookupByLibrary.simpleMessage("Bilan / Rapport / Autre"),
+            "Una cartella per paziente, contenente “Bilancio”, “Relazione” e “Altro”. Creazione all’apertura della scheda; i file esistenti non vengono spostati."),
+        "patientDocuments_structure": MessageLookupByLibrary.simpleMessage(
+            "Bilancio / Relazione / Altro"),
         "patientDocuments_title":
-            MessageLookupByLibrary.simpleMessage("Documenti del paziente"),
+            MessageLookupByLibrary.simpleMessage("Documentazione del paziente"),
         "patientDocuments_unconfigured": MessageLookupByLibrary.simpleMessage(
-            "Nessuna cartella di archiviazione impostata. Scegliere la cartella comune a tutti i pazienti."),
+            "Non è stata definita alcuna cartella di archiviazione. Scegliere la cartella comune a tutti i pazienti."),
         "patientForm_birthDate":
             MessageLookupByLibrary.simpleMessage("Data di nascita"),
         "patientForm_cancel": MessageLookupByLibrary.simpleMessage("Annulla"),
@@ -1964,6 +1970,42 @@ class MessageLookup extends MessageLookupByLibrary {
         "settings_exchangeDirectoryUpdated":
             MessageLookupByLibrary.simpleMessage(
                 "Documentazione di scambio ABAK aggiornata"),
+        "settings_exportAction":
+            MessageLookupByLibrary.simpleMessage("Esporta"),
+        "settings_exportCancel":
+            MessageLookupByLibrary.simpleMessage("Annulla"),
+        "settings_exportCancelled":
+            MessageLookupByLibrary.simpleMessage("Esportazione annullata"),
+        "settings_exportChooseDestination":
+            MessageLookupByLibrary.simpleMessage(
+                "Scegliere la cartella di destinazione"),
+        "settings_exportCompleted": m52,
+        "settings_exportCompletedWithErrors": m53,
+        "settings_exportDataDescription": MessageLookupByLibrary.simpleMessage(
+            "Verrà creato un archivio contenente le informazioni relative ai vostri pazienti, nonché i loro referti e le loro relazioni."),
+        "settings_exportFailed": MessageLookupByLibrary.simpleMessage(
+            "Impossibile esportare i dati"),
+        "settings_exportIncludeArchivedPatients":
+            MessageLookupByLibrary.simpleMessage(
+                "Includere i pazienti archiviati"),
+        "settings_exportMyData":
+            MessageLookupByLibrary.simpleMessage("Esporta i miei dati"),
+        "settings_exportPatientBirthDate":
+            MessageLookupByLibrary.simpleMessage("Data di nascita"),
+        "settings_exportPatientFemale":
+            MessageLookupByLibrary.simpleMessage("Femminile"),
+        "settings_exportPatientFirstName":
+            MessageLookupByLibrary.simpleMessage("Nome"),
+        "settings_exportPatientLastName":
+            MessageLookupByLibrary.simpleMessage("Nome"),
+        "settings_exportPatientMale":
+            MessageLookupByLibrary.simpleMessage("Maschile"),
+        "settings_exportPatientSex":
+            MessageLookupByLibrary.simpleMessage("Sesso"),
+        "settings_exportPatientUnknown":
+            MessageLookupByLibrary.simpleMessage("Non specificato"),
+        "settings_exportPatientUnknownFemale":
+            MessageLookupByLibrary.simpleMessage("Non specificato"),
         "settings_help": MessageLookupByLibrary.simpleMessage(
             "Questa schermata raggruppa le funzioni di installazione, diagnostica e manutenzione di Companion. Utilizzarle secondo le indicazioni della documentazione ABAK o di un tecnico.\n\nLa sezione «Configurazione» consente di visualizzare, aprire o modificare la cartella utilizzata per lo scambio di file.\n\nLa sezione «Diagnostica» consente di accedere alle verifiche del dispositivo di lettura della tessera Vitale.\n\nLa sezione «Manutenzione» consente di aprire la procedura guidata per la risoluzione dei problemi di importazione, di importare manualmente un file ABAK e di accedere alla gestione dei backup.\n\nIl ripristino del database elimina i dati locali. Questa operazione è riservata alle situazioni di assistenza tecnica: leggere attentamente i messaggi di conferma prima di procedere."),
         "settings_importAbakFile": MessageLookupByLibrary.simpleMessage(
@@ -2009,7 +2051,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Rabbia"),
         "speechDictationButton_download":
             MessageLookupByLibrary.simpleMessage("Scarica il modulo"),
-        "speechDictationButton_failure": m52,
+        "speechDictationButton_failure": m54,
         "speechDictationButton_information": MessageLookupByLibrary.simpleMessage(
             "La dettatura vocale richiede l\'installazione del modulo opzionale ABAK Dettatura vocale.\n\nQuesto modulo è gratuito e funziona localmente sul proprio computer, senza inviare le registrazioni vocali su Internet.\n\nIl download occupa circa 1,5 GB."),
         "speechDictationButton_stop":

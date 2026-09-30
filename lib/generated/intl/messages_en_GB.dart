@@ -29,9 +29,10 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m3(age) => "${age} years old";
 
-  static String m4(path) => "Authorise access to folder: ${path}";
+  static String m4(path) => "Grant access to the folder: ${path}";
 
-  static String m5(path) => "Choose where to restore documents from: ${path}";
+  static String m5(path) =>
+      "Select the folder where you want to restore the documents from: ${path}";
 
   static String m6(size) => "${size}";
 
@@ -141,7 +142,13 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m51(error) => "Error during reset: ${error}";
 
-  static String m52(error) => "Voice dictation failed: ${error}";
+  static String m52(patientCount, fileCount) =>
+      "Export complete: ${patientCount} patient(s), ${fileCount} file(s).";
+
+  static String m53(errorCount, patientCount, fileCount) =>
+      "Export completed with ${errorCount} error(s): ${patientCount} patient(s), ${fileCount} file(s) exported.";
+
+  static String m54(error) => "Voice dictation failed: ${error}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -226,30 +233,30 @@ class MessageLookup extends MessageLookupByLibrary {
             "This view displays the reports saved for case management, along with their titles and dates.\n\nThe actions in each row allow you to edit a report, duplicate it, or move it to the archived documents.\n\nWhen a report is open for editing, use the \"Update\" action to save your changes. The available commands also allow you to undo changes or revert to the draft.\n\nMoving a report to the archived documents does not permanently delete it.\n\nClick the cross to close the expanded view and return to the Reports/Statements area."),
         "backupArchive_authorizeFolder": m4,
         "backupArchive_busy": MessageLookupByLibrary.simpleMessage(
-            "A backup or restore is already in progress."),
+            "\"A backup or restore is already in progress.\""),
         "backupArchive_chooseFile":
             MessageLookupByLibrary.simpleMessage("Open a backup…"),
         "backupArchive_legacy": MessageLookupByLibrary.simpleMessage(
-            "This older backup contains only the database. Patient folder files have not been restored."),
+            "This old backup contains only the database. The files in the patient folders were not restored."),
         "backupArchive_restoreFolder": m5,
         "backupArchive_resultTitle":
-            MessageLookupByLibrary.simpleMessage("Restore result"),
+            MessageLookupByLibrary.simpleMessage("Restoration Results"),
         "backupArchive_safetyCopies":
-            MessageLookupByLibrary.simpleMessage("Safety copies retained:"),
+            MessageLookupByLibrary.simpleMessage("Backup copies retained:"),
         "backupArchive_working": MessageLookupByLibrary.simpleMessage(
-            "Backing up or restoring… Please wait."),
+            "Backup or restore in progress… Please wait."),
         "backupHistory_cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
         "backupHistory_empty":
             MessageLookupByLibrary.simpleMessage("No backups have been saved."),
         "backupHistory_fileSize": m6,
         "backupHistory_help": MessageLookupByLibrary.simpleMessage(
-            "New ZIP backups include the database and all associated patient folders, including Bilan, Rapport and Autre. A backup fails if an associated folder is unavailable. Documents outside associated patient folders are not included.\n\nRestoring replaces the current database, so data added after the backup will no longer appear in it. Saved document versions are restored and copies of replaced current folders are kept. Current files absent from the backup are retained. Safety copy locations are shown when finished.\n\nIf an original folder is unavailable, choose its new location. Open a backup restores a ZIP file or an older .db backup; the latter restores only the database."),
+            "This screen displays the backups saved in Companion. Each row shows the file name, creation date, size, and location.\n\nThe \"Restore\" button replaces the current database with the one from the selected backup. Data added or modified after this backup will therefore not be included in the restored database.\n\nCheck the backup date and read the confirmation message before proceeding. A backup copy of the current database is created before it is replaced.\n\nThe backup file must always be accessible at the specified location. If it has been moved or deleted, the restore cannot be performed.\n\nTo create a new backup, use the “Create a Backup” action on the home page."),
         "backupHistory_restore":
             MessageLookupByLibrary.simpleMessage("Restore"),
         "backupHistory_restoreTitle":
             MessageLookupByLibrary.simpleMessage("Restore this backup?"),
         "backupHistory_restoreWarning": MessageLookupByLibrary.simpleMessage(
-            "The current database will be replaced with the backup. Saved documents will be restored, keeping a copy of the current folders being replaced. Current files absent from the backup will be retained.\n\nA safety copy of the current database will also be created. Older .db backups do not contain documents.\n\nContinue?"),
+            "This operation will completely replace the current database.\n\nAn automatic backup will be created before restoration.\n\nContinue?"),
         "backupHistory_title":
             MessageLookupByLibrary.simpleMessage("Backup History"),
         "bodymap_help": MessageLookupByLibrary.simpleMessage(
@@ -1504,23 +1511,23 @@ class MessageLookup extends MessageLookupByLibrary {
         "patientDetail_weight": MessageLookupByLibrary.simpleMessage("Weight"),
         "patientDetail_years": MessageLookupByLibrary.simpleMessage("years"),
         "patientDocuments_authorization": MessageLookupByLibrary.simpleMessage(
-            "Folder access must be authorised again. Select the shared folder configured in settings."),
+            "The folder must be authorized again. Select the shared folder specified in the settings."),
         "patientDocuments_chooseRoot":
-            MessageLookupByLibrary.simpleMessage("Choose shared folder"),
+            MessageLookupByLibrary.simpleMessage("Select the shared folder"),
         "patientDocuments_error": MessageLookupByLibrary.simpleMessage(
-            "Unable to prepare or open the folder. Check availability and access permissions, then try again."),
-        "patientDocuments_open":
-            MessageLookupByLibrary.simpleMessage("Open patient folder"),
+            "\"Unable to prepare or open the file. Check its availability and your access rights, then try again.\""),
+        "patientDocuments_open": MessageLookupByLibrary.simpleMessage(
+            "\"Open the patient\'s file\""),
         "patientDocuments_retry":
             MessageLookupByLibrary.simpleMessage("Try again"),
         "patientDocuments_settingsHelp": MessageLookupByLibrary.simpleMessage(
-            "One folder per patient, containing Bilan, Rapport and Autre. Created when the patient record is opened; existing files are not moved."),
-        "patientDocuments_structure":
-            MessageLookupByLibrary.simpleMessage("Bilan / Rapport / Autre"),
+            "One file per patient, containing Assessment, Report, and Other. Created when the record is opened; existing files are not moved."),
+        "patientDocuments_structure": MessageLookupByLibrary.simpleMessage(
+            "Financial Statement / Report / Other"),
         "patientDocuments_title":
-            MessageLookupByLibrary.simpleMessage("Patient documents"),
+            MessageLookupByLibrary.simpleMessage("Patient Records"),
         "patientDocuments_unconfigured": MessageLookupByLibrary.simpleMessage(
-            "No storage folder is set. Choose the shared root folder for all patients."),
+            "No storage folder has been specified. Please select the folder shared by all patients."),
         "patientForm_birthDate":
             MessageLookupByLibrary.simpleMessage("Date of Birth"),
         "patientForm_cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
@@ -1913,6 +1920,39 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Exchange Folder Reset"),
         "settings_exchangeDirectoryUpdated":
             MessageLookupByLibrary.simpleMessage("Updated ABAK Exchange File"),
+        "settings_exportAction": MessageLookupByLibrary.simpleMessage("Export"),
+        "settings_exportCancel": MessageLookupByLibrary.simpleMessage("Cancel"),
+        "settings_exportCancelled":
+            MessageLookupByLibrary.simpleMessage("Export Canceled"),
+        "settings_exportChooseDestination":
+            MessageLookupByLibrary.simpleMessage(
+                "Select the destination folder"),
+        "settings_exportCompleted": m52,
+        "settings_exportCompletedWithErrors": m53,
+        "settings_exportDataDescription": MessageLookupByLibrary.simpleMessage(
+            "An archive containing your patients\' information, as well as their test results and reports, will be created."),
+        "settings_exportFailed":
+            MessageLookupByLibrary.simpleMessage("Unable to export the data"),
+        "settings_exportIncludeArchivedPatients":
+            MessageLookupByLibrary.simpleMessage("Include archived patients"),
+        "settings_exportMyData":
+            MessageLookupByLibrary.simpleMessage("Export My Data"),
+        "settings_exportPatientBirthDate":
+            MessageLookupByLibrary.simpleMessage("Date of Birth"),
+        "settings_exportPatientFemale":
+            MessageLookupByLibrary.simpleMessage("Feminine"),
+        "settings_exportPatientFirstName":
+            MessageLookupByLibrary.simpleMessage("First Name"),
+        "settings_exportPatientLastName":
+            MessageLookupByLibrary.simpleMessage("Last Name"),
+        "settings_exportPatientMale":
+            MessageLookupByLibrary.simpleMessage("Male"),
+        "settings_exportPatientSex":
+            MessageLookupByLibrary.simpleMessage("Sex"),
+        "settings_exportPatientUnknown":
+            MessageLookupByLibrary.simpleMessage("Not specified"),
+        "settings_exportPatientUnknownFemale":
+            MessageLookupByLibrary.simpleMessage("Not specified"),
         "settings_help": MessageLookupByLibrary.simpleMessage(
             "This screen groups together Companion’s installation, diagnostic, and maintenance functions. Use them as instructed in the ABAK documentation or by a technician.\n\nThe “Configuration” section allows you to view, open, or modify the folder used for file transfers.\n\nThe “Diagnostics” section provides access to checks for the Vitale card reader.\n\nThe “Maintenance” section allows you to open the import troubleshooting wizard, manually import an ABAK file, and access backup management.\n\nResetting the database deletes local data. This operation is reserved for technical support situations: read the confirmation messages carefully before proceeding."),
         "settings_importAbakFile": MessageLookupByLibrary.simpleMessage(
@@ -1955,7 +1995,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Anger"),
         "speechDictationButton_download":
             MessageLookupByLibrary.simpleMessage("Download the module"),
-        "speechDictationButton_failure": m52,
+        "speechDictationButton_failure": m54,
         "speechDictationButton_information": MessageLookupByLibrary.simpleMessage(
             "Voice dictation requires the installation of the optional ABAK Voice Dictation module.\n\nThis module is free and runs locally on your computer, without sending voice recordings over the Internet.\n\nThe download is approximately 1.5 GB."),
         "speechDictationButton_stop":

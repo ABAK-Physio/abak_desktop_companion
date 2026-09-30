@@ -30,6 +30,42 @@ class PatientDocumentsService {
     }
   }
 
+  Future<PatientDocumentFolders?> findInRoot({
+    required String patientId,
+    required String rootPath,
+  }) async {
+    final root = Directory(p.normalize(p.absolute(rootPath)));
+
+    if (!await root.exists()) {
+      throw FileSystemException(
+        'Dossier des documents indisponible',
+        root.path,
+      );
+    }
+
+    final db = await DatabaseService.database;
+    final rows = await db.query(
+      'patient_document_folders',
+      columns: ['folder_name'],
+      where: 'patient_id = ? AND root_path = ?',
+      whereArgs: [patientId, root.path],
+      limit: 1,
+    );
+
+    if (rows.isEmpty) return null;
+
+    final folderName = rows.single['folder_name'] as String;
+
+    if (p.basename(folderName) != folderName ||
+        folderName == '.' ||
+        folderName == '..' ||
+        folderName.contains('\\')) {
+      throw StateError('Nom du dossier patient invalide');
+    }
+
+    return PatientDocumentFolders(p.join(root.path, folderName));
+  }
+
   Future<PatientDocumentFolders> ensureInRoot({
     required String patientId,
     required String rootPath,

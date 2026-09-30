@@ -14,6 +14,7 @@ import '../import_export/import_resolution_assistant_screen.dart';
 import '../../core/expert/expert_context_info.dart';
 import '../../core/expert/expert_info_button.dart';
 import '../../core/settings/application_settings_service.dart';
+import '../maintenance/services/user_data_export_service.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -33,12 +34,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   final ApplicationSettingsService _applicationSettingsService =
-  const ApplicationSettingsService();
+      const ApplicationSettingsService();
 
   bool _expertModeEnabled = false;
 
   final ExchangeDirectoryService _exchangeDirectoryService =
-  ExchangeDirectoryService();
+      ExchangeDirectoryService();
 
   String? _exchangeDirectoryPath;
   bool _isLoading = true;
@@ -53,8 +54,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Future<void> _loadExpertMode() async {
-    final expertModeEnabled =
-    await _applicationSettingsService.isExpertModeEnabled();
+    final expertModeEnabled = await _applicationSettingsService
+        .isExpertModeEnabled();
 
     if (!mounted) return;
 
@@ -79,14 +80,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
       if (!mounted) return;
       setState(() {
         _isLoading = false;
-        _directoryError = 'Impossible de lire la configuration du dossier d’échange.';
+        _directoryError =
+            'Impossible de lire la configuration du dossier d’échange.';
       });
     }
   }
 
   void _showDirectoryMessage(String message) {
     if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
   }
 
   Future<void> _directoryOperation(Future<void> Function() action) async {
@@ -100,7 +104,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
     } catch (_) {
       if (!mounted) return;
       setState(() {
-        _directoryError = 'Impossible d’accéder au dossier ou de mémoriser ce choix. '
+        _directoryError =
+            'Impossible d’accéder au dossier ou de mémoriser ce choix. '
             'Vérifiez sa disponibilité et autorisez-le à nouveau avec Modifier.';
       });
     } finally {
@@ -125,7 +130,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
     await AirDropImportWatcher.instance.restart();
     await _loadExchangeDirectory();
     if (AirDropImportWatcher.instance.accessProblem.value == null) {
-      _showDirectoryMessage('Dossier d’échange réinitialisé. Surveillance active.');
+      _showDirectoryMessage(
+        'Dossier d’échange réinitialisé. Surveillance active.',
+      );
     }
   });
 
@@ -166,11 +173,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   void _openBackupHistory() {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => const BackupHistoryScreen(),
-      ),
-    );
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute(builder: (_) => const BackupHistoryScreen()));
   }
 
   Future<void> _resetLocalDatabase() async {
@@ -182,9 +187,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       builder: (dialogContext) {
         return AlertDialog(
           title: Text(s.settings_resetDatabaseTitle),
-          content: Text(
-            s.settings_resetDatabaseWarning,
-          ),
+          content: Text(s.settings_resetDatabaseWarning),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(false),
@@ -212,9 +215,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                s.settings_typeResetConfirmation,
-              ),
+              Text(s.settings_typeResetConfirmation),
               const SizedBox(height: 16),
               TextField(
                 controller: controller,
@@ -233,8 +234,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
             FilledButton(
               onPressed: () {
-                final valid =
-                    controller.text.trim().toUpperCase() == 'RESET';
+                final valid = controller.text.trim().toUpperCase() == 'RESET';
 
                 Navigator.of(dialogContext).pop(valid);
               },
@@ -251,22 +251,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
       if (!mounted) return;
 
       messenger.showSnackBar(
-        SnackBar(
-          content: Text(s.settings_invalidConfirmation),
-        ),
+        SnackBar(content: Text(s.settings_invalidConfirmation)),
       );
       return;
     }
 
     final result = await LocalDatabaseResetService().resetDatabase(
-      databaseNotFoundMessage:
-      s.localDatabaseBackup_databaseNotFound,
-      chooseBackupFolderTitle:
-      s.localDatabaseBackup_chooseBackupFolder,
-      backupCancelledMessage:
-      s.localDatabaseBackup_cancelled,
-      backupFailedMessage:
-          (error) => '${s.localDatabaseReset_backupFailed} : $error',
+      databaseNotFoundMessage: s.localDatabaseBackup_databaseNotFound,
+      chooseBackupFolderTitle: s.localDatabaseBackup_chooseBackupFolder,
+      backupCancelledMessage: s.localDatabaseBackup_cancelled,
+      backupFailedMessage: (error) =>
+          '${s.localDatabaseReset_backupFailed} : $error',
     );
 
     if (!mounted) return;
@@ -289,9 +284,93 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
+  Future<void> _exportUserData() async {
+    final s = S.of(context);
+    var includeArchived = false;
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Text(s.settings_exportMyData),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(s.settings_exportDataDescription),
+                  const SizedBox(height: 16),
+                  CheckboxListTile(
+                    contentPadding: EdgeInsets.zero,
+                    value: includeArchived,
+                    title: Text(s.settings_exportIncludeArchivedPatients),
+                    controlAffinity: ListTileControlAffinity.leading,
+                    onChanged: (value) {
+                      setState(() {
+                        includeArchived = value ?? false;
+                      });
+                    },
+                  ),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(dialogContext, false),
+                  child: Text(s.settings_exportCancel),
+                ),
+                FilledButton(
+                  onPressed: () => Navigator.pop(dialogContext, true),
+                  child: Text(s.settings_exportAction),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+
+    if (confirmed != true || !mounted) return;
+
+    final result = await UserDataExportService().export(
+      includeArchivedPatients: includeArchived,
+      chooseDestinationTitle: s.settings_exportChooseDestination,
+      cancelledMessage: s.settings_exportCancelled,
+      patientLastNameLabel: s.settings_exportPatientLastName,
+      patientFirstNameLabel: s.settings_exportPatientFirstName,
+      patientBirthDateLabel: s.settings_exportPatientBirthDate,
+      patientSexLabel: s.settings_exportPatientSex,
+      patientMaleLabel: s.settings_exportPatientMale,
+      patientFemaleLabel: s.settings_exportPatientFemale,
+      patientUnknownLabel: s.settings_exportPatientUnknown,
+      patientUnknownFemaleLabel: s.settings_exportPatientUnknownFemale,
+    );
+
+    if (!mounted) return;
+
+    if (!result.success) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(result.error ?? s.settings_exportFailed)),
+      );
+      return;
+    }
+
+    final message = result.errorCount == 0
+        ? s.settings_exportCompleted(result.patientCount, result.fileCount)
+        : s.settings_exportCompletedWithErrors(
+            result.errorCount,
+            result.patientCount,
+            result.fileCount,
+          );
+
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
+  }
+
   @override
   Widget build(BuildContext context) {
-    final s=S.of(context);
+    final s = S.of(context);
     return Center(
       child: SizedBox(
         width: 650,
@@ -315,9 +394,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       content: s.settings_help,
                     ),
                     if (_expertModeEnabled)
-                      ExpertInfoButton(
-                        info: _expertInfo(s),
-                      ),
+                      ExpertInfoButton(info: _expertInfo(s)),
                   ],
                 ),
                 const SizedBox(height: 16),
@@ -326,9 +403,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   color: Theme.of(context).colorScheme.surfaceContainerHighest,
                   child: Padding(
                     padding: EdgeInsets.all(16),
-                    child: Text(
-                      s.settings_assistanceWarning,
-                    ),
+                    child: Text(s.settings_assistanceWarning),
                   ),
                 ),
 
@@ -350,23 +425,30 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     subtitle: Text(
                       _isLoading
                           ? s.settings_loading
-                          : (_exchangeDirectoryPath ?? s.settings_noDirectoryDefined),
+                          : (_exchangeDirectoryPath ??
+                                s.settings_noDirectoryDefined),
                     ),
                     trailing: Wrap(
                       spacing: 8,
                       children: [
                         OutlinedButton.icon(
-                          onPressed: _directoryBusy ? null : _openExchangeDirectory,
+                          onPressed: _directoryBusy
+                              ? null
+                              : _openExchangeDirectory,
                           icon: const Icon(Icons.open_in_new),
                           label: Text(s.settings_open),
                         ),
                         OutlinedButton(
-                          onPressed: _directoryBusy ? null : _chooseExchangeDirectory,
+                          onPressed: _directoryBusy
+                              ? null
+                              : _chooseExchangeDirectory,
                           child: Text(s.settings_edit),
                         ),
                         IconButton(
                           tooltip: s.settings_resetTooltip,
-                          onPressed: _directoryBusy ? null : _resetExchangeDirectory,
+                          onPressed: _directoryBusy
+                              ? null
+                              : _resetExchangeDirectory,
                           icon: const Icon(Icons.restart_alt),
                         ),
                       ],
@@ -382,7 +464,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     padding: const EdgeInsets.symmetric(vertical: 8),
                     child: Text(
                       _directoryError!,
-                      style: TextStyle(color: Theme.of(context).colorScheme.error),
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.error,
+                      ),
                     ),
                   ),
                 ValueListenableBuilder<String?>(
@@ -402,11 +486,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               spacing: 8,
                               children: [
                                 TextButton(
-                                  onPressed: _directoryBusy ? null : _chooseExchangeDirectory,
+                                  onPressed: _directoryBusy
+                                      ? null
+                                      : _chooseExchangeDirectory,
                                   child: const Text('Autoriser un dossier'),
                                 ),
                                 TextButton(
-                                  onPressed: _directoryBusy ? null : _retryExchangeDirectory,
+                                  onPressed: _directoryBusy
+                                      ? null
+                                      : _retryExchangeDirectory,
                                   child: const Text('Réessayer'),
                                 ),
                               ],
@@ -438,7 +526,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         MaterialPageRoute(
                           builder: (context) => VitaleDiagnosticScreen(
                             helpAction: ContextHelpButton(
-                              technicalInformationLabel: S.of(context).g_helpTooltip,
+                              technicalInformationLabel: S
+                                  .of(context)
+                                  .g_helpTooltip,
                               title: S.of(context).settings_vitaleDiagnostic,
                               content: S.of(context).vitaleDiagnostic_help,
                             ),
@@ -478,6 +568,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       onPressed: _openBackupHistory,
                       icon: const Icon(Icons.folder_copy_outlined),
                       label: Text(s.settings_manageBackups),
+                    ),
+                    OutlinedButton.icon(
+                      onPressed: _exportUserData,
+                      icon: const Icon(Icons.archive_outlined),
+                      label: Text(s.settings_exportMyData),
                     ),
                     OutlinedButton.icon(
                       onPressed: _resetLocalDatabase,

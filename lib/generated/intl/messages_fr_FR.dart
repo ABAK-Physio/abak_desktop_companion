@@ -143,7 +143,13 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m51(error) => "Erreur lors de la réinitialisation : ${error}";
 
-  static String m52(error) => "La dictée vocale a échoué : ${error}";
+  static String m52(patientCount, fileCount) =>
+      "Export terminé : ${patientCount} patient(s), ${fileCount} fichier(s).";
+
+  static String m53(errorCount, patientCount, fileCount) =>
+      "Export terminé avec ${errorCount} erreur(s) : ${patientCount} patient(s), ${fileCount} fichier(s) exporté(s).";
+
+  static String m54(error) => "La dictée vocale a échoué : ${error}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -228,7 +234,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Cette vue présente les bilans enregistrés pour la prise en charge, avec leur titre et leur date.\n\nLes actions de chaque ligne permettent de modifier un bilan, de le dupliquer ou de le déplacer vers les documents archivés.\n\nLorsqu’un bilan est ouvert en modification, utilisez l’action de mise à jour pour enregistrer vos changements. Les commandes disponibles permettent également d’annuler les modifications ou de revenir au brouillon.\n\nLe déplacement vers les documents archivés n’est pas une suppression définitive.\n\nCliquez sur la croix pour fermer la vue agrandie et revenir à l’espace Bilans/Rapports."),
         "backupArchive_authorizeFolder": m4,
         "backupArchive_busy": MessageLookupByLibrary.simpleMessage(
-            "Une sauvegarde ou une restauration est déjà en cours."),
+            "Une sauvegarde ou une restauration est déjà en cours.\""),
         "backupArchive_chooseFile":
             MessageLookupByLibrary.simpleMessage("Ouvrir une sauvegarde…"),
         "backupArchive_legacy": MessageLookupByLibrary.simpleMessage(
@@ -245,13 +251,13 @@ class MessageLookup extends MessageLookupByLibrary {
             "Aucune sauvegarde enregistrée."),
         "backupHistory_fileSize": m6,
         "backupHistory_help": MessageLookupByLibrary.simpleMessage(
-            "Les nouvelles sauvegardes ZIP contiennent la base et les fichiers de tous les dossiers patients associés, y compris Bilan, Rapport et Autre. Un dossier associé inaccessible fait échouer la sauvegarde. Les documents non rattachés à un dossier patient ne sont pas inclus.\n\nRestaurer remplace la base actuelle : les données ajoutées après la sauvegarde ne figurent plus dans la base restaurée. Les versions sauvegardées des documents sont rétablies, avec une copie des dossiers actuels remplacés. Les fichiers actuels absents de la sauvegarde sont conservés. Les emplacements des copies de sécurité sont affichés à la fin.\n\nSi le dossier d’origine est indisponible, choisissez son nouvel emplacement. « Ouvrir une sauvegarde » permet de restaurer un fichier ZIP ou une ancienne sauvegarde .db ; cette dernière ne restaure que la base."),
+            "Cet écran présente les sauvegardes enregistrées dans Companion. Chaque ligne indique le nom du fichier, sa date de création, sa taille et son emplacement.\n\nLe bouton « Restaurer » permet de remplacer la base actuelle par celle de la sauvegarde choisie. Les données ajoutées ou modifiées après cette sauvegarde ne seront donc pas présentes dans la base restaurée.\n\nVérifiez la date de la sauvegarde et lisez le message de confirmation avant de poursuivre. Une copie de sécurité de la base actuelle est créée avant son remplacement.\n\nLe fichier de sauvegarde doit toujours être accessible à l’emplacement indiqué. S’il a été déplacé ou supprimé, la restauration ne pourra pas être effectuée.\n\nPour créer une nouvelle sauvegarde, utilisez l’action « Créer une sauvegarde » sur la page d’accueil."),
         "backupHistory_restore":
             MessageLookupByLibrary.simpleMessage("Restaurer"),
         "backupHistory_restoreTitle": MessageLookupByLibrary.simpleMessage(
             "Restaurer cette sauvegarde ?"),
         "backupHistory_restoreWarning": MessageLookupByLibrary.simpleMessage(
-            "La base actuelle sera remplacée par celle de la sauvegarde. Les documents sauvegardés seront rétablis ; une copie des dossiers actuels remplacés sera conservée. Les fichiers actuels absents de la sauvegarde seront conservés.\n\nUne copie de sécurité de la base actuelle sera également créée. Les anciennes sauvegardes .db ne contiennent pas de documents.\n\nContinuer ?"),
+            "Cette opération remplacera totalement la base actuelle.\n\nUne sauvegarde automatique de sécurité sera créée avant restauration.\n\nContinuer ?"),
         "backupHistory_title":
             MessageLookupByLibrary.simpleMessage("Historique des sauvegardes"),
         "bodymap_help": MessageLookupByLibrary.simpleMessage(
@@ -1543,9 +1549,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "patientDocuments_chooseRoot":
             MessageLookupByLibrary.simpleMessage("Choisir le dossier commun"),
         "patientDocuments_error": MessageLookupByLibrary.simpleMessage(
-            "Impossible de préparer ou d’ouvrir le dossier. Vérifiez sa disponibilité et vos droits d’accès, puis réessayez."),
+            "Impossible de préparer ou d’ouvrir le dossier. Vérifiez sa disponibilité et vos droits d’accès, puis réessayez.\""),
         "patientDocuments_open":
-            MessageLookupByLibrary.simpleMessage("Ouvrir le dossier patient"),
+            MessageLookupByLibrary.simpleMessage("Ouvrir le dossier patient\""),
         "patientDocuments_retry":
             MessageLookupByLibrary.simpleMessage("Réessayer"),
         "patientDocuments_settingsHelp": MessageLookupByLibrary.simpleMessage(
@@ -1951,6 +1957,42 @@ class MessageLookup extends MessageLookupByLibrary {
         "settings_exchangeDirectoryUpdated":
             MessageLookupByLibrary.simpleMessage(
                 "Dossier d’échange ABAK mis à jour"),
+        "settings_exportAction":
+            MessageLookupByLibrary.simpleMessage("Exporter"),
+        "settings_exportCancel":
+            MessageLookupByLibrary.simpleMessage("Annuler"),
+        "settings_exportCancelled":
+            MessageLookupByLibrary.simpleMessage("Export annulé"),
+        "settings_exportChooseDestination":
+            MessageLookupByLibrary.simpleMessage(
+                "Choisir le dossier de destination"),
+        "settings_exportCompleted": m52,
+        "settings_exportCompletedWithErrors": m53,
+        "settings_exportDataDescription": MessageLookupByLibrary.simpleMessage(
+            "Une archive contenant les informations de vos patients ainsi que leurs bilans et rapports va être créée."),
+        "settings_exportFailed": MessageLookupByLibrary.simpleMessage(
+            "Impossible d’exporter les données"),
+        "settings_exportIncludeArchivedPatients":
+            MessageLookupByLibrary.simpleMessage(
+                "Inclure les patients archivés"),
+        "settings_exportMyData":
+            MessageLookupByLibrary.simpleMessage("Exporter mes données"),
+        "settings_exportPatientBirthDate":
+            MessageLookupByLibrary.simpleMessage("Date de naissance"),
+        "settings_exportPatientFemale":
+            MessageLookupByLibrary.simpleMessage("Féminin"),
+        "settings_exportPatientFirstName":
+            MessageLookupByLibrary.simpleMessage("Prénom"),
+        "settings_exportPatientLastName":
+            MessageLookupByLibrary.simpleMessage("Nom"),
+        "settings_exportPatientMale":
+            MessageLookupByLibrary.simpleMessage("Masculin"),
+        "settings_exportPatientSex":
+            MessageLookupByLibrary.simpleMessage("Sexe"),
+        "settings_exportPatientUnknown":
+            MessageLookupByLibrary.simpleMessage("Non renseigné"),
+        "settings_exportPatientUnknownFemale":
+            MessageLookupByLibrary.simpleMessage("Non renseignée"),
         "settings_help": MessageLookupByLibrary.simpleMessage(
             "Cet écran regroupe les fonctions d’installation, de diagnostic et de maintenance de Companion. Utilisez-les selon les indications de la documentation ABAK ou d’un technicien.\n\nLa rubrique « Configuration » permet de consulter, ouvrir ou modifier le dossier utilisé pour les échanges de fichiers.\n\nLa rubrique « Diagnostic » donne accès aux vérifications du dispositif de lecture de la carte Vitale.\n\nLa rubrique « Maintenance » permet d’ouvrir l’assistant de résolution des imports, d’importer manuellement un fichier ABAK et d’accéder à la gestion des sauvegardes.\n\nLa réinitialisation de la base supprime les données locales. Cette opération est réservée aux situations d’assistance technique : lisez attentivement les messages de confirmation avant de poursuivre."),
         "settings_importAbakFile": MessageLookupByLibrary.simpleMessage(
@@ -1996,7 +2038,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Dicter"),
         "speechDictationButton_download":
             MessageLookupByLibrary.simpleMessage("Télécharger le module"),
-        "speechDictationButton_failure": m52,
+        "speechDictationButton_failure": m54,
         "speechDictationButton_information": MessageLookupByLibrary.simpleMessage(
             "La dictée vocale nécessite l’installation du module optionnel ABAK Dictée vocale.\n\nCe module est gratuit et fonctionne localement sur votre ordinateur, sans envoyer les enregistrements vocaux sur Internet.\n\nLe téléchargement représente environ 1,5 Go."),
         "speechDictationButton_stop":
