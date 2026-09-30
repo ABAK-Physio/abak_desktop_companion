@@ -984,5 +984,14 @@
   "walkingAid_walkerTwoWheels": "Andador de duas rodas",
   "walkingAid_rollatorFourWheels": "Andador de 4 rodas",
   "walkingAid_other": "Outros",
-  "walkingAid_label": "Ajuda utilizada"
+  "walkingAid_label": "Ajuda utilizada",
+  "patientDocuments_title": "Documentos do paciente",
+  "patientDocuments_structure": "Bilan / Rapport / Autre",
+  "patientDocuments_unconfigured": "Não foi definida uma pasta de armazenamento. Escolha a pasta comum a todos os pacientes.",
+  "patientDocuments_authorization": "É necessário autorizar novamente o acesso. Selecione a pasta comum definida nas configurações.",
+  "patientDocuments_error": "Não foi possível preparar ou abrir a pasta. Verifique a disponibilidade e as permissões de acesso e tente novamente.",
+  "patientDocuments_retry": "Tentar novamente",
+  "patientDocuments_chooseRoot": "Escolher pasta comum",
+  "patientDocuments_open": "Abrir pasta do paciente",
+  "patientDocuments_settingsHelp": "Uma pasta por paciente, com Bilan, Rapport e Autre. Criada ao abrir a ficha; os ficheiros existentes não são movidos."
 }

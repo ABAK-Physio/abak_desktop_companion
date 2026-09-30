@@ -1542,6 +1542,24 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Identität überprüft, INS noch zu ermitteln"),
         "patientDetail_weight": MessageLookupByLibrary.simpleMessage("Gewicht"),
         "patientDetail_years": MessageLookupByLibrary.simpleMessage("Jahre"),
+        "patientDocuments_authorization": MessageLookupByLibrary.simpleMessage(
+            "Der Zugriff muss erneut erlaubt werden. Wählen Sie den in den Einstellungen festgelegten gemeinsamen Ordner."),
+        "patientDocuments_chooseRoot":
+            MessageLookupByLibrary.simpleMessage("Gemeinsamen Ordner wählen"),
+        "patientDocuments_error": MessageLookupByLibrary.simpleMessage(
+            "Der Ordner konnte nicht vorbereitet oder geöffnet werden. Prüfen Sie Verfügbarkeit und Zugriffsrechte und versuchen Sie es erneut."),
+        "patientDocuments_open":
+            MessageLookupByLibrary.simpleMessage("Patientenordner öffnen"),
+        "patientDocuments_retry":
+            MessageLookupByLibrary.simpleMessage("Erneut versuchen"),
+        "patientDocuments_settingsHelp": MessageLookupByLibrary.simpleMessage(
+            "Ein Ordner pro Patient mit Bilan, Rapport und Autre. Er wird beim Öffnen der Patientenakte erstellt; vorhandene Dateien werden nicht verschoben."),
+        "patientDocuments_structure":
+            MessageLookupByLibrary.simpleMessage("Bilan / Rapport / Autre"),
+        "patientDocuments_title":
+            MessageLookupByLibrary.simpleMessage("Patientendokumente"),
+        "patientDocuments_unconfigured": MessageLookupByLibrary.simpleMessage(
+            "Kein Speicherordner festgelegt. Wählen Sie den gemeinsamen Ordner für alle Patienten."),
         "patientForm_birthDate":
             MessageLookupByLibrary.simpleMessage("Geburtsdatum"),
         "patientForm_cancel": MessageLookupByLibrary.simpleMessage("Abbrechen"),

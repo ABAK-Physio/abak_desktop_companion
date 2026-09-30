@@ -61,11 +61,14 @@ class DatabaseService {
 
     return openDatabase(
       path,
-      version: 29, //////////////////////
+      version: 30, //////////////////////
       onCreate: (db, version) async {
         await _createAllTables(db);
       },
       onUpgrade: (db, oldVersion, newVersion) async {
+        if (oldVersion < 30) {
+          await _createPatientDocumentFoldersTable(db);
+        }
         if (oldVersion < 29) {
           await _createBodymapTable(db);
         }
@@ -486,6 +489,7 @@ class DatabaseService {
 
   static Future<void> _createAllTables(Database db) async {
     await _createCoreTables(db);
+    await _createPatientDocumentFoldersTable(db);
     await _createPatientFrHealthIdentityTable(db);
     await _createApplicationSettingsTable(db);
     await _createPatientClinicalTables(db);
@@ -530,6 +534,7 @@ class DatabaseService {
 
     await db.execute('DROP TABLE IF EXISTS paired_devices');
     await db.execute('DROP TABLE IF EXISTS practitioners');
+    await db.execute('DROP TABLE IF EXISTS patient_document_folders');
     await db.execute('DROP TABLE IF EXISTS patients');
     await db.execute('DROP TABLE IF EXISTS application_settings');
 
@@ -546,6 +551,20 @@ class DatabaseService {
     await db.execute('DROP TABLE IF EXISTS contact_form_templates');
     await db.execute('DROP TABLE IF EXISTS patient_attributes');
     await db.execute('DROP TABLE IF EXISTS patient_identity');
+  }
+
+  // Associations are retained on patient deletion until document lifecycle
+  // management is implemented. Existing files must never be reassigned.
+  static Future<void> _createPatientDocumentFoldersTable(Database db) async {
+    await db.execute('''
+      CREATE TABLE IF NOT EXISTS patient_document_folders (
+        patient_id TEXT NOT NULL,
+        root_path TEXT NOT NULL,
+        folder_name TEXT NOT NULL COLLATE NOCASE,
+        PRIMARY KEY (patient_id, root_path),
+        UNIQUE (root_path, folder_name)
+      )
+    ''');
   }
 
   static Future<void> _createBodymapTable(Database db) async {

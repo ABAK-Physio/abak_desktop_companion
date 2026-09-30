@@ -984,5 +984,14 @@
   "walkingAid_walkerTwoWheels": "Andador de dos ruedas",
   "walkingAid_rollatorFourWheels": "Andador de 4 ruedas",
   "walkingAid_other": "Otros",
-  "walkingAid_label": "Ayuda utilizada"
+  "walkingAid_label": "Ayuda utilizada",
+  "patientDocuments_title": "Documentos del paciente",
+  "patientDocuments_structure": "Bilan / Rapport / Autre",
+  "patientDocuments_unconfigured": "No se ha definido una carpeta de almacenamiento. Elija la carpeta común para todos los pacientes.",
+  "patientDocuments_authorization": "Debe autorizar de nuevo el acceso. Seleccione la carpeta común definida en los ajustes.",
+  "patientDocuments_error": "No se ha podido preparar o abrir la carpeta. Compruebe su disponibilidad y los permisos de acceso e inténtelo de nuevo.",
+  "patientDocuments_retry": "Reintentar",
+  "patientDocuments_chooseRoot": "Elegir carpeta común",
+  "patientDocuments_open": "Abrir carpeta del paciente",
+  "patientDocuments_settingsHelp": "Una carpeta por paciente, con Bilan, Rapport y Autre. Se crea al abrir la ficha; los archivos existentes no se mueven."
 }

@@ -1,3 +1,4 @@
+import 'widgets/patient_documents_card.dart';
 import '../care_episodes/widgets/care_episodes_panel.dart';
 import 'package:flutter/material.dart';
 import '../../generated/l10n.dart';
@@ -149,6 +150,9 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
             patientId: widget.patient.patientId,
             refreshToken: _refreshToken,
           ),
+          const SizedBox(height: 16),
+
+          PatientDocumentsCard(patientId: widget.patient.patientId),
           const SizedBox(height: 16),
 
           CareEpisodesPanel(

@@ -984,5 +984,14 @@
   "walkingAid_walkerTwoWheels": "Looprek met 2 wielen",
   "walkingAid_rollatorFourWheels": "Rollator met 4 wielen",
   "walkingAid_other": "Overig",
-  "walkingAid_label": "Gebruikte hulpbronnen"
+  "walkingAid_label": "Gebruikte hulpbronnen",
+  "patientDocuments_title": "Patiëntdocumenten",
+  "patientDocuments_structure": "Bilan / Rapport / Autre",
+  "patientDocuments_unconfigured": "Er is geen opslagmap ingesteld. Kies de gemeenschappelijke map voor alle patiënten.",
+  "patientDocuments_authorization": "De toegang moet opnieuw worden toegestaan. Selecteer de gemeenschappelijke map uit de instellingen.",
+  "patientDocuments_error": "De map kan niet worden aangemaakt of geopend. Controleer de beschikbaarheid en toegangsrechten en probeer het opnieuw.",
+  "patientDocuments_retry": "Opnieuw proberen",
+  "patientDocuments_chooseRoot": "Gemeenschappelijke map kiezen",
+  "patientDocuments_open": "Patiëntmap openen",
+  "patientDocuments_settingsHelp": "Eén map per patiënt, met Bilan, Rapport en Autre. Aangemaakt bij het openen van het dossier; bestaande bestanden worden niet verplaatst."
 }

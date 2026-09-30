@@ -984,5 +984,14 @@
   "walkingAid_walkerTwoWheels": "Zweirädriger Rollator",
   "walkingAid_rollatorFourWheels": "4-Rad-Rollator",
   "walkingAid_other": "Sonstiges",
-  "walkingAid_label": "Verwendete Hilfe"
+  "walkingAid_label": "Verwendete Hilfe",
+  "patientDocuments_title": "Patientendokumente",
+  "patientDocuments_structure": "Bilan / Rapport / Autre",
+  "patientDocuments_unconfigured": "Kein Speicherordner festgelegt. Wählen Sie den gemeinsamen Ordner für alle Patienten.",
+  "patientDocuments_authorization": "Der Zugriff muss erneut erlaubt werden. Wählen Sie den in den Einstellungen festgelegten gemeinsamen Ordner.",
+  "patientDocuments_error": "Der Ordner konnte nicht vorbereitet oder geöffnet werden. Prüfen Sie Verfügbarkeit und Zugriffsrechte und versuchen Sie es erneut.",
+  "patientDocuments_retry": "Erneut versuchen",
+  "patientDocuments_chooseRoot": "Gemeinsamen Ordner wählen",
+  "patientDocuments_open": "Patientenordner öffnen",
+  "patientDocuments_settingsHelp": "Ein Ordner pro Patient mit Bilan, Rapport und Autre. Er wird beim Öffnen der Patientenakte erstellt; vorhandene Dateien werden nicht verschoben."
 }

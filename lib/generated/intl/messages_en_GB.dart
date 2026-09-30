@@ -1485,6 +1485,24 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Identity verified; INS to be determined"),
         "patientDetail_weight": MessageLookupByLibrary.simpleMessage("Weight"),
         "patientDetail_years": MessageLookupByLibrary.simpleMessage("years"),
+        "patientDocuments_authorization": MessageLookupByLibrary.simpleMessage(
+            "Folder access must be authorised again. Select the shared folder configured in settings."),
+        "patientDocuments_chooseRoot":
+            MessageLookupByLibrary.simpleMessage("Choose shared folder"),
+        "patientDocuments_error": MessageLookupByLibrary.simpleMessage(
+            "Unable to prepare or open the folder. Check availability and access permissions, then try again."),
+        "patientDocuments_open":
+            MessageLookupByLibrary.simpleMessage("Open patient folder"),
+        "patientDocuments_retry":
+            MessageLookupByLibrary.simpleMessage("Try again"),
+        "patientDocuments_settingsHelp": MessageLookupByLibrary.simpleMessage(
+            "One folder per patient, containing Bilan, Rapport and Autre. Created when the patient record is opened; existing files are not moved."),
+        "patientDocuments_structure":
+            MessageLookupByLibrary.simpleMessage("Bilan / Rapport / Autre"),
+        "patientDocuments_title":
+            MessageLookupByLibrary.simpleMessage("Patient documents"),
+        "patientDocuments_unconfigured": MessageLookupByLibrary.simpleMessage(
+            "No storage folder is set. Choose the shared root folder for all patients."),
         "patientForm_birthDate":
             MessageLookupByLibrary.simpleMessage("Date of Birth"),
         "patientForm_cancel": MessageLookupByLibrary.simpleMessage("Cancel"),

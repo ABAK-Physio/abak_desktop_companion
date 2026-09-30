@@ -358,6 +358,7 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
                           ),
                         ),
 
+                        Text(S.of(context).patientDocuments_settingsHelp),
                         const Divider(),
 
                         SwitchListTile(

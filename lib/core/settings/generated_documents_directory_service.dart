@@ -43,12 +43,16 @@ class GeneratedDocumentsDirectoryService {
   /// proposer une destination pour cet export, sans modifier les préférences.
   /// Un ancien chemin sans bookmark n’est jamais considéré comme autorisé.
   Future<GeneratedDocumentsDirectoryAccess?> acquireForExport() async {
+    return await acquireConfigured() ??
+        await _choose('Choisir le dossier de destination');
+  }
+
+  /// Restore an existing setting without opening a picker on patient entry.
+  Future<GeneratedDocumentsDirectoryAccess?> acquireConfigured() async {
     final savedPath = await _settings.getString(
       ApplicationSettingsService.assessmentDocumentsDirectoryKey,
     );
-    if (savedPath == null || savedPath.trim().isEmpty) {
-      return _choose('Choisir le dossier de destination');
-    }
+    if (savedPath == null || savedPath.trim().isEmpty) return null;
     if (!Platform.isMacOS) {
       return GeneratedDocumentsDirectoryAccess._(savedPath, null);
     }

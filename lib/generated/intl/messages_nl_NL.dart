@@ -1535,6 +1535,24 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Identiteit gecontroleerd, INS nog te achterhalen"),
         "patientDetail_weight": MessageLookupByLibrary.simpleMessage("Gewicht"),
         "patientDetail_years": MessageLookupByLibrary.simpleMessage("jaar"),
+        "patientDocuments_authorization": MessageLookupByLibrary.simpleMessage(
+            "De toegang moet opnieuw worden toegestaan. Selecteer de gemeenschappelijke map uit de instellingen."),
+        "patientDocuments_chooseRoot": MessageLookupByLibrary.simpleMessage(
+            "Gemeenschappelijke map kiezen"),
+        "patientDocuments_error": MessageLookupByLibrary.simpleMessage(
+            "De map kan niet worden aangemaakt of geopend. Controleer de beschikbaarheid en toegangsrechten en probeer het opnieuw."),
+        "patientDocuments_open":
+            MessageLookupByLibrary.simpleMessage("Patiëntmap openen"),
+        "patientDocuments_retry":
+            MessageLookupByLibrary.simpleMessage("Opnieuw proberen"),
+        "patientDocuments_settingsHelp": MessageLookupByLibrary.simpleMessage(
+            "Eén map per patiënt, met Bilan, Rapport en Autre. Aangemaakt bij het openen van het dossier; bestaande bestanden worden niet verplaatst."),
+        "patientDocuments_structure":
+            MessageLookupByLibrary.simpleMessage("Bilan / Rapport / Autre"),
+        "patientDocuments_title":
+            MessageLookupByLibrary.simpleMessage("Patiëntdocumenten"),
+        "patientDocuments_unconfigured": MessageLookupByLibrary.simpleMessage(
+            "Er is geen opslagmap ingesteld. Kies de gemeenschappelijke map voor alle patiënten."),
         "patientForm_birthDate":
             MessageLookupByLibrary.simpleMessage("Geboortedatum"),
         "patientForm_cancel": MessageLookupByLibrary.simpleMessage("Annuleren"),

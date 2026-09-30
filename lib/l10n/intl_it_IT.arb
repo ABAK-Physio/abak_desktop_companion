@@ -984,5 +984,14 @@
   "walkingAid_walkerTwoWheels": "Deambulatore a 2 ruote",
   "walkingAid_rollatorFourWheels": "Deambulatore a 4 ruote",
   "walkingAid_other": "Altro",
-  "walkingAid_label": "Aiuto utilizzato"
+  "walkingAid_label": "Aiuto utilizzato",
+  "patientDocuments_title": "Documenti del paziente",
+  "patientDocuments_structure": "Bilan / Rapport / Autre",
+  "patientDocuments_unconfigured": "Nessuna cartella di archiviazione impostata. Scegliere la cartella comune a tutti i pazienti.",
+  "patientDocuments_authorization": "Occorre autorizzare nuovamente l’accesso. Selezionare la cartella comune definita nelle impostazioni.",
+  "patientDocuments_error": "Impossibile preparare o aprire la cartella. Verificare la disponibilità e i permessi di accesso, quindi riprovare.",
+  "patientDocuments_retry": "Riprova",
+  "patientDocuments_chooseRoot": "Scegli cartella comune",
+  "patientDocuments_open": "Apri cartella paziente",
+  "patientDocuments_settingsHelp": "Una cartella per paziente, contenente Bilan, Rapport e Autre. Creata all’apertura della scheda; i file esistenti non vengono spostati."
 }

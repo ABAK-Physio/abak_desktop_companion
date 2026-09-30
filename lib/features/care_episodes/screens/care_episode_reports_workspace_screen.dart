@@ -1,3 +1,4 @@
+import '../../patients/services/patient_documents_service.dart';
 import '../../bodymap/episode_bodymap_screen.dart';
 import 'dart:async';
 import '../../practitioners/practitioner_list_screen.dart';
@@ -243,7 +244,11 @@ class _CareEpisodeReportsWorkspaceScreenState
     try {
       directoryAccess = await _acquireDocumentsDirectoryForExport();
       if (directoryAccess == null || !mounted) return;
-      final selectedDirectory = directoryAccess.path;
+      final folders = await const PatientDocumentsService().ensureInRoot(
+        patientId: widget.episode.patientId,
+        rootPath: directoryAccess.path,
+      );
+      final selectedDirectory = folders.assessment;
 
       final data = await AssessmentDocumentDataBuilder().build(
         assessment: assessment,
@@ -403,7 +408,11 @@ class _CareEpisodeReportsWorkspaceScreenState
     try {
       directoryAccess = await _acquireDocumentsDirectoryForExport();
       if (directoryAccess == null || !mounted) return;
-      final selectedDirectory = directoryAccess.path;
+      final folders = await const PatientDocumentsService().ensureInRoot(
+        patientId: widget.episode.patientId,
+        rootPath: directoryAccess.path,
+      );
+      final selectedDirectory = folders.report;
 
       final data = await ReportDocumentDataBuilder().build(
         report: report,

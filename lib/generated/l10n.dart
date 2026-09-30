@@ -9906,6 +9906,96 @@ class S {
       args: [],
     );
   }
+
+  /// `Documents du patient`
+  String get patientDocuments_title {
+    return Intl.message(
+      'Documents du patient',
+      name: 'patientDocuments_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Bilan / Rapport / Autre`
+  String get patientDocuments_structure {
+    return Intl.message(
+      'Bilan / Rapport / Autre',
+      name: 'patientDocuments_structure',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Aucun dossier de stockage défini. Choisissez le dossier commun à tous les patients.`
+  String get patientDocuments_unconfigured {
+    return Intl.message(
+      'Aucun dossier de stockage défini. Choisissez le dossier commun à tous les patients.',
+      name: 'patientDocuments_unconfigured',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Le dossier doit être autorisé à nouveau. Sélectionnez le dossier commun défini dans les paramètres.`
+  String get patientDocuments_authorization {
+    return Intl.message(
+      'Le dossier doit être autorisé à nouveau. Sélectionnez le dossier commun défini dans les paramètres.',
+      name: 'patientDocuments_authorization',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Impossible de préparer ou d’ouvrir le dossier. Vérifiez sa disponibilité et vos droits d’accès, puis réessayez.`
+  String get patientDocuments_error {
+    return Intl.message(
+      'Impossible de préparer ou d’ouvrir le dossier. Vérifiez sa disponibilité et vos droits d’accès, puis réessayez.',
+      name: 'patientDocuments_error',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Réessayer`
+  String get patientDocuments_retry {
+    return Intl.message(
+      'Réessayer',
+      name: 'patientDocuments_retry',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choisir le dossier commun`
+  String get patientDocuments_chooseRoot {
+    return Intl.message(
+      'Choisir le dossier commun',
+      name: 'patientDocuments_chooseRoot',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Ouvrir le dossier patient`
+  String get patientDocuments_open {
+    return Intl.message(
+      'Ouvrir le dossier patient',
+      name: 'patientDocuments_open',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Un dossier par patient, contenant Bilan, Rapport et Autre. Création à l’ouverture de la fiche ; les fichiers existants ne sont pas déplacés.`
+  String get patientDocuments_settingsHelp {
+    return Intl.message(
+      'Un dossier par patient, contenant Bilan, Rapport et Autre. Création à l’ouverture de la fiche ; les fichiers existants ne sont pas déplacés.',
+      name: 'patientDocuments_settingsHelp',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

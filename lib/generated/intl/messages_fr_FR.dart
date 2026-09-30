@@ -1519,6 +1519,24 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Identité contrôlée, INS à rechercher"),
         "patientDetail_weight": MessageLookupByLibrary.simpleMessage("Poids"),
         "patientDetail_years": MessageLookupByLibrary.simpleMessage("ans"),
+        "patientDocuments_authorization": MessageLookupByLibrary.simpleMessage(
+            "Le dossier doit être autorisé à nouveau. Sélectionnez le dossier commun défini dans les paramètres."),
+        "patientDocuments_chooseRoot":
+            MessageLookupByLibrary.simpleMessage("Choisir le dossier commun"),
+        "patientDocuments_error": MessageLookupByLibrary.simpleMessage(
+            "Impossible de préparer ou d’ouvrir le dossier. Vérifiez sa disponibilité et vos droits d’accès, puis réessayez."),
+        "patientDocuments_open":
+            MessageLookupByLibrary.simpleMessage("Ouvrir le dossier patient"),
+        "patientDocuments_retry":
+            MessageLookupByLibrary.simpleMessage("Réessayer"),
+        "patientDocuments_settingsHelp": MessageLookupByLibrary.simpleMessage(
+            "Un dossier par patient, contenant Bilan, Rapport et Autre. Création à l’ouverture de la fiche ; les fichiers existants ne sont pas déplacés."),
+        "patientDocuments_structure":
+            MessageLookupByLibrary.simpleMessage("Bilan / Rapport / Autre"),
+        "patientDocuments_title":
+            MessageLookupByLibrary.simpleMessage("Documents du patient"),
+        "patientDocuments_unconfigured": MessageLookupByLibrary.simpleMessage(
+            "Aucun dossier de stockage défini. Choisissez le dossier commun à tous les patients."),
         "patientForm_birthDate":
             MessageLookupByLibrary.simpleMessage("Date de naissance"),
         "patientForm_cancel": MessageLookupByLibrary.simpleMessage("Annuler"),

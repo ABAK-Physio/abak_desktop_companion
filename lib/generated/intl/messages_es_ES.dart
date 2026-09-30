@@ -1535,6 +1535,24 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Identidad comprobada, hay que buscar el INS"),
         "patientDetail_weight": MessageLookupByLibrary.simpleMessage("Peso"),
         "patientDetail_years": MessageLookupByLibrary.simpleMessage("años"),
+        "patientDocuments_authorization": MessageLookupByLibrary.simpleMessage(
+            "Debe autorizar de nuevo el acceso. Seleccione la carpeta común definida en los ajustes."),
+        "patientDocuments_chooseRoot":
+            MessageLookupByLibrary.simpleMessage("Elegir carpeta común"),
+        "patientDocuments_error": MessageLookupByLibrary.simpleMessage(
+            "No se ha podido preparar o abrir la carpeta. Compruebe su disponibilidad y los permisos de acceso e inténtelo de nuevo."),
+        "patientDocuments_open":
+            MessageLookupByLibrary.simpleMessage("Abrir carpeta del paciente"),
+        "patientDocuments_retry":
+            MessageLookupByLibrary.simpleMessage("Reintentar"),
+        "patientDocuments_settingsHelp": MessageLookupByLibrary.simpleMessage(
+            "Una carpeta por paciente, con Bilan, Rapport y Autre. Se crea al abrir la ficha; los archivos existentes no se mueven."),
+        "patientDocuments_structure":
+            MessageLookupByLibrary.simpleMessage("Bilan / Rapport / Autre"),
+        "patientDocuments_title":
+            MessageLookupByLibrary.simpleMessage("Documentos del paciente"),
+        "patientDocuments_unconfigured": MessageLookupByLibrary.simpleMessage(
+            "No se ha definido una carpeta de almacenamiento. Elija la carpeta común para todos los pacientes."),
         "patientForm_birthDate":
             MessageLookupByLibrary.simpleMessage("Fecha de nacimiento"),
         "patientForm_cancel": MessageLookupByLibrary.simpleMessage("Cancelar"),

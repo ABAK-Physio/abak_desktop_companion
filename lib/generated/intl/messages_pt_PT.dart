@@ -1528,6 +1528,24 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Identidade verificada, INS a determinar"),
         "patientDetail_weight": MessageLookupByLibrary.simpleMessage("Peso"),
         "patientDetail_years": MessageLookupByLibrary.simpleMessage("anos"),
+        "patientDocuments_authorization": MessageLookupByLibrary.simpleMessage(
+            "É necessário autorizar novamente o acesso. Selecione a pasta comum definida nas configurações."),
+        "patientDocuments_chooseRoot":
+            MessageLookupByLibrary.simpleMessage("Escolher pasta comum"),
+        "patientDocuments_error": MessageLookupByLibrary.simpleMessage(
+            "Não foi possível preparar ou abrir a pasta. Verifique a disponibilidade e as permissões de acesso e tente novamente."),
+        "patientDocuments_open":
+            MessageLookupByLibrary.simpleMessage("Abrir pasta do paciente"),
+        "patientDocuments_retry":
+            MessageLookupByLibrary.simpleMessage("Tentar novamente"),
+        "patientDocuments_settingsHelp": MessageLookupByLibrary.simpleMessage(
+            "Uma pasta por paciente, com Bilan, Rapport e Autre. Criada ao abrir a ficha; os ficheiros existentes não são movidos."),
+        "patientDocuments_structure":
+            MessageLookupByLibrary.simpleMessage("Bilan / Rapport / Autre"),
+        "patientDocuments_title":
+            MessageLookupByLibrary.simpleMessage("Documentos do paciente"),
+        "patientDocuments_unconfigured": MessageLookupByLibrary.simpleMessage(
+            "Não foi definida uma pasta de armazenamento. Escolha a pasta comum a todos os pacientes."),
         "patientForm_birthDate":
             MessageLookupByLibrary.simpleMessage("Data de nascimento"),
         "patientForm_cancel": MessageLookupByLibrary.simpleMessage("Cancelar"),
