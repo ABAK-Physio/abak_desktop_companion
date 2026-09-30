@@ -29,118 +29,123 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m3(age) => "${age} Jahre";
 
-  static String m4(size) => "${size}";
+  static String m4(path) => "Zugriff auf diesen Ordner erlauben: ${path}";
 
-  static String m5(date) => "Archiviert am ${date}";
+  static String m5(path) =>
+      "Zielordner für Dokumente aus diesem Ordner wählen: ${path}";
 
-  static String m6(monthYear) => "Offene Betreuung im ${monthYear}";
+  static String m6(size) => "${size}";
 
-  static String m7(title) =>
+  static String m7(date) => "Archiviert am ${date}";
+
+  static String m8(monthYear) => "Offene Betreuung im ${monthYear}";
+
+  static String m9(title) =>
       "Der Bericht „${title}“ wird im Verlauf nicht mehr angezeigt.";
 
-  static String m8(title) =>
+  static String m10(title) =>
       "Der Bericht „${title}“ wird in den Papierkorb verschoben. Er kann später wiederhergestellt werden.";
 
-  static String m9(patientName, title) => "Bilan_${patientName}_${title}";
+  static String m11(patientName, title) => "Bilan_${patientName}_${title}";
 
-  static String m10(title) => "Kopie von ${title}";
+  static String m12(title) => "Kopie von ${title}";
 
-  static String m11(title) =>
+  static String m13(title) =>
       "Der Bericht „${title}“ wird endgültig gelöscht. Dieser Vorgang kann nicht rückgängig gemacht werden.";
 
-  static String m12(title) =>
+  static String m14(title) =>
       "Der Bericht „${title}“ wird endgültig gelöscht. Dieser Vorgang kann nicht rückgängig gemacht werden.";
 
-  static String m13(path) =>
+  static String m15(path) =>
       "\"careEpisodeReportsWorkspaceScreen_directoryAccessMessage\": \"Le dossier configuré n’est pas accessible ou son autorisation doit être renouvelée.\n\n${path}\n\nReconnectez son volume si nécessaire, puis sélectionnez ce dossier pour autoriser son accès. Le dossier sélectionné sera enregistré dans vos préférences.\",\n\"@careEpisodeReportsWorkspaceScreen_directoryAccessMessage\": {\n  \"placeholders\": {\n    \"path\": {\n      \"type\": \"String\"\n    }\n  }\n}";
 
-  static String m14(documentLabel) =>
+  static String m16(documentLabel) =>
       "Für diese Vorlage von ${documentLabel} gibt es bereits einen Entwurf.";
 
-  static String m15(documentLabel) =>
+  static String m17(documentLabel) =>
       "Möchten Sie den generierten Inhalt an das aktuelle ${documentLabel} anhängen oder den bestehenden Inhalt ersetzen?";
 
-  static String m16(documentLabel) => "Neues ${documentLabel}";
+  static String m18(documentLabel) => "Neues ${documentLabel}";
 
-  static String m17(patientName, title) => "Bericht_${patientName}_${title}";
+  static String m19(patientName, title) => "Bericht_${patientName}_${title}";
 
-  static String m18(path) => "Erstelltes Word-Dokument: ${path}";
+  static String m20(path) => "Erstelltes Word-Dokument: ${path}";
 
-  static String m19(error) =>
+  static String m21(error) =>
       "Fehler beim Erstellen des Word-Dokuments: ${error}";
 
-  static String m20(patientName) =>
+  static String m22(patientName) =>
       "${patientName} – Untersuchungsberichte und Befunde";
 
-  static String m21(deviceName) =>
+  static String m23(deviceName) =>
       "Möchten Sie ${deviceName} wirklich archivieren?";
 
-  static String m22(fieldName) =>
+  static String m24(fieldName) =>
       "Das Feld „${fieldName}“ ist ein Pflichtfeld.";
 
-  static String m23(noteTitle) =>
+  static String m25(noteTitle) =>
       "Die Notiz „${noteTitle}“ wird nicht mehr angezeigt.";
 
-  static String m24(error) => "Fehler beim Speichern: ${error}";
+  static String m26(error) => "Fehler beim Speichern: ${error}";
 
-  static String m25(count) => "${count} andere Geschäftsjahre";
+  static String m27(count) => "${count} andere Geschäftsjahre";
 
-  static String m26(count) => "${count} Verein(e) in der Warteschlange";
+  static String m28(count) => "${count} Verein(e) in der Warteschlange";
 
-  static String m27(count) => "${count} Sicherungen";
+  static String m29(count) => "${count} Sicherungen";
 
-  static String m28(size) => "Größe: ${size}";
+  static String m30(size) => "Größe: ${size}";
 
-  static String m29(size) => "Gesamtgröße: ${size}";
+  static String m31(size) => "Gesamtgröße: ${size}";
 
-  static String m30(version) => "Version ${version}";
-
-  static String m31(integrityStatus) =>
-      "Die wiederhergestellte Datenbank weist eine Anomalie auf: ${integrityStatus}";
-
-  static String m32(error) => "Wiederherstellung fehlgeschlagen: ${error}";
+  static String m32(version) => "Version ${version}";
 
   static String m33(integrityStatus) =>
+      "Die wiederhergestellte Datenbank weist eine Anomalie auf: ${integrityStatus}";
+
+  static String m34(error) => "Wiederherstellung fehlgeschlagen: ${error}";
+
+  static String m35(integrityStatus) =>
       "Die Wiederherstellung wurde durchgeführt, aber „integrity_check“ hat Folgendes zurückgegeben: ${integrityStatus}";
 
-  static String m34(patientName) =>
+  static String m36(patientName) =>
       "Möchten Sie ${patientName} wirklich archivieren? Er wird dann nicht mehr in der aktiven Liste angezeigt.";
 
-  static String m35(patientName) => "${patientName} wurde archiviert.";
+  static String m37(patientName) => "${patientName} wurde archiviert.";
 
-  static String m36(error) => "Fehler: ${error}";
-
-  static String m37(patientName) =>
-      "${patientName} wurde wieder in die aktive Liste aufgenommen.";
-
-  static String m38(patientName) =>
-      "Dem Patienten ${patientName} zugeordnete Krankenversicherungskarte.";
+  static String m38(error) => "Fehler: ${error}";
 
   static String m39(patientName) =>
+      "${patientName} wurde wieder in die aktive Liste aufgenommen.";
+
+  static String m40(patientName) =>
+      "Dem Patienten ${patientName} zugeordnete Krankenversicherungskarte.";
+
+  static String m41(patientName) =>
       "Der Patient ${patientName} wurde wiederhergestellt.";
 
-  static String m40(practitionerName) =>
+  static String m42(practitionerName) =>
       "Möchten Sie ${practitionerName} wirklich archivieren?";
 
-  static String m41(date) => "Archiviert am ${date}";
-
-  static String m42(error) => "Fehler: ${error}";
-
-  static String m43(professionalId) => "ID pro: ${professionalId}";
+  static String m43(date) => "Archiviert am ${date}";
 
   static String m44(error) => "Fehler: ${error}";
 
-  static String m45(name) => "${name} – archiviert";
+  static String m45(professionalId) => "ID pro: ${professionalId}";
 
-  static String m46(start, end) => "Du ${start} bis ${end}";
+  static String m46(error) => "Fehler: ${error}";
 
-  static String m47(error) => "Fehler beim Laden des Verlaufs: ${error}";
+  static String m47(name) => "${name} – archiviert";
 
-  static String m48(start) => "Seit dem ${start}";
+  static String m48(start, end) => "Du ${start} bis ${end}";
 
-  static String m49(error) => "Fehler beim Zurücksetzen: ${error}";
+  static String m49(error) => "Fehler beim Laden des Verlaufs: ${error}";
 
-  static String m50(error) =>
+  static String m50(start) => "Seit dem ${start}";
+
+  static String m51(error) => "Fehler beim Zurücksetzen: ${error}";
+
+  static String m52(error) =>
       "Die Sprachsteuerung ist fehlgeschlagen: ${error}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -224,19 +229,33 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Den Bilanzentwurf verstehen"),
         "assessmentHistory_help": MessageLookupByLibrary.simpleMessage(
             "Diese Ansicht zeigt die für die Betreuung gespeicherten Berichte mit deren Titel und Datum an.\n\nÜber die Aktionen in jeder Zeile können Sie einen Bericht bearbeiten, duplizieren oder in die archivierten Dokumente verschieben.\n\nWenn ein Bericht zur Bearbeitung geöffnet ist, verwenden Sie die Aktion „Aktualisieren“, um Ihre Änderungen zu speichern. Mit den verfügbaren Befehlen können Sie außerdem die Änderungen rückgängig machen oder zum Entwurf zurückkehren.\n\nDas Verschieben in die archivierten Dokumente ist keine endgültige Löschung.\n\nKlicken Sie auf das Kreuz, um die vergrößerte Ansicht zu schließen und zum Bereich „Bilanzen/Berichte“ zurückzukehren."),
+        "backupArchive_authorizeFolder": m4,
+        "backupArchive_busy": MessageLookupByLibrary.simpleMessage(
+            "Eine Sicherung oder Wiederherstellung läuft bereits."),
+        "backupArchive_chooseFile":
+            MessageLookupByLibrary.simpleMessage("Sicherung öffnen…"),
+        "backupArchive_legacy": MessageLookupByLibrary.simpleMessage(
+            "Diese ältere Sicherung enthält nur die Datenbank. Dateien in Patientenordnern wurden nicht wiederhergestellt."),
+        "backupArchive_restoreFolder": m5,
+        "backupArchive_resultTitle": MessageLookupByLibrary.simpleMessage(
+            "Ergebnis der Wiederherstellung"),
+        "backupArchive_safetyCopies": MessageLookupByLibrary.simpleMessage(
+            "Aufbewahrte Sicherheitskopien:"),
+        "backupArchive_working": MessageLookupByLibrary.simpleMessage(
+            "Sicherung oder Wiederherstellung läuft… Bitte warten."),
         "backupHistory_cancel":
             MessageLookupByLibrary.simpleMessage("Abbrechen"),
         "backupHistory_empty": MessageLookupByLibrary.simpleMessage(
             "Es wurde kein Backup gespeichert."),
-        "backupHistory_fileSize": m4,
+        "backupHistory_fileSize": m6,
         "backupHistory_help": MessageLookupByLibrary.simpleMessage(
-            "Auf diesem Bildschirm werden die in Companion gespeicherten Sicherungen angezeigt. In jeder Zeile sind der Dateiname, das Erstellungsdatum, die Dateigröße und der Speicherort angegeben.\n\nMit der Schaltfläche „Wiederherstellen“ können Sie die aktuelle Datenbank durch die aus der ausgewählten Sicherung ersetzen. Daten, die nach dieser Sicherung hinzugefügt oder geändert wurden, sind daher in der wiederhergestellten Datenbank nicht enthalten.\n\nÜberprüfen Sie das Datum der Sicherung und lesen Sie die Bestätigungsmeldung, bevor Sie fortfahren. Vor dem Ersetzen wird eine Sicherungskopie der aktuellen Datenbank erstellt.\n\nDie Sicherungsdatei muss immer am angegebenen Speicherort verfügbar sein. Wurde sie verschoben oder gelöscht, kann die Wiederherstellung nicht durchgeführt werden.\n\nUm eine neue Sicherung zu erstellen, verwenden Sie die Aktion „Sicherung erstellen“ auf der Startseite."),
+            "Neue ZIP-Sicherungen enthalten die Datenbank und alle zugeordneten Patientenordner einschließlich Bilan, Rapport und Autre. Ist ein zugeordneter Ordner nicht verfügbar, schlägt die Sicherung fehl. Dokumente außerhalb dieser Ordner werden nicht gesichert.\n\nDie Wiederherstellung ersetzt die aktuelle Datenbank. Später hinzugefügte Daten sind darin nicht mehr enthalten. Gesicherte Dokumentversionen werden wiederhergestellt; Kopien der ersetzten Ordner und zusätzliche aktuelle Dateien bleiben erhalten. Die Speicherorte der Sicherheitskopien werden am Ende angezeigt.\n\nIst ein ursprünglicher Ordner nicht verfügbar, wählen Sie einen neuen Speicherort. Über „Sicherung öffnen“ können ZIP-Dateien oder ältere .db-Sicherungen geöffnet werden; Letztere stellen nur die Datenbank wieder her."),
         "backupHistory_restore":
             MessageLookupByLibrary.simpleMessage("Wiederherstellen"),
         "backupHistory_restoreTitle": MessageLookupByLibrary.simpleMessage(
             "Diese Sicherung wiederherstellen?"),
         "backupHistory_restoreWarning": MessageLookupByLibrary.simpleMessage(
-            "Dieser Vorgang wird die aktuelle Datenbank vollständig ersetzen.\n\nVor der Wiederherstellung wird automatisch eine Sicherheitskopie erstellt.\n\nWeiter?"),
+            "Die aktuelle Datenbank wird durch die Sicherung ersetzt. Gesicherte Dokumente werden wiederhergestellt; eine Kopie der ersetzten aktuellen Ordner bleibt erhalten. Aktuelle Dateien, die nicht in der Sicherung enthalten sind, bleiben erhalten.\n\nZusätzlich wird eine Sicherheitskopie der aktuellen Datenbank erstellt. Ältere .db-Sicherungen enthalten keine Dokumente.\n\nFortfahren?"),
         "backupHistory_title":
             MessageLookupByLibrary.simpleMessage("Sicherungshistorie"),
         "bodymap_help": MessageLookupByLibrary.simpleMessage(
@@ -278,10 +297,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "careEpisodePanel_archivedCareEpisodesHelp":
             MessageLookupByLibrary.simpleMessage(
                 "Hier finden Sie Ihre archivierten Behandlungsdaten."),
-        "careEpisodePanel_archivedOn": m5,
+        "careEpisodePanel_archivedOn": m7,
         "careEpisodePanel_careEpisodeArchived":
             MessageLookupByLibrary.simpleMessage("Archivierter Fall."),
-        "careEpisodePanel_careEpisodeOpenedIn": m6,
+        "careEpisodePanel_careEpisodeOpenedIn": m8,
         "careEpisodePanel_careEpisodeRestored":
             MessageLookupByLibrary.simpleMessage(
                 "Die Unterstützung wurde wiederhergestellt."),
@@ -315,12 +334,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "careEpisodeReportsWorkspaceScreen_archiveAssessmentError":
             MessageLookupByLibrary.simpleMessage(
                 "Die Bilanz lässt sich nicht in den Papierkorb verschieben."),
-        "careEpisodeReportsWorkspaceScreen_archiveAssessmentMessage": m7,
+        "careEpisodeReportsWorkspaceScreen_archiveAssessmentMessage": m9,
         "careEpisodeReportsWorkspaceScreen_archiveReportError":
             MessageLookupByLibrary.simpleMessage(
                 "Der Bericht kann nicht in den Papierkorb verschoben werden."),
-        "careEpisodeReportsWorkspaceScreen_archiveReportMessage": m8,
-        "careEpisodeReportsWorkspaceScreen_assessmentFileName": m9,
+        "careEpisodeReportsWorkspaceScreen_archiveReportMessage": m10,
+        "careEpisodeReportsWorkspaceScreen_assessmentFileName": m11,
         "careEpisodeReportsWorkspaceScreen_assessmentLabel":
             MessageLookupByLibrary.simpleMessage("mit"),
         "careEpisodeReportsWorkspaceScreen_assessmentNotFound":
@@ -349,13 +368,13 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Schließen"),
         "careEpisodeReportsWorkspaceScreen_confirm":
             MessageLookupByLibrary.simpleMessage("Bestätigen"),
-        "careEpisodeReportsWorkspaceScreen_copyTitle": m10,
+        "careEpisodeReportsWorkspaceScreen_copyTitle": m12,
         "careEpisodeReportsWorkspaceScreen_createNew":
             MessageLookupByLibrary.simpleMessage("Neu erstellen"),
         "careEpisodeReportsWorkspaceScreen_deleteAssessmentError":
             MessageLookupByLibrary.simpleMessage(
                 "Die Bilanz kann nicht endgültig gelöscht werden."),
-        "careEpisodeReportsWorkspaceScreen_deleteAssessmentMessage": m11,
+        "careEpisodeReportsWorkspaceScreen_deleteAssessmentMessage": m13,
         "careEpisodeReportsWorkspaceScreen_deleteAssessmentTitle":
             MessageLookupByLibrary.simpleMessage(
                 "Die Bilanz endgültig löschen?"),
@@ -364,11 +383,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "careEpisodeReportsWorkspaceScreen_deleteReportError":
             MessageLookupByLibrary.simpleMessage(
                 "Der Bericht kann nicht endgültig gelöscht werden."),
-        "careEpisodeReportsWorkspaceScreen_deleteReportMessage": m12,
+        "careEpisodeReportsWorkspaceScreen_deleteReportMessage": m14,
         "careEpisodeReportsWorkspaceScreen_deleteReportTitle":
             MessageLookupByLibrary.simpleMessage(
                 "Den Bericht endgültig löschen?"),
-        "careEpisodeReportsWorkspaceScreen_directoryAccessMessage": m13,
+        "careEpisodeReportsWorkspaceScreen_directoryAccessMessage": m15,
         "careEpisodeReportsWorkspaceScreen_duplicate":
             MessageLookupByLibrary.simpleMessage("Duplizieren"),
         "careEpisodeReportsWorkspaceScreen_duplicateAssessment":
@@ -387,10 +406,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "careEpisodeReportsWorkspaceScreen_existingReportDocx":
             MessageLookupByLibrary.simpleMessage(
                 "Diesem Bericht ist bereits eine DOCX-Datei zugeordnet. Möchten Sie die vorhandene Datei ersetzen oder eine neue Datei erstellen?"),
-        "careEpisodeReportsWorkspaceScreen_existingTemplateDraftMessage": m14,
+        "careEpisodeReportsWorkspaceScreen_existingTemplateDraftMessage": m16,
         "careEpisodeReportsWorkspaceScreen_generateDocx":
             MessageLookupByLibrary.simpleMessage("DOCX-Datei erstellen"),
-        "careEpisodeReportsWorkspaceScreen_insertTextMessage": m15,
+        "careEpisodeReportsWorkspaceScreen_insertTextMessage": m17,
         "careEpisodeReportsWorkspaceScreen_managePractitioners":
             MessageLookupByLibrary.simpleMessage("Physiotherapeuten verwalten"),
         "careEpisodeReportsWorkspaceScreen_managePrescribingDoctors":
@@ -403,7 +422,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Neue Bilanz"),
         "careEpisodeReportsWorkspaceScreen_newAssessmentTitle":
             MessageLookupByLibrary.simpleMessage("Titel der neuen Bilanz"),
-        "careEpisodeReportsWorkspaceScreen_newDocument": m16,
+        "careEpisodeReportsWorkspaceScreen_newDocument": m18,
         "careEpisodeReportsWorkspaceScreen_newReport":
             MessageLookupByLibrary.simpleMessage("Neuer Bericht"),
         "careEpisodeReportsWorkspaceScreen_newReportTitle":
@@ -425,7 +444,7 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Behandelnder Physiotherapeut"),
         "careEpisodeReportsWorkspaceScreen_replace":
             MessageLookupByLibrary.simpleMessage("Ersetzen"),
-        "careEpisodeReportsWorkspaceScreen_reportFileName": m17,
+        "careEpisodeReportsWorkspaceScreen_reportFileName": m19,
         "careEpisodeReportsWorkspaceScreen_reportLabel":
             MessageLookupByLibrary.simpleMessage("Bericht"),
         "careEpisodeReportsWorkspaceScreen_reportNotFound":
@@ -492,9 +511,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "careEpisodeReportsWorkspaceScreen_updateReportError":
             MessageLookupByLibrary.simpleMessage(
                 "Der Bericht kann nicht aktualisiert werden."),
-        "careEpisodeReportsWorkspaceScreen_wordDocumentCreated": m18,
-        "careEpisodeReportsWorkspaceScreen_wordDocumentCreationError": m19,
-        "careEpisodeReportsWorkspaceScreen_workspaceTitle": m20,
+        "careEpisodeReportsWorkspaceScreen_wordDocumentCreated": m20,
+        "careEpisodeReportsWorkspaceScreen_wordDocumentCreationError": m21,
+        "careEpisodeReportsWorkspaceScreen_workspaceTitle": m22,
         "careEpisodeReportsWorkspace_addFollowUpNote":
             MessageLookupByLibrary.simpleMessage(
                 "Eine Folgeanmerkung hinzufügen"),
@@ -712,7 +731,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Vermögenswerte"),
         "deviceList_archive":
             MessageLookupByLibrary.simpleMessage("Archivieren"),
-        "deviceList_archiveConfirmation": m21,
+        "deviceList_archiveConfirmation": m23,
         "deviceList_archiveTitle":
             MessageLookupByLibrary.simpleMessage("Gerät archivieren"),
         "deviceList_archived":
@@ -883,7 +902,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Fehler"),
         "episodeFormEditor_noField": MessageLookupByLibrary.simpleMessage(
             "Es sind keine Felder anzuzeigen."),
-        "episodeFormEditor_requiredField": m22,
+        "episodeFormEditor_requiredField": m24,
         "episodeFormEditor_save":
             MessageLookupByLibrary.simpleMessage("Speichern"),
         "episodeFormEditor_title":
@@ -921,7 +940,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "episodeForms_title": MessageLookupByLibrary.simpleMessage("Formulare"),
         "episodeNotes_archive":
             MessageLookupByLibrary.simpleMessage("Archivieren"),
-        "episodeNotes_archiveConfirmation": m23,
+        "episodeNotes_archiveConfirmation": m25,
         "episodeNotes_archiveTitle":
             MessageLookupByLibrary.simpleMessage("Die Notiz archivieren?"),
         "episodeNotes_cancel":
@@ -1131,7 +1150,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "home_date_not_specified":
             MessageLookupByLibrary.simpleMessage("Datum nicht angegeben"),
         "home_devices": MessageLookupByLibrary.simpleMessage("Geräte"),
-        "home_error_while_saving": m24,
+        "home_error_while_saving": m26,
         "home_everything_is_working_normally":
             MessageLookupByLibrary.simpleMessage("Alles läuft normal."),
         "home_expert_comment": MessageLookupByLibrary.simpleMessage(
@@ -1184,14 +1203,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "home_not_specified":
             MessageLookupByLibrary.simpleMessage("ausgefragt"),
         "home_octets": MessageLookupByLibrary.simpleMessage("Oktette"),
-        "home_other_exercises": m25,
+        "home_other_exercises": m27,
         "home_parameters":
             MessageLookupByLibrary.simpleMessage("Einstellungen"),
         "home_pathway": MessageLookupByLibrary.simpleMessage("Pfad"),
         "home_patient_abak":
             MessageLookupByLibrary.simpleMessage("Patient ABAK"),
         "home_patients": MessageLookupByLibrary.simpleMessage("Patienten"),
-        "home_pending_association": m26,
+        "home_pending_association": m28,
         "home_practitioners": MessageLookupByLibrary.simpleMessage("Praktiker"),
         "home_quick_actions":
             MessageLookupByLibrary.simpleMessage("Schnellmaßnahmen"),
@@ -1280,7 +1299,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Dieser Bildschirm zeigt den Verlauf eines in Companion eingegangenen Imports an. Die Hauptmeldung gibt an, ob der Import erfolgreich war, eine Zuordnung zu einem Patienten erforderlich ist oder ein Problem vorliegt.\n\nWenn eine Zuordnung erforderlich ist, klicken Sie auf „Einem Patienten zuordnen“, um die Akte auszuwählen, der die Ergebnisse zugeordnet werden sollen.\n\nÜber den Bericht und die Dateiliste können Sie die Details der Verarbeitung sowie eventuelle Warnmeldungen einsehen.\n\nSollte die empfangene Datei unvollständig oder beschädigt sein, fordern Sie über ABAK Mobile eine erneute Übermittlung an.\n\nJe nach Situation wird die Schaltfläche „Diesen Import löschen“ angezeigt. Lesen Sie die Bestätigungsmeldung, bevor Sie den Löschvorgang bestätigen."),
         "importSessionDetail_title":
             MessageLookupByLibrary.simpleMessage("Verfolgung des Imports"),
-        "information_backupCount": m27,
+        "information_backupCount": m29,
         "information_backups":
             MessageLookupByLibrary.simpleMessage("Sicherungen"),
         "information_configured":
@@ -1312,12 +1331,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "information_notProvided":
             MessageLookupByLibrary.simpleMessage("Keine Angabe"),
         "information_office": MessageLookupByLibrary.simpleMessage("Kanzlei"),
-        "information_size": m28,
+        "information_size": m30,
         "information_system": MessageLookupByLibrary.simpleMessage("System"),
         "information_title":
             MessageLookupByLibrary.simpleMessage("Informationen"),
-        "information_totalSize": m29,
-        "information_version": m30,
+        "information_totalSize": m31,
+        "information_version": m32,
         "information_versionLoading":
             MessageLookupByLibrary.simpleMessage("Version..."),
         "information_viewLicense":
@@ -1351,9 +1370,9 @@ class MessageLookup extends MessageLookupByLibrary {
                 "SQLite-Datenbank nicht gefunden."),
         "localDatabaseReset_backupFailed": MessageLookupByLibrary.simpleMessage(
             "Vorgängige Sicherung nicht möglich"),
-        "localDatabaseRestoreService_anomaly": m31,
-        "localDatabaseRestoreService_failure": m32,
-        "localDatabaseRestoreService_integrity": m33,
+        "localDatabaseRestoreService_anomaly": m33,
+        "localDatabaseRestoreService_failure": m34,
+        "localDatabaseRestoreService_integrity": m35,
         "localDatabaseRestoreService_missing":
             MessageLookupByLibrary.simpleMessage(
                 "Die Sicherungsdatei kann nicht gefunden werden."),
@@ -1588,8 +1607,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Vermögenswerte"),
         "patientList_archive":
             MessageLookupByLibrary.simpleMessage("Archivieren"),
-        "patientList_archiveConfirmation": m34,
-        "patientList_archiveSuccess": m35,
+        "patientList_archiveConfirmation": m36,
+        "patientList_archiveSuccess": m37,
         "patientList_archiveTitle":
             MessageLookupByLibrary.simpleMessage("Den Patienten archivieren"),
         "patientList_archived":
@@ -1609,7 +1628,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "patientList_contextName":
             MessageLookupByLibrary.simpleMessage("Patientenliste"),
         "patientList_edit": MessageLookupByLibrary.simpleMessage("Bearbeiten"),
-        "patientList_error": m36,
+        "patientList_error": m38,
         "patientList_help": MessageLookupByLibrary.simpleMessage(
             "Auf diesem Bildschirm können Sie Ihre Patienten suchen und auf deren Akten zugreifen.\n\nMit den Schaltflächen „Aktiv“ und „Archiviert“ können Sie auswählen, welche Liste angezeigt werden soll. Die angezeigte Zahl entspricht der Gesamtzahl der Patienten in der jeweiligen Kategorie.\n\nUm einen Patienten in der angezeigten Liste zu suchen, geben Sie seinen Nachnamen oder Vornamen ganz oder teilweise in das Suchfeld ein. Klicken Sie auf die entsprechende Zeile, um die Patientenakte zu öffnen.\n\nDie Schaltfläche „Neuer Patient“ öffnet den Bildschirm zur Anlage eines Patienten.\n\nBei einem aktiven Patienten können Sie über das Stiftsymbol seine Daten bearbeiten. Über das Archivierungssymbol können Sie ihn nach Bestätigung aus der Liste der aktiven Patienten entfernen.\n\nIn der Liste der archivierten Patienten können Sie einen Patienten über das Symbol „Wiederherstellen“ wieder in die Liste der aktiven Patienten aufnehmen. Eine spezielle Hilfe, die neben dem Archivierungsdatum zugänglich ist, erläutert die Aufbewahrungsmodalitäten."),
         "patientList_newPatient":
@@ -1627,7 +1646,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Wiederherstellbar bis zum"),
         "patientList_restore":
             MessageLookupByLibrary.simpleMessage("Wiederherstellen"),
-        "patientList_restoreSuccess": m37,
+        "patientList_restoreSuccess": m39,
         "patientList_searchPatient":
             MessageLookupByLibrary.simpleMessage("Einen Patienten suchen"),
         "patientList_sex": MessageLookupByLibrary.simpleMessage("Sex"),
@@ -1648,7 +1667,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Die Carte Vitale kann nicht verknüpft werden"),
         "patientNew_attachVitaleQuestion": MessageLookupByLibrary.simpleMessage(
             "Möchten Sie die Daten der Carte Vitale diesem Patienten zuordnen?"),
-        "patientNew_attachVitaleSuccess": m38,
+        "patientNew_attachVitaleSuccess": m40,
         "patientNew_backToList":
             MessageLookupByLibrary.simpleMessage("Zurück zur Liste"),
         "patientNew_birthDate":
@@ -1727,7 +1746,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Der Patient konnte nicht wiederbelebt werden"),
         "patientNew_restoreInsteadOfCreate": MessageLookupByLibrary.simpleMessage(
             "Möchten Sie diesen Ordner wiederherstellen, anstatt einen neuen Patienten anzulegen?"),
-        "patientNew_restoreSuccess": m39,
+        "patientNew_restoreSuccess": m41,
         "patientNew_sex": MessageLookupByLibrary.simpleMessage("Sex"),
         "patientNew_vitaleIdentityRead": MessageLookupByLibrary.simpleMessage(
             "Identitätsdaten, die von der Carte Vitale ausgelesen wurden"),
@@ -1753,7 +1772,7 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Fügen Sie die Physiotherapeuten der Praxis hinzu, um die importierten Tests zu identifizieren."),
         "practitionerList_archive":
             MessageLookupByLibrary.simpleMessage("Archivieren"),
-        "practitionerList_archiveConfirmation": m40,
+        "practitionerList_archiveConfirmation": m42,
         "practitionerList_archiveEmpty": MessageLookupByLibrary.simpleMessage(
             "Der Papierkorb der Physiotherapeuten ist derzeit leer."),
         "practitionerList_archivePractitioner":
@@ -1761,7 +1780,7 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Den Physiotherapeuten archivieren"),
         "practitionerList_archived":
             MessageLookupByLibrary.simpleMessage("Archiviert"),
-        "practitionerList_archivedOn": m41,
+        "practitionerList_archivedOn": m43,
         "practitionerList_button_create":
             MessageLookupByLibrary.simpleMessage("Einen Behandler anlegen"),
         "practitionerList_cancel":
@@ -1772,13 +1791,13 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Liste der Ärzte"),
         "practitionerList_edit":
             MessageLookupByLibrary.simpleMessage("Bearbeiten"),
-        "practitionerList_error": m42,
+        "practitionerList_error": m44,
         "practitionerList_noArchivedPractitioner":
             MessageLookupByLibrary.simpleMessage(
                 "Es sind keine Physiotherapeuten archiviert"),
         "practitionerList_noPractitioner": MessageLookupByLibrary.simpleMessage(
             "Es ist kein Physiotherapeut registriert"),
-        "practitionerList_professionalId": m43,
+        "practitionerList_professionalId": m45,
         "practitionerList_restore":
             MessageLookupByLibrary.simpleMessage("Wiederherstellen"),
         "practitionerList_showQrCode":
@@ -1829,7 +1848,7 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Scannen Sie diesen QR-Code mit ABAK Mobile, um dieses Berufsprofil automatisch hinzuzufügen."),
         "practitionerSelector_archived":
             MessageLookupByLibrary.simpleMessage("archiviert"),
-        "practitionerSelector_error": m44,
+        "practitionerSelector_error": m46,
         "practitionerSelector_noSelection":
             MessageLookupByLibrary.simpleMessage("Keine Auswahl"),
         "preferences_archivedPatients":
@@ -1872,17 +1891,17 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Es wurden keine Ergebnisse importiert"),
         "recentImportCard_result":
             MessageLookupByLibrary.simpleMessage("Ergebnis"),
-        "referringPractitionerHistoryDialog_archivedPractitioner": m45,
+        "referringPractitionerHistoryDialog_archivedPractitioner": m47,
         "referringPractitionerHistoryDialog_close":
             MessageLookupByLibrary.simpleMessage("Schließen"),
         "referringPractitionerHistoryDialog_currentPractitioner":
             MessageLookupByLibrary.simpleMessage("Derzeitiger Ansprechpartner"),
-        "referringPractitionerHistoryDialog_fromTo": m46,
-        "referringPractitionerHistoryDialog_loadHistoryError": m47,
+        "referringPractitionerHistoryDialog_fromTo": m48,
+        "referringPractitionerHistoryDialog_loadHistoryError": m49,
         "referringPractitionerHistoryDialog_noHistory":
             MessageLookupByLibrary.simpleMessage(
                 "Für diesen Fall wurde noch kein zuständiger Physiotherapeut registriert."),
-        "referringPractitionerHistoryDialog_since": m48,
+        "referringPractitionerHistoryDialog_since": m50,
         "referringPractitionerHistory_help": MessageLookupByLibrary.simpleMessage(
             "In diesem Fenster werden die Ärzte angezeigt, die als Ansprechpartner für diesen Behandlungsverlauf benannt wurden.\n\nJede Zeile enthält den Namen des Arztes und seinen Einsatzzeitraum. Der Vermerk „Aktueller Ansprechpartner“ kennzeichnet den Arzt, der derzeit diesem Behandlungsverlauf zugeordnet ist.\n\nDer Vermerk „Archiviert“ bedeutet, dass der Datensatz des Arztes archiviert wurde; sein Name bleibt im Verlauf sichtbar.\n\nIn diesem Fenster können Sie ausschließlich den Verlauf einsehen. Schließen Sie es, um zur Behandlungsphase zurückzukehren."),
         "referringPractitionerHistory_title":
@@ -1953,7 +1972,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Auf diesem Bildschirm sind die Funktionen für Installation, Diagnose und Wartung von Companion zusammengefasst."),
         "settings_contextName": MessageLookupByLibrary.simpleMessage("Hilfe"),
         "settings_continue": MessageLookupByLibrary.simpleMessage("Weiter"),
-        "settings_databaseResetError": m49,
+        "settings_databaseResetError": m51,
         "settings_databaseResetSuccess": MessageLookupByLibrary.simpleMessage(
             "Datenbank zurückgesetzt. Automatisches Backup erstellt."),
         "settings_diagnostic": MessageLookupByLibrary.simpleMessage("Diagnose"),
@@ -2009,7 +2028,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Wut"),
         "speechDictationButton_download":
             MessageLookupByLibrary.simpleMessage("Modul herunterladen"),
-        "speechDictationButton_failure": m50,
+        "speechDictationButton_failure": m52,
         "speechDictationButton_information": MessageLookupByLibrary.simpleMessage(
             "Für die Sprachsteuerung muss das optionale Modul „ABAK Sprachsteuerung“ installiert werden.\n\nDieses Modul ist kostenlos und läuft lokal auf Ihrem Computer, ohne dass die Sprachaufnahmen ins Internet gesendet werden.\n\nDie Downloadgröße beträgt etwa 1,5 GB."),
         "speechDictationButton_stop":

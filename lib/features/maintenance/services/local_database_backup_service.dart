@@ -1,16 +1,17 @@
 import 'dart:io';
 
-import 'package:file_picker/file_picker.dart';
-import 'package:intl/intl.dart';
-import 'package:path/path.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart' as p;
+import 'package:uuid/uuid.dart';
+
+import '../../../core/database/database_service.dart';
 import '../data/database_backup_repository.dart';
+import 'backup_directory_access.dart';
+import 'companion_backup_archive.dart';
 
 class LocalDatabaseBackupResult {
   final bool success;
   final String? backupPath;
   final String? error;
-
   const LocalDatabaseBackupResult({
     required this.success,
     this.backupPath,
@@ -19,60 +20,64 @@ class LocalDatabaseBackupResult {
 }
 
 class LocalDatabaseBackupService {
+  const LocalDatabaseBackupService({
+    this.access = const BackupDirectoryAccess(),
+  });
+  final BackupDirectoryAccess access;
+
   Future<LocalDatabaseBackupResult> createBackup({
     required String databaseNotFoundMessage,
     required String chooseBackupFolderTitle,
     required String cancelledMessage,
   }) async {
     try {
-      final appSupportDir = await getApplicationSupportDirectory();
-
-      final databasePath = join(
-        appSupportDir.path,
-        'database',
-        'abak_desktop.db',
-      );
-
-      final databaseFile = File(databasePath);
-
-      if (!await databaseFile.exists()) {
-        return LocalDatabaseBackupResult(
-          success: false,
-          error: databaseNotFoundMessage,
-        );
-      }
-
-      final DatabaseBackupRepository repository = DatabaseBackupRepository();
-
-      final selectedDirectory = await FilePicker.platform.getDirectoryPath(
-        dialogTitle: chooseBackupFolderTitle,
-      );
-
-      if (selectedDirectory == null) {
-        return LocalDatabaseBackupResult(
-          success: false,
-          error: cancelledMessage,
-        );
-      }
-
-      final timestamp = DateFormat('yyyyMMdd_HHmmss').format(DateTime.now());
-
-      final backupFileName = 'abak_backup_$timestamp.db';
-
-      final backupPath = join(selectedDirectory, backupFileName);
-
-      await databaseFile.copy(backupPath);
-      final backupFile = File(backupPath);
-
-      await repository.insertBackup(
-        fileName: backupFileName,
-        filePath: backupPath,
-        fileSize: await backupFile.length(),
-      );
-
-      return LocalDatabaseBackupResult(success: true, backupPath: backupPath);
-    } catch (e) {
-      return LocalDatabaseBackupResult(success: false, error: e.toString());
+      return await BackupOperation.run(() async {
+        if (!await File(await DatabaseService.databasePath).exists()) {
+          return LocalDatabaseBackupResult(
+            success: false,
+            error: databaseNotFoundMessage,
+          );
+        }
+        final destination = await access.choose(chooseBackupFolderTitle);
+        if (destination == null) {
+          return LocalDatabaseBackupResult(
+            success: false,
+            error: cancelledMessage,
+          );
+        }
+        String? partial;
+        try {
+          final timestamp = DateTime.now()
+              .toIso8601String()
+              .replaceAll(RegExp(r'[^0-9]'), '')
+              .substring(0, 14);
+          final name =
+              'abak_backup_${timestamp}_${const Uuid().v4().substring(0, 8)}.zip';
+          final path = p.join(destination.path, name);
+          partial = '$path.partial';
+          await const CompanionBackupArchive().create(
+            outputPath: partial,
+            access: access,
+          );
+          final checked = await const CompanionBackupArchive().prepare(partial);
+          await checked.dispose();
+          await File(partial).rename(path);
+          partial = null;
+          await DatabaseBackupRepository().insertBackup(
+            fileName: name,
+            filePath: path,
+            fileSize: await File(path).length(),
+          );
+          return LocalDatabaseBackupResult(success: true, backupPath: path);
+        } finally {
+          if (partial != null && await File(partial).exists()) {
+            await File(partial).delete();
+          }
+          await destination.release();
+        }
+      });
+    } catch (error) {
+      return LocalDatabaseBackupResult(success: false, error: error.toString());
     }
   }
 }

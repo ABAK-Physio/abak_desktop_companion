@@ -43,10 +43,10 @@
   "backupHistory_cancel": "Cancelar",
   "backupHistory_empty": "Não há nenhuma cópia de segurança registada.",
   "backupHistory_fileSize": "{size}",
-  "backupHistory_help": "Este ecrã apresenta as cópias de segurança guardadas no Companion. Cada linha indica o nome do ficheiro, a data de criação, o tamanho e a localização.\n\nO botão «Restaurar» permite substituir a base de dados atual pela da cópia de segurança selecionada. Os dados adicionados ou alterados após este backup não estarão, portanto, presentes na base de dados restaurada.\n\nVerifique a data do backup e leia a mensagem de confirmação antes de continuar. É criada uma cópia de segurança da base de dados atual antes da sua substituição.\n\nO ficheiro de cópia de segurança deve estar sempre acessível no local indicado. Se tiver sido movido ou eliminado, a restauração não poderá ser efetuada.\n\nPara criar uma nova cópia de segurança, utilize a ação «Criar uma cópia de segurança» na página inicial.",
+  "backupHistory_help": "As novas cópias ZIP contêm a base de dados e todas as pastas de pacientes associadas, incluindo Bilan, Rapport e Autre. A cópia falha se uma pasta associada estiver indisponível. Os documentos fora destas pastas não são incluídos.\n\nO restauro substitui a base atual: os dados adicionados após a cópia deixam de constar nela. As versões guardadas dos documentos são restauradas, conservando cópias das pastas substituídas e os ficheiros atuais ausentes da cópia. No final são mostradas as localizações das cópias de segurança.\n\nSe a pasta original estiver indisponível, escolha uma nova localização. «Abrir uma cópia» permite restaurar um ZIP ou uma cópia antiga .db; esta última restaura apenas a base de dados.",
   "backupHistory_restore": "Restaurar",
   "backupHistory_restoreTitle": "Restaurar esta cópia de segurança?",
-  "backupHistory_restoreWarning": "Esta operação substituirá totalmente a base de dados atual.\n\nSerá criada uma cópia de segurança automática antes da restauração.\n\nDeseja continuar?",
+  "backupHistory_restoreWarning": "A base de dados atual será substituída pela cópia. Os documentos guardados serão restaurados, conservando uma cópia das pastas atuais substituídas. Os ficheiros atuais ausentes da cópia serão conservados.\n\nSerá também criada uma cópia de segurança da base atual. As cópias antigas .db não contêm documentos.\n\nContinuar?",
   "backupHistory_title": "Histórico de cópias de segurança",
   "bodymap_help": "O mapa de dor permite identificar as zonas dolorosas do doente para o episódio de cuidados em curso.\n\nEscolha uma vista e, em seguida, clique numa zona da silhueta ou selecione-a na lista. Pode adicionar uma observação e, se necessário, indicar uma intensidade de 0 a 10. Utilize o cesto de lixo para remover uma zona do registo.\n\nClique em «Guardar» para guardar o seu registo no Companion. Ao sair do ecrã com alterações não guardadas, será apresentada uma opção que lhe permite guardá-las ou descartá-las.\n\n«Exportar os dois mapas» cria uma imagem PNG no local escolhido no seu computador. Esta exportação não substitui o registo do levantamento.\n\nEste módulo é uma primeira proposta, destinada a evoluir de acordo com os vossos comentários. Testem-no na vossa prática e indiquem as funcionalidades que gostariam de ver adicionadas ou melhoradas.",
   "bodymap_title": "Mapa das dores",
@@ -993,5 +993,13 @@
   "patientDocuments_retry": "Tentar novamente",
   "patientDocuments_chooseRoot": "Escolher pasta comum",
   "patientDocuments_open": "Abrir pasta do paciente",
-  "patientDocuments_settingsHelp": "Uma pasta por paciente, com Bilan, Rapport e Autre. Criada ao abrir a ficha; os ficheiros existentes não são movidos."
+  "patientDocuments_settingsHelp": "Uma pasta por paciente, com Bilan, Rapport e Autre. Criada ao abrir a ficha; os ficheiros existentes não são movidos.",
+  "backupArchive_authorizeFolder": "Autorizar acesso à pasta: {path}",
+  "backupArchive_restoreFolder": "Escolher onde restaurar os documentos de: {path}",
+  "backupArchive_busy": "Já está em curso uma cópia de segurança ou um restauro.",
+  "backupArchive_working": "Cópia de segurança ou restauro em curso… Aguarde.",
+  "backupArchive_safetyCopies": "Cópias de segurança conservadas:",
+  "backupArchive_legacy": "Esta cópia antiga contém apenas a base de dados. Os ficheiros das pastas dos pacientes não foram restaurados.",
+  "backupArchive_chooseFile": "Abrir uma cópia…",
+  "backupArchive_resultTitle": "Resultado do restauro"
 }

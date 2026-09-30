@@ -43,10 +43,10 @@
   "backupHistory_cancel": "Annuler",
   "backupHistory_empty": "Aucune sauvegarde enregistrée.",
   "backupHistory_fileSize": "{size}",
-  "backupHistory_help": "Cet écran présente les sauvegardes enregistrées dans Companion. Chaque ligne indique le nom du fichier, sa date de création, sa taille et son emplacement.\n\nLe bouton « Restaurer » permet de remplacer la base actuelle par celle de la sauvegarde choisie. Les données ajoutées ou modifiées après cette sauvegarde ne seront donc pas présentes dans la base restaurée.\n\nVérifiez la date de la sauvegarde et lisez le message de confirmation avant de poursuivre. Une copie de sécurité de la base actuelle est créée avant son remplacement.\n\nLe fichier de sauvegarde doit toujours être accessible à l’emplacement indiqué. S’il a été déplacé ou supprimé, la restauration ne pourra pas être effectuée.\n\nPour créer une nouvelle sauvegarde, utilisez l’action « Créer une sauvegarde » sur la page d’accueil.",
+  "backupHistory_help": "Les nouvelles sauvegardes ZIP contiennent la base et les fichiers de tous les dossiers patients associés, y compris Bilan, Rapport et Autre. Un dossier associé inaccessible fait échouer la sauvegarde. Les documents non rattachés à un dossier patient ne sont pas inclus.\n\nRestaurer remplace la base actuelle : les données ajoutées après la sauvegarde ne figurent plus dans la base restaurée. Les versions sauvegardées des documents sont rétablies, avec une copie des dossiers actuels remplacés. Les fichiers actuels absents de la sauvegarde sont conservés. Les emplacements des copies de sécurité sont affichés à la fin.\n\nSi le dossier d’origine est indisponible, choisissez son nouvel emplacement. « Ouvrir une sauvegarde » permet de restaurer un fichier ZIP ou une ancienne sauvegarde .db ; cette dernière ne restaure que la base.",
   "backupHistory_restore": "Restaurer",
   "backupHistory_restoreTitle": "Restaurer cette sauvegarde ?",
-  "backupHistory_restoreWarning": "Cette opération remplacera totalement la base actuelle.\n\nUne sauvegarde automatique de sécurité sera créée avant restauration.\n\nContinuer ?",
+  "backupHistory_restoreWarning": "La base actuelle sera remplacée par celle de la sauvegarde. Les documents sauvegardés seront rétablis ; une copie des dossiers actuels remplacés sera conservée. Les fichiers actuels absents de la sauvegarde seront conservés.\n\nUne copie de sécurité de la base actuelle sera également créée. Les anciennes sauvegardes .db ne contiennent pas de documents.\n\nContinuer ?",
   "backupHistory_title": "Historique des sauvegardes",
   "bodymap_help": "La carte des douleurs permet de repérer les zones douloureuses du patient pour l’épisode de soins en cours.\n\nChoisissez une vue, puis cliquez sur une zone de la silhouette ou sélectionnez-la dans la liste. Vous pouvez ajouter une observation et, si nécessaire, une intensité de 0 à 10. Utilisez la corbeille pour retirer une zone du relevé.\n\nCliquez sur « Enregistrer » pour conserver votre relevé dans Companion. Lorsque vous quittez l’écran avec des modifications non enregistrées, un choix vous permet de les enregistrer ou de les abandonner.\n\n« Exporter les deux cartes » crée une image PNG à l’emplacement choisi sur votre ordinateur. Cet export ne remplace pas l’enregistrement du relevé.\n\nCe module est une première proposition, destinée à évoluer selon vos retours. Testez-le dans votre pratique et indiquez les possibilités que vous souhaiteriez voir ajoutées ou améliorées.",
   "bodymap_title": "Carte des douleurs",
@@ -993,5 +993,13 @@
   "patientDocuments_retry": "Réessayer",
   "patientDocuments_chooseRoot": "Choisir le dossier commun",
   "patientDocuments_open": "Ouvrir le dossier patient",
-  "patientDocuments_settingsHelp": "Un dossier par patient, contenant Bilan, Rapport et Autre. Création à l’ouverture de la fiche ; les fichiers existants ne sont pas déplacés."
+  "patientDocuments_settingsHelp": "Un dossier par patient, contenant Bilan, Rapport et Autre. Création à l’ouverture de la fiche ; les fichiers existants ne sont pas déplacés.",
+  "backupArchive_authorizeFolder": "Autoriser l’accès au dossier : {path}",
+  "backupArchive_restoreFolder": "Choisir le dossier où restaurer les documents de : {path}",
+  "backupArchive_busy": "Une sauvegarde ou une restauration est déjà en cours.",
+  "backupArchive_working": "Sauvegarde ou restauration en cours… Veuillez patienter.",
+  "backupArchive_safetyCopies": "Copies de sécurité conservées :",
+  "backupArchive_legacy": "Cette ancienne sauvegarde contient uniquement la base. Les fichiers des dossiers patients n’ont pas été restaurés.",
+  "backupArchive_chooseFile": "Ouvrir une sauvegarde…",
+  "backupArchive_resultTitle": "Résultat de la restauration"
 }

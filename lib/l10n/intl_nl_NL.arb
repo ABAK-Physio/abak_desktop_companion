@@ -43,10 +43,10 @@
   "backupHistory_cancel": "Annuleren",
   "backupHistory_empty": "Er is geen back-up opgeslagen.",
   "backupHistory_fileSize": "{size}",
-  "backupHistory_help": "Op dit scherm worden de back-ups weergegeven die in Companion zijn opgeslagen. Elke regel geeft de bestandsnaam, de aanmaakdatum, de bestandsgrootte en de locatie weer.\n\nMet de knop ‘Herstellen’ kunt u de huidige database vervangen door die uit de geselecteerde back-up. Gegevens die na deze back-up zijn toegevoegd of gewijzigd, zullen dus niet in de herstelde database aanwezig zijn.\n\nControleer de datum van de back-up en lees het bevestigingsbericht voordat u doorgaat. Er wordt een back-up van de huidige database gemaakt voordat deze wordt vervangen.\n\nHet back-upbestand moet altijd toegankelijk zijn op de aangegeven locatie. Als het is verplaatst of verwijderd, kan het herstel niet worden uitgevoerd.\n\nGebruik de actie ‘Back-up maken’ op de startpagina om een nieuwe back-up te maken.",
+  "backupHistory_help": "Nieuwe ZIP-back-ups bevatten de database en alle gekoppelde patiëntmappen, inclusief Bilan, Rapport en Autre. De back-up mislukt als een gekoppelde map niet beschikbaar is. Documenten buiten deze mappen worden niet opgenomen.\n\nHerstellen vervangt de huidige database: later toegevoegde gegevens staan er niet meer in. Opgeslagen documentversies worden hersteld, met behoud van kopieën van vervangen mappen en huidige bestanden die niet in de back-up staan. De locaties van veiligheidskopieën worden na afloop getoond.\n\nAls de oorspronkelijke map niet beschikbaar is, kiest u een nieuwe locatie. Met «Back-up openen» kunt u een ZIP-bestand of een oudere .db-back-up herstellen; de laatste herstelt alleen de database.",
   "backupHistory_restore": "Herstellen",
   "backupHistory_restoreTitle": "Deze back-up herstellen?",
-  "backupHistory_restoreWarning": "Deze bewerking zal de huidige database volledig vervangen.\n\nEr wordt een automatische back-up gemaakt voordat het herstel wordt uitgevoerd.\n\nDoorgaan?",
+  "backupHistory_restoreWarning": "De huidige database wordt vervangen door de back-up. Opgeslagen documenten worden hersteld en een kopie van de vervangen huidige mappen blijft bewaard. Huidige bestanden die niet in de back-up staan, blijven behouden.\n\nEr wordt ook een veiligheidskopie van de huidige database gemaakt. Oudere .db-back-ups bevatten geen documenten.\n\nDoorgaan?",
   "backupHistory_title": "Overzicht van back-ups",
   "bodymap_help": "Met de pijnkaart kunt u de pijnlijke zones van de patiënt in kaart brengen voor de lopende zorgperiode.\n\nKies een weergave, klik vervolgens op een gebied van het silhouet of selecteer het in de lijst. U kunt een opmerking toevoegen en, indien nodig, een intensiteit van 0 tot 10 aangeven. Gebruik de prullenbak om een gebied uit het rapport te verwijderen.\n\nKlik op ‘Opslaan’ om uw rapport in Companion op te slaan. Wanneer u het scherm verlaat met niet-opgeslagen wijzigingen, kunt u kiezen of u deze wilt opslaan of negeren.\n\nMet ‘Beide kaarten exporteren’ wordt een PNG-afbeelding aangemaakt op de door u gekozen locatie op uw computer. Deze export vervangt het opslaan van de meting niet.\n\nDeze module is een eerste voorstel, dat op basis van uw feedback verder zal worden ontwikkeld. Test het in de praktijk en geef aan welke mogelijkheden u graag toegevoegd of verbeterd zou willen zien.",
   "bodymap_title": "Pijnkaart",
@@ -993,5 +993,13 @@
   "patientDocuments_retry": "Opnieuw proberen",
   "patientDocuments_chooseRoot": "Gemeenschappelijke map kiezen",
   "patientDocuments_open": "Patiëntmap openen",
-  "patientDocuments_settingsHelp": "Eén map per patiënt, met Bilan, Rapport en Autre. Aangemaakt bij het openen van het dossier; bestaande bestanden worden niet verplaatst."
+  "patientDocuments_settingsHelp": "Eén map per patiënt, met Bilan, Rapport en Autre. Aangemaakt bij het openen van het dossier; bestaande bestanden worden niet verplaatst.",
+  "backupArchive_authorizeFolder": "Toegang tot map toestaan: {path}",
+  "backupArchive_restoreFolder": "Kies waar documenten uit deze map worden hersteld: {path}",
+  "backupArchive_busy": "Er wordt al een back-up gemaakt of hersteld.",
+  "backupArchive_working": "Back-up maken of herstellen… Even geduld.",
+  "backupArchive_safetyCopies": "Bewaarde veiligheidskopieën:",
+  "backupArchive_legacy": "Deze oudere back-up bevat alleen de database. Bestanden in patiëntmappen zijn niet hersteld.",
+  "backupArchive_chooseFile": "Back-up openen…",
+  "backupArchive_resultTitle": "Resultaat van herstel"
 }

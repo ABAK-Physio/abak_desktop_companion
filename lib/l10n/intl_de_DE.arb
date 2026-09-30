@@ -43,10 +43,10 @@
   "backupHistory_cancel": "Abbrechen",
   "backupHistory_empty": "Es wurde kein Backup gespeichert.",
   "backupHistory_fileSize": "{size}",
-  "backupHistory_help": "Auf diesem Bildschirm werden die in Companion gespeicherten Sicherungen angezeigt. In jeder Zeile sind der Dateiname, das Erstellungsdatum, die Dateigröße und der Speicherort angegeben.\n\nMit der Schaltfläche „Wiederherstellen“ können Sie die aktuelle Datenbank durch die aus der ausgewählten Sicherung ersetzen. Daten, die nach dieser Sicherung hinzugefügt oder geändert wurden, sind daher in der wiederhergestellten Datenbank nicht enthalten.\n\nÜberprüfen Sie das Datum der Sicherung und lesen Sie die Bestätigungsmeldung, bevor Sie fortfahren. Vor dem Ersetzen wird eine Sicherungskopie der aktuellen Datenbank erstellt.\n\nDie Sicherungsdatei muss immer am angegebenen Speicherort verfügbar sein. Wurde sie verschoben oder gelöscht, kann die Wiederherstellung nicht durchgeführt werden.\n\nUm eine neue Sicherung zu erstellen, verwenden Sie die Aktion „Sicherung erstellen“ auf der Startseite.",
+  "backupHistory_help": "Neue ZIP-Sicherungen enthalten die Datenbank und alle zugeordneten Patientenordner einschließlich Bilan, Rapport und Autre. Ist ein zugeordneter Ordner nicht verfügbar, schlägt die Sicherung fehl. Dokumente außerhalb dieser Ordner werden nicht gesichert.\n\nDie Wiederherstellung ersetzt die aktuelle Datenbank. Später hinzugefügte Daten sind darin nicht mehr enthalten. Gesicherte Dokumentversionen werden wiederhergestellt; Kopien der ersetzten Ordner und zusätzliche aktuelle Dateien bleiben erhalten. Die Speicherorte der Sicherheitskopien werden am Ende angezeigt.\n\nIst ein ursprünglicher Ordner nicht verfügbar, wählen Sie einen neuen Speicherort. Über „Sicherung öffnen“ können ZIP-Dateien oder ältere .db-Sicherungen geöffnet werden; Letztere stellen nur die Datenbank wieder her.",
   "backupHistory_restore": "Wiederherstellen",
   "backupHistory_restoreTitle": "Diese Sicherung wiederherstellen?",
-  "backupHistory_restoreWarning": "Dieser Vorgang wird die aktuelle Datenbank vollständig ersetzen.\n\nVor der Wiederherstellung wird automatisch eine Sicherheitskopie erstellt.\n\nWeiter?",
+  "backupHistory_restoreWarning": "Die aktuelle Datenbank wird durch die Sicherung ersetzt. Gesicherte Dokumente werden wiederhergestellt; eine Kopie der ersetzten aktuellen Ordner bleibt erhalten. Aktuelle Dateien, die nicht in der Sicherung enthalten sind, bleiben erhalten.\n\nZusätzlich wird eine Sicherheitskopie der aktuellen Datenbank erstellt. Ältere .db-Sicherungen enthalten keine Dokumente.\n\nFortfahren?",
   "backupHistory_title": "Sicherungshistorie",
   "bodymap_help": "Mithilfe der Schmerzkarte lassen sich die schmerzhaften Bereiche des Patienten für die aktuelle Behandlungsphase lokalisieren.\n\nWählen Sie eine Ansicht aus und klicken Sie dann auf einen Bereich der Silhouette oder wählen Sie ihn aus der Liste aus. Sie können einen Vermerk hinzufügen und bei Bedarf eine Intensität von 0 bis 10 angeben. Verwenden Sie den Papierkorb, um einen Bereich aus dem Protokoll zu entfernen.\n\nKlicken Sie auf „Speichern“, um Ihren Befund in Companion zu speichern. Wenn Sie den Bildschirm mit ungespeicherten Änderungen verlassen, können Sie wählen, ob Sie diese speichern oder verwerfen möchten.\n\n„Beide Karten exportieren“ erstellt ein PNG-Bild an dem von Ihnen gewählten Speicherort auf Ihrem Computer. Dieser Export ersetzt nicht das Speichern der Erfassung.\n\nDieses Modul ist ein erster Entwurf, der entsprechend Ihrem Feedback weiterentwickelt werden soll. Testen Sie es in der Praxis und teilen Sie uns mit, welche Funktionen Sie gerne hinzugefügt oder verbessert sehen würden.",
   "bodymap_title": "Schmerzkarte",
@@ -993,5 +993,13 @@
   "patientDocuments_retry": "Erneut versuchen",
   "patientDocuments_chooseRoot": "Gemeinsamen Ordner wählen",
   "patientDocuments_open": "Patientenordner öffnen",
-  "patientDocuments_settingsHelp": "Ein Ordner pro Patient mit Bilan, Rapport und Autre. Er wird beim Öffnen der Patientenakte erstellt; vorhandene Dateien werden nicht verschoben."
+  "patientDocuments_settingsHelp": "Ein Ordner pro Patient mit Bilan, Rapport und Autre. Er wird beim Öffnen der Patientenakte erstellt; vorhandene Dateien werden nicht verschoben.",
+  "backupArchive_authorizeFolder": "Zugriff auf diesen Ordner erlauben: {path}",
+  "backupArchive_restoreFolder": "Zielordner für Dokumente aus diesem Ordner wählen: {path}",
+  "backupArchive_busy": "Eine Sicherung oder Wiederherstellung läuft bereits.",
+  "backupArchive_working": "Sicherung oder Wiederherstellung läuft… Bitte warten.",
+  "backupArchive_safetyCopies": "Aufbewahrte Sicherheitskopien:",
+  "backupArchive_legacy": "Diese ältere Sicherung enthält nur die Datenbank. Dateien in Patientenordnern wurden nicht wiederhergestellt.",
+  "backupArchive_chooseFile": "Sicherung öffnen…",
+  "backupArchive_resultTitle": "Ergebnis der Wiederherstellung"
 }

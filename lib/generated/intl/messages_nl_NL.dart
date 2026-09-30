@@ -29,116 +29,121 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m3(age) => "${age} jaar";
 
-  static String m4(size) => "${size}";
+  static String m4(path) => "Toegang tot map toestaan: ${path}";
 
-  static String m5(date) => "Gearchiveerd op ${date}";
+  static String m5(path) =>
+      "Kies waar documenten uit deze map worden hersteld: ${path}";
 
-  static String m6(monthYear) => "Opname in de open zorg in ${monthYear}";
+  static String m6(size) => "${size}";
 
-  static String m7(title) =>
+  static String m7(date) => "Gearchiveerd op ${date}";
+
+  static String m8(monthYear) => "Opname in de open zorg in ${monthYear}";
+
+  static String m9(title) =>
       "Het overzicht „${title}“ wordt niet meer weergegeven in de geschiedenis.";
 
-  static String m8(title) =>
+  static String m10(title) =>
       "Het rapport „${title}“ wordt naar de prullenbak verplaatst. Het kan later worden hersteld.";
 
-  static String m9(patientName, title) => "Bilan_${patientName}_${title}";
+  static String m11(patientName, title) => "Bilan_${patientName}_${title}";
 
-  static String m10(title) => "Kopie van ${title}";
+  static String m12(title) => "Kopie van ${title}";
 
-  static String m11(title) =>
+  static String m13(title) =>
       "Het overzicht „${title}“ wordt definitief verwijderd. Deze handeling kan niet ongedaan worden gemaakt.";
 
-  static String m12(title) =>
+  static String m14(title) =>
       "Het rapport „${title}“ wordt definitief verwijderd. Deze handeling kan niet ongedaan worden gemaakt.";
 
-  static String m13(path) =>
+  static String m15(path) =>
       "\"careEpisodeReportsWorkspaceScreen_directoryAccessMessage\": \"Le dossier configuré n’est pas accessible ou son autorisation doit être renouvelée.\n\n${path}\n\nReconnectez son volume si nécessaire, puis sélectionnez ce dossier pour autoriser son accès. Le dossier sélectionné sera enregistré dans vos préférences.\",\n\"@careEpisodeReportsWorkspaceScreen_directoryAccessMessage\": {\n  \"placeholders\": {\n    \"path\": {\n      \"type\": \"String\"\n    }\n  }\n}";
 
-  static String m14(documentLabel) =>
+  static String m16(documentLabel) =>
       "Er bestaat al een conceptversie van dit ${documentLabel}-sjabloon.";
 
-  static String m15(documentLabel) =>
+  static String m17(documentLabel) =>
       "Wilt u de gegenereerde inhoud toevoegen aan het huidige ${documentLabel} of de bestaande inhoud vervangen?";
 
-  static String m16(documentLabel) => "Nieuw ${documentLabel}";
+  static String m18(documentLabel) => "Nieuw ${documentLabel}";
 
-  static String m17(patientName, title) => "Rapport_${patientName}_${title}";
+  static String m19(patientName, title) => "Rapport_${patientName}_${title}";
 
-  static String m18(path) => "Aangemaakt Word-document: ${path}";
+  static String m20(path) => "Aangemaakt Word-document: ${path}";
 
-  static String m19(error) =>
+  static String m21(error) =>
       "Fout bij het aanmaken van het Word-document: ${error}";
 
-  static String m20(patientName) =>
+  static String m22(patientName) =>
       "${patientName} — Beoordelingen en rapporten";
 
-  static String m21(deviceName) => "Wilt u ${deviceName} echt archiveren?";
+  static String m23(deviceName) => "Wilt u ${deviceName} echt archiveren?";
 
-  static String m22(fieldName) => "Het veld \"${fieldName}\" is verplicht.";
+  static String m24(fieldName) => "Het veld \"${fieldName}\" is verplicht.";
 
-  static String m23(noteTitle) =>
+  static String m25(noteTitle) =>
       "De notitie \"${noteTitle}\" wordt niet meer weergegeven.";
 
-  static String m24(error) => "Fout bij het opslaan: ${error}";
+  static String m26(error) => "Fout bij het opslaan: ${error}";
 
-  static String m25(count) => "${count} andere oefening(en)";
+  static String m27(count) => "${count} andere oefening(en)";
 
-  static String m26(count) => "${count} vereniging(en) in afwachting";
+  static String m28(count) => "${count} vereniging(en) in afwachting";
 
-  static String m27(count) => "${count} back-ups";
+  static String m29(count) => "${count} back-ups";
 
-  static String m28(size) => "Maat: ${size}";
+  static String m30(size) => "Maat: ${size}";
 
-  static String m29(size) => "Totale afmeting: ${size}";
+  static String m31(size) => "Totale afmeting: ${size}";
 
-  static String m30(version) => "Versie ${version}";
-
-  static String m31(integrityStatus) =>
-      "De gerestaureerde database vertoont een afwijking: ${integrityStatus}";
-
-  static String m32(error) => "Herstel mislukt: ${error}";
+  static String m32(version) => "Versie ${version}";
 
   static String m33(integrityStatus) =>
+      "De gerestaureerde database vertoont een afwijking: ${integrityStatus}";
+
+  static String m34(error) => "Herstel mislukt: ${error}";
+
+  static String m35(integrityStatus) =>
       "Het herstel is voltooid, maar integrity_check heeft het volgende geretourneerd: ${integrityStatus}";
 
-  static String m34(patientName) =>
+  static String m36(patientName) =>
       "Wilt u ${patientName} echt archiveren? Hij/zij wordt dan niet meer in de actieve lijst weergegeven.";
 
-  static String m35(patientName) => "${patientName} gearchiveerd.";
+  static String m37(patientName) => "${patientName} gearchiveerd.";
 
-  static String m36(error) => "Fout: ${error}";
+  static String m38(error) => "Fout: ${error}";
 
-  static String m37(patientName) =>
+  static String m39(patientName) =>
       "${patientName} is weer toegevoegd aan de actieve lijst.";
 
-  static String m38(patientName) =>
+  static String m40(patientName) =>
       "Vitale-kaart gekoppeld aan de patiënt ${patientName}.";
 
-  static String m39(patientName) => "De patiënt ${patientName} is hersteld.";
+  static String m41(patientName) => "De patiënt ${patientName} is hersteld.";
 
-  static String m40(practitionerName) =>
+  static String m42(practitionerName) =>
       "Wilt u ${practitionerName} echt archiveren?";
 
-  static String m41(date) => "Gearchiveerd op ${date}";
-
-  static String m42(error) => "Fout: ${error}";
-
-  static String m43(professionalId) => "ID pro: ${professionalId}";
+  static String m43(date) => "Gearchiveerd op ${date}";
 
   static String m44(error) => "Fout: ${error}";
 
-  static String m45(name) => "${name} — gearchiveerd";
+  static String m45(professionalId) => "ID pro: ${professionalId}";
 
-  static String m46(start, end) => "Je ${start} tot ${end}";
+  static String m46(error) => "Fout: ${error}";
 
-  static String m47(error) =>
+  static String m47(name) => "${name} — gearchiveerd";
+
+  static String m48(start, end) => "Je ${start} tot ${end}";
+
+  static String m49(error) =>
       "Fout bij het laden van de geschiedenis: ${error}";
 
-  static String m48(start) => "Vanaf ${start}";
+  static String m50(start) => "Vanaf ${start}";
 
-  static String m49(error) => "Fout bij het resetten: ${error}";
+  static String m51(error) => "Fout bij het resetten: ${error}";
 
-  static String m50(error) => "Het spraakdictee is mislukt: ${error}";
+  static String m52(error) => "Het spraakdictee is mislukt: ${error}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -222,19 +227,33 @@ class MessageLookup extends MessageLookupByLibrary {
             "Inzicht krijgen in het concept van de balans"),
         "assessmentHistory_help": MessageLookupByLibrary.simpleMessage(
             "Dit overzicht toont de geregistreerde balansen voor de zorgverlening, met hun titel en datum.\n\nMet de acties in elke rij kunt u een balans wijzigen, dupliceren of verplaatsen naar de gearchiveerde documenten.\n\nWanneer een balans is geopend om te worden gewijzigd, gebruikt u de actie ‘Bijwerken’ om uw wijzigingen op te slaan. Met de beschikbare knoppen kunt u ook de wijzigingen ongedaan maken of terugkeren naar het concept.\n\nHet verplaatsen naar de gearchiveerde documenten is geen definitieve verwijdering.\n\nKlik op het kruisje om het vergrote scherm te sluiten en terug te keren naar het gedeelte Balansen/Rapporten."),
+        "backupArchive_authorizeFolder": m4,
+        "backupArchive_busy": MessageLookupByLibrary.simpleMessage(
+            "Er wordt al een back-up gemaakt of hersteld."),
+        "backupArchive_chooseFile":
+            MessageLookupByLibrary.simpleMessage("Back-up openen…"),
+        "backupArchive_legacy": MessageLookupByLibrary.simpleMessage(
+            "Deze oudere back-up bevat alleen de database. Bestanden in patiëntmappen zijn niet hersteld."),
+        "backupArchive_restoreFolder": m5,
+        "backupArchive_resultTitle":
+            MessageLookupByLibrary.simpleMessage("Resultaat van herstel"),
+        "backupArchive_safetyCopies": MessageLookupByLibrary.simpleMessage(
+            "Bewaarde veiligheidskopieën:"),
+        "backupArchive_working": MessageLookupByLibrary.simpleMessage(
+            "Back-up maken of herstellen… Even geduld."),
         "backupHistory_cancel":
             MessageLookupByLibrary.simpleMessage("Annuleren"),
         "backupHistory_empty": MessageLookupByLibrary.simpleMessage(
             "Er is geen back-up opgeslagen."),
-        "backupHistory_fileSize": m4,
+        "backupHistory_fileSize": m6,
         "backupHistory_help": MessageLookupByLibrary.simpleMessage(
-            "Op dit scherm worden de back-ups weergegeven die in Companion zijn opgeslagen. Elke regel geeft de bestandsnaam, de aanmaakdatum, de bestandsgrootte en de locatie weer.\n\nMet de knop ‘Herstellen’ kunt u de huidige database vervangen door die uit de geselecteerde back-up. Gegevens die na deze back-up zijn toegevoegd of gewijzigd, zullen dus niet in de herstelde database aanwezig zijn.\n\nControleer de datum van de back-up en lees het bevestigingsbericht voordat u doorgaat. Er wordt een back-up van de huidige database gemaakt voordat deze wordt vervangen.\n\nHet back-upbestand moet altijd toegankelijk zijn op de aangegeven locatie. Als het is verplaatst of verwijderd, kan het herstel niet worden uitgevoerd.\n\nGebruik de actie ‘Back-up maken’ op de startpagina om een nieuwe back-up te maken."),
+            "Nieuwe ZIP-back-ups bevatten de database en alle gekoppelde patiëntmappen, inclusief Bilan, Rapport en Autre. De back-up mislukt als een gekoppelde map niet beschikbaar is. Documenten buiten deze mappen worden niet opgenomen.\n\nHerstellen vervangt de huidige database: later toegevoegde gegevens staan er niet meer in. Opgeslagen documentversies worden hersteld, met behoud van kopieën van vervangen mappen en huidige bestanden die niet in de back-up staan. De locaties van veiligheidskopieën worden na afloop getoond.\n\nAls de oorspronkelijke map niet beschikbaar is, kiest u een nieuwe locatie. Met «Back-up openen» kunt u een ZIP-bestand of een oudere .db-back-up herstellen; de laatste herstelt alleen de database."),
         "backupHistory_restore":
             MessageLookupByLibrary.simpleMessage("Herstellen"),
         "backupHistory_restoreTitle":
             MessageLookupByLibrary.simpleMessage("Deze back-up herstellen?"),
         "backupHistory_restoreWarning": MessageLookupByLibrary.simpleMessage(
-            "Deze bewerking zal de huidige database volledig vervangen.\n\nEr wordt een automatische back-up gemaakt voordat het herstel wordt uitgevoerd.\n\nDoorgaan?"),
+            "De huidige database wordt vervangen door de back-up. Opgeslagen documenten worden hersteld en een kopie van de vervangen huidige mappen blijft bewaard. Huidige bestanden die niet in de back-up staan, blijven behouden.\n\nEr wordt ook een veiligheidskopie van de huidige database gemaakt. Oudere .db-back-ups bevatten geen documenten.\n\nDoorgaan?"),
         "backupHistory_title":
             MessageLookupByLibrary.simpleMessage("Overzicht van back-ups"),
         "bodymap_help": MessageLookupByLibrary.simpleMessage(
@@ -275,10 +294,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "careEpisodePanel_archivedCareEpisodesHelp":
             MessageLookupByLibrary.simpleMessage(
                 "Hier vindt u uw gearchiveerde zorgbehandelingen."),
-        "careEpisodePanel_archivedOn": m5,
+        "careEpisodePanel_archivedOn": m7,
         "careEpisodePanel_careEpisodeArchived":
             MessageLookupByLibrary.simpleMessage("Verwerking voltooid."),
-        "careEpisodePanel_careEpisodeOpenedIn": m6,
+        "careEpisodePanel_careEpisodeOpenedIn": m8,
         "careEpisodePanel_careEpisodeRestored":
             MessageLookupByLibrary.simpleMessage(
                 "De ondersteuning is hersteld."),
@@ -312,12 +331,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "careEpisodeReportsWorkspaceScreen_archiveAssessmentError":
             MessageLookupByLibrary.simpleMessage(
                 "Het lukt niet om het jaarverslag naar de prullenbak te verplaatsen."),
-        "careEpisodeReportsWorkspaceScreen_archiveAssessmentMessage": m7,
+        "careEpisodeReportsWorkspaceScreen_archiveAssessmentMessage": m9,
         "careEpisodeReportsWorkspaceScreen_archiveReportError":
             MessageLookupByLibrary.simpleMessage(
                 "Het lukt niet om het rapport naar de prullenbak te verplaatsen."),
-        "careEpisodeReportsWorkspaceScreen_archiveReportMessage": m8,
-        "careEpisodeReportsWorkspaceScreen_assessmentFileName": m9,
+        "careEpisodeReportsWorkspaceScreen_archiveReportMessage": m10,
+        "careEpisodeReportsWorkspaceScreen_assessmentFileName": m11,
         "careEpisodeReportsWorkspaceScreen_assessmentLabel":
             MessageLookupByLibrary.simpleMessage("met"),
         "careEpisodeReportsWorkspaceScreen_assessmentNotFound":
@@ -346,13 +365,13 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Sluiten"),
         "careEpisodeReportsWorkspaceScreen_confirm":
             MessageLookupByLibrary.simpleMessage("Bevestigen"),
-        "careEpisodeReportsWorkspaceScreen_copyTitle": m10,
+        "careEpisodeReportsWorkspaceScreen_copyTitle": m12,
         "careEpisodeReportsWorkspaceScreen_createNew":
             MessageLookupByLibrary.simpleMessage("Een nieuwe aanmaken"),
         "careEpisodeReportsWorkspaceScreen_deleteAssessmentError":
             MessageLookupByLibrary.simpleMessage(
                 "Het is niet mogelijk om de balans definitief te verwijderen."),
-        "careEpisodeReportsWorkspaceScreen_deleteAssessmentMessage": m11,
+        "careEpisodeReportsWorkspaceScreen_deleteAssessmentMessage": m13,
         "careEpisodeReportsWorkspaceScreen_deleteAssessmentTitle":
             MessageLookupByLibrary.simpleMessage(
                 "De balans definitief verwijderen?"),
@@ -361,11 +380,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "careEpisodeReportsWorkspaceScreen_deleteReportError":
             MessageLookupByLibrary.simpleMessage(
                 "Het is niet mogelijk om het rapport definitief te verwijderen."),
-        "careEpisodeReportsWorkspaceScreen_deleteReportMessage": m12,
+        "careEpisodeReportsWorkspaceScreen_deleteReportMessage": m14,
         "careEpisodeReportsWorkspaceScreen_deleteReportTitle":
             MessageLookupByLibrary.simpleMessage(
                 "Het rapport definitief verwijderen?"),
-        "careEpisodeReportsWorkspaceScreen_directoryAccessMessage": m13,
+        "careEpisodeReportsWorkspaceScreen_directoryAccessMessage": m15,
         "careEpisodeReportsWorkspaceScreen_duplicate":
             MessageLookupByLibrary.simpleMessage("Dupliceren"),
         "careEpisodeReportsWorkspaceScreen_duplicateAssessment":
@@ -384,10 +403,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "careEpisodeReportsWorkspaceScreen_existingReportDocx":
             MessageLookupByLibrary.simpleMessage(
                 "Aan dit rapport is al een DOCX-bestand gekoppeld. Wilt u het bestaande bestand vervangen of een nieuw bestand aanmaken?"),
-        "careEpisodeReportsWorkspaceScreen_existingTemplateDraftMessage": m14,
+        "careEpisodeReportsWorkspaceScreen_existingTemplateDraftMessage": m16,
         "careEpisodeReportsWorkspaceScreen_generateDocx":
             MessageLookupByLibrary.simpleMessage("DOCX-bestand genereren"),
-        "careEpisodeReportsWorkspaceScreen_insertTextMessage": m15,
+        "careEpisodeReportsWorkspaceScreen_insertTextMessage": m17,
         "careEpisodeReportsWorkspaceScreen_managePractitioners":
             MessageLookupByLibrary.simpleMessage("Fysiotherapeuten beheren"),
         "careEpisodeReportsWorkspaceScreen_managePrescribingDoctors":
@@ -401,7 +420,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "careEpisodeReportsWorkspaceScreen_newAssessmentTitle":
             MessageLookupByLibrary.simpleMessage(
                 "Titel van het nieuwe overzicht"),
-        "careEpisodeReportsWorkspaceScreen_newDocument": m16,
+        "careEpisodeReportsWorkspaceScreen_newDocument": m18,
         "careEpisodeReportsWorkspaceScreen_newReport":
             MessageLookupByLibrary.simpleMessage("Nieuw rapport"),
         "careEpisodeReportsWorkspaceScreen_newReportTitle":
@@ -424,7 +443,7 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Verantwoordelijke fysiotherapeut"),
         "careEpisodeReportsWorkspaceScreen_replace":
             MessageLookupByLibrary.simpleMessage("Vervangen"),
-        "careEpisodeReportsWorkspaceScreen_reportFileName": m17,
+        "careEpisodeReportsWorkspaceScreen_reportFileName": m19,
         "careEpisodeReportsWorkspaceScreen_reportLabel":
             MessageLookupByLibrary.simpleMessage("rapport"),
         "careEpisodeReportsWorkspaceScreen_reportNotFound":
@@ -490,9 +509,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "careEpisodeReportsWorkspaceScreen_updateReportError":
             MessageLookupByLibrary.simpleMessage(
                 "Het rapport kan niet worden bijgewerkt."),
-        "careEpisodeReportsWorkspaceScreen_wordDocumentCreated": m18,
-        "careEpisodeReportsWorkspaceScreen_wordDocumentCreationError": m19,
-        "careEpisodeReportsWorkspaceScreen_workspaceTitle": m20,
+        "careEpisodeReportsWorkspaceScreen_wordDocumentCreated": m20,
+        "careEpisodeReportsWorkspaceScreen_wordDocumentCreationError": m21,
+        "careEpisodeReportsWorkspaceScreen_workspaceTitle": m22,
         "careEpisodeReportsWorkspace_addFollowUpNote":
             MessageLookupByLibrary.simpleMessage(
                 "Een opvolgingsnotitie toevoegen"),
@@ -713,7 +732,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "deviceList_active": MessageLookupByLibrary.simpleMessage("Activa"),
         "deviceList_archive":
             MessageLookupByLibrary.simpleMessage("Archiveren"),
-        "deviceList_archiveConfirmation": m21,
+        "deviceList_archiveConfirmation": m23,
         "deviceList_archiveTitle":
             MessageLookupByLibrary.simpleMessage("Het apparaat archiveren"),
         "deviceList_archived":
@@ -884,7 +903,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "episodeFormEditor_error": MessageLookupByLibrary.simpleMessage("Fout"),
         "episodeFormEditor_noField": MessageLookupByLibrary.simpleMessage(
             "Er zijn geen velden om weer te geven."),
-        "episodeFormEditor_requiredField": m22,
+        "episodeFormEditor_requiredField": m24,
         "episodeFormEditor_save":
             MessageLookupByLibrary.simpleMessage("Opslaan"),
         "episodeFormEditor_title":
@@ -922,7 +941,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Formulieren"),
         "episodeNotes_archive":
             MessageLookupByLibrary.simpleMessage("Archiveren"),
-        "episodeNotes_archiveConfirmation": m23,
+        "episodeNotes_archiveConfirmation": m25,
         "episodeNotes_archiveTitle":
             MessageLookupByLibrary.simpleMessage("De notitie archiveren?"),
         "episodeNotes_cancel":
@@ -1132,7 +1151,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "home_date_not_specified":
             MessageLookupByLibrary.simpleMessage("Datum niet opgegeven"),
         "home_devices": MessageLookupByLibrary.simpleMessage("Apparaten"),
-        "home_error_while_saving": m24,
+        "home_error_while_saving": m26,
         "home_everything_is_working_normally":
             MessageLookupByLibrary.simpleMessage("Alles werkt normaal"),
         "home_expert_comment": MessageLookupByLibrary.simpleMessage(
@@ -1185,13 +1204,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "home_not_specified":
             MessageLookupByLibrary.simpleMessage("geïnformeerd"),
         "home_octets": MessageLookupByLibrary.simpleMessage("Octetten"),
-        "home_other_exercises": m25,
+        "home_other_exercises": m27,
         "home_parameters": MessageLookupByLibrary.simpleMessage("Instellingen"),
         "home_pathway": MessageLookupByLibrary.simpleMessage("Pad"),
         "home_patient_abak":
             MessageLookupByLibrary.simpleMessage("Patiënt ABAK"),
         "home_patients": MessageLookupByLibrary.simpleMessage("Patiënten"),
-        "home_pending_association": m26,
+        "home_pending_association": m28,
         "home_practitioners":
             MessageLookupByLibrary.simpleMessage("beoefenaars"),
         "home_quick_actions":
@@ -1280,7 +1299,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Dit scherm toont het verloop van een import die in Companion is ontvangen. Het hoofdbericht geeft aan of de import is geslaagd, aan een patiënt moet worden gekoppeld of een probleem vertoont.\n\nWanneer een koppeling nodig is, klikt u op ‘Koppelen aan een patiënt’ om het dossier te kiezen waaraan de resultaten moeten worden gekoppeld.\n\nVia het rapport en de lijst met bestanden kunt u de details van de verwerking en eventuele waarschuwingen bekijken.\n\nAls het ontvangen bestand onvolledig of beschadigd is, vraag dan via ABAK Mobile om een nieuwe verzending.\n\nAfhankelijk van de situatie wordt de knop ‘Deze import verwijderen’ weergegeven. Bekijk het bevestigingsbericht voordat u het verwijderen bevestigt."),
         "importSessionDetail_title":
             MessageLookupByLibrary.simpleMessage("Volg de import"),
-        "information_backupCount": m27,
+        "information_backupCount": m29,
         "information_backups": MessageLookupByLibrary.simpleMessage("Back-ups"),
         "information_configured":
             MessageLookupByLibrary.simpleMessage("Geconfigureerd"),
@@ -1311,11 +1330,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "information_notProvided":
             MessageLookupByLibrary.simpleMessage("Niet opgegeven"),
         "information_office": MessageLookupByLibrary.simpleMessage("Kantoor"),
-        "information_size": m28,
+        "information_size": m30,
         "information_system": MessageLookupByLibrary.simpleMessage("Systeem"),
         "information_title": MessageLookupByLibrary.simpleMessage("Informatie"),
-        "information_totalSize": m29,
-        "information_version": m30,
+        "information_totalSize": m31,
+        "information_version": m32,
         "information_versionLoading":
             MessageLookupByLibrary.simpleMessage("Versie..."),
         "information_viewLicense":
@@ -1349,9 +1368,9 @@ class MessageLookup extends MessageLookupByLibrary {
                 "SQLite-database niet gevonden."),
         "localDatabaseReset_backupFailed": MessageLookupByLibrary.simpleMessage(
             "Back-up vooraf niet mogelijk"),
-        "localDatabaseRestoreService_anomaly": m31,
-        "localDatabaseRestoreService_failure": m32,
-        "localDatabaseRestoreService_integrity": m33,
+        "localDatabaseRestoreService_anomaly": m33,
+        "localDatabaseRestoreService_failure": m34,
+        "localDatabaseRestoreService_integrity": m35,
         "localDatabaseRestoreService_missing":
             MessageLookupByLibrary.simpleMessage(
                 "Het back-upbestand kan niet worden gevonden."),
@@ -1580,8 +1599,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "patientList_active": MessageLookupByLibrary.simpleMessage("Activa"),
         "patientList_archive":
             MessageLookupByLibrary.simpleMessage("Archiveren"),
-        "patientList_archiveConfirmation": m34,
-        "patientList_archiveSuccess": m35,
+        "patientList_archiveConfirmation": m36,
+        "patientList_archiveSuccess": m37,
         "patientList_archiveTitle":
             MessageLookupByLibrary.simpleMessage("De patiënt archiveren"),
         "patientList_archived":
@@ -1600,7 +1619,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "patientList_contextName":
             MessageLookupByLibrary.simpleMessage("Lijst van patiënten"),
         "patientList_edit": MessageLookupByLibrary.simpleMessage("Wijzigen"),
-        "patientList_error": m36,
+        "patientList_error": m38,
         "patientList_help": MessageLookupByLibrary.simpleMessage(
             "Via dit scherm kunt u uw patiënten opzoeken en hun dossier openen.\n\nMet de knoppen ‘Actief’ en ‘Gearchiveerd’ kunt u kiezen welke lijst wordt weergegeven. Het weergegeven aantal komt overeen met het totale aantal patiënten in elke categorie.\n\nOm een patiënt in de weergegeven lijst te zoeken, voert u de volledige of een deel van zijn achternaam of voornaam in het zoekveld in. Klik op de betreffende regel om het dossier te openen.\n\nMet de knop ‘Nieuwe patiënt’ opent u het scherm voor het aanmaken van een patiënt.\n\nBij een actieve patiënt kunt u met het potloodpictogram de gegevens wijzigen. Met het archiveringspictogram kunt u de patiënt na bevestiging uit de lijst met actieve patiënten verwijderen.\n\nIn de lijst met gearchiveerde patiënten kunt u met het pictogram ‘Herstellen’ een patiënt weer in de lijst met actieve patiënten plaatsen. Een specifieke helptekst, die naast de archiveringsdatum te vinden is, geeft uitleg over de bewaartermijnen."),
         "patientList_newPatient":
@@ -1618,7 +1637,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Kan worden hersteld tot"),
         "patientList_restore":
             MessageLookupByLibrary.simpleMessage("Herstellen"),
-        "patientList_restoreSuccess": m37,
+        "patientList_restoreSuccess": m39,
         "patientList_searchPatient":
             MessageLookupByLibrary.simpleMessage("Een patiënt zoeken"),
         "patientList_sex": MessageLookupByLibrary.simpleMessage("Seks"),
@@ -1639,7 +1658,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "De Carte Vitale kan niet worden gekoppeld"),
         "patientNew_attachVitaleQuestion": MessageLookupByLibrary.simpleMessage(
             "Wilt u de gegevens van de Carte Vitale aan deze patiënt koppelen?"),
-        "patientNew_attachVitaleSuccess": m38,
+        "patientNew_attachVitaleSuccess": m40,
         "patientNew_backToList":
             MessageLookupByLibrary.simpleMessage("Terug naar de lijst"),
         "patientNew_birthDate":
@@ -1717,7 +1736,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "De patiënt kan niet worden gereanimeerd"),
         "patientNew_restoreInsteadOfCreate": MessageLookupByLibrary.simpleMessage(
             "Wilt u deze map herstellen in plaats van een nieuwe patiënt aan te maken?"),
-        "patientNew_restoreSuccess": m39,
+        "patientNew_restoreSuccess": m41,
         "patientNew_sex": MessageLookupByLibrary.simpleMessage("Seks"),
         "patientNew_vitaleIdentityRead": MessageLookupByLibrary.simpleMessage(
             "Identiteitsgegevens afgelezen van de Carte Vitale"),
@@ -1743,7 +1762,7 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Voeg de fysiotherapeuten van de praktijk toe om de geïmporteerde tests te identificeren."),
         "practitionerList_archive":
             MessageLookupByLibrary.simpleMessage("Archiveren"),
-        "practitionerList_archiveConfirmation": m40,
+        "practitionerList_archiveConfirmation": m42,
         "practitionerList_archiveEmpty": MessageLookupByLibrary.simpleMessage(
             "De prullenbak van de fysiotherapeuten is op dit moment leeg."),
         "practitionerList_archivePractitioner":
@@ -1751,7 +1770,7 @@ class MessageLookup extends MessageLookupByLibrary {
                 "De fysiotherapeut archiveren"),
         "practitionerList_archived":
             MessageLookupByLibrary.simpleMessage("Gearchiveerd"),
-        "practitionerList_archivedOn": m41,
+        "practitionerList_archivedOn": m43,
         "practitionerList_button_create":
             MessageLookupByLibrary.simpleMessage("Een behandelaar aanmaken"),
         "practitionerList_cancel":
@@ -1762,13 +1781,13 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Lijst van behandelaars"),
         "practitionerList_edit":
             MessageLookupByLibrary.simpleMessage("Wijzigen"),
-        "practitionerList_error": m42,
+        "practitionerList_error": m44,
         "practitionerList_noArchivedPractitioner":
             MessageLookupByLibrary.simpleMessage(
                 "Geen fysiotherapeuten in het archief"),
         "practitionerList_noPractitioner": MessageLookupByLibrary.simpleMessage(
             "Er zijn geen fysiotherapeuten geregistreerd"),
-        "practitionerList_professionalId": m43,
+        "practitionerList_professionalId": m45,
         "practitionerList_restore":
             MessageLookupByLibrary.simpleMessage("Herstellen"),
         "practitionerList_showQrCode":
@@ -1817,7 +1836,7 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Scan deze QR-code via ABAK Mobile om dit professionele profiel automatisch toe te voegen."),
         "practitionerSelector_archived":
             MessageLookupByLibrary.simpleMessage("gearchiveerd"),
-        "practitionerSelector_error": m44,
+        "practitionerSelector_error": m46,
         "practitionerSelector_noSelection":
             MessageLookupByLibrary.simpleMessage("Geen selectie"),
         "preferences_archivedPatients":
@@ -1861,17 +1880,17 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Er zijn geen resultaten geïmporteerd"),
         "recentImportCard_result":
             MessageLookupByLibrary.simpleMessage("resultaat"),
-        "referringPractitionerHistoryDialog_archivedPractitioner": m45,
+        "referringPractitionerHistoryDialog_archivedPractitioner": m47,
         "referringPractitionerHistoryDialog_close":
             MessageLookupByLibrary.simpleMessage("Sluiten"),
         "referringPractitionerHistoryDialog_currentPractitioner":
             MessageLookupByLibrary.simpleMessage("Huidige contactpersoon"),
-        "referringPractitionerHistoryDialog_fromTo": m46,
-        "referringPractitionerHistoryDialog_loadHistoryError": m47,
+        "referringPractitionerHistoryDialog_fromTo": m48,
+        "referringPractitionerHistoryDialog_loadHistoryError": m49,
         "referringPractitionerHistoryDialog_noHistory":
             MessageLookupByLibrary.simpleMessage(
                 "Er is voor deze aflevering nog geen fysiotherapeut geregistreerd."),
-        "referringPractitionerHistoryDialog_since": m48,
+        "referringPractitionerHistoryDialog_since": m50,
         "referringPractitionerHistory_help": MessageLookupByLibrary.simpleMessage(
             "In dit venster worden de zorgverleners weergegeven die als contactpersoon voor dit zorgtraject zijn aangewezen.\n\nElke regel vermeldt de naam van de zorgverlener en de periode waarin hij of zij is aangewezen. De vermelding „Huidige contactpersoon” geeft aan welke zorgverlener momenteel aan het zorgtraject is gekoppeld.\n\nDe vermelding „Gearchiveerd“ betekent dat het dossier van de zorgverlener is gearchiveerd; zijn of haar naam blijft zichtbaar in de geschiedenis.\n\nIn dit venster kunt u alleen de geschiedenis raadplegen. Sluit het venster om terug te keren naar het zorgtraject."),
         "referringPractitionerHistory_title":
@@ -1941,7 +1960,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Op dit scherm zijn de installatie-, diagnose- en onderhoudsfuncties van Companion gebundeld."),
         "settings_contextName": MessageLookupByLibrary.simpleMessage("Hulp"),
         "settings_continue": MessageLookupByLibrary.simpleMessage("Doorgaan"),
-        "settings_databaseResetError": m49,
+        "settings_databaseResetError": m51,
         "settings_databaseResetSuccess": MessageLookupByLibrary.simpleMessage(
             "Database gereset. Automatische back-up aangemaakt."),
         "settings_diagnostic": MessageLookupByLibrary.simpleMessage("Diagnose"),
@@ -1998,7 +2017,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Woede"),
         "speechDictationButton_download":
             MessageLookupByLibrary.simpleMessage("De module downloaden"),
-        "speechDictationButton_failure": m50,
+        "speechDictationButton_failure": m52,
         "speechDictationButton_information": MessageLookupByLibrary.simpleMessage(
             "Voor spraakdictee moet de optionele module ABAK Spraakdictee worden geïnstalleerd.\n\nDeze module is gratis en werkt lokaal op uw computer, zonder dat de spraakopnames via internet worden verzonden.\n\nDe download is ongeveer 1,5 GB groot."),
         "speechDictationButton_stop":

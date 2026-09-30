@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 
@@ -6,15 +7,40 @@ import 'package:path_provider/path_provider.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 class DatabaseService {
+  static const int schemaVersion = 30;
   static Database? _database;
+  static Completer<void>? _restoreGate;
 
   static Future<Database> get database async {
+    await _restoreGate?.future;
     if (_database != null && _database!.isOpen) {
       return _database!;
     }
 
     _database = await _initDatabase();
     return _database!;
+  }
+
+  /// Block new database users only during the final restore/rollback phase.
+  static Future<void> beginRestore() async {
+    if (_restoreGate != null) throw StateError('Restauration déjà en cours');
+    _restoreGate = Completer<void>();
+    try {
+      await closeDatabase();
+    } catch (_) {
+      _restoreGate!.complete();
+      _restoreGate = null;
+      rethrow;
+    }
+  }
+
+  static Future<void> endRestore() async {
+    try {
+      _database = await _initDatabase();
+    } finally {
+      _restoreGate?.complete();
+      _restoreGate = null;
+    }
   }
 
   static Future<void> closeDatabase() async {
@@ -59,9 +85,14 @@ class DatabaseService {
 
     debugPrint('📦 Base SQLite : $path');
 
+    return openDatabaseFile(path);
+  }
+
+  /// Open/migrate a prepared copy without replacing the active database.
+  static Future<Database> openDatabaseFile(String path) async {
     return openDatabase(
       path,
-      version: 30, //////////////////////
+      version: schemaVersion,
       onCreate: (db, version) async {
         await _createAllTables(db);
       },

@@ -480,10 +480,10 @@ class S {
     );
   }
 
-  /// `Cet écran présente les sauvegardes enregistrées dans Companion. Chaque ligne indique le nom du fichier, sa date de création, sa taille et son emplacement.\n\nLe bouton « Restaurer » permet de remplacer la base actuelle par celle de la sauvegarde choisie. Les données ajoutées ou modifiées après cette sauvegarde ne seront donc pas présentes dans la base restaurée.\n\nVérifiez la date de la sauvegarde et lisez le message de confirmation avant de poursuivre. Une copie de sécurité de la base actuelle est créée avant son remplacement.\n\nLe fichier de sauvegarde doit toujours être accessible à l’emplacement indiqué. S’il a été déplacé ou supprimé, la restauration ne pourra pas être effectuée.\n\nPour créer une nouvelle sauvegarde, utilisez l’action « Créer une sauvegarde » sur la page d’accueil.`
+  /// `Les nouvelles sauvegardes ZIP contiennent la base et les fichiers de tous les dossiers patients associés, y compris Bilan, Rapport et Autre. Un dossier associé inaccessible fait échouer la sauvegarde. Les documents non rattachés à un dossier patient ne sont pas inclus.\n\nRestaurer remplace la base actuelle : les données ajoutées après la sauvegarde ne figurent plus dans la base restaurée. Les versions sauvegardées des documents sont rétablies, avec une copie des dossiers actuels remplacés. Les fichiers actuels absents de la sauvegarde sont conservés. Les emplacements des copies de sécurité sont affichés à la fin.\n\nSi le dossier d’origine est indisponible, choisissez son nouvel emplacement. « Ouvrir une sauvegarde » permet de restaurer un fichier ZIP ou une ancienne sauvegarde .db ; cette dernière ne restaure que la base.`
   String get backupHistory_help {
     return Intl.message(
-      'Cet écran présente les sauvegardes enregistrées dans Companion. Chaque ligne indique le nom du fichier, sa date de création, sa taille et son emplacement.\n\nLe bouton « Restaurer » permet de remplacer la base actuelle par celle de la sauvegarde choisie. Les données ajoutées ou modifiées après cette sauvegarde ne seront donc pas présentes dans la base restaurée.\n\nVérifiez la date de la sauvegarde et lisez le message de confirmation avant de poursuivre. Une copie de sécurité de la base actuelle est créée avant son remplacement.\n\nLe fichier de sauvegarde doit toujours être accessible à l’emplacement indiqué. S’il a été déplacé ou supprimé, la restauration ne pourra pas être effectuée.\n\nPour créer une nouvelle sauvegarde, utilisez l’action « Créer une sauvegarde » sur la page d’accueil.',
+      'Les nouvelles sauvegardes ZIP contiennent la base et les fichiers de tous les dossiers patients associés, y compris Bilan, Rapport et Autre. Un dossier associé inaccessible fait échouer la sauvegarde. Les documents non rattachés à un dossier patient ne sont pas inclus.\n\nRestaurer remplace la base actuelle : les données ajoutées après la sauvegarde ne figurent plus dans la base restaurée. Les versions sauvegardées des documents sont rétablies, avec une copie des dossiers actuels remplacés. Les fichiers actuels absents de la sauvegarde sont conservés. Les emplacements des copies de sécurité sont affichés à la fin.\n\nSi le dossier d’origine est indisponible, choisissez son nouvel emplacement. « Ouvrir une sauvegarde » permet de restaurer un fichier ZIP ou une ancienne sauvegarde .db ; cette dernière ne restaure que la base.',
       name: 'backupHistory_help',
       desc: '',
       args: [],
@@ -510,10 +510,10 @@ class S {
     );
   }
 
-  /// `Cette opération remplacera totalement la base actuelle.\n\nUne sauvegarde automatique de sécurité sera créée avant restauration.\n\nContinuer ?`
+  /// `La base actuelle sera remplacée par celle de la sauvegarde. Les documents sauvegardés seront rétablis ; une copie des dossiers actuels remplacés sera conservée. Les fichiers actuels absents de la sauvegarde seront conservés.\n\nUne copie de sécurité de la base actuelle sera également créée. Les anciennes sauvegardes .db ne contiennent pas de documents.\n\nContinuer ?`
   String get backupHistory_restoreWarning {
     return Intl.message(
-      'Cette opération remplacera totalement la base actuelle.\n\nUne sauvegarde automatique de sécurité sera créée avant restauration.\n\nContinuer ?',
+      'La base actuelle sera remplacée par celle de la sauvegarde. Les documents sauvegardés seront rétablis ; une copie des dossiers actuels remplacés sera conservée. Les fichiers actuels absents de la sauvegarde seront conservés.\n\nUne copie de sécurité de la base actuelle sera également créée. Les anciennes sauvegardes .db ne contiennent pas de documents.\n\nContinuer ?',
       name: 'backupHistory_restoreWarning',
       desc: '',
       args: [],
@@ -9992,6 +9992,86 @@ class S {
     return Intl.message(
       'Un dossier par patient, contenant Bilan, Rapport et Autre. Création à l’ouverture de la fiche ; les fichiers existants ne sont pas déplacés.',
       name: 'patientDocuments_settingsHelp',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Autoriser l’accès au dossier : {path}`
+  String backupArchive_authorizeFolder(Object path) {
+    return Intl.message(
+      'Autoriser l’accès au dossier : $path',
+      name: 'backupArchive_authorizeFolder',
+      desc: '',
+      args: [path],
+    );
+  }
+
+  /// `Choisir le dossier où restaurer les documents de : {path}`
+  String backupArchive_restoreFolder(Object path) {
+    return Intl.message(
+      'Choisir le dossier où restaurer les documents de : $path',
+      name: 'backupArchive_restoreFolder',
+      desc: '',
+      args: [path],
+    );
+  }
+
+  /// `Une sauvegarde ou une restauration est déjà en cours.`
+  String get backupArchive_busy {
+    return Intl.message(
+      'Une sauvegarde ou une restauration est déjà en cours.',
+      name: 'backupArchive_busy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sauvegarde ou restauration en cours… Veuillez patienter.`
+  String get backupArchive_working {
+    return Intl.message(
+      'Sauvegarde ou restauration en cours… Veuillez patienter.',
+      name: 'backupArchive_working',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Copies de sécurité conservées :`
+  String get backupArchive_safetyCopies {
+    return Intl.message(
+      'Copies de sécurité conservées :',
+      name: 'backupArchive_safetyCopies',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cette ancienne sauvegarde contient uniquement la base. Les fichiers des dossiers patients n’ont pas été restaurés.`
+  String get backupArchive_legacy {
+    return Intl.message(
+      'Cette ancienne sauvegarde contient uniquement la base. Les fichiers des dossiers patients n’ont pas été restaurés.',
+      name: 'backupArchive_legacy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Ouvrir une sauvegarde…`
+  String get backupArchive_chooseFile {
+    return Intl.message(
+      'Ouvrir une sauvegarde…',
+      name: 'backupArchive_chooseFile',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Résultat de la restauration`
+  String get backupArchive_resultTitle {
+    return Intl.message(
+      'Résultat de la restauration',
+      name: 'backupArchive_resultTitle',
       desc: '',
       args: [],
     );

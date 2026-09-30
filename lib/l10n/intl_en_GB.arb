@@ -43,10 +43,10 @@
   "backupHistory_cancel": "Cancel",
   "backupHistory_empty": "No backups have been saved.",
   "backupHistory_fileSize": "{size}",
-  "backupHistory_help": "This screen displays the backups saved in Companion. Each row shows the file name, creation date, size, and location.\n\nThe \"Restore\" button replaces the current database with the one from the selected backup. Data added or modified after this backup will therefore not be included in the restored database.\n\nCheck the backup date and read the confirmation message before proceeding. A backup copy of the current database is created before it is replaced.\n\nThe backup file must always be accessible at the specified location. If it has been moved or deleted, the restore cannot be performed.\n\nTo create a new backup, use the “Create a Backup” action on the home page.",
+  "backupHistory_help": "New ZIP backups include the database and all associated patient folders, including Bilan, Rapport and Autre. A backup fails if an associated folder is unavailable. Documents outside associated patient folders are not included.\n\nRestoring replaces the current database, so data added after the backup will no longer appear in it. Saved document versions are restored and copies of replaced current folders are kept. Current files absent from the backup are retained. Safety copy locations are shown when finished.\n\nIf an original folder is unavailable, choose its new location. Open a backup restores a ZIP file or an older .db backup; the latter restores only the database.",
   "backupHistory_restore": "Restore",
   "backupHistory_restoreTitle": "Restore this backup?",
-  "backupHistory_restoreWarning": "This operation will completely replace the current database.\n\nAn automatic backup will be created before restoration.\n\nContinue?",
+  "backupHistory_restoreWarning": "The current database will be replaced with the backup. Saved documents will be restored, keeping a copy of the current folders being replaced. Current files absent from the backup will be retained.\n\nA safety copy of the current database will also be created. Older .db backups do not contain documents.\n\nContinue?",
   "backupHistory_title": "Backup History",
   "bodymap_help": "The pain map helps identify the patient’s painful areas for the current care episode.\n\nChoose a view, then click on an area of the silhouette or select it from the list. You can add a note and, if necessary, rate the intensity on a scale of 0 to 10. Use the trash can icon to remove an area from the record.\n\nClick “Save” to save your assessment in Companion. When you exit the screen with unsaved changes, you’ll be prompted to either save or discard them.\n\n“Export Both Maps” creates a PNG image in the location of your choice on your computer. This export does not replace saving the survey.\n\nThis module is an initial version, intended to evolve based on your feedback. Test it in your practice and let us know what features you’d like to see added or improved.",
   "bodymap_title": "Pain Map",
@@ -993,5 +993,13 @@
   "patientDocuments_retry": "Try again",
   "patientDocuments_chooseRoot": "Choose shared folder",
   "patientDocuments_open": "Open patient folder",
-  "patientDocuments_settingsHelp": "One folder per patient, containing Bilan, Rapport and Autre. Created when the patient record is opened; existing files are not moved."
+  "patientDocuments_settingsHelp": "One folder per patient, containing Bilan, Rapport and Autre. Created when the patient record is opened; existing files are not moved.",
+  "backupArchive_authorizeFolder": "Authorise access to folder: {path}",
+  "backupArchive_restoreFolder": "Choose where to restore documents from: {path}",
+  "backupArchive_busy": "A backup or restore is already in progress.",
+  "backupArchive_working": "Backing up or restoring… Please wait.",
+  "backupArchive_safetyCopies": "Safety copies retained:",
+  "backupArchive_legacy": "This older backup contains only the database. Patient folder files have not been restored.",
+  "backupArchive_chooseFile": "Open a backup…",
+  "backupArchive_resultTitle": "Restore result"
 }

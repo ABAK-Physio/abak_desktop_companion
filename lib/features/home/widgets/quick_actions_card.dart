@@ -1,10 +1,10 @@
+import '../../maintenance/widgets/maintenance_progress.dart';
 import 'package:flutter/material.dart';
 
 import '../../../generated/l10n.dart';
 import '../../import_export/abak_import_launcher.dart';
 import '../../import_export/import_history_screen.dart';
 import '../../maintenance/services/local_database_backup_service.dart';
-
 
 class QuickActionsCard extends StatelessWidget {
   final ValueChanged<AbakImportLauncherResult>? onImportCompleted;
@@ -81,13 +81,15 @@ class QuickActionsCard extends StatelessWidget {
                   onPressed: () async {
                     final s = S.of(context);
 
-                    final result = await LocalDatabaseBackupService().createBackup(
-                      databaseNotFoundMessage:
-                      s.localDatabaseBackup_databaseNotFound,
-                      chooseBackupFolderTitle:
-                      s.localDatabaseBackup_chooseBackupFolder,
-                      cancelledMessage:
-                      s.localDatabaseBackup_cancelled,
+                    final result = await withMaintenanceProgress(
+                      context,
+                      () => LocalDatabaseBackupService().createBackup(
+                        databaseNotFoundMessage:
+                            s.localDatabaseBackup_databaseNotFound,
+                        chooseBackupFolderTitle:
+                            s.localDatabaseBackup_chooseBackupFolder,
+                        cancelledMessage: s.localDatabaseBackup_cancelled,
+                      ),
                     );
 
                     if (!context.mounted) return;
@@ -97,7 +99,11 @@ class QuickActionsCard extends StatelessWidget {
                         content: Text(
                           result.success
                               ? S.of(context).home_backup_successfully_created
-                              : S.of(context).home_error_while_saving(result.error ?? ''),
+                              : S
+                                    .of(context)
+                                    .home_error_while_saving(
+                                      result.error ?? '',
+                                    ),
                         ),
                       ),
                     );

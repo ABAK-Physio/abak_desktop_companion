@@ -1,3 +1,5 @@
+import 'package:file_picker/file_picker.dart';
+import 'widgets/maintenance_progress.dart';
 import 'package:flutter/material.dart';
 import 'package:abak_shared/abak_shared.dart';
 
@@ -30,8 +32,8 @@ class _BackupHistoryScreenState extends State<BackupHistoryScreen> {
     _futureBackups = _repository.getBackups();
   }
 
-  Future<void> _restoreBackup(DatabaseBackup backup) async {
-    final s=S.of(context);
+  Future<void> _restoreBackup(String backupPath) async {
+    final s = S.of(context);
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) {
@@ -55,18 +57,27 @@ class _BackupHistoryScreenState extends State<BackupHistoryScreen> {
 
     if (confirmed != true || !mounted) return;
 
-    final result = await _restoreService.restoreDatabase(
-      backupPath: backup.filePath,
+    final result = await withMaintenanceProgress(
+      context,
+      () => _restoreService.restoreDatabase(backupPath: backupPath),
     );
 
     if (!mounted) return;
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(result.message),
-        backgroundColor: result.success ? Colors.green : Colors.red,
+    await showDialog<void>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(s.backupArchive_resultTitle),
+        content: SingleChildScrollView(child: SelectableText(result.message)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('OK'),
+          ),
+        ],
       ),
     );
+    if (!mounted) return;
 
     setState(() {
       _futureBackups = _repository.getBackups();
@@ -75,10 +86,23 @@ class _BackupHistoryScreenState extends State<BackupHistoryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final s=S.of(context);
+    final s = S.of(context);
     return Scaffold(
       appBar: AppBar(
         actions: [
+          TextButton.icon(
+            icon: const Icon(Icons.folder_open),
+            label: Text(s.backupArchive_chooseFile),
+            onPressed: () async {
+              final picked = await FilePicker.platform.pickFiles(
+                dialogTitle: s.backupArchive_chooseFile,
+                type: FileType.custom,
+                allowedExtensions: ['zip', 'db'],
+              );
+              final path = picked?.files.single.path;
+              if (path != null && mounted) await _restoreBackup(path);
+            },
+          ),
           ContextHelpButton(
             technicalInformationLabel: S.of(context).g_helpTooltip,
             title: s.backupHistory_title,
@@ -114,7 +138,7 @@ class _BackupHistoryScreenState extends State<BackupHistoryScreen> {
             itemBuilder: (context, index) {
               return _BackupTile(
                 backup: backups[index],
-                onRestore: () => _restoreBackup(backups[index]),
+                onRestore: () => _restoreBackup(backups[index].filePath),
               );
             },
           );

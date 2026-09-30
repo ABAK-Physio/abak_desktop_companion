@@ -43,10 +43,10 @@
   "backupHistory_cancel": "Annulla",
   "backupHistory_empty": "Non è stato salvato alcun backup.",
   "backupHistory_fileSize": "{size}",
-  "backupHistory_help": "Questa schermata mostra i backup salvati in Companion. Ogni riga riporta il nome del file, la data di creazione, la dimensione e il percorso.\n\nIl pulsante «Ripristina» consente di sostituire il database attuale con quello del backup selezionato. I dati aggiunti o modificati dopo questo backup non saranno quindi presenti nel database ripristinato.\n\nVerificate la data del backup e leggete il messaggio di conferma prima di procedere. Prima della sostituzione viene creata una copia di sicurezza del database attuale.\n\nIl file di backup deve essere sempre accessibile nel percorso indicato. Se è stato spostato o eliminato, il ripristino non potrà essere effettuato.\n\nPer creare un nuovo backup, utilizzare l’azione «Crea un backup» nella pagina iniziale.",
+  "backupHistory_help": "I nuovi backup ZIP contengono il database e tutte le cartelle pazienti associate, incluse Bilan, Rapport e Autre. Se una cartella associata non è accessibile, il backup non riesce. I documenti esterni a queste cartelle non sono inclusi.\n\nIl ripristino sostituisce il database attuale: i dati aggiunti dopo il backup non vi saranno più presenti. Le versioni salvate dei documenti vengono ripristinate conservando copie delle cartelle sostituite e i file attuali assenti dal backup. Al termine vengono mostrati i percorsi delle copie di sicurezza.\n\nSe la cartella originale non è disponibile, scegliere una nuova posizione. «Apri un backup» consente di ripristinare un file ZIP o un vecchio backup .db; quest’ultimo ripristina solo il database.",
   "backupHistory_restore": "Ripristina",
   "backupHistory_restoreTitle": "Ripristinare questo backup?",
-  "backupHistory_restoreWarning": "Questa operazione sostituirà completamente il database attuale.\n\nPrima del ripristino verrà creato un backup di sicurezza automatico.\n\nVuoi continuare?",
+  "backupHistory_restoreWarning": "Il database attuale sarà sostituito dal backup. Saranno ripristinati i documenti salvati, conservando una copia delle cartelle attuali sostituite. I file attuali assenti dal backup saranno conservati.\n\nVerrà creata anche una copia di sicurezza del database attuale. I vecchi backup .db non contengono documenti.\n\nContinuare?",
   "backupHistory_title": "Cronologia dei backup",
   "bodymap_help": "La mappa del dolore consente di individuare le zone dolorose del paziente per la seduta terapeutica in corso.\n\nScegli una vista, quindi clicca su una zona della sagoma o selezionala dall'elenco. Puoi aggiungere un'osservazione e, se necessario, un'intensità da 0 a 10. Utilizza il cestino per rimuovere una zona dalla registrazione.\n\nClicca su «Salva» per conservare il tuo rapporto in Companion. Quando esci dalla schermata con modifiche non salvate, ti verrà chiesto se desideri salvarle o ignorarle.\n\n«Esporta entrambe le mappe» crea un’immagine PNG nella posizione scelta sul tuo computer. Questa esportazione non sostituisce il salvataggio del rilevamento.\n\nQuesto modulo è una prima proposta, destinata a evolversi in base ai vostri feedback. Provatelo nella vostra pratica e segnalateci le funzionalità che vorreste vedere aggiunte o migliorate.",
   "bodymap_title": "Mappa del dolore",
@@ -993,5 +993,13 @@
   "patientDocuments_retry": "Riprova",
   "patientDocuments_chooseRoot": "Scegli cartella comune",
   "patientDocuments_open": "Apri cartella paziente",
-  "patientDocuments_settingsHelp": "Una cartella per paziente, contenente Bilan, Rapport e Autre. Creata all’apertura della scheda; i file esistenti non vengono spostati."
+  "patientDocuments_settingsHelp": "Una cartella per paziente, contenente Bilan, Rapport e Autre. Creata all’apertura della scheda; i file esistenti non vengono spostati.",
+  "backupArchive_authorizeFolder": "Autorizzare l’accesso alla cartella: {path}",
+  "backupArchive_restoreFolder": "Scegliere dove ripristinare i documenti di: {path}",
+  "backupArchive_busy": "È già in corso un backup o un ripristino.",
+  "backupArchive_working": "Backup o ripristino in corso… Attendere.",
+  "backupArchive_safetyCopies": "Copie di sicurezza conservate:",
+  "backupArchive_legacy": "Questo vecchio backup contiene solo il database. I file delle cartelle pazienti non sono stati ripristinati.",
+  "backupArchive_chooseFile": "Apri un backup…",
+  "backupArchive_resultTitle": "Risultato del ripristino"
 }
