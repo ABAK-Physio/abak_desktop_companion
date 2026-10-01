@@ -18,8 +18,10 @@ class S {
   static S? _current;
 
   static S get current {
-    assert(_current != null,
-        'No instance of S was loaded. Try to initialize the S delegate before accessing S.current.');
+    assert(
+      _current != null,
+      'No instance of S was loaded. Try to initialize the S delegate before accessing S.current.',
+    );
     return _current!;
   }
 
@@ -41,8 +43,10 @@ class S {
 
   static S of(BuildContext context) {
     final instance = S.maybeOf(context);
-    assert(instance != null,
-        'No instance of S present in the widget tree. Did you add S.delegate in localizationsDelegates?');
+    assert(
+      instance != null,
+      'No instance of S present in the widget tree. Did you add S.delegate in localizationsDelegates?',
+    );
     return instance!;
   }
 
@@ -460,51 +464,11 @@ class S {
     );
   }
 
-  /// `Choisir le dossier où restaurer les documents de : {path}`
-  String backupArchive_restoreFolder(Object path) {
-    return Intl.message(
-      'Choisir le dossier où restaurer les documents de : $path',
-      name: 'backupArchive_restoreFolder',
-      desc: '',
-      args: [path],
-    );
-  }
-
   /// `Une sauvegarde ou une restauration est déjà en cours."`
   String get backupArchive_busy {
     return Intl.message(
       'Une sauvegarde ou une restauration est déjà en cours."',
       name: 'backupArchive_busy',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Sauvegarde ou restauration en cours… Veuillez patienter.`
-  String get backupArchive_working {
-    return Intl.message(
-      'Sauvegarde ou restauration en cours… Veuillez patienter.',
-      name: 'backupArchive_working',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Copies de sécurité conservées :`
-  String get backupArchive_safetyCopies {
-    return Intl.message(
-      'Copies de sécurité conservées :',
-      name: 'backupArchive_safetyCopies',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Cette ancienne sauvegarde contient uniquement la base. Les fichiers des dossiers patients n’ont pas été restaurés.`
-  String get backupArchive_legacy {
-    return Intl.message(
-      'Cette ancienne sauvegarde contient uniquement la base. Les fichiers des dossiers patients n’ont pas été restaurés.',
-      name: 'backupArchive_legacy',
       desc: '',
       args: [],
     );
@@ -520,11 +484,51 @@ class S {
     );
   }
 
+  /// `Cette ancienne sauvegarde contient uniquement la base. Les fichiers des dossiers patients n’ont pas été restaurés.`
+  String get backupArchive_legacy {
+    return Intl.message(
+      'Cette ancienne sauvegarde contient uniquement la base. Les fichiers des dossiers patients n’ont pas été restaurés.',
+      name: 'backupArchive_legacy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choisir le dossier où restaurer les documents de : {path}`
+  String backupArchive_restoreFolder(Object path) {
+    return Intl.message(
+      'Choisir le dossier où restaurer les documents de : $path',
+      name: 'backupArchive_restoreFolder',
+      desc: '',
+      args: [path],
+    );
+  }
+
   /// `Résultat de la restauration`
   String get backupArchive_resultTitle {
     return Intl.message(
       'Résultat de la restauration',
       name: 'backupArchive_resultTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Copies de sécurité conservées :`
+  String get backupArchive_safetyCopies {
+    return Intl.message(
+      'Copies de sécurité conservées :',
+      name: 'backupArchive_safetyCopies',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sauvegarde ou restauration en cours… Veuillez patienter.`
+  String get backupArchive_working {
+    return Intl.message(
+      'Sauvegarde ou restauration en cours… Veuillez patienter.',
+      name: 'backupArchive_working',
       desc: '',
       args: [],
     );
@@ -690,21 +694,21 @@ class S {
     );
   }
 
-  /// `Évolution`
-  String get careEpisodeDetail_evolution {
-    return Intl.message(
-      'Évolution',
-      name: 'careEpisodeDetail_evolution',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Détail de la prise en charge`
   String get careEpisodeDetail_detail_de_la_prise_en_charge {
     return Intl.message(
       'Détail de la prise en charge',
       name: 'careEpisodeDetail_detail_de_la_prise_en_charge',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Évolution`
+  String get careEpisodeDetail_evolution {
+    return Intl.message(
+      'Évolution',
+      name: 'careEpisodeDetail_evolution',
       desc: '',
       args: [],
     );
@@ -760,36 +764,6 @@ class S {
     );
   }
 
-  /// `Médecin prescripteur`
-  String get careEpisodePanel_prescribingDoctor {
-    return Intl.message(
-      'Médecin prescripteur',
-      name: 'careEpisodePanel_prescribingDoctor',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Archiver cette prise en charge ?`
-  String get careEpisodePanel_archiveCareEpisodeTitle {
-    return Intl.message(
-      'Archiver cette prise en charge ?',
-      name: 'careEpisodePanel_archiveCareEpisodeTitle',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Cette prise en charge sera retirée de la liste. Ses données seront conservées par archivage.`
-  String get careEpisodePanel_archiveCareEpisodeMessage {
-    return Intl.message(
-      'Cette prise en charge sera retirée de la liste. Ses données seront conservées par archivage.',
-      name: 'careEpisodePanel_archiveCareEpisodeMessage',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Archiver`
   String get careEpisodePanel_archive {
     return Intl.message(
@@ -800,11 +774,11 @@ class S {
     );
   }
 
-  /// `Prise en charge archivée.`
-  String get careEpisodePanel_careEpisodeArchived {
+  /// `Archiver la prise en charge`
+  String get careEpisodePanel_archiveCareEpisode {
     return Intl.message(
-      'Prise en charge archivée.',
-      name: 'careEpisodePanel_careEpisodeArchived',
+      'Archiver la prise en charge',
+      name: 'careEpisodePanel_archiveCareEpisode',
       desc: '',
       args: [],
     );
@@ -820,41 +794,21 @@ class S {
     );
   }
 
-  /// `Vous trouvez ici vos épisodes de soins archivés.`
-  String get careEpisodePanel_archivedCareEpisodesHelp {
+  /// `Cette prise en charge sera retirée de la liste. Ses données seront conservées par archivage.`
+  String get careEpisodePanel_archiveCareEpisodeMessage {
     return Intl.message(
-      'Vous trouvez ici vos épisodes de soins archivés.',
-      name: 'careEpisodePanel_archivedCareEpisodesHelp',
+      'Cette prise en charge sera retirée de la liste. Ses données seront conservées par archivage.',
+      name: 'careEpisodePanel_archiveCareEpisodeMessage',
       desc: '',
       args: [],
     );
   }
 
-  /// `Prise en charge restaurée.`
-  String get careEpisodePanel_careEpisodeRestored {
+  /// `Archiver cette prise en charge ?`
+  String get careEpisodePanel_archiveCareEpisodeTitle {
     return Intl.message(
-      'Prise en charge restaurée.',
-      name: 'careEpisodePanel_careEpisodeRestored',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Impossible de restaurer la prise en charge. Veuillez réessayer.`
-  String get careEpisodePanel_restoreCareEpisodeError {
-    return Intl.message(
-      'Impossible de restaurer la prise en charge. Veuillez réessayer.',
-      name: 'careEpisodePanel_restoreCareEpisodeError',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Prises en charge`
-  String get careEpisodePanel_careEpisodes {
-    return Intl.message(
-      'Prises en charge',
-      name: 'careEpisodePanel_careEpisodes',
+      'Archiver cette prise en charge ?',
+      name: 'careEpisodePanel_archiveCareEpisodeTitle',
       desc: '',
       args: [],
     );
@@ -870,41 +824,31 @@ class S {
     );
   }
 
-  /// `Nouvelle prise en charge`
-  String get careEpisodePanel_newCareEpisode {
+  /// `Vous trouvez ici vos épisodes de soins archivés.`
+  String get careEpisodePanel_archivedCareEpisodesHelp {
     return Intl.message(
-      'Nouvelle prise en charge',
-      name: 'careEpisodePanel_newCareEpisode',
+      'Vous trouvez ici vos épisodes de soins archivés.',
+      name: 'careEpisodePanel_archivedCareEpisodesHelp',
       desc: '',
       args: [],
     );
   }
 
-  /// `Impossible de charger les prises en charge.`
-  String get careEpisodePanel_loadCareEpisodesError {
+  /// `Archivée le {date}`
+  String careEpisodePanel_archivedOn(Object date) {
     return Intl.message(
-      'Impossible de charger les prises en charge.',
-      name: 'careEpisodePanel_loadCareEpisodesError',
+      'Archivée le $date',
+      name: 'careEpisodePanel_archivedOn',
       desc: '',
-      args: [],
+      args: [date],
     );
   }
 
-  /// `Aucune prise en charge archivée pour ce patient.`
-  String get careEpisodePanel_noArchivedCareEpisodes {
+  /// `Prise en charge archivée.`
+  String get careEpisodePanel_careEpisodeArchived {
     return Intl.message(
-      'Aucune prise en charge archivée pour ce patient.',
-      name: 'careEpisodePanel_noArchivedCareEpisodes',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Aucune prise en charge créée pour ce patient.`
-  String get careEpisodePanel_noCareEpisodes {
-    return Intl.message(
-      'Aucune prise en charge créée pour ce patient.',
-      name: 'careEpisodePanel_noCareEpisodes',
+      'Prise en charge archivée.',
+      name: 'careEpisodePanel_careEpisodeArchived',
       desc: '',
       args: [],
     );
@@ -920,21 +864,21 @@ class S {
     );
   }
 
-  /// `Archivée le {date}`
-  String careEpisodePanel_archivedOn(Object date) {
+  /// `Prise en charge restaurée.`
+  String get careEpisodePanel_careEpisodeRestored {
     return Intl.message(
-      'Archivée le $date',
-      name: 'careEpisodePanel_archivedOn',
+      'Prise en charge restaurée.',
+      name: 'careEpisodePanel_careEpisodeRestored',
       desc: '',
-      args: [date],
+      args: [],
     );
   }
 
-  /// `Restaurer`
-  String get careEpisodePanel_restore {
+  /// `Prises en charge`
+  String get careEpisodePanel_careEpisodes {
     return Intl.message(
-      'Restaurer',
-      name: 'careEpisodePanel_restore',
+      'Prises en charge',
+      name: 'careEpisodePanel_careEpisodes',
       desc: '',
       args: [],
     );
@@ -960,11 +904,71 @@ class S {
     );
   }
 
-  /// `Archiver la prise en charge`
-  String get careEpisodePanel_archiveCareEpisode {
+  /// `Impossible de charger les prises en charge.`
+  String get careEpisodePanel_loadCareEpisodesError {
     return Intl.message(
-      'Archiver la prise en charge',
-      name: 'careEpisodePanel_archiveCareEpisode',
+      'Impossible de charger les prises en charge.',
+      name: 'careEpisodePanel_loadCareEpisodesError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Nouvelle prise en charge`
+  String get careEpisodePanel_newCareEpisode {
+    return Intl.message(
+      'Nouvelle prise en charge',
+      name: 'careEpisodePanel_newCareEpisode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Aucune prise en charge archivée pour ce patient.`
+  String get careEpisodePanel_noArchivedCareEpisodes {
+    return Intl.message(
+      'Aucune prise en charge archivée pour ce patient.',
+      name: 'careEpisodePanel_noArchivedCareEpisodes',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Aucune prise en charge créée pour ce patient.`
+  String get careEpisodePanel_noCareEpisodes {
+    return Intl.message(
+      'Aucune prise en charge créée pour ce patient.',
+      name: 'careEpisodePanel_noCareEpisodes',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Médecin prescripteur`
+  String get careEpisodePanel_prescribingDoctor {
+    return Intl.message(
+      'Médecin prescripteur',
+      name: 'careEpisodePanel_prescribingDoctor',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Restaurer`
+  String get careEpisodePanel_restore {
+    return Intl.message(
+      'Restaurer',
+      name: 'careEpisodePanel_restore',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Impossible de restaurer la prise en charge. Veuillez réessayer.`
+  String get careEpisodePanel_restoreCareEpisodeError {
+    return Intl.message(
+      'Impossible de restaurer la prise en charge. Veuillez réessayer.',
+      name: 'careEpisodePanel_restoreCareEpisodeError',
       desc: '',
       args: [],
     );
@@ -1550,191 +1554,86 @@ class S {
     );
   }
 
-  /// `Annuler`
-  String get careEpisodeReportsWorkspaceScreen_cancel {
+  /// `Ajouter`
+  String get careEpisodeReportsWorkspaceScreen_add {
     return Intl.message(
-      'Annuler',
-      name: 'careEpisodeReportsWorkspaceScreen_cancel',
+      'Ajouter',
+      name: 'careEpisodeReportsWorkspaceScreen_add',
       desc: '',
       args: [],
     );
   }
 
-  /// `Autoriser un dossier`
-  String get careEpisodeReportsWorkspaceScreen_authorizeDirectory {
+  /// `Ajouter à la suite`
+  String get careEpisodeReportsWorkspaceScreen_append {
     return Intl.message(
-      'Autoriser un dossier',
-      name: 'careEpisodeReportsWorkspaceScreen_authorizeDirectory',
+      'Ajouter à la suite',
+      name: 'careEpisodeReportsWorkspaceScreen_append',
       desc: '',
       args: [],
     );
   }
 
-  /// `Un DOCX est déjà associé à ce bilan. Voulez-vous remplacer le fichier existant ou créer un nouveau fichier ?`
-  String get careEpisodeReportsWorkspaceScreen_existingAssessmentDocx {
+  /// `Impossible de mettre le bilan à la corbeille.`
+  String get careEpisodeReportsWorkspaceScreen_archiveAssessmentError {
     return Intl.message(
-      'Un DOCX est déjà associé à ce bilan. Voulez-vous remplacer le fichier existant ou créer un nouveau fichier ?',
-      name: 'careEpisodeReportsWorkspaceScreen_existingAssessmentDocx',
+      'Impossible de mettre le bilan à la corbeille.',
+      name: 'careEpisodeReportsWorkspaceScreen_archiveAssessmentError',
       desc: '',
       args: [],
     );
   }
 
-  /// `Un DOCX est déjà associé à ce rapport. Voulez-vous remplacer le fichier existant ou créer un nouveau fichier ?`
-  String get careEpisodeReportsWorkspaceScreen_existingReportDocx {
+  /// `Le bilan « {title} » ne sera plus affiché dans l’historique.`
+  String careEpisodeReportsWorkspaceScreen_archiveAssessmentMessage(
+    Object title,
+  ) {
     return Intl.message(
-      'Un DOCX est déjà associé à ce rapport. Voulez-vous remplacer le fichier existant ou créer un nouveau fichier ?',
-      name: 'careEpisodeReportsWorkspaceScreen_existingReportDocx',
+      'Le bilan « $title » ne sera plus affiché dans l’historique.',
+      name: 'careEpisodeReportsWorkspaceScreen_archiveAssessmentMessage',
+      desc: '',
+      args: [title],
+    );
+  }
+
+  /// `Impossible de mettre le rapport à la corbeille.`
+  String get careEpisodeReportsWorkspaceScreen_archiveReportError {
+    return Intl.message(
+      'Impossible de mettre le rapport à la corbeille.',
+      name: 'careEpisodeReportsWorkspaceScreen_archiveReportError',
       desc: '',
       args: [],
     );
   }
 
-  /// `Créer un nouveau`
-  String get careEpisodeReportsWorkspaceScreen_createNew {
+  /// `Le rapport « {title} » sera placé dans la corbeille. Il pourra être restauré ultérieurement.`
+  String careEpisodeReportsWorkspaceScreen_archiveReportMessage(Object title) {
     return Intl.message(
-      'Créer un nouveau',
-      name: 'careEpisodeReportsWorkspaceScreen_createNew',
+      'Le rapport « $title » sera placé dans la corbeille. Il pourra être restauré ultérieurement.',
+      name: 'careEpisodeReportsWorkspaceScreen_archiveReportMessage',
       desc: '',
-      args: [],
+      args: [title],
     );
   }
 
-  /// `Remplacer`
-  String get careEpisodeReportsWorkspaceScreen_replace {
+  /// `Bilan_{patientName}_{title}`
+  String careEpisodeReportsWorkspaceScreen_assessmentFileName(
+    Object patientName,
+    Object title,
+  ) {
     return Intl.message(
-      'Remplacer',
-      name: 'careEpisodeReportsWorkspaceScreen_replace',
+      'Bilan_${patientName}_$title',
+      name: 'careEpisodeReportsWorkspaceScreen_assessmentFileName',
       desc: '',
-      args: [],
+      args: [patientName, title],
     );
   }
 
-  /// `Rédacteur`
-  String get careEpisodeReportsWorkspaceScreen_author {
+  /// `bilan`
+  String get careEpisodeReportsWorkspaceScreen_assessmentLabel {
     return Intl.message(
-      'Rédacteur',
-      name: 'careEpisodeReportsWorkspaceScreen_author',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Valider`
-  String get careEpisodeReportsWorkspaceScreen_confirm {
-    return Intl.message(
-      'Valider',
-      name: 'careEpisodeReportsWorkspaceScreen_confirm',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Destinataire(s)`
-  String get careEpisodeReportsWorkspaceScreen_recipients {
-    return Intl.message(
-      'Destinataire(s)',
-      name: 'careEpisodeReportsWorkspaceScreen_recipients',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Un travail en cours a déjà été sauvegardé automatiquement.<br><br>Souhaitez-vous reprendre ce brouillon ou commencer un nouveau rapport ?`
-  String get careEpisodeReportsWorkspaceScreen_resumeReportDraftMessage {
-    return Intl.message(
-      'Un travail en cours a déjà été sauvegardé automatiquement.<br><br>Souhaitez-vous reprendre ce brouillon ou commencer un nouveau rapport ?',
-      name: 'careEpisodeReportsWorkspaceScreen_resumeReportDraftMessage',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Un travail en cours a déjà été sauvegardé automatiquement.<br><br>Souhaitez-vous reprendre ce brouillon ou commencer un nouveau bilan ?`
-  String get careEpisodeReportsWorkspaceScreen_resumeAssessmentDraftMessage {
-    return Intl.message(
-      'Un travail en cours a déjà été sauvegardé automatiquement.<br><br>Souhaitez-vous reprendre ce brouillon ou commencer un nouveau bilan ?',
-      name: 'careEpisodeReportsWorkspaceScreen_resumeAssessmentDraftMessage',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Reprendre le brouillon`
-  String get careEpisodeReportsWorkspaceScreen_resumeDraft {
-    return Intl.message(
-      'Reprendre le brouillon',
-      name: 'careEpisodeReportsWorkspaceScreen_resumeDraft',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Nouveau rapport`
-  String get careEpisodeReportsWorkspaceScreen_newReport {
-    return Intl.message(
-      'Nouveau rapport',
-      name: 'careEpisodeReportsWorkspaceScreen_newReport',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Nouveau bilan`
-  String get careEpisodeReportsWorkspaceScreen_newAssessment {
-    return Intl.message(
-      'Nouveau bilan',
-      name: 'careEpisodeReportsWorkspaceScreen_newAssessment',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Impossible d’ouvrir le brouillon du rapport.`
-  String get careEpisodeReportsWorkspaceScreen_openReportDraftError {
-    return Intl.message(
-      'Impossible d’ouvrir le brouillon du rapport.',
-      name: 'careEpisodeReportsWorkspaceScreen_openReportDraftError',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Le rapport est introuvable.`
-  String get careEpisodeReportsWorkspaceScreen_reportNotFound {
-    return Intl.message(
-      'Le rapport est introuvable.',
-      name: 'careEpisodeReportsWorkspaceScreen_reportNotFound',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Impossible d’ouvrir le rapport.`
-  String get careEpisodeReportsWorkspaceScreen_openReportError {
-    return Intl.message(
-      'Impossible d’ouvrir le rapport.',
-      name: 'careEpisodeReportsWorkspaceScreen_openReportError',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Impossible de revenir au brouillon du rapport.`
-  String get careEpisodeReportsWorkspaceScreen_returnToReportDraftError {
-    return Intl.message(
-      'Impossible de revenir au brouillon du rapport.',
-      name: 'careEpisodeReportsWorkspaceScreen_returnToReportDraftError',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Impossible d’annuler les modifications du rapport.`
-  String get careEpisodeReportsWorkspaceScreen_cancelReportChangesError {
-    return Intl.message(
-      'Impossible d’annuler les modifications du rapport.',
-      name: 'careEpisodeReportsWorkspaceScreen_cancelReportChangesError',
+      'bilan',
+      name: 'careEpisodeReportsWorkspaceScreen_assessmentLabel',
       desc: '',
       args: [],
     );
@@ -1750,23 +1649,205 @@ class S {
     );
   }
 
-  /// `Dupliquer le bilan`
-  String get careEpisodeReportsWorkspaceScreen_duplicateAssessment {
+  /// `Votre bilan est prêt. Le DOCX regroupera les informations saisies et les éléments sélectionnés.`
+  String get careEpisodeReportsWorkspaceScreen_assessmentReadyMessage {
     return Intl.message(
-      'Dupliquer le bilan',
-      name: 'careEpisodeReportsWorkspaceScreen_duplicateAssessment',
+      'Votre bilan est prêt. Le DOCX regroupera les informations saisies et les éléments sélectionnés.',
+      name: 'careEpisodeReportsWorkspaceScreen_assessmentReadyMessage',
       desc: '',
       args: [],
     );
   }
 
-  /// `Titre du nouveau bilan`
-  String get careEpisodeReportsWorkspaceScreen_newAssessmentTitle {
+  /// `Bilans et rapports`
+  String get careEpisodeReportsWorkspaceScreen_assessmentsAndReports {
     return Intl.message(
-      'Titre du nouveau bilan',
-      name: 'careEpisodeReportsWorkspaceScreen_newAssessmentTitle',
+      'Bilans et rapports',
+      name: 'careEpisodeReportsWorkspaceScreen_assessmentsAndReports',
       desc: '',
       args: [],
+    );
+  }
+
+  /// `Titre du bilan`
+  String get careEpisodeReportsWorkspaceScreen_assessmentTitle {
+    return Intl.message(
+      'Titre du bilan',
+      name: 'careEpisodeReportsWorkspaceScreen_assessmentTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Rédacteur`
+  String get careEpisodeReportsWorkspaceScreen_author {
+    return Intl.message(
+      'Rédacteur',
+      name: 'careEpisodeReportsWorkspaceScreen_author',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Autoriser un dossier`
+  String get careEpisodeReportsWorkspaceScreen_authorizeDirectory {
+    return Intl.message(
+      'Autoriser un dossier',
+      name: 'careEpisodeReportsWorkspaceScreen_authorizeDirectory',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Annuler`
+  String get careEpisodeReportsWorkspaceScreen_cancel {
+    return Intl.message(
+      'Annuler',
+      name: 'careEpisodeReportsWorkspaceScreen_cancel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Impossible d’annuler les modifications.`
+  String get careEpisodeReportsWorkspaceScreen_cancelChangesError {
+    return Intl.message(
+      'Impossible d’annuler les modifications.',
+      name: 'careEpisodeReportsWorkspaceScreen_cancelChangesError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Impossible d’annuler les modifications du rapport.`
+  String get careEpisodeReportsWorkspaceScreen_cancelReportChangesError {
+    return Intl.message(
+      'Impossible d’annuler les modifications du rapport.',
+      name: 'careEpisodeReportsWorkspaceScreen_cancelReportChangesError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Fermer`
+  String get careEpisodeReportsWorkspaceScreen_close {
+    return Intl.message(
+      'Fermer',
+      name: 'careEpisodeReportsWorkspaceScreen_close',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Valider`
+  String get careEpisodeReportsWorkspaceScreen_confirm {
+    return Intl.message(
+      'Valider',
+      name: 'careEpisodeReportsWorkspaceScreen_confirm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Copie de {title}`
+  String careEpisodeReportsWorkspaceScreen_copyTitle(Object title) {
+    return Intl.message(
+      'Copie de $title',
+      name: 'careEpisodeReportsWorkspaceScreen_copyTitle',
+      desc: '',
+      args: [title],
+    );
+  }
+
+  /// `Créer un nouveau`
+  String get careEpisodeReportsWorkspaceScreen_createNew {
+    return Intl.message(
+      'Créer un nouveau',
+      name: 'careEpisodeReportsWorkspaceScreen_createNew',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Impossible de supprimer définitivement le bilan.`
+  String get careEpisodeReportsWorkspaceScreen_deleteAssessmentError {
+    return Intl.message(
+      'Impossible de supprimer définitivement le bilan.',
+      name: 'careEpisodeReportsWorkspaceScreen_deleteAssessmentError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Le bilan « {title} » sera définitivement supprimé. Cette action est irréversible.`
+  String careEpisodeReportsWorkspaceScreen_deleteAssessmentMessage(
+    Object title,
+  ) {
+    return Intl.message(
+      'Le bilan « $title » sera définitivement supprimé. Cette action est irréversible.',
+      name: 'careEpisodeReportsWorkspaceScreen_deleteAssessmentMessage',
+      desc: '',
+      args: [title],
+    );
+  }
+
+  /// `Supprimer définitivement le bilan ?`
+  String get careEpisodeReportsWorkspaceScreen_deleteAssessmentTitle {
+    return Intl.message(
+      'Supprimer définitivement le bilan ?',
+      name: 'careEpisodeReportsWorkspaceScreen_deleteAssessmentTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Supprimer définitivement`
+  String get careEpisodeReportsWorkspaceScreen_deletePermanently {
+    return Intl.message(
+      'Supprimer définitivement',
+      name: 'careEpisodeReportsWorkspaceScreen_deletePermanently',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Impossible de supprimer définitivement le rapport.`
+  String get careEpisodeReportsWorkspaceScreen_deleteReportError {
+    return Intl.message(
+      'Impossible de supprimer définitivement le rapport.',
+      name: 'careEpisodeReportsWorkspaceScreen_deleteReportError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Le rapport « {title} » sera définitivement supprimé. Cette action est irréversible.`
+  String careEpisodeReportsWorkspaceScreen_deleteReportMessage(Object title) {
+    return Intl.message(
+      'Le rapport « $title » sera définitivement supprimé. Cette action est irréversible.',
+      name: 'careEpisodeReportsWorkspaceScreen_deleteReportMessage',
+      desc: '',
+      args: [title],
+    );
+  }
+
+  /// `Supprimer définitivement le rapport ?`
+  String get careEpisodeReportsWorkspaceScreen_deleteReportTitle {
+    return Intl.message(
+      'Supprimer définitivement le rapport ?',
+      name: 'careEpisodeReportsWorkspaceScreen_deleteReportTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `"careEpisodeReportsWorkspaceScreen_directoryAccessMessage": "Le dossier configuré n’est pas accessible ou son autorisation doit être renouvelée.\n\n{path}\n\nReconnectez son volume si nécessaire, puis sélectionnez ce dossier pour autoriser son accès. Le dossier sélectionné sera enregistré dans vos préférences.",\n"@careEpisodeReportsWorkspaceScreen_directoryAccessMessage": {\n  "placeholders": {\n    "path": {\n      "type": "String"\n    }\n  }\n}`
+  String careEpisodeReportsWorkspaceScreen_directoryAccessMessage(Object path) {
+    return Intl.message(
+      '"careEpisodeReportsWorkspaceScreen_directoryAccessMessage": "Le dossier configuré n’est pas accessible ou son autorisation doit être renouvelée.\n\n$path\n\nReconnectez son volume si nécessaire, puis sélectionnez ce dossier pour autoriser son accès. Le dossier sélectionné sera enregistré dans vos préférences.",\n"@careEpisodeReportsWorkspaceScreen_directoryAccessMessage": {\n  "placeholders": {\n    "path": {\n      "type": "String"\n    }\n  }\n}',
+      name: 'careEpisodeReportsWorkspaceScreen_directoryAccessMessage',
+      desc: '',
+      args: [path],
     );
   }
 
@@ -1775,6 +1856,16 @@ class S {
     return Intl.message(
       'Dupliquer',
       name: 'careEpisodeReportsWorkspaceScreen_duplicate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Dupliquer le bilan`
+  String get careEpisodeReportsWorkspaceScreen_duplicateAssessment {
+    return Intl.message(
+      'Dupliquer le bilan',
+      name: 'careEpisodeReportsWorkspaceScreen_duplicateAssessment',
       desc: '',
       args: [],
     );
@@ -1800,16 +1891,6 @@ class S {
     );
   }
 
-  /// `Titre du nouveau rapport`
-  String get careEpisodeReportsWorkspaceScreen_newReportTitle {
-    return Intl.message(
-      'Titre du nouveau rapport',
-      name: 'careEpisodeReportsWorkspaceScreen_newReportTitle',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Impossible de dupliquer le rapport.`
   String get careEpisodeReportsWorkspaceScreen_duplicateReportError {
     return Intl.message(
@@ -1820,41 +1901,75 @@ class S {
     );
   }
 
-  /// `Impossible d’enregistrer la sélection du test.`
-  String get careEpisodeReportsWorkspaceScreen_saveTestSelectionError {
+  /// `Un DOCX est déjà associé à ce bilan. Voulez-vous remplacer le fichier existant ou créer un nouveau fichier ?`
+  String get careEpisodeReportsWorkspaceScreen_existingAssessmentDocx {
     return Intl.message(
-      'Impossible d’enregistrer la sélection du test.',
-      name: 'careEpisodeReportsWorkspaceScreen_saveTestSelectionError',
+      'Un DOCX est déjà associé à ce bilan. Voulez-vous remplacer le fichier existant ou créer un nouveau fichier ?',
+      name: 'careEpisodeReportsWorkspaceScreen_existingAssessmentDocx',
       desc: '',
       args: [],
     );
   }
 
-  /// `Impossible d’enregistrer la sélection de la note.`
-  String get careEpisodeReportsWorkspaceScreen_saveNoteSelectionError {
+  /// `Un DOCX est déjà associé à ce rapport. Voulez-vous remplacer le fichier existant ou créer un nouveau fichier ?`
+  String get careEpisodeReportsWorkspaceScreen_existingReportDocx {
     return Intl.message(
-      'Impossible d’enregistrer la sélection de la note.',
-      name: 'careEpisodeReportsWorkspaceScreen_saveNoteSelectionError',
+      'Un DOCX est déjà associé à ce rapport. Voulez-vous remplacer le fichier existant ou créer un nouveau fichier ?',
+      name: 'careEpisodeReportsWorkspaceScreen_existingReportDocx',
       desc: '',
       args: [],
     );
   }
 
-  /// `Impossible de revenir au brouillon.`
-  String get careEpisodeReportsWorkspaceScreen_returnToDraftError {
+  /// `Un brouillon existe déjà pour ce modèle de {documentLabel}.`
+  String careEpisodeReportsWorkspaceScreen_existingTemplateDraftMessage(
+    Object documentLabel,
+  ) {
     return Intl.message(
-      'Impossible de revenir au brouillon.',
-      name: 'careEpisodeReportsWorkspaceScreen_returnToDraftError',
+      'Un brouillon existe déjà pour ce modèle de $documentLabel.',
+      name: 'careEpisodeReportsWorkspaceScreen_existingTemplateDraftMessage',
+      desc: '',
+      args: [documentLabel],
+    );
+  }
+
+  /// `Générer le DOCX`
+  String get careEpisodeReportsWorkspaceScreen_generateDocx {
+    return Intl.message(
+      'Générer le DOCX',
+      name: 'careEpisodeReportsWorkspaceScreen_generateDocx',
       desc: '',
       args: [],
     );
   }
 
-  /// `Impossible d’annuler les modifications.`
-  String get careEpisodeReportsWorkspaceScreen_cancelChangesError {
+  /// `Souhaitez-vous ajouter le contenu généré à la suite du {documentLabel} actuel ou remplacer le contenu existant ?`
+  String careEpisodeReportsWorkspaceScreen_insertTextMessage(
+    Object documentLabel,
+  ) {
     return Intl.message(
-      'Impossible d’annuler les modifications.',
-      name: 'careEpisodeReportsWorkspaceScreen_cancelChangesError',
+      'Souhaitez-vous ajouter le contenu généré à la suite du $documentLabel actuel ou remplacer le contenu existant ?',
+      name: 'careEpisodeReportsWorkspaceScreen_insertTextMessage',
+      desc: '',
+      args: [documentLabel],
+    );
+  }
+
+  /// `Gérer les kinés`
+  String get careEpisodeReportsWorkspaceScreen_managePractitioners {
+    return Intl.message(
+      'Gérer les kinés',
+      name: 'careEpisodeReportsWorkspaceScreen_managePractitioners',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Gérer les médecins prescripteurs`
+  String get careEpisodeReportsWorkspaceScreen_managePrescribingDoctors {
+    return Intl.message(
+      'Gérer les médecins prescripteurs',
+      name: 'careEpisodeReportsWorkspaceScreen_managePrescribingDoctors',
       desc: '',
       args: [],
     );
@@ -1870,21 +1985,174 @@ class S {
     );
   }
 
-  /// `Impossible de mettre le bilan à la corbeille.`
-  String get careEpisodeReportsWorkspaceScreen_archiveAssessmentError {
+  /// `Nouveau bilan`
+  String get careEpisodeReportsWorkspaceScreen_newAssessment {
     return Intl.message(
-      'Impossible de mettre le bilan à la corbeille.',
-      name: 'careEpisodeReportsWorkspaceScreen_archiveAssessmentError',
+      'Nouveau bilan',
+      name: 'careEpisodeReportsWorkspaceScreen_newAssessment',
       desc: '',
       args: [],
     );
   }
 
-  /// `Impossible de mettre le rapport à la corbeille.`
-  String get careEpisodeReportsWorkspaceScreen_archiveReportError {
+  /// `Titre du nouveau bilan`
+  String get careEpisodeReportsWorkspaceScreen_newAssessmentTitle {
     return Intl.message(
-      'Impossible de mettre le rapport à la corbeille.',
-      name: 'careEpisodeReportsWorkspaceScreen_archiveReportError',
+      'Titre du nouveau bilan',
+      name: 'careEpisodeReportsWorkspaceScreen_newAssessmentTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Nouveau {documentLabel}`
+  String careEpisodeReportsWorkspaceScreen_newDocument(Object documentLabel) {
+    return Intl.message(
+      'Nouveau $documentLabel',
+      name: 'careEpisodeReportsWorkspaceScreen_newDocument',
+      desc: '',
+      args: [documentLabel],
+    );
+  }
+
+  /// `Nouveau rapport`
+  String get careEpisodeReportsWorkspaceScreen_newReport {
+    return Intl.message(
+      'Nouveau rapport',
+      name: 'careEpisodeReportsWorkspaceScreen_newReport',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Titre du nouveau rapport`
+  String get careEpisodeReportsWorkspaceScreen_newReportTitle {
+    return Intl.message(
+      'Titre du nouveau rapport',
+      name: 'careEpisodeReportsWorkspaceScreen_newReportTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Note`
+  String get careEpisodeReportsWorkspaceScreen_note {
+    return Intl.message(
+      'Note',
+      name: 'careEpisodeReportsWorkspaceScreen_note',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Impossible d’ouvrir le brouillon du rapport.`
+  String get careEpisodeReportsWorkspaceScreen_openReportDraftError {
+    return Intl.message(
+      'Impossible d’ouvrir le brouillon du rapport.',
+      name: 'careEpisodeReportsWorkspaceScreen_openReportDraftError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Impossible d’ouvrir le rapport.`
+  String get careEpisodeReportsWorkspaceScreen_openReportError {
+    return Intl.message(
+      'Impossible d’ouvrir le rapport.',
+      name: 'careEpisodeReportsWorkspaceScreen_openReportError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Médecin prescripteur`
+  String get careEpisodeReportsWorkspaceScreen_prescribingDoctor {
+    return Intl.message(
+      'Médecin prescripteur',
+      name: 'careEpisodeReportsWorkspaceScreen_prescribingDoctor',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Destinataire(s)`
+  String get careEpisodeReportsWorkspaceScreen_recipients {
+    return Intl.message(
+      'Destinataire(s)',
+      name: 'careEpisodeReportsWorkspaceScreen_recipients',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Kiné référent`
+  String get careEpisodeReportsWorkspaceScreen_referringPractitioner {
+    return Intl.message(
+      'Kiné référent',
+      name: 'careEpisodeReportsWorkspaceScreen_referringPractitioner',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Remplacer`
+  String get careEpisodeReportsWorkspaceScreen_replace {
+    return Intl.message(
+      'Remplacer',
+      name: 'careEpisodeReportsWorkspaceScreen_replace',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Rapport_{patientName}_{title}`
+  String careEpisodeReportsWorkspaceScreen_reportFileName(
+    Object patientName,
+    Object title,
+  ) {
+    return Intl.message(
+      'Rapport_${patientName}_$title',
+      name: 'careEpisodeReportsWorkspaceScreen_reportFileName',
+      desc: '',
+      args: [patientName, title],
+    );
+  }
+
+  /// `rapport`
+  String get careEpisodeReportsWorkspaceScreen_reportLabel {
+    return Intl.message(
+      'rapport',
+      name: 'careEpisodeReportsWorkspaceScreen_reportLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Le rapport est introuvable.`
+  String get careEpisodeReportsWorkspaceScreen_reportNotFound {
+    return Intl.message(
+      'Le rapport est introuvable.',
+      name: 'careEpisodeReportsWorkspaceScreen_reportNotFound',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Votre rapport est prêt. Le DOCX regroupera les informations du patient, du rédacteur et du correspondant.`
+  String get careEpisodeReportsWorkspaceScreen_reportReadyMessage {
+    return Intl.message(
+      'Votre rapport est prêt. Le DOCX regroupera les informations du patient, du rédacteur et du correspondant.',
+      name: 'careEpisodeReportsWorkspaceScreen_reportReadyMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Titre du rapport`
+  String get careEpisodeReportsWorkspaceScreen_reportTitle {
+    return Intl.message(
+      'Titre du rapport',
+      name: 'careEpisodeReportsWorkspaceScreen_reportTitle',
       desc: '',
       args: [],
     );
@@ -1910,91 +2178,51 @@ class S {
     );
   }
 
-  /// `Supprimer définitivement le bilan ?`
-  String get careEpisodeReportsWorkspaceScreen_deleteAssessmentTitle {
+  /// `Un travail en cours a déjà été sauvegardé automatiquement.<br><br>Souhaitez-vous reprendre ce brouillon ou commencer un nouveau bilan ?`
+  String get careEpisodeReportsWorkspaceScreen_resumeAssessmentDraftMessage {
     return Intl.message(
-      'Supprimer définitivement le bilan ?',
-      name: 'careEpisodeReportsWorkspaceScreen_deleteAssessmentTitle',
+      'Un travail en cours a déjà été sauvegardé automatiquement.<br><br>Souhaitez-vous reprendre ce brouillon ou commencer un nouveau bilan ?',
+      name: 'careEpisodeReportsWorkspaceScreen_resumeAssessmentDraftMessage',
       desc: '',
       args: [],
     );
   }
 
-  /// `Supprimer définitivement`
-  String get careEpisodeReportsWorkspaceScreen_deletePermanently {
+  /// `Reprendre le brouillon`
+  String get careEpisodeReportsWorkspaceScreen_resumeDraft {
     return Intl.message(
-      'Supprimer définitivement',
-      name: 'careEpisodeReportsWorkspaceScreen_deletePermanently',
+      'Reprendre le brouillon',
+      name: 'careEpisodeReportsWorkspaceScreen_resumeDraft',
       desc: '',
       args: [],
     );
   }
 
-  /// `Impossible de supprimer définitivement le bilan.`
-  String get careEpisodeReportsWorkspaceScreen_deleteAssessmentError {
+  /// `Un travail en cours a déjà été sauvegardé automatiquement.<br><br>Souhaitez-vous reprendre ce brouillon ou commencer un nouveau rapport ?`
+  String get careEpisodeReportsWorkspaceScreen_resumeReportDraftMessage {
     return Intl.message(
-      'Impossible de supprimer définitivement le bilan.',
-      name: 'careEpisodeReportsWorkspaceScreen_deleteAssessmentError',
+      'Un travail en cours a déjà été sauvegardé automatiquement.<br><br>Souhaitez-vous reprendre ce brouillon ou commencer un nouveau rapport ?',
+      name: 'careEpisodeReportsWorkspaceScreen_resumeReportDraftMessage',
       desc: '',
       args: [],
     );
   }
 
-  /// `Supprimer définitivement le rapport ?`
-  String get careEpisodeReportsWorkspaceScreen_deleteReportTitle {
+  /// `Impossible de revenir au brouillon.`
+  String get careEpisodeReportsWorkspaceScreen_returnToDraftError {
     return Intl.message(
-      'Supprimer définitivement le rapport ?',
-      name: 'careEpisodeReportsWorkspaceScreen_deleteReportTitle',
+      'Impossible de revenir au brouillon.',
+      name: 'careEpisodeReportsWorkspaceScreen_returnToDraftError',
       desc: '',
       args: [],
     );
   }
 
-  /// `Impossible de supprimer définitivement le rapport.`
-  String get careEpisodeReportsWorkspaceScreen_deleteReportError {
+  /// `Impossible de revenir au brouillon du rapport.`
+  String get careEpisodeReportsWorkspaceScreen_returnToReportDraftError {
     return Intl.message(
-      'Impossible de supprimer définitivement le rapport.',
-      name: 'careEpisodeReportsWorkspaceScreen_deleteReportError',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Mettre à jour le bilan`
-  String get careEpisodeReportsWorkspaceScreen_updateAssessment {
-    return Intl.message(
-      'Mettre à jour le bilan',
-      name: 'careEpisodeReportsWorkspaceScreen_updateAssessment',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Enregistrer le bilan`
-  String get careEpisodeReportsWorkspaceScreen_saveAssessment {
-    return Intl.message(
-      'Enregistrer le bilan',
-      name: 'careEpisodeReportsWorkspaceScreen_saveAssessment',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Titre du bilan`
-  String get careEpisodeReportsWorkspaceScreen_assessmentTitle {
-    return Intl.message(
-      'Titre du bilan',
-      name: 'careEpisodeReportsWorkspaceScreen_assessmentTitle',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Mettre à jour`
-  String get careEpisodeReportsWorkspaceScreen_update {
-    return Intl.message(
-      'Mettre à jour',
-      name: 'careEpisodeReportsWorkspaceScreen_update',
+      'Impossible de revenir au brouillon du rapport.',
+      name: 'careEpisodeReportsWorkspaceScreen_returnToReportDraftError',
       desc: '',
       args: [],
     );
@@ -2010,11 +2238,11 @@ class S {
     );
   }
 
-  /// `Impossible de mettre à jour le bilan.`
-  String get careEpisodeReportsWorkspaceScreen_updateAssessmentError {
+  /// `Enregistrer le bilan`
+  String get careEpisodeReportsWorkspaceScreen_saveAssessment {
     return Intl.message(
-      'Impossible de mettre à jour le bilan.',
-      name: 'careEpisodeReportsWorkspaceScreen_updateAssessmentError',
+      'Enregistrer le bilan',
+      name: 'careEpisodeReportsWorkspaceScreen_saveAssessment',
       desc: '',
       args: [],
     );
@@ -2030,11 +2258,11 @@ class S {
     );
   }
 
-  /// `Mettre à jour le rapport`
-  String get careEpisodeReportsWorkspaceScreen_updateReport {
+  /// `Impossible d’enregistrer la sélection de la note.`
+  String get careEpisodeReportsWorkspaceScreen_saveNoteSelectionError {
     return Intl.message(
-      'Mettre à jour le rapport',
-      name: 'careEpisodeReportsWorkspaceScreen_updateReport',
+      'Impossible d’enregistrer la sélection de la note.',
+      name: 'careEpisodeReportsWorkspaceScreen_saveNoteSelectionError',
       desc: '',
       args: [],
     );
@@ -2050,26 +2278,6 @@ class S {
     );
   }
 
-  /// `Titre du rapport`
-  String get careEpisodeReportsWorkspaceScreen_reportTitle {
-    return Intl.message(
-      'Titre du rapport',
-      name: 'careEpisodeReportsWorkspaceScreen_reportTitle',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Impossible de mettre à jour le rapport.`
-  String get careEpisodeReportsWorkspaceScreen_updateReportError {
-    return Intl.message(
-      'Impossible de mettre à jour le rapport.',
-      name: 'careEpisodeReportsWorkspaceScreen_updateReportError',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Impossible d’enregistrer le rapport.`
   String get careEpisodeReportsWorkspaceScreen_saveReportError {
     return Intl.message(
@@ -2080,41 +2288,11 @@ class S {
     );
   }
 
-  /// `Titre`
-  String get careEpisodeReportsWorkspaceScreen_title {
+  /// `Impossible d’enregistrer la sélection du test.`
+  String get careEpisodeReportsWorkspaceScreen_saveTestSelectionError {
     return Intl.message(
-      'Titre',
-      name: 'careEpisodeReportsWorkspaceScreen_title',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Note`
-  String get careEpisodeReportsWorkspaceScreen_note {
-    return Intl.message(
-      'Note',
-      name: 'careEpisodeReportsWorkspaceScreen_note',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Ajouter`
-  String get careEpisodeReportsWorkspaceScreen_add {
-    return Intl.message(
-      'Ajouter',
-      name: 'careEpisodeReportsWorkspaceScreen_add',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Fermer`
-  String get careEpisodeReportsWorkspaceScreen_close {
-    return Intl.message(
-      'Fermer',
-      name: 'careEpisodeReportsWorkspaceScreen_close',
+      'Impossible d’enregistrer la sélection du test.',
+      name: 'careEpisodeReportsWorkspaceScreen_saveTestSelectionError',
       desc: '',
       args: [],
     );
@@ -2130,111 +2308,61 @@ class S {
     );
   }
 
-  /// `Ajouter à la suite`
-  String get careEpisodeReportsWorkspaceScreen_append {
+  /// `Titre`
+  String get careEpisodeReportsWorkspaceScreen_title {
     return Intl.message(
-      'Ajouter à la suite',
-      name: 'careEpisodeReportsWorkspaceScreen_append',
+      'Titre',
+      name: 'careEpisodeReportsWorkspaceScreen_title',
       desc: '',
       args: [],
     );
   }
 
-  /// `rapport`
-  String get careEpisodeReportsWorkspaceScreen_reportLabel {
+  /// `Mettre à jour`
+  String get careEpisodeReportsWorkspaceScreen_update {
     return Intl.message(
-      'rapport',
-      name: 'careEpisodeReportsWorkspaceScreen_reportLabel',
+      'Mettre à jour',
+      name: 'careEpisodeReportsWorkspaceScreen_update',
       desc: '',
       args: [],
     );
   }
 
-  /// `bilan`
-  String get careEpisodeReportsWorkspaceScreen_assessmentLabel {
+  /// `Mettre à jour le bilan`
+  String get careEpisodeReportsWorkspaceScreen_updateAssessment {
     return Intl.message(
-      'bilan',
-      name: 'careEpisodeReportsWorkspaceScreen_assessmentLabel',
+      'Mettre à jour le bilan',
+      name: 'careEpisodeReportsWorkspaceScreen_updateAssessment',
       desc: '',
       args: [],
     );
   }
 
-  /// `Kiné référent`
-  String get careEpisodeReportsWorkspaceScreen_referringPractitioner {
+  /// `Impossible de mettre à jour le bilan.`
+  String get careEpisodeReportsWorkspaceScreen_updateAssessmentError {
     return Intl.message(
-      'Kiné référent',
-      name: 'careEpisodeReportsWorkspaceScreen_referringPractitioner',
+      'Impossible de mettre à jour le bilan.',
+      name: 'careEpisodeReportsWorkspaceScreen_updateAssessmentError',
       desc: '',
       args: [],
     );
   }
 
-  /// `Gérer les kinés`
-  String get careEpisodeReportsWorkspaceScreen_managePractitioners {
+  /// `Mettre à jour le rapport`
+  String get careEpisodeReportsWorkspaceScreen_updateReport {
     return Intl.message(
-      'Gérer les kinés',
-      name: 'careEpisodeReportsWorkspaceScreen_managePractitioners',
+      'Mettre à jour le rapport',
+      name: 'careEpisodeReportsWorkspaceScreen_updateReport',
       desc: '',
       args: [],
     );
   }
 
-  /// `Médecin prescripteur`
-  String get careEpisodeReportsWorkspaceScreen_prescribingDoctor {
+  /// `Impossible de mettre à jour le rapport.`
+  String get careEpisodeReportsWorkspaceScreen_updateReportError {
     return Intl.message(
-      'Médecin prescripteur',
-      name: 'careEpisodeReportsWorkspaceScreen_prescribingDoctor',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Gérer les médecins prescripteurs`
-  String get careEpisodeReportsWorkspaceScreen_managePrescribingDoctors {
-    return Intl.message(
-      'Gérer les médecins prescripteurs',
-      name: 'careEpisodeReportsWorkspaceScreen_managePrescribingDoctors',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Bilans et rapports`
-  String get careEpisodeReportsWorkspaceScreen_assessmentsAndReports {
-    return Intl.message(
-      'Bilans et rapports',
-      name: 'careEpisodeReportsWorkspaceScreen_assessmentsAndReports',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Votre bilan est prêt. Le DOCX regroupera les informations saisies et les éléments sélectionnés.`
-  String get careEpisodeReportsWorkspaceScreen_assessmentReadyMessage {
-    return Intl.message(
-      'Votre bilan est prêt. Le DOCX regroupera les informations saisies et les éléments sélectionnés.',
-      name: 'careEpisodeReportsWorkspaceScreen_assessmentReadyMessage',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Votre rapport est prêt. Le DOCX regroupera les informations du patient, du rédacteur et du correspondant.`
-  String get careEpisodeReportsWorkspaceScreen_reportReadyMessage {
-    return Intl.message(
-      'Votre rapport est prêt. Le DOCX regroupera les informations du patient, du rédacteur et du correspondant.',
-      name: 'careEpisodeReportsWorkspaceScreen_reportReadyMessage',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Générer le DOCX`
-  String get careEpisodeReportsWorkspaceScreen_generateDocx {
-    return Intl.message(
-      'Générer le DOCX',
-      name: 'careEpisodeReportsWorkspaceScreen_generateDocx',
+      'Impossible de mettre à jour le rapport.',
+      name: 'careEpisodeReportsWorkspaceScreen_updateReportError',
       desc: '',
       args: [],
     );
@@ -2252,128 +2380,13 @@ class S {
 
   /// `Erreur lors de la création du document Word : {error}`
   String careEpisodeReportsWorkspaceScreen_wordDocumentCreationError(
-      Object error) {
+    Object error,
+  ) {
     return Intl.message(
       'Erreur lors de la création du document Word : $error',
       name: 'careEpisodeReportsWorkspaceScreen_wordDocumentCreationError',
       desc: '',
       args: [error],
-    );
-  }
-
-  /// `Bilan_{patientName}_{title}`
-  String careEpisodeReportsWorkspaceScreen_assessmentFileName(
-      Object patientName, Object title) {
-    return Intl.message(
-      'Bilan_${patientName}_$title',
-      name: 'careEpisodeReportsWorkspaceScreen_assessmentFileName',
-      desc: '',
-      args: [patientName, title],
-    );
-  }
-
-  /// `Rapport_{patientName}_{title}`
-  String careEpisodeReportsWorkspaceScreen_reportFileName(
-      Object patientName, Object title) {
-    return Intl.message(
-      'Rapport_${patientName}_$title',
-      name: 'careEpisodeReportsWorkspaceScreen_reportFileName',
-      desc: '',
-      args: [patientName, title],
-    );
-  }
-
-  /// `Copie de {title}`
-  String careEpisodeReportsWorkspaceScreen_copyTitle(Object title) {
-    return Intl.message(
-      'Copie de $title',
-      name: 'careEpisodeReportsWorkspaceScreen_copyTitle',
-      desc: '',
-      args: [title],
-    );
-  }
-
-  /// `Le bilan « {title} » ne sera plus affiché dans l’historique.`
-  String careEpisodeReportsWorkspaceScreen_archiveAssessmentMessage(
-      Object title) {
-    return Intl.message(
-      'Le bilan « $title » ne sera plus affiché dans l’historique.',
-      name: 'careEpisodeReportsWorkspaceScreen_archiveAssessmentMessage',
-      desc: '',
-      args: [title],
-    );
-  }
-
-  /// `"careEpisodeReportsWorkspaceScreen_directoryAccessMessage": "Le dossier configuré n’est pas accessible ou son autorisation doit être renouvelée.\n\n{path}\n\nReconnectez son volume si nécessaire, puis sélectionnez ce dossier pour autoriser son accès. Le dossier sélectionné sera enregistré dans vos préférences.",\n"@careEpisodeReportsWorkspaceScreen_directoryAccessMessage": {\n  "placeholders": {\n    "path": {\n      "type": "String"\n    }\n  }\n}`
-  String careEpisodeReportsWorkspaceScreen_directoryAccessMessage(Object path) {
-    return Intl.message(
-      '"careEpisodeReportsWorkspaceScreen_directoryAccessMessage": "Le dossier configuré n’est pas accessible ou son autorisation doit être renouvelée.\n\n$path\n\nReconnectez son volume si nécessaire, puis sélectionnez ce dossier pour autoriser son accès. Le dossier sélectionné sera enregistré dans vos préférences.",\n"@careEpisodeReportsWorkspaceScreen_directoryAccessMessage": {\n  "placeholders": {\n    "path": {\n      "type": "String"\n    }\n  }\n}',
-      name: 'careEpisodeReportsWorkspaceScreen_directoryAccessMessage',
-      desc: '',
-      args: [path],
-    );
-  }
-
-  /// `Le rapport « {title} » sera placé dans la corbeille. Il pourra être restauré ultérieurement.`
-  String careEpisodeReportsWorkspaceScreen_archiveReportMessage(Object title) {
-    return Intl.message(
-      'Le rapport « $title » sera placé dans la corbeille. Il pourra être restauré ultérieurement.',
-      name: 'careEpisodeReportsWorkspaceScreen_archiveReportMessage',
-      desc: '',
-      args: [title],
-    );
-  }
-
-  /// `Le bilan « {title} » sera définitivement supprimé. Cette action est irréversible.`
-  String careEpisodeReportsWorkspaceScreen_deleteAssessmentMessage(
-      Object title) {
-    return Intl.message(
-      'Le bilan « $title » sera définitivement supprimé. Cette action est irréversible.',
-      name: 'careEpisodeReportsWorkspaceScreen_deleteAssessmentMessage',
-      desc: '',
-      args: [title],
-    );
-  }
-
-  /// `Le rapport « {title} » sera définitivement supprimé. Cette action est irréversible.`
-  String careEpisodeReportsWorkspaceScreen_deleteReportMessage(Object title) {
-    return Intl.message(
-      'Le rapport « $title » sera définitivement supprimé. Cette action est irréversible.',
-      name: 'careEpisodeReportsWorkspaceScreen_deleteReportMessage',
-      desc: '',
-      args: [title],
-    );
-  }
-
-  /// `Souhaitez-vous ajouter le contenu généré à la suite du {documentLabel} actuel ou remplacer le contenu existant ?`
-  String careEpisodeReportsWorkspaceScreen_insertTextMessage(
-      Object documentLabel) {
-    return Intl.message(
-      'Souhaitez-vous ajouter le contenu généré à la suite du $documentLabel actuel ou remplacer le contenu existant ?',
-      name: 'careEpisodeReportsWorkspaceScreen_insertTextMessage',
-      desc: '',
-      args: [documentLabel],
-    );
-  }
-
-  /// `Un brouillon existe déjà pour ce modèle de {documentLabel}.`
-  String careEpisodeReportsWorkspaceScreen_existingTemplateDraftMessage(
-      Object documentLabel) {
-    return Intl.message(
-      'Un brouillon existe déjà pour ce modèle de $documentLabel.',
-      name: 'careEpisodeReportsWorkspaceScreen_existingTemplateDraftMessage',
-      desc: '',
-      args: [documentLabel],
-    );
-  }
-
-  /// `Nouveau {documentLabel}`
-  String careEpisodeReportsWorkspaceScreen_newDocument(Object documentLabel) {
-    return Intl.message(
-      'Nouveau $documentLabel',
-      name: 'careEpisodeReportsWorkspaceScreen_newDocument',
-      desc: '',
-      args: [documentLabel],
     );
   }
 
@@ -2409,12 +2422,7 @@ class S {
 
   /// `Fermer`
   String get close {
-    return Intl.message(
-      'Fermer',
-      name: 'close',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Fermer', name: 'close', desc: '', args: []);
   }
 
   /// `Catégorie`
@@ -2599,22 +2607,12 @@ class S {
 
   /// `Adresse`
   String get desktopAddress {
-    return Intl.message(
-      'Adresse',
-      name: 'desktopAddress',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Adresse', name: 'desktopAddress', desc: '', args: []);
   }
 
   /// `Port`
   String get desktopPort {
-    return Intl.message(
-      'Port',
-      name: 'desktopPort',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Port', name: 'desktopPort', desc: '', args: []);
   }
 
   /// `Praticien associé`
@@ -2649,12 +2647,7 @@ class S {
 
   /// `Créer`
   String get deviceForm_create {
-    return Intl.message(
-      'Créer',
-      name: 'deviceForm_create',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Créer', name: 'deviceForm_create', desc: '', args: []);
   }
 
   /// `Nom de l’appareil`
@@ -2879,12 +2872,7 @@ class S {
 
   /// `Erreur`
   String get deviceList_error {
-    return Intl.message(
-      'Erreur',
-      name: 'deviceList_error',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Erreur', name: 'deviceList_error', desc: '', args: []);
   }
 
   /// `Nouvel appareil`
@@ -3017,6 +3005,16 @@ class S {
     );
   }
 
+  /// `Choisir le rédacteur`
+  String get documentAuthor_title {
+    return Intl.message(
+      'Choisir le rédacteur',
+      name: 'documentAuthor_title',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Companion ne peut pas accéder au dossier prévu pour enregistrer les documents, ou son autorisation d’accès doit être renouvelée.\n\nSi ce dossier se trouve sur un disque externe ou un emplacement réseau, vérifiez d’abord qu’il est connecté et accessible.\n\nCliquez sur « Autoriser un dossier », puis sélectionnez le dossier dans la fenêtre qui s’ouvre. Vous pouvez sélectionner le dossier habituel ou choisir une autre destination.\n\nLe dossier sélectionné est enregistré dans vos préférences pour les prochains exports. Les fichiers déjà présents dans l’ancien dossier ne sont pas déplacés.\n\n« Annuler » interrompt l’export en cours sans modifier votre bilan ou votre rapport.`
   String get documentDirectoryAccess_help {
     return Intl.message(
@@ -3087,16 +3085,6 @@ class S {
     );
   }
 
-  /// `Choisir le rédacteur`
-  String get documentAuthor_title {
-    return Intl.message(
-      'Choisir le rédacteur',
-      name: 'documentAuthor_title',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Rédiger dans la vue agrandie`
   String get documentExpandedEditor_helpTitle {
     return Intl.message(
@@ -3137,31 +3125,21 @@ class S {
     );
   }
 
-  /// `Ce guide vous aide à préparer le contenu d’un bilan ou d’un rapport à partir du modèle sélectionné.\n\nUtilisez la liste des rubriques à gauche pour accéder aux différentes sections. Selon les champs proposés, saisissez du texte, sélectionnez des réponses ou complétez les tableaux.\n\nLe bouton de prévisualisation, situé en bas du formulaire, permet de consulter le texte produit à partir de vos réponses.\n\nDepuis l’aperçu, vous pouvez revenir au guide pour poursuivre votre saisie ou demander l’insertion du texte dans le bilan ou le rapport. Suivez les éventuelles propositions d’ajout ou de remplacement affichées par Companion.\n\nL’insertion du texte ne remplace pas l’enregistrement final du bilan ou du rapport.\n\nL’ouverture et la fermeture de cette aide conservent votre saisie.`
-  String get documentTemplateGuide_help {
-    return Intl.message(
-      'Ce guide vous aide à préparer le contenu d’un bilan ou d’un rapport à partir du modèle sélectionné.\n\nUtilisez la liste des rubriques à gauche pour accéder aux différentes sections. Selon les champs proposés, saisissez du texte, sélectionnez des réponses ou complétez les tableaux.\n\nLe bouton de prévisualisation, situé en bas du formulaire, permet de consulter le texte produit à partir de vos réponses.\n\nDepuis l’aperçu, vous pouvez revenir au guide pour poursuivre votre saisie ou demander l’insertion du texte dans le bilan ou le rapport. Suivez les éventuelles propositions d’ajout ou de remplacement affichées par Companion.\n\nL’insertion du texte ne remplace pas l’enregistrement final du bilan ou du rapport.\n\nL’ouverture et la fermeture de cette aide conservent votre saisie.',
-      name: 'documentTemplateGuide_help',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Utiliser le guide de saisie`
-  String get documentTemplateGuide_helpTitle {
-    return Intl.message(
-      'Utiliser le guide de saisie',
-      name: 'documentTemplateGuide_helpTitle',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Cette fenêtre présente les modèles disponibles pour le type de document en cours : bilan ou rapport.\n\nCliquez sur un modèle pour ouvrir le guide de saisie correspondant. Le choix du modèle ne crée pas immédiatement un document enregistré.\n\nSi un brouillon existe déjà pour ce modèle dans l’épisode de soins, Companion vous propose de le reprendre ou de commencer une nouvelle saisie.`
   String get documentTemplate_help {
     return Intl.message(
       'Cette fenêtre présente les modèles disponibles pour le type de document en cours : bilan ou rapport.\n\nCliquez sur un modèle pour ouvrir le guide de saisie correspondant. Le choix du modèle ne crée pas immédiatement un document enregistré.\n\nSi un brouillon existe déjà pour ce modèle dans l’épisode de soins, Companion vous propose de le reprendre ou de commencer une nouvelle saisie.',
       name: 'documentTemplate_help',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choisir un modèle de rapport`
+  String get documentTemplate_reportTitle {
+    return Intl.message(
+      'Choisir un modèle de rapport',
+      name: 'documentTemplate_reportTitle',
       desc: '',
       args: [],
     );
@@ -3187,11 +3165,21 @@ class S {
     );
   }
 
-  /// `Choisir un modèle de rapport`
-  String get documentTemplate_reportTitle {
+  /// `Ce guide vous aide à préparer le contenu d’un bilan ou d’un rapport à partir du modèle sélectionné.\n\nUtilisez la liste des rubriques à gauche pour accéder aux différentes sections. Selon les champs proposés, saisissez du texte, sélectionnez des réponses ou complétez les tableaux.\n\nLe bouton de prévisualisation, situé en bas du formulaire, permet de consulter le texte produit à partir de vos réponses.\n\nDepuis l’aperçu, vous pouvez revenir au guide pour poursuivre votre saisie ou demander l’insertion du texte dans le bilan ou le rapport. Suivez les éventuelles propositions d’ajout ou de remplacement affichées par Companion.\n\nL’insertion du texte ne remplace pas l’enregistrement final du bilan ou du rapport.\n\nL’ouverture et la fermeture de cette aide conservent votre saisie.`
+  String get documentTemplateGuide_help {
     return Intl.message(
-      'Choisir un modèle de rapport',
-      name: 'documentTemplate_reportTitle',
+      'Ce guide vous aide à préparer le contenu d’un bilan ou d’un rapport à partir du modèle sélectionné.\n\nUtilisez la liste des rubriques à gauche pour accéder aux différentes sections. Selon les champs proposés, saisissez du texte, sélectionnez des réponses ou complétez les tableaux.\n\nLe bouton de prévisualisation, situé en bas du formulaire, permet de consulter le texte produit à partir de vos réponses.\n\nDepuis l’aperçu, vous pouvez revenir au guide pour poursuivre votre saisie ou demander l’insertion du texte dans le bilan ou le rapport. Suivez les éventuelles propositions d’ajout ou de remplacement affichées par Companion.\n\nL’insertion du texte ne remplace pas l’enregistrement final du bilan ou du rapport.\n\nL’ouverture et la fermeture de cette aide conservent votre saisie.',
+      name: 'documentTemplateGuide_help',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Utiliser le guide de saisie`
+  String get documentTemplateGuide_helpTitle {
+    return Intl.message(
+      'Utiliser le guide de saisie',
+      name: 'documentTemplateGuide_helpTitle',
       desc: '',
       args: [],
     );
@@ -3227,16 +3215,6 @@ class S {
     );
   }
 
-  /// `Cette fenêtre permet de renseigner le titre du bilan ou du rapport.\n\nConservez le titre proposé ou remplacez-le par un intitulé permettant de reconnaître facilement le document. Le titre ne peut pas être vide.\n\nCliquez sur le bouton de validation ou appuyez sur Entrée pour confirmer. « Annuler » ferme la fenêtre sans valider le titre.\n\nL’ouverture et la fermeture de cette aide conservent le texte saisi.`
-  String get documentTitle_help {
-    return Intl.message(
-      'Cette fenêtre permet de renseigner le titre du bilan ou du rapport.\n\nConservez le titre proposé ou remplacez-le par un intitulé permettant de reconnaître facilement le document. Le titre ne peut pas être vide.\n\nCliquez sur le bouton de validation ou appuyez sur Entrée pour confirmer. « Annuler » ferme la fenêtre sans valider le titre.\n\nL’ouverture et la fermeture de cette aide conservent le texte saisi.',
-      name: 'documentTitle_help',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Votre bilan ou votre rapport contient déjà du texte. Choisissez comment y intégrer le contenu généré par le guide de saisie.\n\n« Ajouter à la suite » conserve le texte existant et ajoute le contenu généré à la fin.\n\n« Remplacer » remplace tout le texte de la zone de rédaction par le contenu généré. Les passages que vous aviez saisis dans cette zone seront donc remplacés eux aussi.\n\n« Annuler » abandonne cette insertion et conserve le texte actuel.\n\nVous pouvez consulter puis fermer cette aide avant de faire votre choix.`
   String get documentTextInsertion_help {
     return Intl.message(
@@ -3252,6 +3230,16 @@ class S {
     return Intl.message(
       'Insérer le texte généré',
       name: 'documentTextInsertion_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cette fenêtre permet de renseigner le titre du bilan ou du rapport.\n\nConservez le titre proposé ou remplacez-le par un intitulé permettant de reconnaître facilement le document. Le titre ne peut pas être vide.\n\nCliquez sur le bouton de validation ou appuyez sur Entrée pour confirmer. « Annuler » ferme la fenêtre sans valider le titre.\n\nL’ouverture et la fermeture de cette aide conservent le texte saisi.`
+  String get documentTitle_help {
+    return Intl.message(
+      'Cette fenêtre permet de renseigner le titre du bilan ou du rapport.\n\nConservez le titre proposé ou remplacez-le par un intitulé permettant de reconnaître facilement le document. Le titre ne peut pas être vide.\n\nCliquez sur le bouton de validation ou appuyez sur Entrée pour confirmer. « Annuler » ferme la fenêtre sans valider le titre.\n\nL’ouverture et la fermeture de cette aide conservent le texte saisi.',
+      name: 'documentTitle_help',
       desc: '',
       args: [],
     );
@@ -3809,12 +3797,7 @@ class S {
 
   /// `État`
   String get episodeForms_state {
-    return Intl.message(
-      'État',
-      name: 'episodeForms_state',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('État', name: 'episodeForms_state', desc: '', args: []);
   }
 
   /// `Modèle système`
@@ -4129,12 +4112,7 @@ class S {
 
   /// `Nom`
   String get episodeReport_name {
-    return Intl.message(
-      'Nom',
-      name: 'episodeReport_name',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Nom', name: 'episodeReport_name', desc: '', args: []);
   }
 
   /// `Aucune conclusion renseignée.`
@@ -4347,21 +4325,21 @@ class S {
     );
   }
 
-  /// `Modifier le correspondant`
-  String get externalCorrespondentForm_editTitle {
-    return Intl.message(
-      'Modifier le correspondant',
-      name: 'externalCorrespondentForm_editTitle',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Ajouter un correspondant`
   String get externalCorrespondentForm_addTitle {
     return Intl.message(
       'Ajouter un correspondant',
       name: 'externalCorrespondentForm_addTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Modifier le correspondant`
+  String get externalCorrespondentForm_editTitle {
+    return Intl.message(
+      'Modifier le correspondant',
+      name: 'externalCorrespondentForm_editTitle',
       desc: '',
       args: [],
     );
@@ -4377,21 +4355,21 @@ class S {
     );
   }
 
-  /// `Correspondants externes`
-  String get externalCorrespondents_title {
-    return Intl.message(
-      'Correspondants externes',
-      name: 'externalCorrespondents_title',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Cet écran présente les correspondants externes enregistrés dans Companion. Chaque ligne indique le nom du correspondant et, lorsqu’elles sont renseignées, sa profession, sa spécialité et sa ville.\n\nCliquez sur « Ajouter » pour créer un correspondant. Renseignez son identité et les coordonnées utiles, puis cliquez sur « Enregistrer » pour l’ajouter à la liste. « Annuler » ferme le formulaire sans créer de correspondant.\n\nCes correspondants peuvent notamment être sélectionnés comme prescripteurs dans les épisodes de soins.`
   String get externalCorrespondents_help {
     return Intl.message(
       'Cet écran présente les correspondants externes enregistrés dans Companion. Chaque ligne indique le nom du correspondant et, lorsqu’elles sont renseignées, sa profession, sa spécialité et sa ville.\n\nCliquez sur « Ajouter » pour créer un correspondant. Renseignez son identité et les coordonnées utiles, puis cliquez sur « Enregistrer » pour l’ajouter à la liste. « Annuler » ferme le formulaire sans créer de correspondant.\n\nCes correspondants peuvent notamment être sélectionnés comme prescripteurs dans les épisodes de soins.',
       name: 'externalCorrespondents_help',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Correspondants externes`
+  String get externalCorrespondents_title {
+    return Intl.message(
+      'Correspondants externes',
+      name: 'externalCorrespondents_title',
       desc: '',
       args: [],
     );
@@ -4467,16 +4445,6 @@ class S {
     );
   }
 
-  /// `Cette vue présente les notes de suivi de la prise en charge, avec leur date, leur titre et un aperçu de leur contenu.\n\nLe bouton d’ajout permet de créer une note. L’icône de modification permet d’ouvrir une note existante pour la consulter ou la modifier.\n\nUtilisez les cases de sélection pour choisir les notes à inclure dans le bilan ou le rapport en cours. Décocher une note la retire de cette sélection sans supprimer la note de suivi.\n\nLa sélection est disponible lorsqu’un bilan ou un rapport est ouvert et que le chargement est terminé.\n\nCliquez sur la croix pour fermer la vue agrandie et revenir à l’espace Bilans/Rapports.`
-  String get followUpNotes_help {
-    return Intl.message(
-      'Cette vue présente les notes de suivi de la prise en charge, avec leur date, leur titre et un aperçu de leur contenu.\n\nLe bouton d’ajout permet de créer une note. L’icône de modification permet d’ouvrir une note existante pour la consulter ou la modifier.\n\nUtilisez les cases de sélection pour choisir les notes à inclure dans le bilan ou le rapport en cours. Décocher une note la retire de cette sélection sans supprimer la note de suivi.\n\nLa sélection est disponible lorsqu’un bilan ou un rapport est ouvert et que le chargement est terminé.\n\nCliquez sur la croix pour fermer la vue agrandie et revenir à l’espace Bilans/Rapports.',
-      name: 'followUpNotes_help',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Cette fenêtre permet de créer ou de modifier une note de suivi rattachée à l’épisode de soins.\n\nRenseignez un titre et le contenu de la note. Ces deux champs doivent contenir du texte pour que la note soit enregistrée.\n\nLors de la création, cliquez sur « Ajouter ». Lors d’une modification, cliquez sur « Enregistrer » pour conserver vos changements.\n\n« Annuler » ferme la fenêtre sans enregistrer votre saisie. Vous pouvez ouvrir puis fermer cette aide sans perdre le texte en cours de rédaction.`
   String get followUpNoteForm_help {
     return Intl.message(
@@ -4487,64 +4455,44 @@ class S {
     );
   }
 
-  /// `Préfix ARB`
-  String get g_arb_prefix {
+  /// `Cette vue présente les notes de suivi de la prise en charge, avec leur date, leur titre et un aperçu de leur contenu.\n\nLe bouton d’ajout permet de créer une note. L’icône de modification permet d’ouvrir une note existante pour la consulter ou la modifier.\n\nUtilisez les cases de sélection pour choisir les notes à inclure dans le bilan ou le rapport en cours. Décocher une note la retire de cette sélection sans supprimer la note de suivi.\n\nLa sélection est disponible lorsqu’un bilan ou un rapport est ouvert et que le chargement est terminé.\n\nCliquez sur la croix pour fermer la vue agrandie et revenir à l’espace Bilans/Rapports.`
+  String get followUpNotes_help {
     return Intl.message(
-      'Préfix ARB',
-      name: 'g_arb_prefix',
+      'Cette vue présente les notes de suivi de la prise en charge, avec leur date, leur titre et un aperçu de leur contenu.\n\nLe bouton d’ajout permet de créer une note. L’icône de modification permet d’ouvrir une note existante pour la consulter ou la modifier.\n\nUtilisez les cases de sélection pour choisir les notes à inclure dans le bilan ou le rapport en cours. Décocher une note la retire de cette sélection sans supprimer la note de suivi.\n\nLa sélection est disponible lorsqu’un bilan ou un rapport est ouvert et que le chargement est terminé.\n\nCliquez sur la croix pour fermer la vue agrandie et revenir à l’espace Bilans/Rapports.',
+      name: 'followUpNotes_help',
       desc: '',
       args: [],
     );
+  }
+
+  /// `Préfix ARB`
+  String get g_arb_prefix {
+    return Intl.message('Préfix ARB', name: 'g_arb_prefix', desc: '', args: []);
   }
 
   /// `Fermer`
   String get g_close {
-    return Intl.message(
-      'Fermer',
-      name: 'g_close',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Fermer', name: 'g_close', desc: '', args: []);
   }
 
   /// `Commentaire`
   String get g_comment {
-    return Intl.message(
-      'Commentaire',
-      name: 'g_comment',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Commentaire', name: 'g_comment', desc: '', args: []);
   }
 
   /// `Contexte`
   String get g_context {
-    return Intl.message(
-      'Contexte',
-      name: 'g_context',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Contexte', name: 'g_context', desc: '', args: []);
   }
 
   /// `Copier`
   String get g_copy {
-    return Intl.message(
-      'Copier',
-      name: 'g_copy',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Copier', name: 'g_copy', desc: '', args: []);
   }
 
   /// `Fichier`
   String get g_file {
-    return Intl.message(
-      'Fichier',
-      name: 'g_file',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Fichier', name: 'g_file', desc: '', args: []);
   }
 
   /// `Afficher l’aide`
@@ -4739,12 +4687,7 @@ class S {
 
   /// `Accueil`
   String get home_accueil {
-    return Intl.message(
-      'Accueil',
-      name: 'home_accueil',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Accueil', name: 'home_accueil', desc: '', args: []);
   }
 
   /// `Action requise : associer ce dossier à un patient.`
@@ -4779,12 +4722,7 @@ class S {
 
   /// `Archives`
   String get home_archives {
-    return Intl.message(
-      'Archives',
-      name: 'home_archives',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Archives', name: 'home_archives', desc: '', args: []);
   }
 
   /// `Attention`
@@ -4859,12 +4797,7 @@ class S {
 
   /// `Appareils`
   String get home_devices {
-    return Intl.message(
-      'Appareils',
-      name: 'home_devices',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Appareils', name: 'home_devices', desc: '', args: []);
   }
 
   /// `Erreur lors de la sauvegarde : {error}`
@@ -4899,32 +4832,17 @@ class S {
 
   /// `Échec`
   String get home_failure {
-    return Intl.message(
-      'Échec',
-      name: 'home_failure',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Échec', name: 'home_failure', desc: '', args: []);
   }
 
   /// `Fermer`
   String get home_fermer {
-    return Intl.message(
-      'Fermer',
-      name: 'home_fermer',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Fermer', name: 'home_fermer', desc: '', args: []);
   }
 
   /// `Fichier`
   String get home_file {
-    return Intl.message(
-      'Fichier',
-      name: 'home_file',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Fichier', name: 'home_file', desc: '', args: []);
   }
 
   /// `Historique`
@@ -4939,12 +4857,7 @@ class S {
 
   /// `Accueil`
   String get home_home {
-    return Intl.message(
-      'Accueil',
-      name: 'home_home',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Accueil', name: 'home_home', desc: '', args: []);
   }
 
   /// `Historique des imports`
@@ -5149,12 +5062,7 @@ class S {
 
   /// `Octets`
   String get home_octets {
-    return Intl.message(
-      'Octets',
-      name: 'home_octets',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Octets', name: 'home_octets', desc: '', args: []);
   }
 
   /// `{count} autre(s) exercice(s)`
@@ -5179,12 +5087,7 @@ class S {
 
   /// `Chemin`
   String get home_pathway {
-    return Intl.message(
-      'Chemin',
-      name: 'home_pathway',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Chemin', name: 'home_pathway', desc: '', args: []);
   }
 
   /// `Patient ABAK`
@@ -5199,12 +5102,7 @@ class S {
 
   /// `Patients`
   String get home_patients {
-    return Intl.message(
-      'Patients',
-      name: 'home_patients',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Patients', name: 'home_patients', desc: '', args: []);
   }
 
   /// `{count} association(s) en attente`
@@ -5259,12 +5157,7 @@ class S {
 
   /// `Résultats`
   String get home_results {
-    return Intl.message(
-      'Résultats',
-      name: 'home_results',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Résultats', name: 'home_results', desc: '', args: []);
   }
 
   /// `Scannez ce QR code depuis ABAK Mobile pour configurer automatiquement la connexion au Desktop.`
@@ -5289,32 +5182,17 @@ class S {
 
   /// `Taille`
   String get home_size {
-    return Intl.message(
-      'Taille',
-      name: 'home_size',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Taille', name: 'home_size', desc: '', args: []);
   }
 
   /// `Résoudre`
   String get home_solve {
-    return Intl.message(
-      'Résoudre',
-      name: 'home_solve',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Résoudre', name: 'home_solve', desc: '', args: []);
   }
 
   /// `Succès`
   String get home_success {
-    return Intl.message(
-      'Succès',
-      name: 'home_success',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Succès', name: 'home_success', desc: '', args: []);
   }
 
   /// `Alerte système`
@@ -5369,12 +5247,7 @@ class S {
 
   /// `À faire`
   String get home_to_do_list {
-    return Intl.message(
-      'À faire',
-      name: 'home_to_do_list',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('À faire', name: 'home_to_do_list', desc: '', args: []);
   }
 
   /// `Impossible de charger les imports récents.`
@@ -5409,12 +5282,7 @@ class S {
 
   /// `Vérifier`
   String get home_verify {
-    return Intl.message(
-      'Vérifier',
-      name: 'home_verify',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Vérifier', name: 'home_verify', desc: '', args: []);
   }
 
   /// `Sauvegardes très volumineuses`
@@ -5527,6 +5395,16 @@ class S {
     );
   }
 
+  /// `Cet écran présente l’historique des sessions d’import enregistrées dans Companion.\n\nChaque ligne indique la date de la session, son état, le nombre de fichiers traités et le nombre de résultats importés, ignorés ou en conflit.\n\nL’icône signale notamment un import en cours, un échec, des erreurs ou des conflits nécessitant votre attention.\n\nCliquez sur une session pour consulter son détail et mieux comprendre le traitement des résultats.`
+  String get importHistory_help {
+    return Intl.message(
+      'Cet écran présente l’historique des sessions d’import enregistrées dans Companion.\n\nChaque ligne indique la date de la session, son état, le nombre de fichiers traités et le nombre de résultats importés, ignorés ou en conflit.\n\nL’icône signale notamment un import en cours, un échec, des erreurs ou des conflits nécessitant votre attention.\n\nCliquez sur une session pour consulter son détail et mieux comprendre le traitement des résultats.',
+      name: 'importHistory_help',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Cette fenêtre permet de créer un patient pour lui rattacher les résultats importés depuis ABAK Mobile.\n\nSaisissez son nom et son prénom. Vous pouvez compléter sa date de naissance au format AAAA-MM-JJ et renseigner son sexe, ou conserver « Non renseigné ».\n\nSi vous avez utilisé la lecture de la carte Vitale, vérifiez les informations préremplies et corrigez-les si nécessaire.\n\nCliquez sur « Créer » pour enregistrer le patient et le sélectionner. Choisissez ensuite la prise en charge à laquelle rattacher les résultats : la création du patient ne termine pas, à elle seule, le rattachement de l’import.\n\n« Annuler » ferme cette fenêtre sans créer de patient. L’ouverture puis la fermeture de cette aide conserve votre saisie.`
   String get importPatientForm_help {
     return Intl.message(
@@ -5542,6 +5420,16 @@ class S {
     return Intl.message(
       'Nouveau patient',
       name: 'importPatientForm_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cet écran permet de rattacher les résultats reçus depuis ABAK Mobile au bon patient et à la bonne prise en charge dans Companion.\n\nConsultez les informations de l’import reçu, puis sélectionnez le patient concerné dans la liste. Si nécessaire, créez sa fiche avec « Nouveau patient » ou « Depuis Carte Vitale », lorsque le dispositif de lecture est disponible.\n\nAprès avoir sélectionné le patient, choisissez une prise en charge active ou créez-en une. Une prise en charge archivée doit être restaurée avant de pouvoir être sélectionnée.\n\nVérifiez le patient et la prise en charge avant de choisir cette dernière : sa sélection valide le rattachement et permet de poursuivre l’import.`
+  String get importResolution_help {
+    return Intl.message(
+      'Cet écran permet de rattacher les résultats reçus depuis ABAK Mobile au bon patient et à la bonne prise en charge dans Companion.\n\nConsultez les informations de l’import reçu, puis sélectionnez le patient concerné dans la liste. Si nécessaire, créez sa fiche avec « Nouveau patient » ou « Depuis Carte Vitale », lorsque le dispositif de lecture est disponible.\n\nAprès avoir sélectionné le patient, choisissez une prise en charge active ou créez-en une. Une prise en charge archivée doit être restaurée avant de pouvoir être sélectionnée.\n\nVérifiez le patient et la prise en charge avant de choisir cette dernière : sa sélection valide le rattachement et permet de poursuivre l’import.',
+      name: 'importResolution_help',
       desc: '',
       args: [],
     );
@@ -5572,6 +5460,16 @@ class S {
     return Intl.message(
       'fichiers',
       name: 'importResolutionAssistant_files',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cet écran regroupe les imports qui nécessitent votre attention : association à un patient à compléter, échec de l’import, erreurs, résultats ignorés ou conflits à examiner.\n\nChaque ligne indique la date de l’import et les informations disponibles pour identifier le dossier concerné.\n\nCliquez sur un import pour ouvrir son suivi, consulter les explications et accéder aux actions proposées selon sa situation.\n\nLa liste est actualisée à votre retour depuis le suivi de l’import. Si aucun import ne répond à ces critères, un message indique qu’aucun problème n’a été détecté.`
+  String get importResolutionAssistant_help {
+    return Intl.message(
+      'Cet écran regroupe les imports qui nécessitent votre attention : association à un patient à compléter, échec de l’import, erreurs, résultats ignorés ou conflits à examiner.\n\nChaque ligne indique la date de l’import et les informations disponibles pour identifier le dossier concerné.\n\nCliquez sur un import pour ouvrir son suivi, consulter les explications et accéder aux actions proposées selon sa situation.\n\nLa liste est actualisée à votre retour depuis le suivi de l’import. Si aucun import ne répond à ces critères, un message indique qu’aucun problème n’a été détecté.',
+      name: 'importResolutionAssistant_help',
       desc: '',
       args: [],
     );
@@ -5707,6 +5605,16 @@ class S {
     );
   }
 
+  /// `Cet écran présente le suivi d’un import reçu dans Companion. Le message principal indique si l’import a réussi, nécessite une association à un patient ou comporte un problème.\n\nLorsqu’une association est nécessaire, cliquez sur « Associer à un patient » pour choisir le dossier auquel rattacher les résultats.\n\nLe compte rendu et la liste des fichiers permettent de consulter le détail du traitement et les éventuels avertissements.\n\nSi le fichier reçu est incomplet ou endommagé, demandez un nouvel envoi depuis ABAK Mobile.\n\nSelon la situation, le bouton « Supprimer cet import » est proposé. Consultez le message de confirmation avant de valider la suppression.`
+  String get importSessionDetail_help {
+    return Intl.message(
+      'Cet écran présente le suivi d’un import reçu dans Companion. Le message principal indique si l’import a réussi, nécessite une association à un patient ou comporte un problème.\n\nLorsqu’une association est nécessaire, cliquez sur « Associer à un patient » pour choisir le dossier auquel rattacher les résultats.\n\nLe compte rendu et la liste des fichiers permettent de consulter le détail du traitement et les éventuels avertissements.\n\nSi le fichier reçu est incomplet ou endommagé, demandez un nouvel envoi depuis ABAK Mobile.\n\nSelon la situation, le bouton « Supprimer cet import » est proposé. Consultez le message de confirmation avant de valider la suppression.',
+      name: 'importSessionDetail_help',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Suivi de l’import`
   String get importSessionDetail_title {
     return Intl.message(
@@ -5829,12 +5737,7 @@ class S {
 
   /// `Logo`
   String get information_logo {
-    return Intl.message(
-      'Logo',
-      name: 'information_logo',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Logo', name: 'information_logo', desc: '', args: []);
   }
 
   /// `Version 1.1.0 build 3\nPossibilité de dictée vocale pour les bilans et rapports, nécessite le module gratuit.\nSauvegarde automatique Bilan et Rapport.\nBouton duplication Bilan et Rapport.\nNotes modifiables.\nBouton pour voir tous les tests d'un patient pour un épisode.\nModèles de bilans.\nGraphique automatique si plusieurs résultats pour un test\nCréation d'un document au format docx.\nAffichage de l'aide utilisée pour E72 et E76`
@@ -5987,41 +5890,376 @@ class S {
     );
   }
 
-  /// `Cet écran présente l’historique des sessions d’import enregistrées dans Companion.\n\nChaque ligne indique la date de la session, son état, le nombre de fichiers traités et le nombre de résultats importés, ignorés ou en conflit.\n\nL’icône signale notamment un import en cours, un échec, des erreurs ou des conflits nécessitant votre attention.\n\nCliquez sur une session pour consulter son détail et mieux comprendre le traitement des résultats.`
-  String get importHistory_help {
+  /// `Companion — archivé`
+  String get kobus_archived {
     return Intl.message(
-      'Cet écran présente l’historique des sessions d’import enregistrées dans Companion.\n\nChaque ligne indique la date de la session, son état, le nombre de fichiers traités et le nombre de résultats importés, ignorés ou en conflit.\n\nL’icône signale notamment un import en cours, un échec, des erreurs ou des conflits nécessitant votre attention.\n\nCliquez sur une session pour consulter son détail et mieux comprendre le traitement des résultats.',
-      name: 'importHistory_help',
+      'Companion — archivé',
+      name: 'kobus_archived',
       desc: '',
       args: [],
     );
   }
 
-  /// `Cet écran permet de rattacher les résultats reçus depuis ABAK Mobile au bon patient et à la bonne prise en charge dans Companion.\n\nConsultez les informations de l’import reçu, puis sélectionnez le patient concerné dans la liste. Si nécessaire, créez sa fiche avec « Nouveau patient » ou « Depuis Carte Vitale », lorsque le dispositif de lecture est disponible.\n\nAprès avoir sélectionné le patient, choisissez une prise en charge active ou créez-en une. Une prise en charge archivée doit être restaurée avant de pouvoir être sélectionnée.\n\nVérifiez le patient et la prise en charge avant de choisir cette dernière : sa sélection valide le rattachement et permet de poursuivre l’import.`
-  String get importResolution_help {
+  /// `Archives importées`
+  String get kobus_archives {
     return Intl.message(
-      'Cet écran permet de rattacher les résultats reçus depuis ABAK Mobile au bon patient et à la bonne prise en charge dans Companion.\n\nConsultez les informations de l’import reçu, puis sélectionnez le patient concerné dans la liste. Si nécessaire, créez sa fiche avec « Nouveau patient » ou « Depuis Carte Vitale », lorsque le dispositif de lecture est disponible.\n\nAprès avoir sélectionné le patient, choisissez une prise en charge active ou créez-en une. Une prise en charge archivée doit être restaurée avant de pouvoir être sélectionnée.\n\nVérifiez le patient et la prise en charge avant de choisir cette dernière : sa sélection valide le rattachement et permet de poursuivre l’import.',
-      name: 'importResolution_help',
+      'Archives importées',
+      name: 'kobus_archives',
       desc: '',
       args: [],
     );
   }
 
-  /// `Cet écran regroupe les imports qui nécessitent votre attention : association à un patient à compléter, échec de l’import, erreurs, résultats ignorés ou conflits à examiner.\n\nChaque ligne indique la date de l’import et les informations disponibles pour identifier le dossier concerné.\n\nCliquez sur un import pour ouvrir son suivi, consulter les explications et accéder aux actions proposées selon sa situation.\n\nLa liste est actualisée à votre retour depuis le suivi de l’import. Si aucun import ne répond à ces critères, un message indique qu’aucun problème n’a été détecté.`
-  String get importResolutionAssistant_help {
+  /// `Rattacher au patient choisi`
+  String get kobus_attach {
     return Intl.message(
-      'Cet écran regroupe les imports qui nécessitent votre attention : association à un patient à compléter, échec de l’import, erreurs, résultats ignorés ou conflits à examiner.\n\nChaque ligne indique la date de l’import et les informations disponibles pour identifier le dossier concerné.\n\nCliquez sur un import pour ouvrir son suivi, consulter les explications et accéder aux actions proposées selon sa situation.\n\nLa liste est actualisée à votre retour depuis le suivi de l’import. Si aucun import ne répond à ces critères, un message indique qu’aucun problème n’a été détecté.',
-      name: 'importResolutionAssistant_help',
+      'Rattacher au patient choisi',
+      name: 'kobus_attach',
       desc: '',
       args: [],
     );
   }
 
-  /// `Cet écran présente le suivi d’un import reçu dans Companion. Le message principal indique si l’import a réussi, nécessite une association à un patient ou comporte un problème.\n\nLorsqu’une association est nécessaire, cliquez sur « Associer à un patient » pour choisir le dossier auquel rattacher les résultats.\n\nLe compte rendu et la liste des fichiers permettent de consulter le détail du traitement et les éventuels avertissements.\n\nSi le fichier reçu est incomplet ou endommagé, demandez un nouvel envoi depuis ABAK Mobile.\n\nSelon la situation, le bouton « Supprimer cet import » est proposé. Consultez le message de confirmation avant de valider la suppression.`
-  String get importSessionDetail_help {
+  /// `La sauvegarde actuelle de la base ne sauvegarde pas les fichiers KOBUS.`
+  String get kobus_backupNotice {
     return Intl.message(
-      'Cet écran présente le suivi d’un import reçu dans Companion. Le message principal indique si l’import a réussi, nécessite une association à un patient ou comporte un problème.\n\nLorsqu’une association est nécessaire, cliquez sur « Associer à un patient » pour choisir le dossier auquel rattacher les résultats.\n\nLe compte rendu et la liste des fichiers permettent de consulter le détail du traitement et les éventuels avertissements.\n\nSi le fichier reçu est incomplet ou endommagé, demandez un nouvel envoi depuis ABAK Mobile.\n\nSelon la situation, le bouton « Supprimer cet import » est proposé. Consultez le message de confirmation avant de valider la suppression.',
-      name: 'importSessionDetail_help',
+      'La sauvegarde actuelle de la base ne sauvegarde pas les fichiers KOBUS.',
+      name: 'kobus_backupNotice',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Annuler`
+  String get kobus_cancel {
+    return Intl.message('Annuler', name: 'kobus_cancel', desc: '', args: []);
+  }
+
+  /// `Patient proposé`
+  String get kobus_candidate {
+    return Intl.message(
+      'Patient proposé',
+      name: 'kobus_candidate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sélectionnez une ligne ci-dessous`
+  String get kobus_chooseCandidate {
+    return Intl.message(
+      'Sélectionnez une ligne ci-dessous',
+      name: 'kobus_chooseCandidate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Vérifier et confirmer l’import`
+  String get kobus_confirm {
+    return Intl.message(
+      'Vérifier et confirmer l’import',
+      name: 'kobus_confirm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Importer les dossiers prêts selon vos décisions ? Les rapprochements non résolus et les dossiers exclus resteront de côté. Les fiches existantes ne seront pas modifiées.`
+  String get kobus_confirmBody {
+    return Intl.message(
+      'Importer les dossiers prêts selon vos décisions ? Les rapprochements non résolus et les dossiers exclus resteront de côté. Les fiches existantes ne seront pas modifiées.',
+      name: 'kobus_confirmBody',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Consulter les données KOBUS`
+  String get kobus_consult {
+    return Intl.message(
+      'Consulter les données KOBUS',
+      name: 'kobus_consult',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Créer une fiche`
+  String get kobus_create {
+    return Intl.message(
+      'Créer une fiche',
+      name: 'kobus_create',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Fiches créées / à créer`
+  String get kobus_creations {
+    return Intl.message(
+      'Fiches créées / à créer',
+      name: 'kobus_creations',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Confirmer une personne distincte`
+  String get kobus_distinct {
+    return Intl.message(
+      'Confirmer une personne distincte',
+      name: 'kobus_distinct',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Éditer la liste des dossiers rejetés`
+  String get kobus_editRejected {
+    return Intl.message(
+      'Éditer la liste des dossiers rejetés',
+      name: 'kobus_editRejected',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Patients existants concernés`
+  String get kobus_existing {
+    return Intl.message(
+      'Patients existants concernés',
+      name: 'kobus_existing',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Échecs techniques`
+  String get kobus_failed {
+    return Intl.message(
+      'Échecs techniques',
+      name: 'kobus_failed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Compte rendu KOBUS`
+  String get kobus_history {
+    return Intl.message(
+      'Compte rendu KOBUS',
+      name: 'kobus_history',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Importés`
+  String get kobus_imported {
+    return Intl.message('Importés', name: 'kobus_imported', desc: '', args: []);
+  }
+
+  /// `Non traités après interruption`
+  String get kobus_interrupted {
+    return Intl.message(
+      'Non traités après interruption',
+      name: 'kobus_interrupted',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Les dossiers sont conservés à l’identique. Aucun épisode ni document clinique natif n’est créé.`
+  String get kobus_intro {
+    return Intl.message(
+      'Les dossiers sont conservés à l’identique. Aucun épisode ni document clinique natif n’est créé.',
+      name: 'kobus_intro',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Rapprochements à vérifier`
+  String get kobus_matches {
+    return Intl.message(
+      'Rapprochements à vérifier',
+      name: 'kobus_matches',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Aucun dossier partagé dans cet export`
+  String get kobus_noShared {
+    return Intl.message(
+      'Aucun dossier partagé dans cet export',
+      name: 'kobus_noShared',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Mes patients`
+  String get kobus_ownOrigin {
+    return Intl.message(
+      'Mes patients',
+      name: 'kobus_ownOrigin',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Imprimer`
+  String get kobus_print {
+    return Intl.message('Imprimer', name: 'kobus_print', desc: '', args: []);
+  }
+
+  /// `Provenance / statut`
+  String get kobus_provenance {
+    return Intl.message(
+      'Provenance / statut',
+      name: 'kobus_provenance',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Motif`
+  String get kobus_reason {
+    return Intl.message('Motif', name: 'kobus_reason', desc: '', args: []);
+  }
+
+  /// `Rejetés`
+  String get kobus_rejected {
+    return Intl.message('Rejetés', name: 'kobus_rejected', desc: '', args: []);
+  }
+
+  /// `Enregistrer le PDF`
+  String get kobus_savePdf {
+    return Intl.message(
+      'Enregistrer le PDF',
+      name: 'kobus_savePdf',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Changer cette option réinitialise les décisions de rapprochement.`
+  String get kobus_scopeReset {
+    return Intl.message(
+      'Changer cette option réinitialise les décisions de rapprochement.',
+      name: 'kobus_scopeReset',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choisir le ZIP KOBUS`
+  String get kobus_select {
+    return Intl.message(
+      'Choisir le ZIP KOBUS',
+      name: 'kobus_select',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Récupérer également les dossiers partagés si présents`
+  String get kobus_shared {
+    return Intl.message(
+      'Récupérer également les dossiers partagés si présents',
+      name: 'kobus_shared',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Patients partagés`
+  String get kobus_sharedOrigin {
+    return Intl.message(
+      'Patients partagés',
+      name: 'kobus_sharedOrigin',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Laissés de côté`
+  String get kobus_skip {
+    return Intl.message(
+      'Laissés de côté',
+      name: 'kobus_skip',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Identité KOBUS`
+  String get kobus_source {
+    return Intl.message(
+      'Identité KOBUS',
+      name: 'kobus_source',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Lancer l’import`
+  String get kobus_start {
+    return Intl.message(
+      'Lancer l’import',
+      name: 'kobus_start',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Arrêter après le dossier en cours`
+  String get kobus_stop {
+    return Intl.message(
+      'Arrêter après le dossier en cours',
+      name: 'kobus_stop',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Arrêt demandé…`
+  String get kobus_stopping {
+    return Intl.message(
+      'Arrêt demandé…',
+      name: 'kobus_stopping',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Importer KOBUS`
+  String get kobus_title {
+    return Intl.message(
+      'Importer KOBUS',
+      name: 'kobus_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Les données KOBUS sont indisponibles ou le dossier est introuvable.`
+  String get kobus_unavailable {
+    return Intl.message(
+      'Les données KOBUS sont indisponibles ou le dossier est introuvable.',
+      name: 'kobus_unavailable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `À décider`
+  String get kobus_unresolved {
+    return Intl.message(
+      'À décider',
+      name: 'kobus_unresolved',
       desc: '',
       args: [],
     );
@@ -6089,12 +6327,7 @@ class S {
 
   /// `Chargement...`
   String get loading {
-    return Intl.message(
-      'Chargement...',
-      name: 'loading',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Chargement...', name: 'loading', desc: '', args: []);
   }
 
   /// `Sauvegarde annulée.`
@@ -6209,22 +6442,12 @@ class S {
 
   /// ``
   String get main_close {
-    return Intl.message(
-      '',
-      name: 'main_close',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('', name: 'main_close', desc: '', args: []);
   }
 
   /// `Modifier`
   String get modify {
-    return Intl.message(
-      'Modifier',
-      name: 'modify',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Modifier', name: 'modify', desc: '', args: []);
   }
 
   /// `Aucun dossier défini`
@@ -6239,22 +6462,12 @@ class S {
 
   /// `OK`
   String get ok {
-    return Intl.message(
-      'OK',
-      name: 'ok',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('OK', name: 'ok', desc: '', args: []);
   }
 
   /// `Ouvrir`
   String get open {
-    return Intl.message(
-      'Ouvrir',
-      name: 'open',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Ouvrir', name: 'open', desc: '', args: []);
   }
 
   /// `Choisir un logo`
@@ -7049,12 +7262,7 @@ class S {
 
   /// `Sexe`
   String get patientDetail_sex {
-    return Intl.message(
-      'Sexe',
-      name: 'patientDetail_sex',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Sexe', name: 'patientDetail_sex', desc: '', args: []);
   }
 
   /// `Activité sportive`
@@ -7119,42 +7327,7 @@ class S {
 
   /// `ans`
   String get patientDetail_years {
-    return Intl.message(
-      'ans',
-      name: 'patientDetail_years',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Documents du patient`
-  String get patientDocuments_title {
-    return Intl.message(
-      'Documents du patient',
-      name: 'patientDocuments_title',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Bilan / Rapport / Autre`
-  String get patientDocuments_structure {
-    return Intl.message(
-      'Bilan / Rapport / Autre',
-      name: 'patientDocuments_structure',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Aucun dossier de stockage défini. Choisissez le dossier commun à tous les patients.`
-  String get patientDocuments_unconfigured {
-    return Intl.message(
-      'Aucun dossier de stockage défini. Choisissez le dossier commun à tous les patients.',
-      name: 'patientDocuments_unconfigured',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('ans', name: 'patientDetail_years', desc: '', args: []);
   }
 
   /// `Le dossier doit être autorisé à nouveau. Sélectionnez le dossier commun défini dans les paramètres.`
@@ -7162,26 +7335,6 @@ class S {
     return Intl.message(
       'Le dossier doit être autorisé à nouveau. Sélectionnez le dossier commun défini dans les paramètres.',
       name: 'patientDocuments_authorization',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Impossible de préparer ou d’ouvrir le dossier. Vérifiez sa disponibilité et vos droits d’accès, puis réessayez."`
-  String get patientDocuments_error {
-    return Intl.message(
-      'Impossible de préparer ou d’ouvrir le dossier. Vérifiez sa disponibilité et vos droits d’accès, puis réessayez."',
-      name: 'patientDocuments_error',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Réessayer`
-  String get patientDocuments_retry {
-    return Intl.message(
-      'Réessayer',
-      name: 'patientDocuments_retry',
       desc: '',
       args: [],
     );
@@ -7197,11 +7350,31 @@ class S {
     );
   }
 
+  /// `Impossible de préparer ou d’ouvrir le dossier. Vérifiez sa disponibilité et vos droits d’accès, puis réessayez."`
+  String get patientDocuments_error {
+    return Intl.message(
+      'Impossible de préparer ou d’ouvrir le dossier. Vérifiez sa disponibilité et vos droits d’accès, puis réessayez."',
+      name: 'patientDocuments_error',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Ouvrir le dossier patient"`
   String get patientDocuments_open {
     return Intl.message(
       'Ouvrir le dossier patient"',
       name: 'patientDocuments_open',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Réessayer`
+  String get patientDocuments_retry {
+    return Intl.message(
+      'Réessayer',
+      name: 'patientDocuments_retry',
       desc: '',
       args: [],
     );
@@ -7217,11 +7390,31 @@ class S {
     );
   }
 
-  /// `Cet écran permet de créer un patient dans ABAK Companion.\n\nSaisissez son nom et son prénom : ces deux informations sont obligatoires. Vous pouvez compléter sa date de naissance à l’aide du calendrier et renseigner son sexe.\n\nLe bouton de lecture de la carte Vitale permet de récupérer l’identité du patient lorsque le lecteur et le module de lecture sont disponibles. Si plusieurs bénéficiaires sont proposés, sélectionnez la personne concernée, puis vérifiez les informations affichées. La saisie manuelle reste possible.\n\nSi Companion détecte un patient déjà présent, vérifiez les informations proposées avant de poursuivre afin d’éviter un doublon. Un patient archivé peut être proposé à la restauration.\n\nCliquez sur « Créer le patient » pour enregistrer la fiche, ou sur « Annuler » pour quitter sans créer de patient.`
-  String get patientNew_help {
+  /// `Bilan / Rapport / Autre`
+  String get patientDocuments_structure {
     return Intl.message(
-      'Cet écran permet de créer un patient dans ABAK Companion.\n\nSaisissez son nom et son prénom : ces deux informations sont obligatoires. Vous pouvez compléter sa date de naissance à l’aide du calendrier et renseigner son sexe.\n\nLe bouton de lecture de la carte Vitale permet de récupérer l’identité du patient lorsque le lecteur et le module de lecture sont disponibles. Si plusieurs bénéficiaires sont proposés, sélectionnez la personne concernée, puis vérifiez les informations affichées. La saisie manuelle reste possible.\n\nSi Companion détecte un patient déjà présent, vérifiez les informations proposées avant de poursuivre afin d’éviter un doublon. Un patient archivé peut être proposé à la restauration.\n\nCliquez sur « Créer le patient » pour enregistrer la fiche, ou sur « Annuler » pour quitter sans créer de patient.',
-      name: 'patientNew_help',
+      'Bilan / Rapport / Autre',
+      name: 'patientDocuments_structure',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Documents du patient`
+  String get patientDocuments_title {
+    return Intl.message(
+      'Documents du patient',
+      name: 'patientDocuments_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Aucun dossier de stockage défini. Choisissez le dossier commun à tous les patients.`
+  String get patientDocuments_unconfigured {
+    return Intl.message(
+      'Aucun dossier de stockage défini. Choisissez le dossier commun à tous les patients.',
+      name: 'patientDocuments_unconfigured',
       desc: '',
       args: [],
     );
@@ -7297,21 +7490,21 @@ class S {
     );
   }
 
-  /// `Nom`
-  String get patientForm_lastName {
-    return Intl.message(
-      'Nom',
-      name: 'patientForm_lastName',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Cette fenêtre permet de renseigner ou de corriger l’identité du patient.\n\nLe nom et le prénom sont obligatoires. Vous pouvez sélectionner la date de naissance dans le calendrier et renseigner le sexe, ou conserver la valeur « Non précisé ».\n\nCliquez sur « Enregistrer » pour valider les modifications. Si le formulaire est ouvert en mode création, le bouton « Créer » permet de créer la fiche.\n\n« Annuler » ferme la fenêtre sans appliquer les modifications. L’ouverture et la fermeture de cette aide conservent votre saisie dans le formulaire.`
   String get patientForm_help {
     return Intl.message(
       'Cette fenêtre permet de renseigner ou de corriger l’identité du patient.\n\nLe nom et le prénom sont obligatoires. Vous pouvez sélectionner la date de naissance dans le calendrier et renseigner le sexe, ou conserver la valeur « Non précisé ».\n\nCliquez sur « Enregistrer » pour valider les modifications. Si le formulaire est ouvert en mode création, le bouton « Créer » permet de créer la fiche.\n\n« Annuler » ferme la fenêtre sans appliquer les modifications. L’ouverture et la fermeture de cette aide conservent votre saisie dans le formulaire.',
       name: 'patientForm_help',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Nom`
+  String get patientForm_lastName {
+    return Intl.message(
+      'Nom',
+      name: 'patientForm_lastName',
       desc: '',
       args: [],
     );
@@ -7329,12 +7522,7 @@ class S {
 
   /// `Homme`
   String get patientForm_male {
-    return Intl.message(
-      'Homme',
-      name: 'patientForm_male',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Homme', name: 'patientForm_male', desc: '', args: []);
   }
 
   /// `Nouveau patient`
@@ -7349,12 +7537,7 @@ class S {
 
   /// `Autre`
   String get patientForm_other {
-    return Intl.message(
-      'Autre',
-      name: 'patientForm_other',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Autre', name: 'patientForm_other', desc: '', args: []);
   }
 
   /// `Enregistrer`
@@ -7369,12 +7552,7 @@ class S {
 
   /// `Sexe`
   String get patientForm_sex {
-    return Intl.message(
-      'Sexe',
-      name: 'patientForm_sex',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Sexe', name: 'patientForm_sex', desc: '', args: []);
   }
 
   /// `Non précisé`
@@ -7639,12 +7817,7 @@ class S {
 
   /// `Sexe`
   String get patientList_sex {
-    return Intl.message(
-      'Sexe',
-      name: 'patientList_sex',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Sexe', name: 'patientList_sex', desc: '', args: []);
   }
 
   /// `Liste des patients`
@@ -7779,12 +7952,7 @@ class S {
 
   /// `Fermer`
   String get patientNew_close {
-    return Intl.message(
-      'Fermer',
-      name: 'patientNew_close',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Fermer', name: 'patientNew_close', desc: '', args: []);
   }
 
   /// `Cet écran permet la création d’un nouveau patient par saisie ou lecture de la Carte Vitale.`
@@ -7887,6 +8055,16 @@ class S {
     );
   }
 
+  /// `Cet écran permet de créer un patient dans ABAK Companion.\n\nSaisissez son nom et son prénom : ces deux informations sont obligatoires. Vous pouvez compléter sa date de naissance à l’aide du calendrier et renseigner son sexe.\n\nLe bouton de lecture de la carte Vitale permet de récupérer l’identité du patient lorsque le lecteur et le module de lecture sont disponibles. Si plusieurs bénéficiaires sont proposés, sélectionnez la personne concernée, puis vérifiez les informations affichées. La saisie manuelle reste possible.\n\nSi Companion détecte un patient déjà présent, vérifiez les informations proposées avant de poursuivre afin d’éviter un doublon. Un patient archivé peut être proposé à la restauration.\n\nCliquez sur « Créer le patient » pour enregistrer la fiche, ou sur « Annuler » pour quitter sans créer de patient.`
+  String get patientNew_help {
+    return Intl.message(
+      'Cet écran permet de créer un patient dans ABAK Companion.\n\nSaisissez son nom et son prénom : ces deux informations sont obligatoires. Vous pouvez compléter sa date de naissance à l’aide du calendrier et renseigner son sexe.\n\nLe bouton de lecture de la carte Vitale permet de récupérer l’identité du patient lorsque le lecteur et le module de lecture sont disponibles. Si plusieurs bénéficiaires sont proposés, sélectionnez la personne concernée, puis vérifiez les informations affichées. La saisie manuelle reste possible.\n\nSi Companion détecte un patient déjà présent, vérifiez les informations proposées avant de poursuivre afin d’éviter un doublon. Un patient archivé peut être proposé à la restauration.\n\nCliquez sur « Créer le patient » pour enregistrer la fiche, ou sur « Annuler » pour quitter sans créer de patient.',
+      name: 'patientNew_help',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `La lecture de la carte Vitale proposée dans Companion concerne actuellement la France. Elle permet de récupérer des informations d’identité pour faciliter la création de la fiche patient.\n\nABAK Companion souhaite étendre cette démarche aux moyens d’identification utilisés dans d’autres pays. Les cartes, identifiants et services de santé y fonctionnent différemment : leur prise en charge n’est pas encore intégrée à Companion. La saisie manuelle reste disponible.\n\nNous souhaitons explorer ces possibilités avec les kinésithérapeutes qui utilisent ABAK. Vous souhaitez nous accompagner dans votre pays ? Votre connaissance des pratiques locales et votre participation aux essais nous aideront à définir une solution utile et adaptée.\n\nLes évolutions seront construites progressivement avec les praticiens volontaires, selon les besoins exprimés, les possibilités techniques et les autorisations nécessaires.`
   String get patientNew_identificationCountriesHelp {
     return Intl.message(
@@ -7909,12 +8087,7 @@ class S {
 
   /// `Nom`
   String get patientNew_lastName {
-    return Intl.message(
-      'Nom',
-      name: 'patientNew_lastName',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Nom', name: 'patientNew_lastName', desc: '', args: []);
   }
 
   /// `Le nom est obligatoire`
@@ -7969,12 +8142,7 @@ class S {
 
   /// `NIR`
   String get patientNew_nir {
-    return Intl.message(
-      'NIR',
-      name: 'patientNew_nir',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('NIR', name: 'patientNew_nir', desc: '', args: []);
   }
 
   /// `détecté et protégé`
@@ -7999,12 +8167,7 @@ class S {
 
   /// `Non`
   String get patientNew_no {
-    return Intl.message(
-      'Non',
-      name: 'patientNew_no',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Non', name: 'patientNew_no', desc: '', args: []);
   }
 
   /// `Aucun nouveau patient ne sera créé.`
@@ -8039,12 +8202,7 @@ class S {
 
   /// `Autre`
   String get patientNew_other {
-    return Intl.message(
-      'Autre',
-      name: 'patientNew_other',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Autre', name: 'patientNew_other', desc: '', args: []);
   }
 
   /// `Patient déjà enregistré`
@@ -8159,12 +8317,7 @@ class S {
 
   /// `Sexe`
   String get patientNew_sex {
-    return Intl.message(
-      'Sexe',
-      name: 'patientNew_sex',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Sexe', name: 'patientNew_sex', desc: '', args: []);
   }
 
   /// `Identité lue depuis la Carte Vitale`
@@ -8699,12 +8852,7 @@ class S {
 
   /// `jours`
   String get preferences_days {
-    return Intl.message(
-      'jours',
-      name: 'preferences_days',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('jours', name: 'preferences_days', desc: '', args: []);
   }
 
   /// `Mode Expert`
@@ -8867,13 +9015,53 @@ class S {
     );
   }
 
-  /// `Depuis le {start}`
-  String referringPractitionerHistoryDialog_since(Object start) {
+  /// `Cette fenêtre présente les praticiens qui ont été désignés comme référents pour cet épisode de soins.\n\nChaque ligne indique le nom du praticien et sa période d’affectation. La mention « Référent actuel » identifie le praticien actuellement associé à l’épisode.\n\nLa mention « archivé » signifie que la fiche du praticien est archivée ; son nom reste visible dans l’historique.\n\nCette fenêtre permet uniquement de consulter l’historique. Fermez-la pour revenir à l’épisode de soins.`
+  String get referringPractitionerHistory_help {
     return Intl.message(
-      'Depuis le $start',
-      name: 'referringPractitionerHistoryDialog_since',
+      'Cette fenêtre présente les praticiens qui ont été désignés comme référents pour cet épisode de soins.\n\nChaque ligne indique le nom du praticien et sa période d’affectation. La mention « Référent actuel » identifie le praticien actuellement associé à l’épisode.\n\nLa mention « archivé » signifie que la fiche du praticien est archivée ; son nom reste visible dans l’historique.\n\nCette fenêtre permet uniquement de consulter l’historique. Fermez-la pour revenir à l’épisode de soins.',
+      name: 'referringPractitionerHistory_help',
       desc: '',
-      args: [start],
+      args: [],
+    );
+  }
+
+  /// `Historique des kinés référents`
+  String get referringPractitionerHistory_title {
+    return Intl.message(
+      'Historique des kinés référents',
+      name: 'referringPractitionerHistory_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{name} — archivé`
+  String referringPractitionerHistoryDialog_archivedPractitioner(Object name) {
+    return Intl.message(
+      '$name — archivé',
+      name: 'referringPractitionerHistoryDialog_archivedPractitioner',
+      desc: '',
+      args: [name],
+    );
+  }
+
+  /// `Fermer`
+  String get referringPractitionerHistoryDialog_close {
+    return Intl.message(
+      'Fermer',
+      name: 'referringPractitionerHistoryDialog_close',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Référent actuel`
+  String get referringPractitionerHistoryDialog_currentPractitioner {
+    return Intl.message(
+      'Référent actuel',
+      name: 'referringPractitionerHistoryDialog_currentPractitioner',
+      desc: '',
+      args: [],
     );
   }
 
@@ -8907,53 +9095,13 @@ class S {
     );
   }
 
-  /// `{name} — archivé`
-  String referringPractitionerHistoryDialog_archivedPractitioner(Object name) {
+  /// `Depuis le {start}`
+  String referringPractitionerHistoryDialog_since(Object start) {
     return Intl.message(
-      '$name — archivé',
-      name: 'referringPractitionerHistoryDialog_archivedPractitioner',
+      'Depuis le $start',
+      name: 'referringPractitionerHistoryDialog_since',
       desc: '',
-      args: [name],
-    );
-  }
-
-  /// `Référent actuel`
-  String get referringPractitionerHistoryDialog_currentPractitioner {
-    return Intl.message(
-      'Référent actuel',
-      name: 'referringPractitionerHistoryDialog_currentPractitioner',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Fermer`
-  String get referringPractitionerHistoryDialog_close {
-    return Intl.message(
-      'Fermer',
-      name: 'referringPractitionerHistoryDialog_close',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Historique des kinés référents`
-  String get referringPractitionerHistory_title {
-    return Intl.message(
-      'Historique des kinés référents',
-      name: 'referringPractitionerHistory_title',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Cette fenêtre présente les praticiens qui ont été désignés comme référents pour cet épisode de soins.\n\nChaque ligne indique le nom du praticien et sa période d’affectation. La mention « Référent actuel » identifie le praticien actuellement associé à l’épisode.\n\nLa mention « archivé » signifie que la fiche du praticien est archivée ; son nom reste visible dans l’historique.\n\nCette fenêtre permet uniquement de consulter l’historique. Fermez-la pour revenir à l’épisode de soins.`
-  String get referringPractitionerHistory_help {
-    return Intl.message(
-      'Cette fenêtre présente les praticiens qui ont été désignés comme référents pour cet épisode de soins.\n\nChaque ligne indique le nom du praticien et sa période d’affectation. La mention « Référent actuel » identifie le praticien actuellement associé à l’épisode.\n\nLa mention « archivé » signifie que la fiche du praticien est archivée ; son nom reste visible dans l’historique.\n\nCette fenêtre permet uniquement de consulter l’historique. Fermez-la pour revenir à l’épisode de soins.',
-      name: 'referringPractitionerHistory_help',
-      desc: '',
-      args: [],
+      args: [start],
     );
   }
 
@@ -8972,6 +9120,16 @@ class S {
     return Intl.message(
       'Archives des rapports',
       name: 'reportArchive_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Le texte affiché correspond à un travail en cours sauvegardé automatiquement. Vous pouvez le conserver, le modifier ou le supprimer avant d’enregistrer votre rapport.`
+  String get reportDraft_help {
+    return Intl.message(
+      'Le texte affiché correspond à un travail en cours sauvegardé automatiquement. Vous pouvez le conserver, le modifier ou le supprimer avant d’enregistrer votre rapport.',
+      name: 'reportDraft_help',
       desc: '',
       args: [],
     );
@@ -8999,12 +9157,7 @@ class S {
 
   /// `Réinitialiser`
   String get reset {
-    return Intl.message(
-      'Réinitialiser',
-      name: 'reset',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Réinitialiser', name: 'reset', desc: '', args: []);
   }
 
   /// `Ajouter un commentaire...`
@@ -9107,21 +9260,21 @@ class S {
     );
   }
 
-  /// `Cet écran présente les informations d’un résultat importé depuis ABAK Mobile : patient, date de réalisation, score et, lorsqu’elles sont disponibles, aide utilisée, identité du praticien et appareil d’origine.\n\nVous pouvez consulter le compte rendu détaillé et les mesures complémentaires transmises par l’exercice.\n\nLa zone « Commentaire clinique » permet d’ajouter ou de modifier vos observations. Cliquez sur « Enregistrer » pour les conserver avant de quitter l’écran.\n\nLa rubrique consacrée à l’import indique l’état de synchronisation et la date de dernière modification du résultat.\n\nL’icône d’archivage permet d’archiver ce résultat après confirmation.`
-  String get resultDetail_help {
-    return Intl.message(
-      'Cet écran présente les informations d’un résultat importé depuis ABAK Mobile : patient, date de réalisation, score et, lorsqu’elles sont disponibles, aide utilisée, identité du praticien et appareil d’origine.\n\nVous pouvez consulter le compte rendu détaillé et les mesures complémentaires transmises par l’exercice.\n\nLa zone « Commentaire clinique » permet d’ajouter ou de modifier vos observations. Cliquez sur « Enregistrer » pour les conserver avant de quitter l’écran.\n\nLa rubrique consacrée à l’import indique l’état de synchronisation et la date de dernière modification du résultat.\n\nL’icône d’archivage permet d’archiver ce résultat après confirmation.',
-      name: 'resultDetail_help',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Informations générales`
   String get resultDetail_generalInformation {
     return Intl.message(
       'Informations générales',
       name: 'resultDetail_generalInformation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cet écran présente les informations d’un résultat importé depuis ABAK Mobile : patient, date de réalisation, score et, lorsqu’elles sont disponibles, aide utilisée, identité du praticien et appareil d’origine.\n\nVous pouvez consulter le compte rendu détaillé et les mesures complémentaires transmises par l’exercice.\n\nLa zone « Commentaire clinique » permet d’ajouter ou de modifier vos observations. Cliquez sur « Enregistrer » pour les conserver avant de quitter l’écran.\n\nLa rubrique consacrée à l’import indique l’état de synchronisation et la date de dernière modification du résultat.\n\nL’icône d’archivage permet d’archiver ce résultat après confirmation.`
+  String get resultDetail_help {
+    return Intl.message(
+      'Cet écran présente les informations d’un résultat importé depuis ABAK Mobile : patient, date de réalisation, score et, lorsqu’elles sont disponibles, aide utilisée, identité du praticien et appareil d’origine.\n\nVous pouvez consulter le compte rendu détaillé et les mesures complémentaires transmises par l’exercice.\n\nLa zone « Commentaire clinique » permet d’ajouter ou de modifier vos observations. Cliquez sur « Enregistrer » pour les conserver avant de quitter l’écran.\n\nLa rubrique consacrée à l’import indique l’état de synchronisation et la date de dernière modification du résultat.\n\nL’icône d’archivage permet d’archiver ce résultat après confirmation.',
+      name: 'resultDetail_help',
       desc: '',
       args: [],
     );
@@ -9237,16 +9390,6 @@ class S {
     );
   }
 
-  /// `Le texte affiché correspond à un travail en cours sauvegardé automatiquement. Vous pouvez le conserver, le modifier ou le supprimer avant d’enregistrer votre rapport.`
-  String get reportDraft_help {
-    return Intl.message(
-      'Le texte affiché correspond à un travail en cours sauvegardé automatiquement. Vous pouvez le conserver, le modifier ou le supprimer avant d’enregistrer votre rapport.',
-      name: 'reportDraft_help',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Ces fonctions sont destinées à l’installation, au diagnostic et aux opérations d’assistance technique.\n\nUtilisez-les uniquement lorsqu’un technicien ou la documentation ABAK vous le demande.`
   String get settings_assistanceWarning {
     return Intl.message(
@@ -9259,12 +9402,7 @@ class S {
 
   /// `Annuler`
   String get settings_cancel {
-    return Intl.message(
-      'Annuler',
-      name: 'settings_cancel',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Annuler', name: 'settings_cancel', desc: '', args: []);
   }
 
   /// `Configuration`
@@ -9349,12 +9487,7 @@ class S {
 
   /// `Modifier`
   String get settings_edit {
-    return Intl.message(
-      'Modifier',
-      name: 'settings_edit',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Modifier', name: 'settings_edit', desc: '', args: []);
   }
 
   /// `Dossier d’échange ABAK`
@@ -9382,6 +9515,190 @@ class S {
     return Intl.message(
       'Dossier d’échange ABAK mis à jour',
       name: 'settings_exchangeDirectoryUpdated',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Exporter`
+  String get settings_exportAction {
+    return Intl.message(
+      'Exporter',
+      name: 'settings_exportAction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Annuler`
+  String get settings_exportCancel {
+    return Intl.message(
+      'Annuler',
+      name: 'settings_exportCancel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Export annulé`
+  String get settings_exportCancelled {
+    return Intl.message(
+      'Export annulé',
+      name: 'settings_exportCancelled',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choisir le dossier de destination`
+  String get settings_exportChooseDestination {
+    return Intl.message(
+      'Choisir le dossier de destination',
+      name: 'settings_exportChooseDestination',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Export terminé : {patientCount} patient(s), {fileCount} fichier(s).`
+  String settings_exportCompleted(Object patientCount, Object fileCount) {
+    return Intl.message(
+      'Export terminé : $patientCount patient(s), $fileCount fichier(s).',
+      name: 'settings_exportCompleted',
+      desc: '',
+      args: [patientCount, fileCount],
+    );
+  }
+
+  /// `Export terminé avec {errorCount} erreur(s) : {patientCount} patient(s), {fileCount} fichier(s) exporté(s).`
+  String settings_exportCompletedWithErrors(
+    Object errorCount,
+    Object patientCount,
+    Object fileCount,
+  ) {
+    return Intl.message(
+      'Export terminé avec $errorCount erreur(s) : $patientCount patient(s), $fileCount fichier(s) exporté(s).',
+      name: 'settings_exportCompletedWithErrors',
+      desc: '',
+      args: [errorCount, patientCount, fileCount],
+    );
+  }
+
+  /// `Une archive contenant les informations de vos patients ainsi que leurs bilans et rapports va être créée.`
+  String get settings_exportDataDescription {
+    return Intl.message(
+      'Une archive contenant les informations de vos patients ainsi que leurs bilans et rapports va être créée.',
+      name: 'settings_exportDataDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Impossible d’exporter les données`
+  String get settings_exportFailed {
+    return Intl.message(
+      'Impossible d’exporter les données',
+      name: 'settings_exportFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Inclure les patients archivés`
+  String get settings_exportIncludeArchivedPatients {
+    return Intl.message(
+      'Inclure les patients archivés',
+      name: 'settings_exportIncludeArchivedPatients',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Exporter mes données`
+  String get settings_exportMyData {
+    return Intl.message(
+      'Exporter mes données',
+      name: 'settings_exportMyData',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Date de naissance`
+  String get settings_exportPatientBirthDate {
+    return Intl.message(
+      'Date de naissance',
+      name: 'settings_exportPatientBirthDate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Féminin`
+  String get settings_exportPatientFemale {
+    return Intl.message(
+      'Féminin',
+      name: 'settings_exportPatientFemale',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Prénom`
+  String get settings_exportPatientFirstName {
+    return Intl.message(
+      'Prénom',
+      name: 'settings_exportPatientFirstName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Nom`
+  String get settings_exportPatientLastName {
+    return Intl.message(
+      'Nom',
+      name: 'settings_exportPatientLastName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Masculin`
+  String get settings_exportPatientMale {
+    return Intl.message(
+      'Masculin',
+      name: 'settings_exportPatientMale',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sexe`
+  String get settings_exportPatientSex {
+    return Intl.message(
+      'Sexe',
+      name: 'settings_exportPatientSex',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Non renseigné`
+  String get settings_exportPatientUnknown {
+    return Intl.message(
+      'Non renseigné',
+      name: 'settings_exportPatientUnknown',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Non renseignée`
+  String get settings_exportPatientUnknownFemale {
+    return Intl.message(
+      'Non renseignée',
+      name: 'settings_exportPatientUnknownFemale',
       desc: '',
       args: [],
     );
@@ -9459,12 +9776,7 @@ class S {
 
   /// `Ouvrir`
   String get settings_open {
-    return Intl.message(
-      'Ouvrir',
-      name: 'settings_open',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Ouvrir', name: 'settings_open', desc: '', args: []);
   }
 
   /// `Ouverture du dossier d’échange`
@@ -9572,187 +9884,6 @@ class S {
     return Intl.message(
       'Diagnostic Carte Vitale',
       name: 'settings_vitaleDiagnostic',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Exporter mes données`
-  String get settings_exportMyData {
-    return Intl.message(
-      'Exporter mes données',
-      name: 'settings_exportMyData',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Une archive contenant les informations de vos patients ainsi que leurs bilans et rapports va être créée.`
-  String get settings_exportDataDescription {
-    return Intl.message(
-      'Une archive contenant les informations de vos patients ainsi que leurs bilans et rapports va être créée.',
-      name: 'settings_exportDataDescription',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Inclure les patients archivés`
-  String get settings_exportIncludeArchivedPatients {
-    return Intl.message(
-      'Inclure les patients archivés',
-      name: 'settings_exportIncludeArchivedPatients',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Annuler`
-  String get settings_exportCancel {
-    return Intl.message(
-      'Annuler',
-      name: 'settings_exportCancel',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Exporter`
-  String get settings_exportAction {
-    return Intl.message(
-      'Exporter',
-      name: 'settings_exportAction',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Choisir le dossier de destination`
-  String get settings_exportChooseDestination {
-    return Intl.message(
-      'Choisir le dossier de destination',
-      name: 'settings_exportChooseDestination',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Export annulé`
-  String get settings_exportCancelled {
-    return Intl.message(
-      'Export annulé',
-      name: 'settings_exportCancelled',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Impossible d’exporter les données`
-  String get settings_exportFailed {
-    return Intl.message(
-      'Impossible d’exporter les données',
-      name: 'settings_exportFailed',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Export terminé : {patientCount} patient(s), {fileCount} fichier(s).`
-  String settings_exportCompleted(Object patientCount, Object fileCount) {
-    return Intl.message(
-      'Export terminé : $patientCount patient(s), $fileCount fichier(s).',
-      name: 'settings_exportCompleted',
-      desc: '',
-      args: [patientCount, fileCount],
-    );
-  }
-
-  /// `Export terminé avec {errorCount} erreur(s) : {patientCount} patient(s), {fileCount} fichier(s) exporté(s).`
-  String settings_exportCompletedWithErrors(
-      Object errorCount, Object patientCount, Object fileCount) {
-    return Intl.message(
-      'Export terminé avec $errorCount erreur(s) : $patientCount patient(s), $fileCount fichier(s) exporté(s).',
-      name: 'settings_exportCompletedWithErrors',
-      desc: '',
-      args: [errorCount, patientCount, fileCount],
-    );
-  }
-
-  /// `Nom`
-  String get settings_exportPatientLastName {
-    return Intl.message(
-      'Nom',
-      name: 'settings_exportPatientLastName',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Prénom`
-  String get settings_exportPatientFirstName {
-    return Intl.message(
-      'Prénom',
-      name: 'settings_exportPatientFirstName',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Date de naissance`
-  String get settings_exportPatientBirthDate {
-    return Intl.message(
-      'Date de naissance',
-      name: 'settings_exportPatientBirthDate',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Sexe`
-  String get settings_exportPatientSex {
-    return Intl.message(
-      'Sexe',
-      name: 'settings_exportPatientSex',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Masculin`
-  String get settings_exportPatientMale {
-    return Intl.message(
-      'Masculin',
-      name: 'settings_exportPatientMale',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Féminin`
-  String get settings_exportPatientFemale {
-    return Intl.message(
-      'Féminin',
-      name: 'settings_exportPatientFemale',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Non renseigné`
-  String get settings_exportPatientUnknown {
-    return Intl.message(
-      'Non renseigné',
-      name: 'settings_exportPatientUnknown',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Non renseignée`
-  String get settings_exportPatientUnknownFemale {
-    return Intl.message(
-      'Non renseignée',
-      name: 'settings_exportPatientUnknownFemale',
       desc: '',
       args: [],
     );
@@ -9968,21 +10099,21 @@ class S {
     );
   }
 
-  /// `Cet écran permet de vérifier le fonctionnement du dispositif de lecture de la carte Vitale.\n\nSous Windows, la rubrique consacrée au module indique son état et permet d’actualiser cette information.\n\nLancez une lecture avec le lecteur connecté et la carte insérée. Si plusieurs bénéficiaires sont proposés, sélectionnez la personne concernée pour consulter les informations lues.\n\nLes messages affichés permettent de comprendre un éventuel échec et peuvent être communiqués à l’assistance.\n\nLa rubrique « Diagnostic avancé » propose un test technique de communication avec la carte. Utilisez-la selon les indications de la documentation ABAK ou d’un technicien.\n\nCet écran sert au diagnostic : la lecture d’une identité ne crée pas de fiche patient.`
-  String get vitaleDiagnostic_help {
-    return Intl.message(
-      'Cet écran permet de vérifier le fonctionnement du dispositif de lecture de la carte Vitale.\n\nSous Windows, la rubrique consacrée au module indique son état et permet d’actualiser cette information.\n\nLancez une lecture avec le lecteur connecté et la carte insérée. Si plusieurs bénéficiaires sont proposés, sélectionnez la personne concernée pour consulter les informations lues.\n\nLes messages affichés permettent de comprendre un éventuel échec et peuvent être communiqués à l’assistance.\n\nLa rubrique « Diagnostic avancé » propose un test technique de communication avec la carte. Utilisez-la selon les indications de la documentation ABAK ou d’un technicien.\n\nCet écran sert au diagnostic : la lecture d’une identité ne crée pas de fiche patient.',
-      name: 'vitaleDiagnostic_help',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Sélectionnez un bénéficiaire`
   String get vitaleBeneficiarySelector_selectBeneficiary {
     return Intl.message(
       'Sélectionnez un bénéficiaire',
       name: 'vitaleBeneficiarySelector_selectBeneficiary',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cet écran permet de vérifier le fonctionnement du dispositif de lecture de la carte Vitale.\n\nSous Windows, la rubrique consacrée au module indique son état et permet d’actualiser cette information.\n\nLancez une lecture avec le lecteur connecté et la carte insérée. Si plusieurs bénéficiaires sont proposés, sélectionnez la personne concernée pour consulter les informations lues.\n\nLes messages affichés permettent de comprendre un éventuel échec et peuvent être communiqués à l’assistance.\n\nLa rubrique « Diagnostic avancé » propose un test technique de communication avec la carte. Utilisez-la selon les indications de la documentation ABAK ou d’un technicien.\n\nCet écran sert au diagnostic : la lecture d’une identité ne crée pas de fiche patient.`
+  String get vitaleDiagnostic_help {
+    return Intl.message(
+      'Cet écran permet de vérifier le fonctionnement du dispositif de lecture de la carte Vitale.\n\nSous Windows, la rubrique consacrée au module indique son état et permet d’actualiser cette information.\n\nLancez une lecture avec le lecteur connecté et la carte insérée. Si plusieurs bénéficiaires sont proposés, sélectionnez la personne concernée pour consulter les informations lues.\n\nLes messages affichés permettent de comprendre un éventuel échec et peuvent être communiqués à l’assistance.\n\nLa rubrique « Diagnostic avancé » propose un test technique de communication avec la carte. Utilisez-la selon les indications de la documentation ABAK ou d’un technicien.\n\nCet écran sert au diagnostic : la lecture d’une identité ne crée pas de fiche patient.',
+      name: 'vitaleDiagnostic_help',
       desc: '',
       args: [],
     );
@@ -10100,12 +10231,7 @@ class S {
 
   /// `NIR`
   String get vitaleIdentity_nir {
-    return Intl.message(
-      'NIR',
-      name: 'vitaleIdentity_nir',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('NIR', name: 'vitaleIdentity_nir', desc: '', args: []);
   }
 
   /// `Aucune identité Carte Vitale disponible`
@@ -10150,12 +10276,7 @@ class S {
 
   /// `Sexe`
   String get vitaleIdentity_sex {
-    return Intl.message(
-      'Sexe',
-      name: 'vitaleIdentity_sex',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Sexe', name: 'vitaleIdentity_sex', desc: '', args: []);
   }
 
   /// `Source`
@@ -10198,54 +10319,9 @@ class S {
     );
   }
 
-  /// `Aucune`
-  String get walkingAid_none {
-    return Intl.message(
-      'Aucune',
-      name: 'walkingAid_none',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Canne`
   String get walkingAid_cane {
-    return Intl.message(
-      'Canne',
-      name: 'walkingAid_cane',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Déambulateur 2 roues`
-  String get walkingAid_walkerTwoWheels {
-    return Intl.message(
-      'Déambulateur 2 roues',
-      name: 'walkingAid_walkerTwoWheels',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Rollator 4 roues`
-  String get walkingAid_rollatorFourWheels {
-    return Intl.message(
-      'Rollator 4 roues',
-      name: 'walkingAid_rollatorFourWheels',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Autre`
-  String get walkingAid_other {
-    return Intl.message(
-      'Autre',
-      name: 'walkingAid_other',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Canne', name: 'walkingAid_cane', desc: '', args: []);
   }
 
   /// `Aide utilisée`
@@ -10258,401 +10334,31 @@ class S {
     );
   }
 
-  /// `Importer KOBUS`
-  String get kobus_title {
+  /// `Aucune`
+  String get walkingAid_none {
+    return Intl.message('Aucune', name: 'walkingAid_none', desc: '', args: []);
+  }
+
+  /// `Autre`
+  String get walkingAid_other {
+    return Intl.message('Autre', name: 'walkingAid_other', desc: '', args: []);
+  }
+
+  /// `Rollator 4 roues`
+  String get walkingAid_rollatorFourWheels {
     return Intl.message(
-      'Importer KOBUS',
-      name: 'kobus_title',
+      'Rollator 4 roues',
+      name: 'walkingAid_rollatorFourWheels',
       desc: '',
       args: [],
     );
   }
 
-  /// `Choisir le ZIP KOBUS`
-  String get kobus_select {
+  /// `Déambulateur 2 roues`
+  String get walkingAid_walkerTwoWheels {
     return Intl.message(
-      'Choisir le ZIP KOBUS',
-      name: 'kobus_select',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Récupérer également les dossiers partagés si présents`
-  String get kobus_shared {
-    return Intl.message(
-      'Récupérer également les dossiers partagés si présents',
-      name: 'kobus_shared',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Aucun dossier partagé dans cet export`
-  String get kobus_noShared {
-    return Intl.message(
-      'Aucun dossier partagé dans cet export',
-      name: 'kobus_noShared',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Fiches créées / à créer`
-  String get kobus_creations {
-    return Intl.message(
-      'Fiches créées / à créer',
-      name: 'kobus_creations',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Rapprochements à vérifier`
-  String get kobus_matches {
-    return Intl.message(
-      'Rapprochements à vérifier',
-      name: 'kobus_matches',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Rejetés`
-  String get kobus_rejected {
-    return Intl.message(
-      'Rejetés',
-      name: 'kobus_rejected',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Vérifier et confirmer l’import`
-  String get kobus_confirm {
-    return Intl.message(
-      'Vérifier et confirmer l’import',
-      name: 'kobus_confirm',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Annuler`
-  String get kobus_cancel {
-    return Intl.message(
-      'Annuler',
-      name: 'kobus_cancel',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Lancer l’import`
-  String get kobus_start {
-    return Intl.message(
-      'Lancer l’import',
-      name: 'kobus_start',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Arrêter après le dossier en cours`
-  String get kobus_stop {
-    return Intl.message(
-      'Arrêter après le dossier en cours',
-      name: 'kobus_stop',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Arrêt demandé…`
-  String get kobus_stopping {
-    return Intl.message(
-      'Arrêt demandé…',
-      name: 'kobus_stopping',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Compte rendu KOBUS`
-  String get kobus_history {
-    return Intl.message(
-      'Compte rendu KOBUS',
-      name: 'kobus_history',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Créer une fiche`
-  String get kobus_create {
-    return Intl.message(
-      'Créer une fiche',
-      name: 'kobus_create',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Confirmer une personne distincte`
-  String get kobus_distinct {
-    return Intl.message(
-      'Confirmer une personne distincte',
-      name: 'kobus_distinct',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Rattacher au patient choisi`
-  String get kobus_attach {
-    return Intl.message(
-      'Rattacher au patient choisi',
-      name: 'kobus_attach',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Laissés de côté`
-  String get kobus_skip {
-    return Intl.message(
-      'Laissés de côté',
-      name: 'kobus_skip',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `À décider`
-  String get kobus_unresolved {
-    return Intl.message(
-      'À décider',
-      name: 'kobus_unresolved',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Sélectionnez une ligne ci-dessous`
-  String get kobus_chooseCandidate {
-    return Intl.message(
-      'Sélectionnez une ligne ci-dessous',
-      name: 'kobus_chooseCandidate',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Identité KOBUS`
-  String get kobus_source {
-    return Intl.message(
-      'Identité KOBUS',
-      name: 'kobus_source',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Patient proposé`
-  String get kobus_candidate {
-    return Intl.message(
-      'Patient proposé',
-      name: 'kobus_candidate',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Provenance / statut`
-  String get kobus_provenance {
-    return Intl.message(
-      'Provenance / statut',
-      name: 'kobus_provenance',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Motif`
-  String get kobus_reason {
-    return Intl.message(
-      'Motif',
-      name: 'kobus_reason',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Companion — archivé`
-  String get kobus_archived {
-    return Intl.message(
-      'Companion — archivé',
-      name: 'kobus_archived',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Patients existants concernés`
-  String get kobus_existing {
-    return Intl.message(
-      'Patients existants concernés',
-      name: 'kobus_existing',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Consulter les données KOBUS`
-  String get kobus_consult {
-    return Intl.message(
-      'Consulter les données KOBUS',
-      name: 'kobus_consult',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Les données KOBUS sont indisponibles ou le dossier est introuvable.`
-  String get kobus_unavailable {
-    return Intl.message(
-      'Les données KOBUS sont indisponibles ou le dossier est introuvable.',
-      name: 'kobus_unavailable',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Importés`
-  String get kobus_imported {
-    return Intl.message(
-      'Importés',
-      name: 'kobus_imported',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Échecs techniques`
-  String get kobus_failed {
-    return Intl.message(
-      'Échecs techniques',
-      name: 'kobus_failed',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Non traités après interruption`
-  String get kobus_interrupted {
-    return Intl.message(
-      'Non traités après interruption',
-      name: 'kobus_interrupted',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Mes patients`
-  String get kobus_ownOrigin {
-    return Intl.message(
-      'Mes patients',
-      name: 'kobus_ownOrigin',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Patients partagés`
-  String get kobus_sharedOrigin {
-    return Intl.message(
-      'Patients partagés',
-      name: 'kobus_sharedOrigin',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Archives importées`
-  String get kobus_archives {
-    return Intl.message(
-      'Archives importées',
-      name: 'kobus_archives',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Éditer la liste des dossiers rejetés`
-  String get kobus_editRejected {
-    return Intl.message(
-      'Éditer la liste des dossiers rejetés',
-      name: 'kobus_editRejected',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Enregistrer le PDF`
-  String get kobus_savePdf {
-    return Intl.message(
-      'Enregistrer le PDF',
-      name: 'kobus_savePdf',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Imprimer`
-  String get kobus_print {
-    return Intl.message(
-      'Imprimer',
-      name: 'kobus_print',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Les dossiers sont conservés à l’identique. Aucun épisode ni document clinique natif n’est créé.`
-  String get kobus_intro {
-    return Intl.message(
-      'Les dossiers sont conservés à l’identique. Aucun épisode ni document clinique natif n’est créé.',
-      name: 'kobus_intro',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Importer les dossiers prêts selon vos décisions ? Les rapprochements non résolus et les dossiers exclus resteront de côté. Les fiches existantes ne seront pas modifiées.`
-  String get kobus_confirmBody {
-    return Intl.message(
-      'Importer les dossiers prêts selon vos décisions ? Les rapprochements non résolus et les dossiers exclus resteront de côté. Les fiches existantes ne seront pas modifiées.',
-      name: 'kobus_confirmBody',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Changer cette option réinitialise les décisions de rapprochement.`
-  String get kobus_scopeReset {
-    return Intl.message(
-      'Changer cette option réinitialise les décisions de rapprochement.',
-      name: 'kobus_scopeReset',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `La sauvegarde actuelle de la base ne sauvegarde pas les fichiers KOBUS.`
-  String get kobus_backupNotice {
-    return Intl.message(
-      'La sauvegarde actuelle de la base ne sauvegarde pas les fichiers KOBUS.',
-      name: 'kobus_backupNotice',
+      'Déambulateur 2 roues',
+      name: 'walkingAid_walkerTwoWheels',
       desc: '',
       args: [],
     );
