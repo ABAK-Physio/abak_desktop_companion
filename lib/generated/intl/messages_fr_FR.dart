@@ -1335,6 +1335,74 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Associer un bilan initial Word"),
         "initialReportDocumentService_unsupported":
             MessageLookupByLibrary.simpleMessage("Plateforme non supportée"),
+        "kobus_archived":
+            MessageLookupByLibrary.simpleMessage("Companion — archivé"),
+        "kobus_archives":
+            MessageLookupByLibrary.simpleMessage("Archives importées"),
+        "kobus_attach":
+            MessageLookupByLibrary.simpleMessage("Rattacher au patient choisi"),
+        "kobus_backupNotice": MessageLookupByLibrary.simpleMessage(
+            "La sauvegarde actuelle de la base ne sauvegarde pas les fichiers KOBUS."),
+        "kobus_cancel": MessageLookupByLibrary.simpleMessage("Annuler"),
+        "kobus_candidate":
+            MessageLookupByLibrary.simpleMessage("Patient proposé"),
+        "kobus_chooseCandidate": MessageLookupByLibrary.simpleMessage(
+            "Sélectionnez une ligne ci-dessous"),
+        "kobus_confirm": MessageLookupByLibrary.simpleMessage(
+            "Vérifier et confirmer l’import"),
+        "kobus_confirmBody": MessageLookupByLibrary.simpleMessage(
+            "Importer les dossiers prêts selon vos décisions ? Les rapprochements non résolus et les dossiers exclus resteront de côté. Les fiches existantes ne seront pas modifiées."),
+        "kobus_consult":
+            MessageLookupByLibrary.simpleMessage("Consulter les données KOBUS"),
+        "kobus_create": MessageLookupByLibrary.simpleMessage("Créer une fiche"),
+        "kobus_creations":
+            MessageLookupByLibrary.simpleMessage("Fiches créées / à créer"),
+        "kobus_distinct": MessageLookupByLibrary.simpleMessage(
+            "Confirmer une personne distincte"),
+        "kobus_editRejected": MessageLookupByLibrary.simpleMessage(
+            "Éditer la liste des dossiers rejetés"),
+        "kobus_existing": MessageLookupByLibrary.simpleMessage(
+            "Patients existants concernés"),
+        "kobus_failed":
+            MessageLookupByLibrary.simpleMessage("Échecs techniques"),
+        "kobus_history":
+            MessageLookupByLibrary.simpleMessage("Compte rendu KOBUS"),
+        "kobus_imported": MessageLookupByLibrary.simpleMessage("Importés"),
+        "kobus_interrupted": MessageLookupByLibrary.simpleMessage(
+            "Non traités après interruption"),
+        "kobus_intro": MessageLookupByLibrary.simpleMessage(
+            "Les dossiers sont conservés à l’identique. Aucun épisode ni document clinique natif n’est créé."),
+        "kobus_matches":
+            MessageLookupByLibrary.simpleMessage("Rapprochements à vérifier"),
+        "kobus_noShared": MessageLookupByLibrary.simpleMessage(
+            "Aucun dossier partagé dans cet export"),
+        "kobus_ownOrigin": MessageLookupByLibrary.simpleMessage("Mes patients"),
+        "kobus_print": MessageLookupByLibrary.simpleMessage("Imprimer"),
+        "kobus_provenance":
+            MessageLookupByLibrary.simpleMessage("Provenance / statut"),
+        "kobus_reason": MessageLookupByLibrary.simpleMessage("Motif"),
+        "kobus_rejected": MessageLookupByLibrary.simpleMessage("Rejetés"),
+        "kobus_savePdf":
+            MessageLookupByLibrary.simpleMessage("Enregistrer le PDF"),
+        "kobus_scopeReset": MessageLookupByLibrary.simpleMessage(
+            "Changer cette option réinitialise les décisions de rapprochement."),
+        "kobus_select":
+            MessageLookupByLibrary.simpleMessage("Choisir le ZIP KOBUS"),
+        "kobus_shared": MessageLookupByLibrary.simpleMessage(
+            "Récupérer également les dossiers partagés si présents"),
+        "kobus_sharedOrigin":
+            MessageLookupByLibrary.simpleMessage("Patients partagés"),
+        "kobus_skip": MessageLookupByLibrary.simpleMessage("Laissés de côté"),
+        "kobus_source": MessageLookupByLibrary.simpleMessage("Identité KOBUS"),
+        "kobus_start": MessageLookupByLibrary.simpleMessage("Lancer l’import"),
+        "kobus_stop": MessageLookupByLibrary.simpleMessage(
+            "Arrêter après le dossier en cours"),
+        "kobus_stopping":
+            MessageLookupByLibrary.simpleMessage("Arrêt demandé…"),
+        "kobus_title": MessageLookupByLibrary.simpleMessage("Importer KOBUS"),
+        "kobus_unavailable": MessageLookupByLibrary.simpleMessage(
+            "Les données KOBUS sont indisponibles ou le dossier est introuvable."),
+        "kobus_unresolved": MessageLookupByLibrary.simpleMessage("À décider"),
         "languageSaved":
             MessageLookupByLibrary.simpleMessage("Langue enregistrée."),
         "language_choice":

@@ -325,7 +325,10 @@ void main() {
     final folders = await ensure(id);
     expect(await Directory(folders.path).exists(), isTrue);
     expect(await original.readAsString(), 'Keep');
-    expect(await (await DatabaseService.database).getVersion(), 30);
+    expect(
+      await (await DatabaseService.database).getVersion(),
+      DatabaseService.schemaVersion,
+    );
   });
 
   test(

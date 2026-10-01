@@ -1,3 +1,4 @@
+import '../kobus/kobus_screen.dart';
 import 'dart:io';
 import '../../generated/l10n.dart';
 import 'package:flutter/material.dart';
@@ -563,6 +564,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       onPressed: _importAbakFile,
                       icon: const Icon(Icons.file_upload_outlined),
                       label: Text(s.settings_importAbakFile),
+                    ),
+                    OutlinedButton.icon(
+                      onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const KobusScreen())),
+                      icon: const Icon(Icons.archive_outlined),
+                      label: Text(s.kobus_title),
                     ),
                     OutlinedButton.icon(
                       onPressed: _openBackupHistory,

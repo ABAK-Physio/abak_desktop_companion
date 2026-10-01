@@ -10257,6 +10257,406 @@ class S {
       args: [],
     );
   }
+
+  /// `Importer KOBUS`
+  String get kobus_title {
+    return Intl.message(
+      'Importer KOBUS',
+      name: 'kobus_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choisir le ZIP KOBUS`
+  String get kobus_select {
+    return Intl.message(
+      'Choisir le ZIP KOBUS',
+      name: 'kobus_select',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Récupérer également les dossiers partagés si présents`
+  String get kobus_shared {
+    return Intl.message(
+      'Récupérer également les dossiers partagés si présents',
+      name: 'kobus_shared',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Aucun dossier partagé dans cet export`
+  String get kobus_noShared {
+    return Intl.message(
+      'Aucun dossier partagé dans cet export',
+      name: 'kobus_noShared',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Fiches créées / à créer`
+  String get kobus_creations {
+    return Intl.message(
+      'Fiches créées / à créer',
+      name: 'kobus_creations',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Rapprochements à vérifier`
+  String get kobus_matches {
+    return Intl.message(
+      'Rapprochements à vérifier',
+      name: 'kobus_matches',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Rejetés`
+  String get kobus_rejected {
+    return Intl.message(
+      'Rejetés',
+      name: 'kobus_rejected',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Vérifier et confirmer l’import`
+  String get kobus_confirm {
+    return Intl.message(
+      'Vérifier et confirmer l’import',
+      name: 'kobus_confirm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Annuler`
+  String get kobus_cancel {
+    return Intl.message(
+      'Annuler',
+      name: 'kobus_cancel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Lancer l’import`
+  String get kobus_start {
+    return Intl.message(
+      'Lancer l’import',
+      name: 'kobus_start',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Arrêter après le dossier en cours`
+  String get kobus_stop {
+    return Intl.message(
+      'Arrêter après le dossier en cours',
+      name: 'kobus_stop',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Arrêt demandé…`
+  String get kobus_stopping {
+    return Intl.message(
+      'Arrêt demandé…',
+      name: 'kobus_stopping',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Compte rendu KOBUS`
+  String get kobus_history {
+    return Intl.message(
+      'Compte rendu KOBUS',
+      name: 'kobus_history',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Créer une fiche`
+  String get kobus_create {
+    return Intl.message(
+      'Créer une fiche',
+      name: 'kobus_create',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Confirmer une personne distincte`
+  String get kobus_distinct {
+    return Intl.message(
+      'Confirmer une personne distincte',
+      name: 'kobus_distinct',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Rattacher au patient choisi`
+  String get kobus_attach {
+    return Intl.message(
+      'Rattacher au patient choisi',
+      name: 'kobus_attach',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Laissés de côté`
+  String get kobus_skip {
+    return Intl.message(
+      'Laissés de côté',
+      name: 'kobus_skip',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `À décider`
+  String get kobus_unresolved {
+    return Intl.message(
+      'À décider',
+      name: 'kobus_unresolved',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sélectionnez une ligne ci-dessous`
+  String get kobus_chooseCandidate {
+    return Intl.message(
+      'Sélectionnez une ligne ci-dessous',
+      name: 'kobus_chooseCandidate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Identité KOBUS`
+  String get kobus_source {
+    return Intl.message(
+      'Identité KOBUS',
+      name: 'kobus_source',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Patient proposé`
+  String get kobus_candidate {
+    return Intl.message(
+      'Patient proposé',
+      name: 'kobus_candidate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Provenance / statut`
+  String get kobus_provenance {
+    return Intl.message(
+      'Provenance / statut',
+      name: 'kobus_provenance',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Motif`
+  String get kobus_reason {
+    return Intl.message(
+      'Motif',
+      name: 'kobus_reason',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Companion — archivé`
+  String get kobus_archived {
+    return Intl.message(
+      'Companion — archivé',
+      name: 'kobus_archived',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Patients existants concernés`
+  String get kobus_existing {
+    return Intl.message(
+      'Patients existants concernés',
+      name: 'kobus_existing',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Consulter les données KOBUS`
+  String get kobus_consult {
+    return Intl.message(
+      'Consulter les données KOBUS',
+      name: 'kobus_consult',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Les données KOBUS sont indisponibles ou le dossier est introuvable.`
+  String get kobus_unavailable {
+    return Intl.message(
+      'Les données KOBUS sont indisponibles ou le dossier est introuvable.',
+      name: 'kobus_unavailable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Importés`
+  String get kobus_imported {
+    return Intl.message(
+      'Importés',
+      name: 'kobus_imported',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Échecs techniques`
+  String get kobus_failed {
+    return Intl.message(
+      'Échecs techniques',
+      name: 'kobus_failed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Non traités après interruption`
+  String get kobus_interrupted {
+    return Intl.message(
+      'Non traités après interruption',
+      name: 'kobus_interrupted',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Mes patients`
+  String get kobus_ownOrigin {
+    return Intl.message(
+      'Mes patients',
+      name: 'kobus_ownOrigin',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Patients partagés`
+  String get kobus_sharedOrigin {
+    return Intl.message(
+      'Patients partagés',
+      name: 'kobus_sharedOrigin',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Archives importées`
+  String get kobus_archives {
+    return Intl.message(
+      'Archives importées',
+      name: 'kobus_archives',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Éditer la liste des dossiers rejetés`
+  String get kobus_editRejected {
+    return Intl.message(
+      'Éditer la liste des dossiers rejetés',
+      name: 'kobus_editRejected',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enregistrer le PDF`
+  String get kobus_savePdf {
+    return Intl.message(
+      'Enregistrer le PDF',
+      name: 'kobus_savePdf',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Imprimer`
+  String get kobus_print {
+    return Intl.message(
+      'Imprimer',
+      name: 'kobus_print',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Les dossiers sont conservés à l’identique. Aucun épisode ni document clinique natif n’est créé.`
+  String get kobus_intro {
+    return Intl.message(
+      'Les dossiers sont conservés à l’identique. Aucun épisode ni document clinique natif n’est créé.',
+      name: 'kobus_intro',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Importer les dossiers prêts selon vos décisions ? Les rapprochements non résolus et les dossiers exclus resteront de côté. Les fiches existantes ne seront pas modifiées.`
+  String get kobus_confirmBody {
+    return Intl.message(
+      'Importer les dossiers prêts selon vos décisions ? Les rapprochements non résolus et les dossiers exclus resteront de côté. Les fiches existantes ne seront pas modifiées.',
+      name: 'kobus_confirmBody',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Changer cette option réinitialise les décisions de rapprochement.`
+  String get kobus_scopeReset {
+    return Intl.message(
+      'Changer cette option réinitialise les décisions de rapprochement.',
+      name: 'kobus_scopeReset',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `La sauvegarde actuelle de la base ne sauvegarde pas les fichiers KOBUS.`
+  String get kobus_backupNotice {
+    return Intl.message(
+      'La sauvegarde actuelle de la base ne sauvegarde pas les fichiers KOBUS.',
+      name: 'kobus_backupNotice',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

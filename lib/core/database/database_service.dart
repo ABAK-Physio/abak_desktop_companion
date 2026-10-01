@@ -1,4 +1,5 @@
 import 'dart:async';
+import '../../features/kobus/kobus_schema.dart';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 
@@ -7,7 +8,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 class DatabaseService {
-  static const int schemaVersion = 30;
+  static const int schemaVersion = 31;
   static Database? _database;
   static Completer<void>? _restoreGate;
 
@@ -97,6 +98,7 @@ class DatabaseService {
         await _createAllTables(db);
       },
       onUpgrade: (db, oldVersion, newVersion) async {
+        if (oldVersion < 31) await createKobusTables(db);
         if (oldVersion < 30) {
           await _createPatientDocumentFoldersTable(db);
         }
@@ -520,6 +522,7 @@ class DatabaseService {
 
   static Future<void> _createAllTables(Database db) async {
     await _createCoreTables(db);
+    await createKobusTables(db);
     await _createPatientDocumentFoldersTable(db);
     await _createPatientFrHealthIdentityTable(db);
     await _createApplicationSettingsTable(db);
@@ -543,6 +546,9 @@ class DatabaseService {
   }
 
   static Future<void> _resetDatabase(Database db) async {
+    await db.execute('DROP TABLE IF EXISTS kobus_archives');
+    await db.execute('DROP TABLE IF EXISTS kobus_items');
+    await db.execute('DROP TABLE IF EXISTS kobus_runs');
     await db.execute('DROP TABLE IF EXISTS desktop_result_conflicts');
     await db.execute('DROP TABLE IF EXISTS desktop_result_metrics');
     await db.execute('DROP TABLE IF EXISTS desktop_results');

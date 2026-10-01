@@ -158,7 +158,7 @@ void main() {
       );
       await old.close();
       final current = await DatabaseService.database;
-      expect(await current.getVersion(), 29);
+      expect(await current.getVersion(), DatabaseService.schemaVersion);
       expect(
         (await current.query('care_episodes')).single['initial_report'],
         'Bilan conservé',
@@ -223,6 +223,14 @@ void main() {
       final repository = _MemoryRepository();
       await tester.pumpWidget(
         MaterialApp(
+          locale: const Locale('fr'),
+          localizationsDelegates: const [
+            S.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: S.delegate.supportedLocales,
           home: Builder(
             builder: (context) => Scaffold(
               body: TextButton(
@@ -244,6 +252,7 @@ void main() {
           ),
         ),
       );
+      await tester.pumpAndSettle();
       await tester.tap(find.text('Ouvrir'));
       await tester.pumpAndSettle();
       tester.widget<BodyMapAdapter>(find.byType(BodyMapAdapter)).onSelect!(
@@ -349,6 +358,14 @@ void main() {
         });
       await tester.pumpWidget(
         MaterialApp(
+          locale: const Locale('fr'),
+          localizationsDelegates: const [
+            S.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: S.delegate.supportedLocales,
           home: EpisodeBodymapScreen(
             careEpisodeId: 'e1',
             patientId: 'p1',
@@ -365,7 +382,12 @@ void main() {
         await tester.runAsync(
           () => Future<void>.delayed(const Duration(milliseconds: 50)),
         );
-        if (find.textContaining('Deux cartes exportées :').evaluate().isNotEmpty) break;
+        if (find
+            .textContaining('Deux cartes exportées :')
+            .evaluate()
+            .isNotEmpty) {
+          break;
+        }
       }
       await tester.pumpAndSettle();
       expect(output.existsSync(), isTrue);

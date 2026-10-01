@@ -1,3 +1,4 @@
+import '../kobus/kobus_patient_button.dart';
 import 'widgets/patient_documents_card.dart';
 import '../care_episodes/widgets/care_episodes_panel.dart';
 import 'package:flutter/material.dart';
@@ -152,6 +153,7 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
           ),
           const SizedBox(height: 16),
 
+          KobusPatientButton(patientId: widget.patient.patientId),
           PatientDocumentsCard(patientId: widget.patient.patientId),
           const SizedBox(height: 16),
 

@@ -1351,6 +1351,77 @@ class MessageLookup extends MessageLookupByLibrary {
         "initialReportDocumentService_unsupported":
             MessageLookupByLibrary.simpleMessage(
                 "Platform wordt niet ondersteund"),
+        "kobus_archived":
+            MessageLookupByLibrary.simpleMessage("Companion — gearchiveerd"),
+        "kobus_archives":
+            MessageLookupByLibrary.simpleMessage("Geïmporteerde archieven"),
+        "kobus_attach": MessageLookupByLibrary.simpleMessage(
+            "Koppelen aan gekozen patiënt"),
+        "kobus_backupNotice": MessageLookupByLibrary.simpleMessage(
+            "De databaseback-up bevat geen KOBUS-bestanden."),
+        "kobus_cancel": MessageLookupByLibrary.simpleMessage("Annuleren"),
+        "kobus_candidate":
+            MessageLookupByLibrary.simpleMessage("Voorgestelde patiënt"),
+        "kobus_chooseCandidate":
+            MessageLookupByLibrary.simpleMessage("Selecteer hieronder een rij"),
+        "kobus_confirm": MessageLookupByLibrary.simpleMessage(
+            "Import controleren en bevestigen"),
+        "kobus_confirmBody": MessageLookupByLibrary.simpleMessage(
+            "Klaarstaande mappen volgens uw keuzes importeren? Onbesliste koppelingen en uitgesloten mappen worden overgeslagen. Bestaande patiëntgegevens blijven ongewijzigd."),
+        "kobus_consult":
+            MessageLookupByLibrary.simpleMessage("KOBUS-gegevens openen"),
+        "kobus_create":
+            MessageLookupByLibrary.simpleMessage("Patiënt aanmaken"),
+        "kobus_creations": MessageLookupByLibrary.simpleMessage(
+            "Aangemaakte / nieuwe patiënten"),
+        "kobus_distinct":
+            MessageLookupByLibrary.simpleMessage("Andere persoon bevestigen"),
+        "kobus_editRejected": MessageLookupByLibrary.simpleMessage(
+            "Lijst afgewezen mappen bekijken"),
+        "kobus_existing": MessageLookupByLibrary.simpleMessage(
+            "Betrokken bestaande patiënten"),
+        "kobus_failed":
+            MessageLookupByLibrary.simpleMessage("Technische fouten"),
+        "kobus_history":
+            MessageLookupByLibrary.simpleMessage("KOBUS-importrapport"),
+        "kobus_imported": MessageLookupByLibrary.simpleMessage("Geïmporteerd"),
+        "kobus_interrupted": MessageLookupByLibrary.simpleMessage(
+            "Niet verwerkt na onderbreking"),
+        "kobus_intro": MessageLookupByLibrary.simpleMessage(
+            "Mappen blijven ongewijzigd. Er worden geen eigen episodes of klinische documenten gemaakt."),
+        "kobus_matches": MessageLookupByLibrary.simpleMessage(
+            "Te controleren overeenkomsten"),
+        "kobus_noShared": MessageLookupByLibrary.simpleMessage(
+            "Geen gedeelde mappen in deze export"),
+        "kobus_ownOrigin":
+            MessageLookupByLibrary.simpleMessage("Mijn patiënten"),
+        "kobus_print": MessageLookupByLibrary.simpleMessage("Afdrukken"),
+        "kobus_provenance":
+            MessageLookupByLibrary.simpleMessage("Herkomst / status"),
+        "kobus_reason": MessageLookupByLibrary.simpleMessage("Reden"),
+        "kobus_rejected": MessageLookupByLibrary.simpleMessage("Afgewezen"),
+        "kobus_savePdf": MessageLookupByLibrary.simpleMessage("PDF opslaan"),
+        "kobus_scopeReset": MessageLookupByLibrary.simpleMessage(
+            "Wijzigen stelt koppelkeuzes opnieuw in."),
+        "kobus_select":
+            MessageLookupByLibrary.simpleMessage("KOBUS-ZIP kiezen"),
+        "kobus_shared": MessageLookupByLibrary.simpleMessage(
+            "Ook gedeelde mappen importeren indien aanwezig"),
+        "kobus_sharedOrigin":
+            MessageLookupByLibrary.simpleMessage("Gedeelde patiënten"),
+        "kobus_skip": MessageLookupByLibrary.simpleMessage("Overgeslagen"),
+        "kobus_source":
+            MessageLookupByLibrary.simpleMessage("KOBUS-identiteit"),
+        "kobus_start": MessageLookupByLibrary.simpleMessage("Import starten"),
+        "kobus_stop":
+            MessageLookupByLibrary.simpleMessage("Stoppen na huidige map"),
+        "kobus_stopping":
+            MessageLookupByLibrary.simpleMessage("Bezig met stoppen…"),
+        "kobus_title": MessageLookupByLibrary.simpleMessage("KOBUS importeren"),
+        "kobus_unavailable": MessageLookupByLibrary.simpleMessage(
+            "KOBUS-gegevens niet beschikbaar of map niet gevonden."),
+        "kobus_unresolved":
+            MessageLookupByLibrary.simpleMessage("Nog te beslissen"),
         "languageSaved":
             MessageLookupByLibrary.simpleMessage("Taal opgeslagen."),
         "language_choice":

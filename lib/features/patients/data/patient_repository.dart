@@ -5,7 +5,7 @@ import '../models/patient.dart';
 
 class PatientRepository {
   // Compare name formatting without changing the stored identity.
-  static String _normalizeIdentityName(String value) {
+  static String normalizeIdentityName(String value) {
     return value.toUpperCase()
         .replaceAll(RegExp(r'[-\u2010-\u2015\u2212]'), ' ')
         .replaceAll(RegExp(r'\s+'), ' ')
@@ -334,8 +334,8 @@ class PatientRepository {
     required String firstName,
     required String birthDate,
   }) async {
-    final normalizedLastName = _normalizeIdentityName(lastName);
-    final normalizedFirstName = _normalizeIdentityName(firstName);
+    final normalizedLastName = normalizeIdentityName(lastName);
+    final normalizedFirstName = normalizeIdentityName(firstName);
     final normalizedBirthDate = birthDate.trim();
 
     if (normalizedLastName.isEmpty ||
@@ -359,8 +359,8 @@ class PatientRepository {
     );
 
     return rows.map(Patient.fromMap).where((patient) {
-      return _normalizeIdentityName(patient.lastName) == normalizedLastName &&
-          _normalizeIdentityName(patient.firstName) == normalizedFirstName;
+      return normalizeIdentityName(patient.lastName) == normalizedLastName &&
+          normalizeIdentityName(patient.firstName) == normalizedFirstName;
     }).toList();
   }
 
@@ -370,8 +370,8 @@ class PatientRepository {
     required String firstName,
     required String birthDate,
   }) async {
-    final normalizedLastName = _normalizeIdentityName(lastName);
-    final normalizedFirstName = _normalizeIdentityName(firstName);
+    final normalizedLastName = normalizeIdentityName(lastName);
+    final normalizedFirstName = normalizeIdentityName(firstName);
     final normalizedBirthDate = birthDate.trim();
 
     if (normalizedLastName.isEmpty ||
@@ -395,8 +395,8 @@ class PatientRepository {
     );
 
     return rows.map(Patient.fromMap).where((patient) {
-      return _normalizeIdentityName(patient.lastName) == normalizedLastName &&
-          _normalizeIdentityName(patient.firstName) == normalizedFirstName;
+      return normalizeIdentityName(patient.lastName) == normalizedLastName &&
+          normalizeIdentityName(patient.firstName) == normalizedFirstName;
     }).toList();
   }
 
