@@ -42,7 +42,11 @@ class _OrganizationScreenState extends State<OrganizationScreen> {
   final TextEditingController _emailController =
   TextEditingController();
 
+  final _reportIntroductionController =
+  TextEditingController();
+
   String? _cabinetLogoPath;
+  String? _cabinetReportHeaderPath;
   bool _loading = true;
 
   @override
@@ -60,6 +64,7 @@ class _OrganizationScreenState extends State<OrganizationScreen> {
     _cityController.dispose();
     _phoneController.dispose();
     _emailController.dispose();
+    _reportIntroductionController.dispose();
     super.dispose();
   }
 
@@ -67,6 +72,8 @@ class _OrganizationScreenState extends State<OrganizationScreen> {
     final cabinetName = await _cabinetIdentityService.getCabinetName();
     final cabinetLogoPath =
     await _cabinetIdentityService.getCabinetLogoPath();
+    final cabinetReportHeaderPath =
+    await _cabinetIdentityService.getCabinetReportHeaderPath();
     final addressLine1 =
     await _cabinetIdentityService.getCabinetAddressLine1();
     final addressLine2 =
@@ -79,6 +86,8 @@ class _OrganizationScreenState extends State<OrganizationScreen> {
     await _cabinetIdentityService.getCabinetPhone();
     final email =
     await _cabinetIdentityService.getCabinetEmail();
+    final reportIntroduction =
+    await _cabinetIdentityService.getCabinetReportIntroduction();
 
     if (!mounted) return;
 
@@ -91,7 +100,9 @@ class _OrganizationScreenState extends State<OrganizationScreen> {
       _phoneController.text = phone ?? '';
       _emailController.text = email ?? '';
       _cabinetLogoPath = cabinetLogoPath;
+      _cabinetReportHeaderPath = cabinetReportHeaderPath;
       _loading = false;
+      _reportIntroductionController.text = reportIntroduction ?? '';
     });
   }
 
@@ -124,6 +135,10 @@ class _OrganizationScreenState extends State<OrganizationScreen> {
 
     await _cabinetIdentityService.setCabinetEmail(
       _emailController.text,
+    );
+
+    await _cabinetIdentityService.setCabinetReportIntroduction(
+      _reportIntroductionController.text,
     );
 
     if (!mounted) return;
@@ -179,6 +194,127 @@ class _OrganizationScreenState extends State<OrganizationScreen> {
       SnackBar(
         content: Text(s.organization_logoRemoved),
       ),
+    );
+  }
+
+  Future<void> _chooseReportHeader() async {
+    final s = S.of(context);
+
+    try {
+      final result = await FilePicker.platform.pickFiles(
+        type: FileType.image,
+        allowMultiple: false,
+      );
+
+      final path = result?.files.single.path;
+      if (path == null) return;
+
+      final savedPath =
+      await _cabinetIdentityService.setCabinetReportHeaderPath(path);
+
+      if (!mounted) return;
+
+      setState(() {
+        _cabinetReportHeaderPath = savedPath;
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(s.organization_reportHeaderSaved),
+        ),
+      );
+    } catch (error) {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            s.home_error_while_saving(error.toString()),
+          ),
+        ),
+      );
+    }
+  }
+
+  Future<void> _removeReportHeader() async {
+    final s = S.of(context);
+
+    await _cabinetIdentityService.clearCabinetReportHeaderPath();
+
+    if (!mounted) return;
+
+    setState(() {
+      _cabinetReportHeaderPath = null;
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(s.organization_reportHeaderRemoved),
+      ),
+    );
+  }
+
+  Future<void> _showReportHeaderHelp() async {
+    final s = S.of(context);
+
+    await showDialog<void>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: Text(
+            s.organization_reportHeaderHelpTitle,
+          ),
+          content: ConstrainedBox(
+            constraints: const BoxConstraints(
+              maxWidth: 600,
+            ),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    s.organization_reportHeaderHelpIntro,
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    s.organization_reportHeaderHelpTools,
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    s.organization_reportHeaderHelpAi,
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    s.organization_reportHeaderHelpFormat,
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    s.organization_reportHeaderHelpContent,
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    s.organization_reportHeaderHelpReplacement,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(dialogContext).pop();
+              },
+              child: Text(
+                s.organization_reportHeaderHelpClose,
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -344,6 +480,80 @@ class _OrganizationScreenState extends State<OrganizationScreen> {
                       ),
                     ],
                   ),
+                  const SizedBox(height: 8),
+
+                  Text(
+                    s.organization_logoRecommendation,
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+
+                  const SizedBox(height: 24),
+
+                  Text(
+                    s.organization_reportHeaderTitle,
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+
+                  const SizedBox(height: 12),
+
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _ReportHeaderPreview(
+                        path: _cabinetReportHeaderPath,
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Wrap(
+                          spacing: 12,
+                          runSpacing: 12,
+                          children: [
+                            OutlinedButton.icon(
+                              onPressed: _chooseReportHeader,
+                              icon: const Icon(Icons.image_outlined),
+                              label: Text(
+                                s.organization_chooseReportHeader,
+                              ),
+                            ),
+                            IconButton(
+                              onPressed: _showReportHeaderHelp,
+                              tooltip: s.organization_reportHeaderHelpTooltip,
+                              icon: const Icon(
+                                Icons.help_outline,
+                              ),
+                            ),
+                            if (_cabinetReportHeaderPath != null)
+                              TextButton.icon(
+                                onPressed: _removeReportHeader,
+                                icon: const Icon(
+                                  Icons.delete_outline,
+                                ),
+                                label: Text(
+                                  s.organization_removeReportHeader,
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  TextFormField(
+                    controller: _reportIntroductionController,
+                    decoration: InputDecoration(
+                      labelText: s.organization_reportIntroductionLabel,
+                      hintText: s.organization_reportIntroductionHint,
+                      helperText: s.organization_reportIntroductionHelp,
+                    ),
+                  ),
+
+
+                  const SizedBox(height: 8),
+
+                  Text(
+                    s.organization_reportHeaderRecommendation,
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
                 ],
               ),
             ),
@@ -384,6 +594,44 @@ class _LogoPreview extends StatelessWidget {
           : const Icon(
         Icons.image_outlined,
         size: 40,
+      ),
+    );
+  }
+}
+
+class _ReportHeaderPreview extends StatelessWidget {
+  final String? path;
+
+  const _ReportHeaderPreview({
+    required this.path,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final headerFile = path == null ? null : File(path!);
+    final hasHeader =
+        headerFile != null && headerFile.existsSync();
+
+    return Container(
+      width: 200,
+      height: 60,
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: Theme.of(context).dividerColor,
+        ),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: hasHeader
+          ? ClipRRect(
+        borderRadius: BorderRadius.circular(12),
+        child: Image.file(
+          headerFile,
+          fit: BoxFit.contain,
+        ),
+      )
+          : const Icon(
+        Icons.image_outlined,
+        size: 32,
       ),
     );
   }

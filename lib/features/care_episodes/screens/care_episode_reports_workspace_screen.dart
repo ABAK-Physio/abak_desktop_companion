@@ -414,10 +414,88 @@ class _CareEpisodeReportsWorkspaceScreenState
       );
       final selectedDirectory = folders.report;
 
+      final currentEpisode =
+      await _careEpisodeRepository.getEpisodeById(
+        widget.episode.careEpisodeId,
+      );
+
       final data = await ReportDocumentDataBuilder().build(
         report: report,
-        episode: widget.episode,
+        episode: currentEpisode ?? widget.episode,
       );
+
+      if (!mounted) return;
+
+      var showPrescriber = true;
+      var showReferringPractitioner = true;
+
+      final shouldGenerate = await showDialog<bool>(
+        context: context,
+        builder: (dialogContext) {
+          return StatefulBuilder(
+            builder: (context, setDialogState) {
+              final s = S.of(context);
+
+              return AlertDialog(
+                title: Text(
+                  s.careEpisodeReportsWorkspaceScreen_reportOptionsTitle,
+                ),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    CheckboxListTile(
+                      value: showPrescriber,
+                      contentPadding: EdgeInsets.zero,
+                      title: Text(
+                        s.careEpisodeReportsWorkspaceScreen_showPrescriber,
+                      ),
+                      onChanged: (value) {
+                        setDialogState(() {
+                          showPrescriber = value ?? true;
+                        });
+                      },
+                    ),
+                    CheckboxListTile(
+                      value: showReferringPractitioner,
+                      contentPadding: EdgeInsets.zero,
+                      title: Text(
+                        s.careEpisodeReportsWorkspaceScreen_showReferringPractitioner,
+                      ),
+                      onChanged: (value) {
+                        setDialogState(() {
+                          showReferringPractitioner = value ?? true;
+                        });
+                      },
+                    ),
+                  ],
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(dialogContext).pop(false);
+                    },
+                    child: Text(
+                      s.careEpisodeReportsWorkspaceScreen_cancel,
+                    ),
+                  ),
+                  FilledButton(
+                    onPressed: () {
+                      Navigator.of(dialogContext).pop(true);
+                    },
+                    child: Text(
+                      s.careEpisodeReportsWorkspaceScreen_generate,
+                    ),
+                  ),
+                ],
+              );
+            },
+          );
+        },
+      );
+
+      if (shouldGenerate != true || !mounted) {
+        return;
+      }
 
       Uint8List? establishmentLogoBytes;
       String? establishmentLogoExtension;
@@ -439,6 +517,31 @@ class _CareEpisodeReportsWorkspaceScreenState
 
           if (establishmentLogoExtension != null) {
             establishmentLogoBytes = await logoFile.readAsBytes();
+          }
+        }
+      }
+
+      Uint8List? establishmentReportHeaderBytes;
+      String? establishmentReportHeaderExtension;
+
+      final reportHeaderPath = data.establishmentReportHeaderPath;
+
+      if (reportHeaderPath != null && reportHeaderPath.trim().isNotEmpty) {
+        final reportHeaderFile = File(reportHeaderPath);
+
+        if (await reportHeaderFile.exists()) {
+          final lowerPath = reportHeaderPath.toLowerCase();
+
+          if (lowerPath.endsWith('.png')) {
+            establishmentReportHeaderExtension = 'png';
+          } else if (lowerPath.endsWith('.jpg') ||
+              lowerPath.endsWith('.jpeg')) {
+            establishmentReportHeaderExtension = 'jpg';
+          }
+
+          if (establishmentReportHeaderExtension != null) {
+            establishmentReportHeaderBytes =
+            await reportHeaderFile.readAsBytes();
           }
         }
       }
@@ -465,6 +568,11 @@ class _CareEpisodeReportsWorkspaceScreenState
         chartPngBytes: chartPngBytes,
         establishmentLogoBytes: establishmentLogoBytes,
         establishmentLogoExtension: establishmentLogoExtension,
+        establishmentReportHeaderBytes: establishmentReportHeaderBytes,
+        establishmentReportHeaderExtension: establishmentReportHeaderExtension,
+        showPrescriber: showPrescriber,
+        showReferringPractitioner: showReferringPractitioner,
+
       );
 
       final exportService = const EpisodeReportDocxExportService();

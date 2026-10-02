@@ -12,6 +12,9 @@ class CabinetIdentityService {
 
   static const _cabinetNameKey = 'cabinet_name';
   static const _cabinetLogoPathKey = 'cabinet_logo_path';
+  static const _cabinetReportHeaderPathKey = 'cabinet_report_header_path';
+  static const _cabinetReportIntroductionKey =
+      'cabinet_report_introduction';
   static const _cabinetAddressLine1Key = 'cabinet_address_line1';
   static const _cabinetAddressLine2Key = 'cabinet_address_line2';
   static const _cabinetPostalCodeKey = 'cabinet_postal_code';
@@ -65,8 +68,59 @@ class CabinetIdentityService {
     return importedLogo.path;
   }
 
+  Future<String?> getCabinetReportIntroduction() async {
+    return _getValue(_cabinetReportIntroductionKey);
+  }
+
+  Future<void> setCabinetReportIntroduction(String value) async {
+    await _setValue(_cabinetReportIntroductionKey, value.trim());
+  }
+
   Future<void> clearCabinetLogoPath() async {
     await _deleteValue(_cabinetLogoPathKey);
+  }
+
+  Future<String?> getCabinetReportHeaderPath() async {
+    return _getValue(_cabinetReportHeaderPathKey);
+  }
+
+  Future<String> setCabinetReportHeaderPath(String path) async {
+    final supportDirectory = await getApplicationSupportDirectory();
+    final headerDirectory = Directory(
+      p.join(supportDirectory.path, 'organization', 'headers'),
+    );
+
+    await headerDirectory.create(recursive: true);
+
+    // Import while the file picker still grants access to the selected file.
+    // A unique path also prevents Flutter from displaying a cached old image.
+    final importedHeader = File(
+      p.join(
+        headerDirectory.path,
+        '${const Uuid().v4()}${p.extension(path)}',
+      ),
+    );
+
+    try {
+      await File(path).copy(importedHeader.path);
+      await _setValue(_cabinetReportHeaderPathKey, importedHeader.path);
+    } catch (_) {
+      // Keep the previous setting intact if the import cannot be completed.
+      try {
+        if (await importedHeader.exists()) {
+          await importedHeader.delete();
+        }
+      } on FileSystemException {
+        // Cleanup must not hide the original import error.
+      }
+      rethrow;
+    }
+
+    return importedHeader.path;
+  }
+
+  Future<void> clearCabinetReportHeaderPath() async {
+    await _deleteValue(_cabinetReportHeaderPathKey);
   }
 
   Future<String?> getCabinetAddressLine1() async {

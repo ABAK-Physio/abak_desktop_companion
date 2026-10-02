@@ -197,6 +197,12 @@ class ReportDocumentDataBuilder {
       establishmentLogoPath: _clean(
         await _cabinetIdentityService.getCabinetLogoPath(),
       ),
+      establishmentReportHeaderPath: _clean(
+        await _cabinetIdentityService.getCabinetReportHeaderPath(),
+      ),
+      reportIntroduction: _clean(
+        await _cabinetIdentityService.getCabinetReportIntroduction(),
+      ),
       reportDate: reportDate,
       printedAt: DateTime.now(),
       authorName: _clean(authorPractitioner?.displayName),

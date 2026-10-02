@@ -13,14 +13,36 @@ class ReportDocxService {
     required List<Uint8List> chartPngBytes,
     Uint8List? establishmentLogoBytes,
     String? establishmentLogoExtension,
+    Uint8List? establishmentReportHeaderBytes,
+    String? establishmentReportHeaderExtension,
+    bool showPrescriber = true,
+    bool showReferringPractitioner = true,
   }) async {
+    final hasCustomHeader =
+        establishmentReportHeaderBytes != null &&
+            establishmentReportHeaderExtension != null;
+
     final hasLogo =
-        establishmentLogoBytes != null &&
+        !hasCustomHeader &&
+            establishmentLogoBytes != null &&
             establishmentLogoExtension != null;
+
+    final hasPrimaryImage = hasCustomHeader || hasLogo;
+
+    final primaryImageBytes = hasCustomHeader
+        ? establishmentReportHeaderBytes
+        : establishmentLogoBytes;
+
+    final primaryImageExtension = hasCustomHeader
+        ? establishmentReportHeaderExtension
+        : establishmentLogoExtension;
 
     final documentXml = _buildDocumentXml(
       data,
       hasLogo: hasLogo,
+      hasCustomHeader: hasCustomHeader,
+      showPrescriber: showPrescriber,
+      showReferringPractitioner: showReferringPractitioner,
     );
 
     final archive = Archive()
@@ -31,27 +53,27 @@ class ReportDocxService {
           'word/_rels/document.xml.rels',
           _buildDocumentRelsXml(
             chartCount: chartPngBytes.length,
-            logoExtension: hasLogo
-                ? establishmentLogoExtension
-                : null,
+            primaryImageExtension: primaryImageExtension,
           ),
         ),
       )
       ..addFile(_textFile('word/document.xml', documentXml))
       ..addFile(_textFile('word/styles.xml', _stylesXml));
 
-    if (hasLogo) {
+    if (hasPrimaryImage &&
+        primaryImageBytes != null &&
+        primaryImageExtension != null) {
       archive.addFile(
         ArchiveFile(
-          'word/media/image1.$establishmentLogoExtension',
-          establishmentLogoBytes.length,
-          establishmentLogoBytes,
+          'word/media/image1.$primaryImageExtension',
+          primaryImageBytes.length,
+          primaryImageBytes,
         ),
       );
     }
 
     for (var i = 0; i < chartPngBytes.length; i++) {
-      final imageIndex = i + 1 + (hasLogo ? 1 : 0);
+      final imageIndex = i + 1 + (hasPrimaryImage ? 1 : 0);
       final bytes = chartPngBytes[i];
       archive.addFile(ArchiveFile('word/media/image$imageIndex.png', bytes.length, bytes));
     }
@@ -71,6 +93,9 @@ class ReportDocxService {
   String _buildDocumentXml(
       ReportDocumentData data, {
         required bool hasLogo,
+        required bool hasCustomHeader,
+        required bool showPrescriber,
+        required bool showReferringPractitioner,
       }) {
     final buffer = StringBuffer();
 
@@ -85,12 +110,43 @@ class ReportDocxService {
   <w:body>
 ''');
 
-    buffer.write(
-      _buildEstablishmentHeader(
-        data,
-        hasLogo: hasLogo,
-      ),
-    );
+    if (hasCustomHeader) {
+      buffer.write(_buildCustomReportHeader());
+    } else {
+      buffer.write(
+        _buildEstablishmentHeader(
+          data,
+          hasLogo: hasLogo,
+        ),
+      );
+    }
+
+    if (showPrescriber &&
+        _hasValue(data.prescribingCorrespondentName)) {
+      buffer.write(
+        _paragraph(
+          'Prescripteur : ${data.prescribingCorrespondentName!.trim()}',
+          bold: true,
+        ),
+      );
+    }
+
+    if (showReferringPractitioner &&
+        _hasValue(data.referringPractitionerName)) {
+      buffer.write(
+        _paragraph(
+          'Kiné référent : ${data.referringPractitionerName!.trim()}',
+          bold: true,
+        ),
+      );
+    }
+
+    if ((showPrescriber &&
+        _hasValue(data.prescribingCorrespondentName)) ||
+        (showReferringPractitioner &&
+            _hasValue(data.referringPractitionerName))) {
+      buffer.write(_paragraph(''));
+    }
 
     final reportCity = _hasValue(data.establishmentCity)
         ? data.establishmentCity!.trim()
@@ -119,14 +175,13 @@ class ReportDocxService {
       data.patientLastName.trim(),
     ].where((value) => value.isNotEmpty).join(' ');
 
-    final correspondentName =
-    _hasValue(data.recipientText)
-        ? data.recipientText!.trim()
+    final reportIntroduction = _hasValue(data.reportIntroduction)
+        ? data.reportIntroduction!.trim()
         : 'Docteur';
 
     final introduction = StringBuffer()
       ..write(
-        'Cher $correspondentName, voici les conclusions du bilan réalisé ce jour',
+        '$reportIntroduction, voici les conclusions du bilan réalisé ce jour',
       );
 
     if (patientName.isNotEmpty) {
@@ -154,7 +209,7 @@ class ReportDocxService {
       notes: data.notes,
       patientAgeYears: data.patientAgeYears,
       pathologyLabel: data.pathologyLabel,
-      firstImageIndex: hasLogo ? 1 : 0,
+      firstImageIndex: (hasLogo || hasCustomHeader) ? 1 : 0,
     ));
 
     buffer.write(
@@ -354,6 +409,53 @@ class ReportDocxService {
   </w:tcPr>
   ${_paragraph(text)}
 </w:tc>
+''';
+  }
+
+  String _buildCustomReportHeader() {
+    return '''
+<w:p>
+  <w:pPr>
+    <w:ind w:left="-850"/>
+    <w:spacing w:before="0" w:after="0"/>
+  </w:pPr>
+  <w:r>
+    <w:drawing>
+      <wp:inline distT="0" distB="0" distL="0" distR="0">
+        <wp:extent cx="7200000" cy="1080000"/>
+        <wp:docPr id="1" name="En-tête personnalisé"/>
+        <wp:cNvGraphicFramePr>
+          <a:graphicFrameLocks noChangeAspect="1"/>
+        </wp:cNvGraphicFramePr>
+        <a:graphic>
+          <a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture">
+            <pic:pic>
+              <pic:nvPicPr>
+                <pic:cNvPr id="0" name="En-tête personnalisé"/>
+                <pic:cNvPicPr/>
+              </pic:nvPicPr>
+              <pic:blipFill>
+                <a:blip r:embed="rId1"/>
+                <a:stretch>
+                  <a:fillRect/>
+                </a:stretch>
+              </pic:blipFill>
+              <pic:spPr>
+                <a:xfrm>
+                  <a:off x="0" y="0"/>
+                  <a:ext cx="7200000" cy="1080000"/>
+                </a:xfrm>
+                <a:prstGeom prst="rect">
+                  <a:avLst/>
+                </a:prstGeom>
+              </pic:spPr>
+            </pic:pic>
+          </a:graphicData>
+        </a:graphic>
+      </wp:inline>
+    </w:drawing>
+  </w:r>
+</w:p>
 ''';
   }
 
@@ -607,7 +709,7 @@ const String _rootRelsXml = '''
 
 String _buildDocumentRelsXml({
   required int chartCount,
-  String? logoExtension,
+  String? primaryImageExtension,
 }) {
   final buffer = StringBuffer()
     ..writeln('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>')
@@ -624,17 +726,17 @@ String _buildDocumentRelsXml({
 
   const relationshipIndex = 1;
 
-  if (logoExtension != null) {
+  if (primaryImageExtension != null) {
     buffer.writeln(
       '  <Relationship '
           'Id="rId$relationshipIndex" '
           'Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" '
-          'Target="media/image1.$logoExtension"/>',
+          'Target="media/image1.$primaryImageExtension"/>',
     );
   }
 
   for (var i = 0; i < chartCount; i++) {
-    final imageIndex = i + 1 + (logoExtension != null ? 1 : 0);
+    final imageIndex = i + 1 + (primaryImageExtension != null ? 1 : 0);
     buffer.writeln(
       '<Relationship Id="rId$imageIndex" '
       'Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" '

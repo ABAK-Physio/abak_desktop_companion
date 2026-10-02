@@ -9,7 +9,8 @@ class ReportDocumentData {
   final String? establishmentPhone;
   final String? establishmentEmail;
   final String? establishmentLogoPath;
-
+  final String? establishmentReportHeaderPath;
+  final String? reportIntroduction;
   final DateTime reportDate;
   final DateTime printedAt;
 
@@ -57,6 +58,8 @@ class ReportDocumentData {
     required this.establishmentPhone,
     required this.establishmentEmail,
     required this.establishmentLogoPath,
+    required this.establishmentReportHeaderPath,
+    required this.reportIntroduction,
     required this.reportDate,
     required this.printedAt,
     required this.authorName,

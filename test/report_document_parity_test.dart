@@ -83,6 +83,7 @@ void main() {
             establishmentPhone: null,
             establishmentEmail: null,
             establishmentLogoPath: null,
+            establishmentReportHeaderPath: null,
             reportDate: date,
             printedAt: date,
             authorName: null,
@@ -112,6 +113,7 @@ void main() {
             reportText: 'Texte du rapport',
             tests: tests,
             notes: notes,
+            reportIntroduction: null,
           );
           final assessment = AssessmentDocumentData(
             establishmentName: null,

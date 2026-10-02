@@ -18,10 +18,8 @@ class S {
   static S? _current;
 
   static S get current {
-    assert(
-      _current != null,
-      'No instance of S was loaded. Try to initialize the S delegate before accessing S.current.',
-    );
+    assert(_current != null,
+        'No instance of S was loaded. Try to initialize the S delegate before accessing S.current.');
     return _current!;
   }
 
@@ -43,10 +41,8 @@ class S {
 
   static S of(BuildContext context) {
     final instance = S.maybeOf(context);
-    assert(
-      instance != null,
-      'No instance of S present in the widget tree. Did you add S.delegate in localizationsDelegates?',
-    );
+    assert(instance != null,
+        'No instance of S present in the widget tree. Did you add S.delegate in localizationsDelegates?');
     return instance!;
   }
 
@@ -1586,8 +1582,7 @@ class S {
 
   /// `Le bilan « {title} » ne sera plus affiché dans l’historique.`
   String careEpisodeReportsWorkspaceScreen_archiveAssessmentMessage(
-    Object title,
-  ) {
+      Object title) {
     return Intl.message(
       'Le bilan « $title » ne sera plus affiché dans l’historique.',
       name: 'careEpisodeReportsWorkspaceScreen_archiveAssessmentMessage',
@@ -1618,9 +1613,7 @@ class S {
 
   /// `Bilan_{patientName}_{title}`
   String careEpisodeReportsWorkspaceScreen_assessmentFileName(
-    Object patientName,
-    Object title,
-  ) {
+      Object patientName, Object title) {
     return Intl.message(
       'Bilan_${patientName}_$title',
       name: 'careEpisodeReportsWorkspaceScreen_assessmentFileName',
@@ -1781,8 +1774,7 @@ class S {
 
   /// `Le bilan « {title} » sera définitivement supprimé. Cette action est irréversible.`
   String careEpisodeReportsWorkspaceScreen_deleteAssessmentMessage(
-    Object title,
-  ) {
+      Object title) {
     return Intl.message(
       'Le bilan « $title » sera définitivement supprimé. Cette action est irréversible.',
       name: 'careEpisodeReportsWorkspaceScreen_deleteAssessmentMessage',
@@ -1923,8 +1915,7 @@ class S {
 
   /// `Un brouillon existe déjà pour ce modèle de {documentLabel}.`
   String careEpisodeReportsWorkspaceScreen_existingTemplateDraftMessage(
-    Object documentLabel,
-  ) {
+      Object documentLabel) {
     return Intl.message(
       'Un brouillon existe déjà pour ce modèle de $documentLabel.',
       name: 'careEpisodeReportsWorkspaceScreen_existingTemplateDraftMessage',
@@ -1945,8 +1936,7 @@ class S {
 
   /// `Souhaitez-vous ajouter le contenu généré à la suite du {documentLabel} actuel ou remplacer le contenu existant ?`
   String careEpisodeReportsWorkspaceScreen_insertTextMessage(
-    Object documentLabel,
-  ) {
+      Object documentLabel) {
     return Intl.message(
       'Souhaitez-vous ajouter le contenu généré à la suite du $documentLabel actuel ou remplacer le contenu existant ?',
       name: 'careEpisodeReportsWorkspaceScreen_insertTextMessage',
@@ -2107,9 +2097,7 @@ class S {
 
   /// `Rapport_{patientName}_{title}`
   String careEpisodeReportsWorkspaceScreen_reportFileName(
-    Object patientName,
-    Object title,
-  ) {
+      Object patientName, Object title) {
     return Intl.message(
       'Rapport_${patientName}_$title',
       name: 'careEpisodeReportsWorkspaceScreen_reportFileName',
@@ -2380,8 +2368,7 @@ class S {
 
   /// `Erreur lors de la création du document Word : {error}`
   String careEpisodeReportsWorkspaceScreen_wordDocumentCreationError(
-    Object error,
-  ) {
+      Object error) {
     return Intl.message(
       'Erreur lors de la création du document Word : $error',
       name: 'careEpisodeReportsWorkspaceScreen_wordDocumentCreationError',
@@ -2422,7 +2409,12 @@ class S {
 
   /// `Fermer`
   String get close {
-    return Intl.message('Fermer', name: 'close', desc: '', args: []);
+    return Intl.message(
+      'Fermer',
+      name: 'close',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Catégorie`
@@ -2607,12 +2599,22 @@ class S {
 
   /// `Adresse`
   String get desktopAddress {
-    return Intl.message('Adresse', name: 'desktopAddress', desc: '', args: []);
+    return Intl.message(
+      'Adresse',
+      name: 'desktopAddress',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Port`
   String get desktopPort {
-    return Intl.message('Port', name: 'desktopPort', desc: '', args: []);
+    return Intl.message(
+      'Port',
+      name: 'desktopPort',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Praticien associé`
@@ -2647,7 +2649,12 @@ class S {
 
   /// `Créer`
   String get deviceForm_create {
-    return Intl.message('Créer', name: 'deviceForm_create', desc: '', args: []);
+    return Intl.message(
+      'Créer',
+      name: 'deviceForm_create',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Nom de l’appareil`
@@ -2872,7 +2879,12 @@ class S {
 
   /// `Erreur`
   String get deviceList_error {
-    return Intl.message('Erreur', name: 'deviceList_error', desc: '', args: []);
+    return Intl.message(
+      'Erreur',
+      name: 'deviceList_error',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Nouvel appareil`
@@ -3797,7 +3809,12 @@ class S {
 
   /// `État`
   String get episodeForms_state {
-    return Intl.message('État', name: 'episodeForms_state', desc: '', args: []);
+    return Intl.message(
+      'État',
+      name: 'episodeForms_state',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Modèle système`
@@ -4112,7 +4129,12 @@ class S {
 
   /// `Nom`
   String get episodeReport_name {
-    return Intl.message('Nom', name: 'episodeReport_name', desc: '', args: []);
+    return Intl.message(
+      'Nom',
+      name: 'episodeReport_name',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Aucune conclusion renseignée.`
@@ -4467,32 +4489,62 @@ class S {
 
   /// `Préfix ARB`
   String get g_arb_prefix {
-    return Intl.message('Préfix ARB', name: 'g_arb_prefix', desc: '', args: []);
+    return Intl.message(
+      'Préfix ARB',
+      name: 'g_arb_prefix',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Fermer`
   String get g_close {
-    return Intl.message('Fermer', name: 'g_close', desc: '', args: []);
+    return Intl.message(
+      'Fermer',
+      name: 'g_close',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Commentaire`
   String get g_comment {
-    return Intl.message('Commentaire', name: 'g_comment', desc: '', args: []);
+    return Intl.message(
+      'Commentaire',
+      name: 'g_comment',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Contexte`
   String get g_context {
-    return Intl.message('Contexte', name: 'g_context', desc: '', args: []);
+    return Intl.message(
+      'Contexte',
+      name: 'g_context',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Copier`
   String get g_copy {
-    return Intl.message('Copier', name: 'g_copy', desc: '', args: []);
+    return Intl.message(
+      'Copier',
+      name: 'g_copy',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Fichier`
   String get g_file {
-    return Intl.message('Fichier', name: 'g_file', desc: '', args: []);
+    return Intl.message(
+      'Fichier',
+      name: 'g_file',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Afficher l’aide`
@@ -4687,7 +4739,12 @@ class S {
 
   /// `Accueil`
   String get home_accueil {
-    return Intl.message('Accueil', name: 'home_accueil', desc: '', args: []);
+    return Intl.message(
+      'Accueil',
+      name: 'home_accueil',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Action requise : associer ce dossier à un patient.`
@@ -4722,7 +4779,12 @@ class S {
 
   /// `Archives`
   String get home_archives {
-    return Intl.message('Archives', name: 'home_archives', desc: '', args: []);
+    return Intl.message(
+      'Archives',
+      name: 'home_archives',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Attention`
@@ -4797,7 +4859,12 @@ class S {
 
   /// `Appareils`
   String get home_devices {
-    return Intl.message('Appareils', name: 'home_devices', desc: '', args: []);
+    return Intl.message(
+      'Appareils',
+      name: 'home_devices',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Erreur lors de la sauvegarde : {error}`
@@ -4832,17 +4899,32 @@ class S {
 
   /// `Échec`
   String get home_failure {
-    return Intl.message('Échec', name: 'home_failure', desc: '', args: []);
+    return Intl.message(
+      'Échec',
+      name: 'home_failure',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Fermer`
   String get home_fermer {
-    return Intl.message('Fermer', name: 'home_fermer', desc: '', args: []);
+    return Intl.message(
+      'Fermer',
+      name: 'home_fermer',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Fichier`
   String get home_file {
-    return Intl.message('Fichier', name: 'home_file', desc: '', args: []);
+    return Intl.message(
+      'Fichier',
+      name: 'home_file',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Historique`
@@ -4857,7 +4939,12 @@ class S {
 
   /// `Accueil`
   String get home_home {
-    return Intl.message('Accueil', name: 'home_home', desc: '', args: []);
+    return Intl.message(
+      'Accueil',
+      name: 'home_home',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Historique des imports`
@@ -5062,7 +5149,12 @@ class S {
 
   /// `Octets`
   String get home_octets {
-    return Intl.message('Octets', name: 'home_octets', desc: '', args: []);
+    return Intl.message(
+      'Octets',
+      name: 'home_octets',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `{count} autre(s) exercice(s)`
@@ -5087,7 +5179,12 @@ class S {
 
   /// `Chemin`
   String get home_pathway {
-    return Intl.message('Chemin', name: 'home_pathway', desc: '', args: []);
+    return Intl.message(
+      'Chemin',
+      name: 'home_pathway',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Patient ABAK`
@@ -5102,7 +5199,12 @@ class S {
 
   /// `Patients`
   String get home_patients {
-    return Intl.message('Patients', name: 'home_patients', desc: '', args: []);
+    return Intl.message(
+      'Patients',
+      name: 'home_patients',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `{count} association(s) en attente`
@@ -5157,7 +5259,12 @@ class S {
 
   /// `Résultats`
   String get home_results {
-    return Intl.message('Résultats', name: 'home_results', desc: '', args: []);
+    return Intl.message(
+      'Résultats',
+      name: 'home_results',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Scannez ce QR code depuis ABAK Mobile pour configurer automatiquement la connexion au Desktop.`
@@ -5182,17 +5289,32 @@ class S {
 
   /// `Taille`
   String get home_size {
-    return Intl.message('Taille', name: 'home_size', desc: '', args: []);
+    return Intl.message(
+      'Taille',
+      name: 'home_size',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Résoudre`
   String get home_solve {
-    return Intl.message('Résoudre', name: 'home_solve', desc: '', args: []);
+    return Intl.message(
+      'Résoudre',
+      name: 'home_solve',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Succès`
   String get home_success {
-    return Intl.message('Succès', name: 'home_success', desc: '', args: []);
+    return Intl.message(
+      'Succès',
+      name: 'home_success',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Alerte système`
@@ -5247,7 +5369,12 @@ class S {
 
   /// `À faire`
   String get home_to_do_list {
-    return Intl.message('À faire', name: 'home_to_do_list', desc: '', args: []);
+    return Intl.message(
+      'À faire',
+      name: 'home_to_do_list',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Impossible de charger les imports récents.`
@@ -5282,7 +5409,12 @@ class S {
 
   /// `Vérifier`
   String get home_verify {
-    return Intl.message('Vérifier', name: 'home_verify', desc: '', args: []);
+    return Intl.message(
+      'Vérifier',
+      name: 'home_verify',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Sauvegardes très volumineuses`
@@ -5737,7 +5869,12 @@ class S {
 
   /// `Logo`
   String get information_logo {
-    return Intl.message('Logo', name: 'information_logo', desc: '', args: []);
+    return Intl.message(
+      'Logo',
+      name: 'information_logo',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Version 1.1.0 build 3\nPossibilité de dictée vocale pour les bilans et rapports, nécessite le module gratuit.\nSauvegarde automatique Bilan et Rapport.\nBouton duplication Bilan et Rapport.\nNotes modifiables.\nBouton pour voir tous les tests d'un patient pour un épisode.\nModèles de bilans.\nGraphique automatique si plusieurs résultats pour un test\nCréation d'un document au format docx.\nAffichage de l'aide utilisée pour E72 et E76`
@@ -5932,7 +6069,12 @@ class S {
 
   /// `Annuler`
   String get kobus_cancel {
-    return Intl.message('Annuler', name: 'kobus_cancel', desc: '', args: []);
+    return Intl.message(
+      'Annuler',
+      name: 'kobus_cancel',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Patient proposé`
@@ -6057,7 +6199,12 @@ class S {
 
   /// `Importés`
   String get kobus_imported {
-    return Intl.message('Importés', name: 'kobus_imported', desc: '', args: []);
+    return Intl.message(
+      'Importés',
+      name: 'kobus_imported',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Non traités après interruption`
@@ -6112,7 +6259,12 @@ class S {
 
   /// `Imprimer`
   String get kobus_print {
-    return Intl.message('Imprimer', name: 'kobus_print', desc: '', args: []);
+    return Intl.message(
+      'Imprimer',
+      name: 'kobus_print',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Provenance / statut`
@@ -6127,12 +6279,22 @@ class S {
 
   /// `Motif`
   String get kobus_reason {
-    return Intl.message('Motif', name: 'kobus_reason', desc: '', args: []);
+    return Intl.message(
+      'Motif',
+      name: 'kobus_reason',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Rejetés`
   String get kobus_rejected {
-    return Intl.message('Rejetés', name: 'kobus_rejected', desc: '', args: []);
+    return Intl.message(
+      'Rejetés',
+      name: 'kobus_rejected',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Enregistrer le PDF`
@@ -6327,7 +6489,12 @@ class S {
 
   /// `Chargement...`
   String get loading {
-    return Intl.message('Chargement...', name: 'loading', desc: '', args: []);
+    return Intl.message(
+      'Chargement...',
+      name: 'loading',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Sauvegarde annulée.`
@@ -6442,12 +6609,22 @@ class S {
 
   /// ``
   String get main_close {
-    return Intl.message('', name: 'main_close', desc: '', args: []);
+    return Intl.message(
+      '',
+      name: 'main_close',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Modifier`
   String get modify {
-    return Intl.message('Modifier', name: 'modify', desc: '', args: []);
+    return Intl.message(
+      'Modifier',
+      name: 'modify',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Aucun dossier défini`
@@ -6462,12 +6639,22 @@ class S {
 
   /// `OK`
   String get ok {
-    return Intl.message('OK', name: 'ok', desc: '', args: []);
+    return Intl.message(
+      'OK',
+      name: 'ok',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Ouvrir`
   String get open {
-    return Intl.message('Ouvrir', name: 'open', desc: '', args: []);
+    return Intl.message(
+      'Ouvrir',
+      name: 'open',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Choisir un logo`
@@ -6565,6 +6752,236 @@ class S {
     return Intl.message(
       'Établissement',
       name: 'organization_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `En-tête personnalisé enregistré.`
+  String get organization_reportHeaderSaved {
+    return Intl.message(
+      'En-tête personnalisé enregistré.',
+      name: 'organization_reportHeaderSaved',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `En-tête personnalisé supprimé.`
+  String get organization_reportHeaderRemoved {
+    return Intl.message(
+      'En-tête personnalisé supprimé.',
+      name: 'organization_reportHeaderRemoved',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Taille recommandée : image carrée d’au moins 300 × 300 px. Format recommandé : PNG.`
+  String get organization_logoRecommendation {
+    return Intl.message(
+      'Taille recommandée : image carrée d’au moins 300 × 300 px. Format recommandé : PNG.',
+      name: 'organization_logoRecommendation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `En-tête personnalisé des rapports`
+  String get organization_reportHeaderTitle {
+    return Intl.message(
+      'En-tête personnalisé des rapports',
+      name: 'organization_reportHeaderTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choisir un en-tête personnalisé`
+  String get organization_chooseReportHeader {
+    return Intl.message(
+      'Choisir un en-tête personnalisé',
+      name: 'organization_chooseReportHeader',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Supprimer l’en-tête`
+  String get organization_removeReportHeader {
+    return Intl.message(
+      'Supprimer l’en-tête',
+      name: 'organization_removeReportHeader',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Taille recommandée : 200 × 30 mm (environ 2362 × 354 px à 300 dpi). Format recommandé : PNG.`
+  String get organization_reportHeaderRecommendation {
+    return Intl.message(
+      'Taille recommandée : 200 × 30 mm (environ 2362 × 354 px à 300 dpi). Format recommandé : PNG.',
+      name: 'organization_reportHeaderRecommendation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Aide pour créer un en-tête personnalisé`
+  String get organization_reportHeaderHelpTooltip {
+    return Intl.message(
+      'Aide pour créer un en-tête personnalisé',
+      name: 'organization_reportHeaderHelpTooltip',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Créer un en-tête personnalisé`
+  String get organization_reportHeaderHelpTitle {
+    return Intl.message(
+      'Créer un en-tête personnalisé',
+      name: 'organization_reportHeaderHelpTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Vous pouvez créer librement votre en-tête avec l’outil de votre choix, puis l’enregistrer sous forme d’image.`
+  String get organization_reportHeaderHelpIntro {
+    return Intl.message(
+      'Vous pouvez créer librement votre en-tête avec l’outil de votre choix, puis l’enregistrer sous forme d’image.',
+      name: 'organization_reportHeaderHelpIntro',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Si vous n’avez pas l’habitude des outils graphiques, vous pouvez par exemple utiliser LibreOffice Draw, Microsoft PowerPoint, Apple Keynote ou Canva. Cette liste est donnée uniquement à titre d’exemple et n’est pas exhaustive.`
+  String get organization_reportHeaderHelpTools {
+    return Intl.message(
+      'Si vous n’avez pas l’habitude des outils graphiques, vous pouvez par exemple utiliser LibreOffice Draw, Microsoft PowerPoint, Apple Keynote ou Canva. Cette liste est donnée uniquement à titre d’exemple et n’est pas exhaustive.',
+      name: 'organization_reportHeaderHelpTools',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Vous pouvez également demander à un outil d’intelligence artificielle de générer l’image de votre en-tête à partir de vos indications.`
+  String get organization_reportHeaderHelpAi {
+    return Intl.message(
+      'Vous pouvez également demander à un outil d’intelligence artificielle de générer l’image de votre en-tête à partir de vos indications.',
+      name: 'organization_reportHeaderHelpAi',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pour un résultat optimal dans les rapports ABAK, utilisez une image au format 200 × 30 mm, soit environ 2362 × 354 px à 300 dpi. Le format PNG est recommandé.`
+  String get organization_reportHeaderHelpFormat {
+    return Intl.message(
+      'Pour un résultat optimal dans les rapports ABAK, utilisez une image au format 200 × 30 mm, soit environ 2362 × 354 px à 300 dpi. Le format PNG est recommandé.',
+      name: 'organization_reportHeaderHelpFormat',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `L’image peut contenir librement votre logo, le nom de l’établissement, vos coordonnées et tout autre élément graphique que vous souhaitez faire apparaître sur vos rapports.`
+  String get organization_reportHeaderHelpContent {
+    return Intl.message(
+      'L’image peut contenir librement votre logo, le nom de l’établissement, vos coordonnées et tout autre élément graphique que vous souhaitez faire apparaître sur vos rapports.',
+      name: 'organization_reportHeaderHelpContent',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Les informations présentes dans l’image remplacent l’en-tête standard généré par ABAK (logo et coordonnées de l’établissement).`
+  String get organization_reportHeaderHelpReplacement {
+    return Intl.message(
+      'Les informations présentes dans l’image remplacent l’en-tête standard généré par ABAK (logo et coordonnées de l’établissement).',
+      name: 'organization_reportHeaderHelpReplacement',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Fermer`
+  String get organization_reportHeaderHelpClose {
+    return Intl.message(
+      'Fermer',
+      name: 'organization_reportHeaderHelpClose',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Formule introductive des rapports`
+  String get organization_reportIntroductionLabel {
+    return Intl.message(
+      'Formule introductive des rapports',
+      name: 'organization_reportIntroductionLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Docteur`
+  String get organization_reportIntroductionHint {
+    return Intl.message(
+      'Docteur',
+      name: 'organization_reportIntroductionHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Texte libre utilisé au début des rapports. Si ce champ est vide, « Docteur » sera utilisé.`
+  String get organization_reportIntroductionHelp {
+    return Intl.message(
+      'Texte libre utilisé au début des rapports. Si ce champ est vide, « Docteur » sera utilisé.',
+      name: 'organization_reportIntroductionHelp',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Options du rapport`
+  String get careEpisodeReportsWorkspaceScreen_reportOptionsTitle {
+    return Intl.message(
+      'Options du rapport',
+      name: 'careEpisodeReportsWorkspaceScreen_reportOptionsTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Afficher le prescripteur`
+  String get careEpisodeReportsWorkspaceScreen_showPrescriber {
+    return Intl.message(
+      'Afficher le prescripteur',
+      name: 'careEpisodeReportsWorkspaceScreen_showPrescriber',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Afficher le kiné référent`
+  String get careEpisodeReportsWorkspaceScreen_showReferringPractitioner {
+    return Intl.message(
+      'Afficher le kiné référent',
+      name: 'careEpisodeReportsWorkspaceScreen_showReferringPractitioner',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Générer`
+  String get careEpisodeReportsWorkspaceScreen_generate {
+    return Intl.message(
+      'Générer',
+      name: 'careEpisodeReportsWorkspaceScreen_generate',
       desc: '',
       args: [],
     );
@@ -7262,7 +7679,12 @@ class S {
 
   /// `Sexe`
   String get patientDetail_sex {
-    return Intl.message('Sexe', name: 'patientDetail_sex', desc: '', args: []);
+    return Intl.message(
+      'Sexe',
+      name: 'patientDetail_sex',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Activité sportive`
@@ -7327,7 +7749,12 @@ class S {
 
   /// `ans`
   String get patientDetail_years {
-    return Intl.message('ans', name: 'patientDetail_years', desc: '', args: []);
+    return Intl.message(
+      'ans',
+      name: 'patientDetail_years',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Le dossier doit être autorisé à nouveau. Sélectionnez le dossier commun défini dans les paramètres.`
@@ -7522,7 +7949,12 @@ class S {
 
   /// `Homme`
   String get patientForm_male {
-    return Intl.message('Homme', name: 'patientForm_male', desc: '', args: []);
+    return Intl.message(
+      'Homme',
+      name: 'patientForm_male',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Nouveau patient`
@@ -7537,7 +7969,12 @@ class S {
 
   /// `Autre`
   String get patientForm_other {
-    return Intl.message('Autre', name: 'patientForm_other', desc: '', args: []);
+    return Intl.message(
+      'Autre',
+      name: 'patientForm_other',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Enregistrer`
@@ -7552,7 +7989,12 @@ class S {
 
   /// `Sexe`
   String get patientForm_sex {
-    return Intl.message('Sexe', name: 'patientForm_sex', desc: '', args: []);
+    return Intl.message(
+      'Sexe',
+      name: 'patientForm_sex',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Non précisé`
@@ -7817,7 +8259,12 @@ class S {
 
   /// `Sexe`
   String get patientList_sex {
-    return Intl.message('Sexe', name: 'patientList_sex', desc: '', args: []);
+    return Intl.message(
+      'Sexe',
+      name: 'patientList_sex',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Liste des patients`
@@ -7952,7 +8399,12 @@ class S {
 
   /// `Fermer`
   String get patientNew_close {
-    return Intl.message('Fermer', name: 'patientNew_close', desc: '', args: []);
+    return Intl.message(
+      'Fermer',
+      name: 'patientNew_close',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Cet écran permet la création d’un nouveau patient par saisie ou lecture de la Carte Vitale.`
@@ -8087,7 +8539,12 @@ class S {
 
   /// `Nom`
   String get patientNew_lastName {
-    return Intl.message('Nom', name: 'patientNew_lastName', desc: '', args: []);
+    return Intl.message(
+      'Nom',
+      name: 'patientNew_lastName',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Le nom est obligatoire`
@@ -8142,7 +8599,12 @@ class S {
 
   /// `NIR`
   String get patientNew_nir {
-    return Intl.message('NIR', name: 'patientNew_nir', desc: '', args: []);
+    return Intl.message(
+      'NIR',
+      name: 'patientNew_nir',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `détecté et protégé`
@@ -8167,7 +8629,12 @@ class S {
 
   /// `Non`
   String get patientNew_no {
-    return Intl.message('Non', name: 'patientNew_no', desc: '', args: []);
+    return Intl.message(
+      'Non',
+      name: 'patientNew_no',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Aucun nouveau patient ne sera créé.`
@@ -8202,7 +8669,12 @@ class S {
 
   /// `Autre`
   String get patientNew_other {
-    return Intl.message('Autre', name: 'patientNew_other', desc: '', args: []);
+    return Intl.message(
+      'Autre',
+      name: 'patientNew_other',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Patient déjà enregistré`
@@ -8317,7 +8789,12 @@ class S {
 
   /// `Sexe`
   String get patientNew_sex {
-    return Intl.message('Sexe', name: 'patientNew_sex', desc: '', args: []);
+    return Intl.message(
+      'Sexe',
+      name: 'patientNew_sex',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Identité lue depuis la Carte Vitale`
@@ -8852,7 +9329,12 @@ class S {
 
   /// `jours`
   String get preferences_days {
-    return Intl.message('jours', name: 'preferences_days', desc: '', args: []);
+    return Intl.message(
+      'jours',
+      name: 'preferences_days',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Mode Expert`
@@ -9157,7 +9639,12 @@ class S {
 
   /// `Réinitialiser`
   String get reset {
-    return Intl.message('Réinitialiser', name: 'reset', desc: '', args: []);
+    return Intl.message(
+      'Réinitialiser',
+      name: 'reset',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Ajouter un commentaire...`
@@ -9402,7 +9889,12 @@ class S {
 
   /// `Annuler`
   String get settings_cancel {
-    return Intl.message('Annuler', name: 'settings_cancel', desc: '', args: []);
+    return Intl.message(
+      'Annuler',
+      name: 'settings_cancel',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Configuration`
@@ -9487,7 +9979,12 @@ class S {
 
   /// `Modifier`
   String get settings_edit {
-    return Intl.message('Modifier', name: 'settings_edit', desc: '', args: []);
+    return Intl.message(
+      'Modifier',
+      name: 'settings_edit',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Dossier d’échange ABAK`
@@ -9572,10 +10069,7 @@ class S {
 
   /// `Export terminé avec {errorCount} erreur(s) : {patientCount} patient(s), {fileCount} fichier(s) exporté(s).`
   String settings_exportCompletedWithErrors(
-    Object errorCount,
-    Object patientCount,
-    Object fileCount,
-  ) {
+      Object errorCount, Object patientCount, Object fileCount) {
     return Intl.message(
       'Export terminé avec $errorCount erreur(s) : $patientCount patient(s), $fileCount fichier(s) exporté(s).',
       name: 'settings_exportCompletedWithErrors',
@@ -9776,7 +10270,12 @@ class S {
 
   /// `Ouvrir`
   String get settings_open {
-    return Intl.message('Ouvrir', name: 'settings_open', desc: '', args: []);
+    return Intl.message(
+      'Ouvrir',
+      name: 'settings_open',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Ouverture du dossier d’échange`
@@ -10231,7 +10730,12 @@ class S {
 
   /// `NIR`
   String get vitaleIdentity_nir {
-    return Intl.message('NIR', name: 'vitaleIdentity_nir', desc: '', args: []);
+    return Intl.message(
+      'NIR',
+      name: 'vitaleIdentity_nir',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Aucune identité Carte Vitale disponible`
@@ -10276,7 +10780,12 @@ class S {
 
   /// `Sexe`
   String get vitaleIdentity_sex {
-    return Intl.message('Sexe', name: 'vitaleIdentity_sex', desc: '', args: []);
+    return Intl.message(
+      'Sexe',
+      name: 'vitaleIdentity_sex',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Source`
@@ -10321,7 +10830,12 @@ class S {
 
   /// `Canne`
   String get walkingAid_cane {
-    return Intl.message('Canne', name: 'walkingAid_cane', desc: '', args: []);
+    return Intl.message(
+      'Canne',
+      name: 'walkingAid_cane',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Aide utilisée`
@@ -10336,12 +10850,22 @@ class S {
 
   /// `Aucune`
   String get walkingAid_none {
-    return Intl.message('Aucune', name: 'walkingAid_none', desc: '', args: []);
+    return Intl.message(
+      'Aucune',
+      name: 'walkingAid_none',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Autre`
   String get walkingAid_other {
-    return Intl.message('Autre', name: 'walkingAid_other', desc: '', args: []);
+    return Intl.message(
+      'Autre',
+      name: 'walkingAid_other',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Rollator 4 roues`
