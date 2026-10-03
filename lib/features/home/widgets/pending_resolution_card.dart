@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:abak_shared/abak_shared.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -86,6 +87,14 @@ class _PendingResolutionCardState extends State<PendingResolutionCard> {
       final exerciseLabels = results
           .map((result) {
         final raw = result.raw;
+        final exoId = raw['exoId']?.toString().trim() ?? '';
+
+        if (exoId.isNotEmpty &&
+            ClinicalActivityCatalog.exercises.containsKey(
+              ClinicalActivityCatalog.normalizeExoId(exoId),
+            )) {
+          return ClinicalActivityCatalog.displayLabel(exoId);
+        }
 
         return raw['title']?.toString() ??
             raw['testName']?.toString() ??
