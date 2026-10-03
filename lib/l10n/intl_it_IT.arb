@@ -773,7 +773,7 @@
   "patientDocuments_authorization": "La cartella deve essere autorizzata nuovamente. Selezionare la cartella condivisa definita nelle impostazioni.",
   "patientDocuments_chooseRoot": "Selezionare la cartella condivisa",
   "patientDocuments_error": "Impossibile preparare o aprire la cartella. Verificare la sua disponibilità e i propri diritti di accesso, quindi riprovare.\"",
-  "patientDocuments_open": "\"Aprire la cartella clinica\"",
+  "patientDocuments_open": "Aprire la cartella clinica",
   "patientDocuments_retry": "Riprovare",
   "patientDocuments_settingsHelp": "Una cartella per paziente, contenente “Bilancio”, “Relazione” e “Altro”. Creazione all’apertura della scheda; i file esistenti non vengono spostati.",
   "patientDocuments_structure": "Bilancio / Relazione / Altro",

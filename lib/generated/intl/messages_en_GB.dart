@@ -1369,7 +1369,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Also retrieve any shared folders, if present"),
         "kobus_sharedOrigin": MessageLookupByLibrary.simpleMessage(
             "Patients with dual diagnoses"),
-        "kobus_skip": MessageLookupByLibrary.simpleMessage("Left Behind"),
+        "kobus_skip": MessageLookupByLibrary.simpleMessage("Skip"),
         "kobus_source": MessageLookupByLibrary.simpleMessage("KOBUS Identity"),
         "kobus_start": MessageLookupByLibrary.simpleMessage("Start the import"),
         "kobus_stop":
@@ -1635,8 +1635,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Select the shared folder"),
         "patientDocuments_error": MessageLookupByLibrary.simpleMessage(
             "\"Unable to prepare or open the file. Check its availability and your access rights, then try again.\""),
-        "patientDocuments_open": MessageLookupByLibrary.simpleMessage(
-            "\"Open the patient\'s file\""),
+        "patientDocuments_open":
+            MessageLookupByLibrary.simpleMessage("Open the patient\'s file"),
         "patientDocuments_retry":
             MessageLookupByLibrary.simpleMessage("Try again"),
         "patientDocuments_settingsHelp": MessageLookupByLibrary.simpleMessage(

@@ -1699,7 +1699,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "patientDocuments_error": MessageLookupByLibrary.simpleMessage(
             "Der Ordner kann nicht vorbereitet oder geöffnet werden. Überprüfen Sie, ob der Ordner verfügbar ist und ob Sie über die entsprechenden Zugriffsrechte verfügen, und versuchen Sie es dann erneut."),
         "patientDocuments_open":
-            MessageLookupByLibrary.simpleMessage("„Patientenakte öffnen“"),
+            MessageLookupByLibrary.simpleMessage("Patientenakte öffnen"),
         "patientDocuments_retry":
             MessageLookupByLibrary.simpleMessage("Es noch einmal versuchen"),
         "patientDocuments_settingsHelp": MessageLookupByLibrary.simpleMessage(

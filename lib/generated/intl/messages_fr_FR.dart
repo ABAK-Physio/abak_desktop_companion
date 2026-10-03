@@ -1400,7 +1400,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Récupérer également les dossiers partagés si présents"),
         "kobus_sharedOrigin":
             MessageLookupByLibrary.simpleMessage("Patients partagés"),
-        "kobus_skip": MessageLookupByLibrary.simpleMessage("Laissés de côté"),
+        "kobus_skip": MessageLookupByLibrary.simpleMessage("Laisser de côté"),
         "kobus_source": MessageLookupByLibrary.simpleMessage("Identité KOBUS"),
         "kobus_start": MessageLookupByLibrary.simpleMessage("Lancer l’import"),
         "kobus_stop": MessageLookupByLibrary.simpleMessage(
@@ -1672,7 +1672,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "patientDocuments_error": MessageLookupByLibrary.simpleMessage(
             "Impossible de préparer ou d’ouvrir le dossier. Vérifiez sa disponibilité et vos droits d’accès, puis réessayez.\""),
         "patientDocuments_open":
-            MessageLookupByLibrary.simpleMessage("Ouvrir le dossier patient\""),
+            MessageLookupByLibrary.simpleMessage("Ouvrir le dossier patient"),
         "patientDocuments_retry":
             MessageLookupByLibrary.simpleMessage("Réessayer"),
         "patientDocuments_settingsHelp": MessageLookupByLibrary.simpleMessage(

@@ -773,7 +773,7 @@
   "patientDocuments_authorization": "De map moet opnieuw worden geautoriseerd. Selecteer de gedeelde map die in de instellingen is gedefinieerd.",
   "patientDocuments_chooseRoot": "De gemeenschappelijke map selecteren",
   "patientDocuments_error": "Het is niet mogelijk om het bestand voor te bereiden of te openen. Controleer of het bestand beschikbaar is en of u de juiste toegangsrechten hebt, en probeer het vervolgens opnieuw.\"",
-  "patientDocuments_open": "\"De patiëntendossier openen\"",
+  "patientDocuments_open": "De patiëntendossier openen",
   "patientDocuments_retry": "Opnieuw proberen",
   "patientDocuments_settingsHelp": "Eén dossier per patiënt, met daarin ‘Overzicht’, ‘Verslag’ en ‘Overige’. Wordt aangemaakt bij het openen van het dossier; bestaande bestanden worden niet verplaatst.",
   "patientDocuments_structure": "Overzicht / Verslag / Overig",

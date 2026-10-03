@@ -5,6 +5,7 @@ import '../../../core/settings/generated_documents_directory_service.dart';
 import '../../../core/settings/macos_directory_access_service.dart';
 import '../../../generated/l10n.dart';
 import '../services/patient_documents_service.dart';
+import '../../kobus/kobus_patient_button.dart';
 
 class PatientDocumentsCard extends StatefulWidget {
   const PatientDocumentsCard({super.key, required this.patientId});
@@ -132,6 +133,7 @@ class _PatientDocumentsCardState extends State<PatientDocumentsCard> {
                       icon: const Icon(Icons.folder_open),
                       label: Text(s.patientDocuments_open),
                     ),
+                  KobusPatientButton(patientId: widget.patientId),
                 ],
               ),
             ],

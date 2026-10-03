@@ -6347,10 +6347,10 @@ class S {
     );
   }
 
-  /// `Laissés de côté`
+  /// `Laisser de côté`
   String get kobus_skip {
     return Intl.message(
-      'Laissés de côté',
+      'Laisser de côté',
       name: 'kobus_skip',
       desc: '',
       args: [],
@@ -7787,10 +7787,10 @@ class S {
     );
   }
 
-  /// `Ouvrir le dossier patient"`
+  /// `Ouvrir le dossier patient`
   String get patientDocuments_open {
     return Intl.message(
-      'Ouvrir le dossier patient"',
+      'Ouvrir le dossier patient',
       name: 'patientDocuments_open',
       desc: '',
       args: [],

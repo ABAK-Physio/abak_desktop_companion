@@ -48,13 +48,10 @@ class _KobusPatientButtonState extends State<KobusPatientButton> {
     builder: (context, snapshot) {
       if (snapshot.hasError) return Text(S.of(context).kobus_unavailable);
       if (snapshot.data?.isNotEmpty != true) return const SizedBox.shrink();
-      return Align(
-        alignment: Alignment.centerLeft,
-        child: OutlinedButton.icon(
-          onPressed: _open,
-          icon: const Icon(Icons.folder_open),
-          label: Text(S.of(context).kobus_consult),
-        ),
+      return OutlinedButton.icon(
+        onPressed: _open,
+        icon: const Icon(Icons.folder_open),
+        label: Text(S.of(context).kobus_consult),
       );
     },
   );

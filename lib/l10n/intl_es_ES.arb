@@ -773,7 +773,7 @@
   "patientDocuments_authorization": "Hay que volver a autorizar la carpeta. Selecciona la carpeta compartida definida en la configuración.",
   "patientDocuments_chooseRoot": "Seleccionar la carpeta compartida",
   "patientDocuments_error": "No se puede preparar ni abrir el archivo. Comprueba si está disponible y cuáles son tus derechos de acceso, y vuelve a intentarlo.",
-  "patientDocuments_open": "«Abrir el expediente del paciente»",
+  "patientDocuments_open": "Abrir el expediente del paciente",
   "patientDocuments_retry": "Inténtalo de nuevo",
   "patientDocuments_settingsHelp": "Un expediente por paciente, que contiene «Balance», «Informe» y «Otros». Se crea al abrir la ficha; los archivos existentes no se trasladan.",
   "patientDocuments_structure": "Balance / Informe / Otro",
