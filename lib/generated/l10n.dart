@@ -350,10 +350,10 @@ class S {
     );
   }
 
-  /// `Résultats des tests sélectionnés`
+  /// `Résultats des tests`
   String get assessmentDocxService_results {
     return Intl.message(
-      'Résultats des tests sélectionnés',
+      'Résultats des tests',
       name: 'assessmentDocxService_results',
       desc: '',
       args: [],

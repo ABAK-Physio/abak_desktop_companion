@@ -213,8 +213,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Profession"),
         "assessmentDocxService_recipients":
             MessageLookupByLibrary.simpleMessage("Destinataire(s)"),
-        "assessmentDocxService_results": MessageLookupByLibrary.simpleMessage(
-            "Résultats des tests sélectionnés"),
+        "assessmentDocxService_results":
+            MessageLookupByLibrary.simpleMessage("Résultats des tests"),
         "assessmentDocxService_sex":
             MessageLookupByLibrary.simpleMessage("Sexe"),
         "assessmentDocxService_sport":

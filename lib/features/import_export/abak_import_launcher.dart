@@ -11,6 +11,44 @@ import 'import_resolution_screen.dart';
 import 'services/abak_import_resolution_service.dart';
 
 class AbakImportLauncher {
+  static Future<void> _showDuplicateResultsDialog(
+    BuildContext context, {
+    required int duplicateResults,
+    required int importedResults,
+    required int skippedResults,
+    required int conflictResults,
+    int failedFiles = 0,
+  }) async {
+    await showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogContext) => PopScope(
+        canPop: false,
+        child: AlertDialog(
+          scrollable: true,
+          title: const Text('Résultats déjà importés'),
+          content: Text(
+            '$duplicateResults résultat(s) existe(nt) déjà dans Companion. '
+            'Ils n’ont pas été importés à nouveau ni réaffectés au patient '
+            'ou à la prise en charge sélectionnés.\n\n'
+            'Leur rattachement d’origine est conservé, même si la prise en '
+            'charge d’origine est dans la corbeille.\n\n'
+            'Nouveaux résultats importés : $importedResults\n'
+            'Résultats ignorés : $skippedResults\n'
+            'Conflits : $conflictResults'
+            '${failedFiles > 0 ? '\nFichiers en erreur : $failedFiles' : ''}',
+          ),
+          actions: [
+            FilledButton(
+              onPressed: () => Navigator.of(dialogContext).pop(),
+              child: const Text('Fermer'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   static Future<AbakImportLauncherResult?> importArchiveFromPicker(
     BuildContext context, {
     VoidCallback? onImportCompleted,
@@ -188,6 +226,20 @@ class AbakImportLauncher {
       }
 
       onImportCompleted?.call();
+
+      if (launcherResult.duplicateResults > 0) {
+        if (context.mounted) {
+          await _showDuplicateResultsDialog(
+            context,
+            duplicateResults: launcherResult.duplicateResults,
+            importedResults: launcherResult.importedResults,
+            skippedResults: launcherResult.skippedResults,
+            conflictResults: launcherResult.conflictResults,
+            failedFiles: launcherResult.failedFiles,
+          );
+        }
+        return launcherResult;
+      }
 
       final errorSuffix = failedFiles == 0
           ? ''
@@ -478,15 +530,17 @@ class AbakImportLauncher {
 
       onImportCompleted?.call();
 
-      if (context.mounted) {
+      if (context.mounted && summary.duplicateResults > 0) {
+        await _showDuplicateResultsDialog(
+          context,
+          duplicateResults: summary.duplicateResults,
+          importedResults: summary.importedResults,
+          skippedResults: summary.skippedResults,
+          conflictResults: summary.conflictResults,
+        );
+      } else if (context.mounted) {
         final message =
-        summary.importedResults == 0 &&
-            summary.duplicateResults > 0 &&
-            summary.skippedResults == 0 &&
-            summary.conflictResults == 0
-            ? 'Aucun nouveau résultat importé : ce fichier avait déjà été traité. '
-            '${summary.duplicateResults} résultat(s) déjà présent(s).'
-            : 'Import terminé : ${summary.importedResults} résultat(s) importé(s) '
+            'Import terminé : ${summary.importedResults} résultat(s) importé(s) '
             'dans ${assignment.careEpisode.title}.';
 
         ScaffoldMessenger.of(context).showSnackBar(
