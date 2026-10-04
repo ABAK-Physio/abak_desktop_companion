@@ -7787,10 +7787,10 @@ class S {
     );
   }
 
-  /// `Ouvrir le dossier patient`
+  /// `Ouvrir le dossier patient ABAK`
   String get patientDocuments_open {
     return Intl.message(
-      'Ouvrir le dossier patient',
+      'Ouvrir le dossier patient ABAK',
       name: 'patientDocuments_open',
       desc: '',
       args: [],

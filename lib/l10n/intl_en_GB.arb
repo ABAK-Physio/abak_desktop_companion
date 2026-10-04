@@ -773,7 +773,7 @@
   "patientDocuments_authorization": "The folder must be authorized again. Select the shared folder specified in the settings.",
   "patientDocuments_chooseRoot": "Select the shared folder",
   "patientDocuments_error": "\"Unable to prepare or open the file. Check its availability and your access rights, then try again.\"",
-  "patientDocuments_open": "Open the patient's file",
+  "patientDocuments_open": "Open the ABAK patient record",
   "patientDocuments_retry": "Try again",
   "patientDocuments_settingsHelp": "One file per patient, containing Assessment, Report, and Other. Created when the record is opened; existing files are not moved.",
   "patientDocuments_structure": "Financial Statement / Report / Other",

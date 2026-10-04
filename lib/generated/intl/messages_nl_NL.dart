@@ -1693,7 +1693,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "patientDocuments_error": MessageLookupByLibrary.simpleMessage(
             "Het is niet mogelijk om het bestand voor te bereiden of te openen. Controleer of het bestand beschikbaar is en of u de juiste toegangsrechten hebt, en probeer het vervolgens opnieuw.\""),
         "patientDocuments_open":
-            MessageLookupByLibrary.simpleMessage("De patiëntendossier openen"),
+            MessageLookupByLibrary.simpleMessage("De ABAK-patiëntenmap openen"),
         "patientDocuments_retry":
             MessageLookupByLibrary.simpleMessage("Opnieuw proberen"),
         "patientDocuments_settingsHelp": MessageLookupByLibrary.simpleMessage(

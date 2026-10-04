@@ -1685,8 +1685,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "Selezionare la cartella condivisa"),
         "patientDocuments_error": MessageLookupByLibrary.simpleMessage(
             "Impossibile preparare o aprire la cartella. Verificare la sua disponibilità e i propri diritti di accesso, quindi riprovare.\""),
-        "patientDocuments_open":
-            MessageLookupByLibrary.simpleMessage("Aprire la cartella clinica"),
+        "patientDocuments_open": MessageLookupByLibrary.simpleMessage(
+            "Aprire la cartella clinica ABAK"),
         "patientDocuments_retry":
             MessageLookupByLibrary.simpleMessage("Riprovare"),
         "patientDocuments_settingsHelp": MessageLookupByLibrary.simpleMessage(

@@ -773,7 +773,7 @@
   "patientDocuments_authorization": "Der Ordner muss erneut autorisiert werden. Wählen Sie den in den Einstellungen festgelegten gemeinsamen Ordner aus.",
   "patientDocuments_chooseRoot": "Gemeinsamen Ordner auswählen",
   "patientDocuments_error": "Der Ordner kann nicht vorbereitet oder geöffnet werden. Überprüfen Sie, ob der Ordner verfügbar ist und ob Sie über die entsprechenden Zugriffsrechte verfügen, und versuchen Sie es dann erneut.",
-  "patientDocuments_open": "Patientenakte öffnen",
+  "patientDocuments_open": "Die ABAK-Patientenakte öffnen",
   "patientDocuments_retry": "Es noch einmal versuchen",
   "patientDocuments_settingsHelp": "Eine Akte pro Patient, bestehend aus „Befund“, „Bericht“ und „Sonstiges“. Wird beim Anlegen der Patientenakte erstellt; bereits vorhandene Dateien werden nicht verschoben.",
   "patientDocuments_structure": "Bilanz / Bericht / Sonstiges",

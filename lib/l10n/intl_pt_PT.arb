@@ -773,7 +773,7 @@
   "patientDocuments_authorization": "A pasta tem de ser autorizada novamente. Selecione a pasta partilhada definida nas definições.",
   "patientDocuments_chooseRoot": "Escolher a pasta comum",
   "patientDocuments_error": "Não foi possível preparar ou abrir a pasta. Verifique se a pasta está disponível e os seus direitos de acesso e, em seguida, tente novamente.\"",
-  "patientDocuments_open": "Abrir o processo clínico",
+  "patientDocuments_open": "Abrir o processo clínico ABAK",
   "patientDocuments_retry": "Tentar novamente",
   "patientDocuments_settingsHelp": "Um dossier por doente, contendo o Balanço, o Relatório e Outros. É criado aquando da abertura do registo; os ficheiros existentes não são movidos.",
   "patientDocuments_structure": "Balanço / Relatório / Outro",

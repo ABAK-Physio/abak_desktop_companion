@@ -1671,8 +1671,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Choisir le dossier commun"),
         "patientDocuments_error": MessageLookupByLibrary.simpleMessage(
             "Impossible de préparer ou d’ouvrir le dossier. Vérifiez sa disponibilité et vos droits d’accès, puis réessayez.\""),
-        "patientDocuments_open":
-            MessageLookupByLibrary.simpleMessage("Ouvrir le dossier patient"),
+        "patientDocuments_open": MessageLookupByLibrary.simpleMessage(
+            "Ouvrir le dossier patient ABAK"),
         "patientDocuments_retry":
             MessageLookupByLibrary.simpleMessage("Réessayer"),
         "patientDocuments_settingsHelp": MessageLookupByLibrary.simpleMessage(

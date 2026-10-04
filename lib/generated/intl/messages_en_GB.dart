@@ -1635,8 +1635,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Select the shared folder"),
         "patientDocuments_error": MessageLookupByLibrary.simpleMessage(
             "\"Unable to prepare or open the file. Check its availability and your access rights, then try again.\""),
-        "patientDocuments_open":
-            MessageLookupByLibrary.simpleMessage("Open the patient\'s file"),
+        "patientDocuments_open": MessageLookupByLibrary.simpleMessage(
+            "Open the ABAK patient record"),
         "patientDocuments_retry":
             MessageLookupByLibrary.simpleMessage("Try again"),
         "patientDocuments_settingsHelp": MessageLookupByLibrary.simpleMessage(

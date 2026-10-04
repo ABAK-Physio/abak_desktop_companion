@@ -1683,8 +1683,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Escolher a pasta comum"),
         "patientDocuments_error": MessageLookupByLibrary.simpleMessage(
             "Não foi possível preparar ou abrir a pasta. Verifique se a pasta está disponível e os seus direitos de acesso e, em seguida, tente novamente.\""),
-        "patientDocuments_open":
-            MessageLookupByLibrary.simpleMessage("Abrir o processo clínico"),
+        "patientDocuments_open": MessageLookupByLibrary.simpleMessage(
+            "Abrir o processo clínico ABAK"),
         "patientDocuments_retry":
             MessageLookupByLibrary.simpleMessage("Tentar novamente"),
         "patientDocuments_settingsHelp": MessageLookupByLibrary.simpleMessage(

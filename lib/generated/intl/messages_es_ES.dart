@@ -1690,7 +1690,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "patientDocuments_error": MessageLookupByLibrary.simpleMessage(
             "No se puede preparar ni abrir el archivo. Comprueba si está disponible y cuáles son tus derechos de acceso, y vuelve a intentarlo."),
         "patientDocuments_open": MessageLookupByLibrary.simpleMessage(
-            "Abrir el expediente del paciente"),
+            "Abrir el expediente del paciente ABAK"),
         "patientDocuments_retry":
             MessageLookupByLibrary.simpleMessage("Inténtalo de nuevo"),
         "patientDocuments_settingsHelp": MessageLookupByLibrary.simpleMessage(
