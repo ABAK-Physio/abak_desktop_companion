@@ -9,6 +9,7 @@ class ClinicalDocumentAttachmentsDocx {
     required int? patientAgeYears,
     required String? pathologyLabel,
     int firstImageIndex = 0,
+    bool omitRedundantResultMetadata = false,
   }) {
     final buffer = StringBuffer();
     var imageIndex = firstImageIndex;
@@ -21,7 +22,9 @@ class ClinicalDocumentAttachmentsDocx {
       for (final test in tests) {
         buffer.write(_paragraph(test.title, style: 'Heading2'));
 
-        if (test.testDate != null) {
+        final omitMetadata =
+            omitRedundantResultMetadata && test.resultRows.isNotEmpty;
+        if (!omitMetadata && test.testDate != null) {
           _writeLine(
             buffer,
             S.current.assessmentDocxService_performed,
@@ -68,8 +71,14 @@ class ClinicalDocumentAttachmentsDocx {
           }
         }
 
-        if (_hasValue(test.resultText)) {
-          buffer.write(_paragraph(test.resultText));
+        final resultText = omitMetadata
+            ? test.resultText
+                  .split('\n')
+                  .where((line) => !RegExp(r'^\s*Score total\s*:').hasMatch(line))
+                  .join('\n')
+            : test.resultText;
+        if (_hasValue(resultText)) {
+          buffer.write(_paragraph(resultText));
         }
 
         if (test.resultRows.isNotEmpty) {

@@ -205,6 +205,7 @@ class ReportDocxService {
     }
 
     buffer.write(ClinicalDocumentAttachmentsDocx().build(
+      omitRedundantResultMetadata: true,
       tests: data.tests,
       notes: data.notes,
       patientAgeYears: data.patientAgeYears,

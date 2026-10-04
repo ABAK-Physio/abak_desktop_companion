@@ -38,14 +38,14 @@ void main() {
                     selectionKey: 'E76',
                     title: 'Test & mobilité',
                     testDate: date,
-                    resultText: 'Résultat <détaillé>',
+                    resultText: 'Score total : 12\nRésultat <détaillé>',
                     declaredAgeYears: 43,
                     pathologyLabel: 'Test diagnostic',
                     chartSeries: [chart, chart],
                     resultRows: [
                       AssessmentDocumentResultRow(
                         date: date,
-                        result: '12 s',
+                        result: 'Score total : 12 s',
                         walkingAid: 'Aucune',
                       ),
                       AssessmentDocumentResultRow(
@@ -59,7 +59,7 @@ void main() {
                     selectionKey: 'E77',
                     title: 'Deuxième test',
                     testDate: date,
-                    resultText: 'Autre résultat',
+                    resultText: 'Score total : 99\nAutre résultat',
                     declaredAgeYears: null,
                     pathologyLabel: null,
                     chartSeries: [chart],
@@ -186,6 +186,28 @@ void main() {
                 .findAllElements('w:tbl')
                 .where((e) => e.innerText.contains('12 s'))
                 .single;
+            final reportParagraphs = doc
+                .findAllElements('w:body')
+                .single
+                .childElements
+                .where((element) => element.name.qualified == 'w:p')
+                .map((element) => element.innerText)
+                .toList();
+            expect(reportParagraphs.join('\n'), isNot(contains('Score total : 12')));
+            expect(reportParagraphs.join('\n'), contains('Score total : 99'));
+            expect(
+              reportParagraphs.where((text) => text.trim().startsWith('Réalisé le :')),
+              hasLength(1),
+            );
+            expect(
+              bilan.findAllElements('w:p').where(
+                (element) => element.innerText.trim().startsWith('Réalisé le :'),
+              ),
+              hasLength(3), // Assessment date and both test dates.
+            );
+            expect(bilan.innerText, contains('Score total : 12\nRésultat <détaillé>'));
+            expect(table.innerText, contains('Score total : 12 s'));
+            expect(table.innerText, contains('26/09/2026 10:30'));
             final original = bilan.findAllElements('w:tbl').single;
             expect(table.toXmlString(), original.toXmlString());
             expect(table.findAllElements('w:tblHeader').length, 1);
