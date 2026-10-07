@@ -449,15 +449,22 @@ Future<void> _startApplication() async {
     '${purgeResult.deletedPatients} supprimé(s)',
   );
 
-  final backupCleanupResult = await LocalBackupCleanupService(
-    repository: DatabaseBackupRepository(),
-  ).cleanupOldBackups();
+  // Backup retention is optional maintenance and must never block startup.
+  try {
+    final backupCleanupResult = await LocalBackupCleanupService(
+      repository: DatabaseBackupRepository(),
+    ).cleanupOldBackups();
 
-  debugPrint(
-    '🧹 purge sauvegardes SQLite : '
-    '${backupCleanupResult.deletedCount} supprimée(s), '
-    '${backupCleanupResult.keptCount} conservée(s)',
-  );
+    debugPrint(
+      '🧹 purge sauvegardes SQLite : '
+      '${backupCleanupResult.deletedCount} supprimée(s), '
+      '${backupCleanupResult.keptCount} conservée(s), '
+      '${backupCleanupResult.failedPaths.length} échec(s) de nettoyage',
+    );
+  } catch (error, stackTrace) {
+    debugPrint('Nettoyage des sauvegardes indisponible, démarrage poursuivi : $error');
+    debugPrintStack(stackTrace: stackTrace);
+  }
 
   windowManager.waitUntilReadyToShow(windowOptions, () async {
     await windowManager.show();
