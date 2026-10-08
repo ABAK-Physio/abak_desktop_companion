@@ -46,6 +46,7 @@ dependencies:
   pdf: ^3.12.0
   printing: ^5.14.3
   crypto: any
+  calendar_view: 2.0.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
