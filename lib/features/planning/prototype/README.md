@@ -6,11 +6,14 @@ Depuis la racine du dépôt, lancer le point d’entrée dédié :
 flutter run -d macos -t lib/main_planning.dart
 ```
 
-Le lancement habituel avec `lib/main.dart` reste inchangé.
-Le prototype ne démarre pas les services métier de Companion et n’utilise ni
-SQLite, ni les modèles patients, ni les préférences persistantes. Il partage
-cependant le projet Flutter et son exécutable natif : ce n’est pas une nouvelle
-application installée avec un identifiant distinct.
+L’entrée dédiée utilise maintenant la base SQLite Companion et sa migration v32.
+Le menu principal reste inchangé. Une base planning vide affiche un calendrier
+vide : aucun événement fictif ni rendez-vous de l’ancienne session en mémoire
+n’est importé automatiquement. Les tests sans dépôt injecté gardent la démo.
+
+Après mise à jour, redémarrer complètement le point d’entrée dédié (un simple
+rechargement à chaud ne relance pas `main`). Les anciennes données de démo
+restent temporaires jusqu’à leur fermeture.
 
 ## Essai manuel
 
@@ -36,8 +39,8 @@ application installée avec un identifiant distinct.
   recalculés au relâchement. Ces gestes concernent les rendez-vous horaires,
   dans la période visible ; les événements Toute la journée restent modifiables
   par le formulaire. Aucun défilement automatique n’est déclenché au bord.
-- Vérifier les deux séances simultanées à 9 h et 9 h 15, le bilan de 14 h
-  et l’événement sur toute la journée.
+- Créer deux séances simultanées à 9 h et 9 h 15 pour vérifier les chevauchements,
+  puis un événement sur toute la journée.
 - En Jour/Semaine, les rendez-vous qui se chevauchent sont partiellement
   superposés avec un décalage horizontal, en conservant leurs horaires et
   un bord gauche accessible au clic. Ils ont aussi un contour rouge
@@ -46,10 +49,11 @@ application installée avec un identifiant distinct.
   événements sur toute la journée ne déclenchent pas cette alerte.
 - Redimensionner la fenêtre jusqu’à 900 × 650.
 
-Les événements sont fictifs, générés du jour de lancement moins 7 jours à plus
-14 jours inclus. Les autres périodes sont vides. Tout reste en mémoire et est
-recréé au lancement. Les rendez-vous créés ou modifiés pendant la session sont
-perdus à la fermeture. Les suppressions restent elles aussi limitées à la session.
+Les ajouts, modifications, déplacements, changements de durée, suppressions et
+annulations sont enregistrés avant d’être affichés. En cas d’erreur, la saisie
+reste dans le formulaire ; les autres actions proposent Réessayer.
+Fermer et relancer pour vérifier la conservation des rendez-vous, puis supprimer
+le dernier et relancer pour vérifier que le calendrier reste vide.
 
 ## Vérification ciblée
 
@@ -60,3 +64,7 @@ flutter test test/planning_prototype_test.dart test/planning_event_drag_test.dar
 
 `calendar_view` est fixé à `2.0.0` : son éditeur recommande de figer les versions
 2.x, qui peuvent contenir des changements incompatibles.
+
+## Intégration SQLite
+
+Voir [les détails d’intégration SQLite](../SQLITE_INTEGRATION.md).

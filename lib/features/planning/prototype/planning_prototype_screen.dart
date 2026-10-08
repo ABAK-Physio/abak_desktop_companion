@@ -1,6 +1,10 @@
+import 'dart:async';
 import 'package:calendar_view/calendar_view.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:uuid/uuid.dart';
+import '../data/planning_repository.dart';
+import 'planning_calendar_adapter.dart';
 
 import 'planning_demo_events.dart';
 import 'planning_event_dialog.dart';
@@ -13,7 +17,9 @@ enum _PlanningView { day, week, month }
 typedef _EventAction = ({CalendarEventData<Object?> event, bool delete});
 
 class PlanningPrototypeScreen extends StatefulWidget {
-  const PlanningPrototypeScreen({super.key});
+  const PlanningPrototypeScreen({super.key, this.repository});
+
+  final PlanningRepository? repository;
 
   @override
   State<PlanningPrototypeScreen> createState() =>
@@ -25,6 +31,11 @@ class _PlanningPrototypeScreenState extends State<PlanningPrototypeScreen> {
   DateTime _date = DateUtils.dateOnly(DateTime.now());
   _PlanningView _view = _PlanningView.week;
   int _revision = 0;
+  bool _loading = false;
+  bool _busy = false;
+  Completer<void>? _pending;
+  bool _loadFailed = false;
+  bool get _blocked => _loading || _busy || _loadFailed;
   final _calendarViewportKey = GlobalKey();
   static const _overlapColor = Color(0xFFB42318);
 
@@ -41,7 +52,108 @@ class _PlanningPrototypeScreenState extends State<PlanningPrototypeScreen> {
   @override
   void initState() {
     super.initState();
-    _controller = EventController<Object?>()..addAll(planningDemoEvents(_date));
+    _controller = EventController<Object?>();
+    if (widget.repository == null) {
+      _controller.addAll(planningDemoEvents(_date));
+    } else {
+      _load();
+    }
+  }
+
+  Future<void> _load() async {
+    setState(() {
+      _loading = true;
+      _loadFailed = false;
+    });
+    try {
+      final items = await widget.repository!.listAll();
+      if (!mounted) return;
+      _controller.clear();
+      _controller.addAll(items.map(planningCalendarEvent).toList());
+    } catch (_) {
+      if (mounted) setState(() => _loadFailed = true);
+    } finally {
+      if (mounted) setState(() => _loading = false);
+    }
+  }
+
+  Future<bool> _write(
+    Future<void> Function() persist,
+    VoidCallback apply, {
+    VoidCallback? retry,
+  }) async {
+    if (_blocked) return false;
+    final pending = _pending = Completer<void>();
+    setState(() => _busy = true);
+    try {
+      await persist();
+      if (!mounted) return true;
+      apply();
+      return true;
+    } catch (_) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text(
+              'Enregistrement impossible. Vérifiez l’accès au disque et réessayez.',
+            ),
+            action: retry == null
+                ? null
+                : SnackBarAction(label: 'Réessayer', onPressed: retry),
+          ),
+        );
+      }
+      return false;
+    } finally {
+      if (mounted) setState(() => _busy = false);
+      _pending = null;
+      pending.complete();
+    }
+  }
+
+  Future<bool> _saveEvent(
+    CalendarEventData<Object?> result,
+    CalendarEventData<Object?>? previous, {
+    bool navigate = true,
+  }) {
+    if (previous != null && !_controller.allEvents.contains(previous)) {
+      return Future.value(false);
+    }
+    final repository = widget.repository;
+    final saved = repository == null
+        ? result
+        : result.copyWith(
+            event: previous?.event as String? ?? const Uuid().v4(),
+          );
+    return _write(
+      () async {
+        if (repository == null) return;
+        final item = planningAppointmentFromCalendar(
+          saved,
+          id: saved.event as String,
+        );
+        if (previous == null) {
+          await repository.insert(item);
+        } else {
+          await repository.update(item);
+        }
+      },
+      () {
+        if (previous == null) {
+          _controller.add(saved);
+        } else {
+          _controller.update(previous, saved);
+        }
+        if (navigate) {
+          _goTo(saved.date);
+        } else {
+          setState(() => _date = saved.date);
+        }
+      },
+      retry: navigate
+          ? null
+          : () => _saveEvent(result, previous, navigate: false),
+    );
   }
 
   @override
@@ -107,26 +219,23 @@ class _PlanningPrototypeScreenState extends State<PlanningPrototypeScreen> {
     CalendarEventData<Object?>? event,
     DateTime? date,
   }) async {
-    final result = await showDialog<CalendarEventData<Object?>>(
+    if (_blocked) return;
+    await showDialog<CalendarEventData<Object?>>(
       context: context,
       builder: (_) => PlanningEventDialog(
         event: event,
+        persistent: widget.repository != null,
+        onSave: (result) => _saveEvent(result, event),
         date: date ?? DateTime(_date.year, _date.month, _date.day, 9),
       ),
     );
-    if (!mounted || result == null) return;
-    if (event == null) {
-      _controller.add(result);
-    } else {
-      _controller.update(event, result);
-    }
-    _goTo(result.date);
   }
 
   Future<void> _showEvents(
     List<CalendarEventData<Object?>> events,
     DateTime date,
   ) async {
+    if (_blocked) return;
     final selected = await showDialog<_EventAction>(
       context: context,
       builder: (context) => AlertDialog(
@@ -207,8 +316,16 @@ class _PlanningPrototypeScreenState extends State<PlanningPrototypeScreen> {
     }
   }
 
-  void _deleteEvent(CalendarEventData<Object?> event) {
-    _controller.remove(event);
+  Future<void> _deleteEvent(CalendarEventData<Object?> event) async {
+    if (!_controller.allEvents.contains(event)) return;
+    final success = await _write(
+      () async {
+        await widget.repository?.delete(event.event as String);
+      },
+      () => _controller.remove(event),
+      retry: () => _deleteEvent(event),
+    );
+    if (!mounted || !success) return;
     final messenger = ScaffoldMessenger.of(context);
     // The undo action always refers to the most recently deleted appointment.
     messenger.clearSnackBars();
@@ -220,11 +337,28 @@ class _PlanningPrototypeScreenState extends State<PlanningPrototypeScreen> {
           label: 'Annuler',
           onPressed: () {
             if (mounted && !_controller.allEvents.contains(event)) {
-              _controller.add(event);
+              _restoreEvent(event);
             }
           },
         ),
       ),
+    );
+  }
+
+  Future<bool> _restoreEvent(CalendarEventData<Object?> event) async {
+    await _pending?.future;
+    if (!mounted || _controller.allEvents.contains(event)) return false;
+    return _write(
+      () async {
+        final repository = widget.repository;
+        if (repository != null) {
+          await repository.insert(
+            planningAppointmentFromCalendar(event, id: event.event as String),
+          );
+        }
+      },
+      () => _controller.add(event),
+      retry: () => _restoreEvent(event),
     );
   }
 
@@ -248,10 +382,7 @@ class _PlanningPrototypeScreenState extends State<PlanningPrototypeScreen> {
       columnWidth: columnWidth,
       weekView: _view == _PlanningView.week,
       viewportKey: _calendarViewportKey,
-      onChanged: (updated) {
-        _controller.update(event, updated);
-        setState(() => _date = updated.date);
-      },
+      onChanged: (updated) => _saveEvent(updated, event, navigate: false),
       child: Tooltip(
         message: '${event.title}\n$time${overlaps ? '\n$overlapDetails' : ''}',
         child: Container(
@@ -428,111 +559,134 @@ class _PlanningPrototypeScreenState extends State<PlanningPrototypeScreen> {
           Padding(
             padding: const EdgeInsets.only(right: 16),
             child: FilledButton.icon(
-              onPressed: () => _editEvent(),
+              onPressed: _blocked ? null : () => _editEvent(),
               icon: const Icon(Icons.add),
               label: const Text('Nouveau rendez-vous'),
             ),
           ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const Text(
-              'Données fictives · Aucune sauvegarde · Cliquez sur un rendez-vous pour le consulter.',
-            ),
-            const SizedBox(height: 16),
-            Wrap(
-              spacing: 16,
-              runSpacing: 12,
-              crossAxisAlignment: WrapCrossAlignment.center,
-              children: [
-                SegmentedButton<_PlanningView>(
-                  segments: const [
-                    ButtonSegment(
-                      value: _PlanningView.day,
-                      label: Text('Jour'),
-                    ),
-                    ButtonSegment(
-                      value: _PlanningView.week,
-                      label: Text('Semaine'),
-                    ),
-                    ButtonSegment(
-                      value: _PlanningView.month,
-                      label: Text('Mois'),
-                    ),
-                  ],
-                  selected: {_view},
-                  onSelectionChanged: (selection) =>
-                      setState(() => _view = selection.single),
-                ),
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    IconButton(
-                      tooltip: 'Période précédente',
-                      onPressed: () => _move(-1),
-                      icon: const Icon(Icons.chevron_left),
-                    ),
-                    TextButton(
-                      onPressed: () => _goTo(DateTime.now()),
-                      child: const Text('Aujourd’hui'),
-                    ),
-                    IconButton(
-                      tooltip: 'Période suivante',
-                      onPressed: () => _move(1),
-                      icon: const Icon(Icons.chevron_right),
-                    ),
-                  ],
-                ),
-                Text(
-                  _periodLabel,
-                  key: const ValueKey('planning-period'),
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            if (_view != _PlanningView.month) ...[
-              const Row(
+      body: _loading
+          ? const Center(child: CircularProgressIndicator())
+          : _loadFailed
+          ? Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(
-                    Icons.warning_amber_rounded,
-                    size: 18,
-                    color: _overlapColor,
-                  ),
-                  SizedBox(width: 6),
-                  Expanded(
-                    child: Text(
-                      'Cartes superposées : rendez-vous qui se chevauchent. Survolez ou cliquez pour voir la plage commune.',
-                      style: TextStyle(color: _overlapColor, fontSize: 12),
-                    ),
-                  ),
+                  const Text('Impossible de charger les rendez-vous.'),
+                  TextButton(onPressed: _load, child: const Text('Réessayer')),
                 ],
               ),
-              const SizedBox(height: 8),
-            ],
-            if (_view != _PlanningView.month)
-              const Padding(
-                padding: EdgeInsets.only(bottom: 8),
-                child: Text(
-                  'Glissez une carte pour la déplacer ; tirez sa poignée du bas pour ajuster la durée (pas de 15 min).',
-                  style: TextStyle(fontSize: 12),
-                ),
-              ),
-            Expanded(
-              child: SizedBox(
-                key: _calendarViewportKey,
-                child: LayoutBuilder(
-                  builder: (_, constraints) => _calendar(constraints.maxWidth),
+            )
+          : AbsorbPointer(
+              absorbing: _busy,
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text(
+                      widget.repository == null
+                          ? 'Données fictives · Aucune sauvegarde · Cliquez sur un rendez-vous pour le consulter.'
+                          : _busy
+                          ? 'Enregistrement en cours…'
+                          : 'Rendez-vous enregistrés sur cet ordinateur.',
+                    ),
+                    const SizedBox(height: 16),
+                    Wrap(
+                      spacing: 16,
+                      runSpacing: 12,
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      children: [
+                        SegmentedButton<_PlanningView>(
+                          segments: const [
+                            ButtonSegment(
+                              value: _PlanningView.day,
+                              label: Text('Jour'),
+                            ),
+                            ButtonSegment(
+                              value: _PlanningView.week,
+                              label: Text('Semaine'),
+                            ),
+                            ButtonSegment(
+                              value: _PlanningView.month,
+                              label: Text('Mois'),
+                            ),
+                          ],
+                          selected: {_view},
+                          onSelectionChanged: (selection) =>
+                              setState(() => _view = selection.single),
+                        ),
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                              tooltip: 'Période précédente',
+                              onPressed: () => _move(-1),
+                              icon: const Icon(Icons.chevron_left),
+                            ),
+                            TextButton(
+                              onPressed: () => _goTo(DateTime.now()),
+                              child: const Text('Aujourd’hui'),
+                            ),
+                            IconButton(
+                              tooltip: 'Période suivante',
+                              onPressed: () => _move(1),
+                              icon: const Icon(Icons.chevron_right),
+                            ),
+                          ],
+                        ),
+                        Text(
+                          _periodLabel,
+                          key: const ValueKey('planning-period'),
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    if (_view != _PlanningView.month) ...[
+                      const Row(
+                        children: [
+                          Icon(
+                            Icons.warning_amber_rounded,
+                            size: 18,
+                            color: _overlapColor,
+                          ),
+                          SizedBox(width: 6),
+                          Expanded(
+                            child: Text(
+                              'Cartes superposées : rendez-vous qui se chevauchent. Survolez ou cliquez pour voir la plage commune.',
+                              style: TextStyle(
+                                color: _overlapColor,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                    ],
+                    if (_view != _PlanningView.month)
+                      const Padding(
+                        padding: EdgeInsets.only(bottom: 8),
+                        child: Text(
+                          'Glissez une carte pour la déplacer ; tirez sa poignée du bas pour ajuster la durée (pas de 15 min).',
+                          style: TextStyle(fontSize: 12),
+                        ),
+                      ),
+                    Expanded(
+                      child: SizedBox(
+                        key: _calendarViewportKey,
+                        child: LayoutBuilder(
+                          builder: (_, constraints) =>
+                              _calendar(constraints.maxWidth),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
-          ],
-        ),
-      ),
     );
   }
 }

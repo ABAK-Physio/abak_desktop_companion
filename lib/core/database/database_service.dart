@@ -1,4 +1,5 @@
 import 'dart:async';
+import '../../features/planning/data/planning_schema.dart';
 import '../../features/kobus/kobus_schema.dart';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
@@ -8,7 +9,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 class DatabaseService {
-  static const int schemaVersion = 31;
+  static const int schemaVersion = 32;
   static Database? _database;
   static Completer<void>? _restoreGate;
 
@@ -98,6 +99,7 @@ class DatabaseService {
         await _createAllTables(db);
       },
       onUpgrade: (db, oldVersion, newVersion) async {
+        if (oldVersion < 32) await createPlanningTables(db);
         if (oldVersion < 31) await createKobusTables(db);
         if (oldVersion < 30) {
           await _createPatientDocumentFoldersTable(db);
@@ -258,7 +260,7 @@ class DatabaseService {
         if (oldVersion < 23) {
           await db.execute(
             'ALTER TABLE care_episode_assessments '
-            'ADD COLUMN docx_file_name TEXT NULL',
+                'ADD COLUMN docx_file_name TEXT NULL',
           );
         }
         if (oldVersion < 24) {
@@ -522,6 +524,7 @@ class DatabaseService {
 
   static Future<void> _createAllTables(Database db) async {
     await _createCoreTables(db);
+    await createPlanningTables(db);
     await createKobusTables(db);
     await _createPatientDocumentFoldersTable(db);
     await _createPatientFrHealthIdentityTable(db);
@@ -546,6 +549,12 @@ class DatabaseService {
   }
 
   static Future<void> _resetDatabase(Database db) async {
+    await db.execute('DROP TABLE IF EXISTS planning_appointments');
+    await db.execute('DROP TABLE IF EXISTS care_episode_referring_practitioners');
+    await db.execute('DROP TABLE IF EXISTS care_episode_document_edit_drafts');
+    await db.execute('DROP TABLE IF EXISTS assessment_template_drafts');
+    await db.execute('DROP TABLE IF EXISTS external_correspondents');
+    await db.execute('DROP TABLE IF EXISTS patient_fr_health_identity');
     await db.execute('DROP TABLE IF EXISTS kobus_archives');
     await db.execute('DROP TABLE IF EXISTS kobus_items');
     await db.execute('DROP TABLE IF EXISTS kobus_runs');

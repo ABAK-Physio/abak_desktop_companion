@@ -7,8 +7,10 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:window_manager/window_manager.dart';
 
 import 'features/planning/prototype/planning_prototype_screen.dart';
+import 'core/database/database_service.dart';
+import 'features/planning/data/planning_repository.dart';
 
-/// Independent entry point: no Companion startup, repositories or persistence.
+/// Dedicated planning entry point, using the shared Companion SQLite database.
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeDateFormatting('fr_FR');
@@ -28,11 +30,18 @@ Future<void> main() async {
       },
     );
   }
-  runApp(const PlanningPrototypeApp());
+  runApp(
+    PlanningPrototypeApp(
+      repository: PlanningRepository(database: () => DatabaseService.database),
+    ),
+  );
 }
 
 class PlanningPrototypeApp extends StatelessWidget {
-  const PlanningPrototypeApp({super.key});
+  const PlanningPrototypeApp({super.key, this.repository});
+
+  /// Null keeps the in-memory demo available to isolated widget tests.
+  final PlanningRepository? repository;
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +52,7 @@ class PlanningPrototypeApp extends StatelessWidget {
       supportedLocales: const [Locale('fr', 'FR')],
       localizationsDelegates: GlobalMaterialLocalizations.delegates,
       theme: ThemeData(colorSchemeSeed: Colors.teal, useMaterial3: true),
-      home: const PlanningPrototypeScreen(),
+      home: PlanningPrototypeScreen(repository: repository),
     );
   }
 }

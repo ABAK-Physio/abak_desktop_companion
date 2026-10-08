@@ -1,3 +1,5 @@
+import 'package:abak_desktop_companion/features/planning/data/planning_repository.dart';
+import 'package:abak_desktop_companion/features/planning/models/planning_appointment.dart';
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -180,7 +182,19 @@ void main() {
   test(
     'Restores saved versions, retaining current folders and newer files',
     () async {
+      final planning = PlanningRepository(
+        database: () => DatabaseService.database,
+      );
+      final appointment = PlanningAppointment(
+        id: 'backup-rv',
+        title: 'Séance sauvegardée',
+        date: DateTime(2026, 10, 8),
+        startMinute: 540,
+        endMinute: 585,
+      );
+      await planning.insert(appointment);
       final path = await backup();
+      await planning.delete(appointment.id);
       await changeIdentity('Changed');
       await File(
         p.join(folders.report, 'rapport.docx'),
@@ -191,6 +205,7 @@ void main() {
       ).restoreDatabase(backupPath: path);
       expect(result.success, isTrue, reason: result.message);
       expect(await lastName(), 'Dupont');
+      expect((await planning.listAll()).single.toMap(), appointment.toMap());
       expect(
         (await DatabaseBackupRepository().getBackups()).any(
           (b) => b.filePath == path,
