@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'package:abak_desktop_companion/features/planning/prototype/planning_calendar_adapter.dart';
+import 'package:abak_desktop_companion/features/planning/prototype/planning_event_drag.dart';
 
 import 'package:abak_desktop_companion/core/database/database_service.dart';
 import 'package:abak_desktop_companion/features/planning/data/planning_repository.dart';
@@ -47,7 +49,7 @@ void main() {
     );
     await repository.insert(item);
     final db = await DatabaseService.database;
-    expect(await db.getVersion(), 32);
+    expect(await db.getVersion(), 33);
     final snapshot = '${temp.path}/snapshot.db';
     await db.execute('VACUUM INTO ?', [snapshot]);
     await CompanionBackupArchive.validateDatabase(snapshot);
@@ -73,6 +75,7 @@ void main() {
     final path = '${temp.path}/v31.db';
     var db = await DatabaseService.openDatabaseFile(path);
     // v31 differs only by the added planning schema. Reconstruct that fixture.
+    await db.execute('DROP TRIGGER unlink_planning_patient');
     await db.execute('DROP TABLE planning_appointments');
     await db.setVersion(31);
     await db.insert('application_settings', {
@@ -91,7 +94,7 @@ void main() {
     await db.close();
     db = await DatabaseService.openDatabaseFile(path);
     try {
-      expect(await db.getVersion(), 32);
+      expect(await db.getVersion(), 33);
       for (final entry in before.entries) {
         expect(await db.query(entry.key), entry.value, reason: entry.key);
       }
@@ -102,5 +105,103 @@ void main() {
     } finally {
       await db.close();
     }
+  });
+  test('v32 migration preserves appointments and patient lifecycle', () async {
+    final db = await DatabaseService.database;
+    await db.execute('DROP TRIGGER unlink_planning_patient');
+    await db.execute('DROP INDEX idx_planning_patient');
+    await db.execute(
+      'ALTER TABLE planning_appointments DROP COLUMN patient_id',
+    );
+    await db.setVersion(32);
+    await db.insert('planning_appointments', {
+      'appointment_id': 'old',
+      'title': 'Ancien',
+      'appointment_date': '2026-10-09',
+      'start_minute': 540,
+      'end_minute': 585,
+      'notes': 'Conserver',
+      'color_argb': 0xFFB2DFDB,
+    });
+    await DatabaseService.reopenDatabase();
+    final repository = PlanningRepository(
+      database: () => DatabaseService.database,
+    );
+    final old = (await repository.listAll()).single;
+    expect(old.patientId, isNull);
+    expect(old.notes, 'Conserver');
+    final migrated = await DatabaseService.database;
+    for (final id in ['p1', 'p2']) {
+      await migrated.insert('patients', {
+        'patient_id': id,
+        'last_name': 'Dupont',
+        'first_name': 'Élodie',
+        'birth_date': id == 'p1' ? '1980-01-01' : '1990-02-02',
+        'created_at': 1,
+      });
+    }
+    expect(
+      (await repository.searchPatients('dupont 1980')).single.patientId,
+      'p1',
+    );
+    final linked = PlanningAppointment.fromMap({
+      ...old.toMap(),
+      'patient_id': 'p1',
+    });
+    await repository.update(linked);
+    await DatabaseService.reopenDatabase();
+    var loaded = (await repository.listAll()).single;
+    expect(loaded.patientId, 'p1');
+    expect(loaded.patientLabel, 'Dupont Élodie');
+    final event = planningCalendarEvent(loaded);
+    final shifted = shiftPlanningEvent(event, minuteDelta: 30, dayDelta: 1);
+    final moved = planningAppointmentFromCalendar(
+      shifted,
+      id: planningEventId(shifted.event)!,
+    );
+    await repository.update(moved);
+    expect((await repository.listAll()).single.patientId, 'p1');
+    await repository.delete(moved.id);
+    await repository.insert(moved);
+    expect((await repository.listAll()).single.patientId, 'p1');
+    var activeDb = await DatabaseService.database;
+    await activeDb.update(
+      'patients',
+      {'archived_at': 1},
+      where: 'patient_id = ?',
+      whereArgs: ['p1'],
+    );
+    expect((await repository.searchPatients('Dupont')).single.patientId, 'p2');
+    expect(
+      (await repository.listAll()).single.patientLabel,
+      'Dupont Élodie (archivé)',
+    );
+    await activeDb.execute('PRAGMA foreign_keys = OFF');
+    await activeDb.delete(
+      'patients',
+      where: 'patient_id = ?',
+      whereArgs: ['p1'],
+    );
+    loaded = (await repository.listAll()).single;
+    expect(loaded.patientId, isNull);
+    expect(loaded.title, 'Ancien');
+    await expectLater(repository.update(moved), throwsStateError);
+    await repository.update(
+      PlanningAppointment.fromMap({...loaded.toMap(), 'patient_id': 'p2'}),
+    );
+    await repository.update(
+      PlanningAppointment.fromMap({...loaded.toMap(), 'patient_id': null}),
+    );
+    expect((await repository.listAll()).single.patientId, isNull);
+    await repository.update(
+      PlanningAppointment.fromMap({...loaded.toMap(), 'patient_id': 'p2'}),
+    );
+    await activeDb.execute('PRAGMA foreign_keys = ON');
+    await activeDb.delete(
+      'patients',
+      where: 'patient_id = ?',
+      whereArgs: ['p2'],
+    );
+    expect((await repository.listAll()).single.patientId, isNull);
   });
 }

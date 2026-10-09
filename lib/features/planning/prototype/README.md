@@ -6,7 +6,7 @@ Depuis la racine du dépôt, lancer le point d’entrée dédié :
 flutter run -d macos -t lib/main_planning.dart
 ```
 
-L’entrée dédiée utilise maintenant la base SQLite Companion et sa migration v32.
+L’entrée dédiée utilise maintenant la base SQLite Companion et sa migration v33.
 Le menu principal reste inchangé. Une base planning vide affiche un calendrier
 vide : aucun événement fictif ni rendez-vous de l’ancienne session en mémoire
 n’est importé automatiquement. Les tests sans dépôt injecté gardent la démo.
@@ -68,3 +68,24 @@ flutter test test/planning_prototype_test.dart test/planning_event_drag_test.dar
 ## Intégration SQLite
 
 Voir [les détails d’intégration SQLite](../SQLITE_INTEGRATION.md).
+
+## Essai de l’association patient
+
+- Créer un rendez-vous, cliquer sur Associer un patient et rechercher un dossier.
+- Vérifier la date de naissance avant sélection, puis Enregistrer.
+- Vérifier le nom sur les cartes Jour/Semaine et dans les détails des trois vues.
+- Modifier le rendez-vous pour changer ou retirer le patient ; Annuler doit
+  conserver la valeur précédente.
+- Déplacer, redimensionner, supprimer puis Annuler : l’association est conservée.
+- Fermer et relancer pour vérifier le lien enregistré. Un créneau sans patient
+  reste possible avec son titre habituel (pause, réunion, etc.).
+
+## Ouvrir le dossier patient
+
+Dans les détails d’un rendez-vous lié, utiliser **Ouvrir le dossier patient**.
+Le dossier habituel Companion s’ouvre, y compris pour un patient archivé.
+La flèche Retour ramène au planning à la même date et dans la même vue ; les
+associations et noms sont rechargés. Un créneau sans patient ne propose pas ce
+bouton. Si le patient a été supprimé entre-temps, un message l’indique et le
+planning est actualisé. Le lancement dédié inclut les traductions Companion
+nécessaires à cet écran. Le menu principal reste inchangé.

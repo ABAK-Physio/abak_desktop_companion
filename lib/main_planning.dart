@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'generated/l10n.dart';
 
 import 'package:calendar_view/calendar_view.dart';
 import 'package:flutter/material.dart';
@@ -50,7 +51,10 @@ class PlanningPrototypeApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       locale: const Locale('fr', 'FR'),
       supportedLocales: const [Locale('fr', 'FR')],
-      localizationsDelegates: GlobalMaterialLocalizations.delegates,
+      localizationsDelegates: const [
+        S.delegate,
+        ...GlobalMaterialLocalizations.delegates,
+      ],
       theme: ThemeData(colorSchemeSeed: Colors.teal, useMaterial3: true),
       home: PlanningPrototypeScreen(repository: repository),
     );

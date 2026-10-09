@@ -32,6 +32,9 @@ void main() {
   setUp(() async {
     temporary = await Directory.systemTemp.createTemp('abak_planning_sqlite_');
     db = await databaseFactoryFfi.openDatabase('${temporary.path}/test.db');
+    await db.execute(
+      'CREATE TABLE patients (patient_id TEXT PRIMARY KEY, last_name TEXT, first_name TEXT, archived_at INTEGER)',
+    );
     await createPlanningTables(db);
     repository = PlanningRepository(database: () async => db);
   });

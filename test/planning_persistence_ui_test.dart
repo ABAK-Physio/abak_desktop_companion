@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:abak_desktop_companion/features/planning/prototype/planning_calendar_adapter.dart';
 
 import 'package:abak_desktop_companion/main_planning.dart';
 import 'package:abak_desktop_companion/features/planning/data/planning_repository.dart';
@@ -193,4 +194,51 @@ void main() {
       expect(controller(tester).allEvents.single.event, 'stable');
     },
   );
+  testWidgets('linked patient survives screen move, resize, delete and undo', (
+    tester,
+  ) async {
+    final repo = _Repository();
+    final day = DateUtils.dateOnly(DateTime.now());
+    repo.rows['linked'] = PlanningAppointment(
+      id: 'linked',
+      title: 'Consultation',
+      date: day,
+      startMinute: 540,
+      endMinute: 585,
+      patientId: 'p1',
+      patientLabel: 'Dupont Marie',
+    );
+    await open(tester, repo);
+    var event = controller(tester).allEvents.single;
+    tester
+        .widget<PlanningEventDrag>(find.byType(PlanningEventDrag).first)
+        .onChanged(
+          event.copyWith(
+            startTime: DateTime(day.year, day.month, day.day, 10),
+            endTime: DateTime(day.year, day.month, day.day, 11),
+          ),
+        );
+    await tester.pumpAndSettle();
+    expect(repo.rows['linked']!.patientId, 'p1');
+    expect(repo.rows['linked']!.endMinute, 660);
+    event = controller(tester).allEvents.single;
+    expect(planningEventId(event.event), 'linked');
+    await tester.tap(find.text('Consultation · Dupont Marie').first);
+    await tester.pumpAndSettle();
+    expect(find.textContaining('Patient : Dupont Marie'), findsOneWidget);
+    await tester.tap(find.text('Supprimer'));
+    await tester.pumpAndSettle();
+    expect(repo.rows, isEmpty);
+    await tester.tap(find.text('Annuler'));
+    await tester.pumpAndSettle();
+    expect(repo.rows['linked']!.patientId, 'p1');
+    await tester.pumpWidget(const SizedBox());
+    await tester.pumpWidget(PlanningPrototypeApp(repository: repo));
+    await tester.pumpAndSettle();
+    expect(
+      (controller(tester).allEvents.single.event as PlanningPatientLink)
+          .patientId,
+      'p1',
+    );
+  });
 }

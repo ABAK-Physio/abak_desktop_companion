@@ -7,6 +7,8 @@ class PlanningAppointment {
     required this.date,
     this.startMinute,
     this.endMinute,
+    this.patientId,
+    this.patientLabel,
     this.notes = '',
     this.colorArgb = 0xFFB2DFDB,
   }) {
@@ -31,6 +33,10 @@ class PlanningAppointment {
     }
   }
 
+  final String? patientId;
+
+  /// Display-only, resolved from the patient record on reading.
+  final String? patientLabel;
   final String id;
   final String title;
   final DateTime date;
@@ -48,6 +54,7 @@ class PlanningAppointment {
 
   Map<String, Object?> toMap() => {
     'appointment_id': id,
+    'patient_id': patientId,
     'title': title,
     'appointment_date': dateKey(date),
     'start_minute': startMinute,
@@ -64,6 +71,8 @@ class PlanningAppointment {
     }
     return PlanningAppointment(
       id: row['appointment_id'] as String,
+      patientId: row['patient_id'] as String?,
+      patientLabel: row['patient_label'] as String?,
       title: row['title'] as String,
       date: date,
       startMinute: row['start_minute'] as int?,

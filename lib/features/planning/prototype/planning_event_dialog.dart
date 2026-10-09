@@ -1,6 +1,9 @@
 import 'package:calendar_view/calendar_view.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import '../../patients/models/patient.dart';
+import 'planning_calendar_adapter.dart';
+import 'planning_patient_picker.dart';
 
 class PlanningEventDialog extends StatefulWidget {
   const PlanningEventDialog({
@@ -9,10 +12,12 @@ class PlanningEventDialog extends StatefulWidget {
     this.event,
     this.onSave,
     this.persistent = false,
+    this.searchPatients,
   });
 
   final Future<bool> Function(CalendarEventData<Object?>)? onSave;
   final bool persistent;
+  final Future<List<Patient>> Function(String)? searchPatients;
   final DateTime date;
   final CalendarEventData<Object?>? event;
 
@@ -21,6 +26,7 @@ class PlanningEventDialog extends StatefulWidget {
 }
 
 class _PlanningEventDialogState extends State<PlanningEventDialog> {
+  PlanningPatientLink? _patient;
   bool _saving = false;
   bool _failed = false;
   final _form = GlobalKey<FormState>();
@@ -35,6 +41,9 @@ class _PlanningEventDialogState extends State<PlanningEventDialog> {
   void initState() {
     super.initState();
     final event = widget.event;
+    _patient = event?.event is PlanningPatientLink
+        ? event!.event as PlanningPatientLink
+        : null;
     _date = DateUtils.dateOnly(event?.date ?? widget.date);
     _allDay = event?.isFullDayEvent ?? false;
     final minute = (widget.date.hour * 60 + widget.date.minute).clamp(
@@ -96,7 +105,7 @@ class _PlanningEventDialogState extends State<PlanningEventDialog> {
       startTime: _allDay ? null : at(_minutes(_start.text)!),
       endTime: _allDay ? null : at(_minutes(_end.text)!),
       color: widget.event?.color ?? Colors.teal.shade100,
-      event: widget.event?.event,
+      event: _patient ?? planningEventId(widget.event?.event),
     );
     setState(() {
       _saving = true;
@@ -147,6 +156,53 @@ class _PlanningEventDialogState extends State<PlanningEventDialog> {
                         : null,
                   ),
                   const SizedBox(height: 16),
+                  if (widget.searchPatients != null) ...[
+                    Text(
+                      _patient == null
+                          ? 'Sans patient'
+                          : 'Patient : ${_patient!.label}',
+                    ),
+                    Wrap(
+                      children: [
+                        TextButton.icon(
+                          icon: const Icon(Icons.person_search),
+                          label: Text(
+                            _patient == null
+                                ? 'Associer un patient'
+                                : 'Changer de patient',
+                          ),
+                          onPressed: _saving
+                              ? null
+                              : () async {
+                                  final patient = await showDialog<Patient>(
+                                    context: context,
+                                    builder: (_) => PlanningPatientPicker(
+                                      search: widget.searchPatients!,
+                                    ),
+                                  );
+                                  if (!mounted || patient == null) return;
+                                  setState(
+                                    () => _patient = PlanningPatientLink(
+                                      appointmentId: planningEventId(
+                                        widget.event?.event,
+                                      ),
+                                      patientId: patient.patientId,
+                                      label: patient.displayName,
+                                    ),
+                                  );
+                                },
+                        ),
+                        if (_patient != null)
+                          TextButton(
+                            onPressed: _saving
+                                ? null
+                                : () => setState(() => _patient = null),
+                            child: const Text('Retirer le patient'),
+                          ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                  ],
                   OutlinedButton.icon(
                     icon: const Icon(Icons.calendar_today),
                     label: Text(DateFormat.yMMMMEEEEd('fr_FR').format(_date)),

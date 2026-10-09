@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 import '../data/planning_repository.dart';
+import '../../patients/patient_detail_screen.dart';
 import 'planning_calendar_adapter.dart';
 
 import 'planning_demo_events.dart';
@@ -14,7 +15,12 @@ import 'planning_stack_arranger.dart';
 
 enum _PlanningView { day, week, month }
 
-typedef _EventAction = ({CalendarEventData<Object?> event, bool delete});
+enum _EventCommand { edit, delete, patient }
+
+typedef _EventAction = ({
+  CalendarEventData<Object?> event,
+  _EventCommand command,
+});
 
 class PlanningPrototypeScreen extends StatefulWidget {
   const PlanningPrototypeScreen({super.key, this.repository});
@@ -123,14 +129,21 @@ class _PlanningPrototypeScreenState extends State<PlanningPrototypeScreen> {
     final saved = repository == null
         ? result
         : result.copyWith(
-            event: previous?.event as String? ?? const Uuid().v4(),
+            event: result.event is PlanningPatientLink
+                ? PlanningPatientLink(
+                    appointmentId:
+                        planningEventId(previous?.event) ?? const Uuid().v4(),
+                    patientId: (result.event as PlanningPatientLink).patientId,
+                    label: (result.event as PlanningPatientLink).label,
+                  )
+                : planningEventId(previous?.event) ?? const Uuid().v4(),
           );
     return _write(
       () async {
         if (repository == null) return;
         final item = planningAppointmentFromCalendar(
           saved,
-          id: saved.event as String,
+          id: planningEventId(saved.event)!,
         );
         if (previous == null) {
           await repository.insert(item);
@@ -225,6 +238,7 @@ class _PlanningPrototypeScreenState extends State<PlanningPrototypeScreen> {
       builder: (_) => PlanningEventDialog(
         event: event,
         persistent: widget.repository != null,
+        searchPatients: widget.repository?.searchPatients,
         onSave: (result) => _saveEvent(result, event),
         date: date ?? DateTime(_date.year, _date.month, _date.day, 9),
       ),
@@ -254,7 +268,7 @@ class _PlanningPrototypeScreenState extends State<PlanningPrototypeScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            '${event.title}\n${event.isFullDayEvent ? 'Toute la journée' : '${DateFormat.Hm().format(event.startTime!)} – ${DateFormat.Hm().format(event.endTime!)}'}\n${event.description ?? ''}',
+                            '${event.title}\n${planningPatientLabel(event.event).isEmpty ? '' : 'Patient : ${planningPatientLabel(event.event)}\n'}${event.isFullDayEvent ? 'Toute la journée' : '${DateFormat.Hm().format(event.startTime!)} – ${DateFormat.Hm().format(event.endTime!)}'}\n${event.description ?? ''}',
                           ),
                           if (_overlapDetails(event).isNotEmpty)
                             Padding(
@@ -269,12 +283,26 @@ class _PlanningPrototypeScreenState extends State<PlanningPrototypeScreen> {
                             ),
                           Wrap(
                             children: [
+                              if (event.event is PlanningPatientLink &&
+                                  widget.repository != null)
+                                TextButton.icon(
+                                  icon: const Icon(
+                                    Icons.folder_shared_outlined,
+                                  ),
+                                  label: const Text(
+                                    'Ouvrir le dossier patient',
+                                  ),
+                                  onPressed: () => Navigator.pop(context, (
+                                    event: event,
+                                    command: _EventCommand.patient,
+                                  )),
+                                ),
                               TextButton.icon(
                                 icon: const Icon(Icons.edit_outlined),
                                 label: const Text('Modifier'),
                                 onPressed: () => Navigator.pop(context, (
                                   event: event,
-                                  delete: false,
+                                  command: _EventCommand.edit,
                                 )),
                               ),
                               TextButton.icon(
@@ -287,7 +315,7 @@ class _PlanningPrototypeScreenState extends State<PlanningPrototypeScreen> {
                                 ),
                                 onPressed: () => Navigator.pop(context, (
                                   event: event,
-                                  delete: true,
+                                  command: _EventCommand.delete,
                                 )),
                               ),
                             ],
@@ -309,10 +337,54 @@ class _PlanningPrototypeScreenState extends State<PlanningPrototypeScreen> {
       ),
     );
     if (!mounted || selected == null) return;
-    if (selected.delete) {
+    if (selected.command == _EventCommand.patient) {
+      await _openPatient(selected.event);
+    } else if (selected.command == _EventCommand.delete) {
       _deleteEvent(selected.event);
     } else {
       await _editEvent(event: selected.event);
+    }
+  }
+
+  Future<void> _openPatient(CalendarEventData<Object?> event) async {
+    final link = event.event;
+    final repository = widget.repository;
+    if (_blocked || link is! PlanningPatientLink || repository == null) return;
+    setState(() => _busy = true);
+    try {
+      // Resolve by identifier at click time, including archived patients.
+      final patient = await repository.getPatient(link.patientId);
+      if (!mounted) return;
+      if (patient == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Ce dossier patient n’est plus disponible.'),
+          ),
+        );
+        await _load();
+        return;
+      }
+      await Navigator.of(context).push<void>(
+        MaterialPageRoute(
+          builder: (_) => PatientDetailScreen(patient: patient),
+        ),
+      );
+      // Preserve the selected view/date, refreshing labels and patient links.
+      if (mounted) await _load();
+    } catch (_) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text('Impossible d’ouvrir le dossier patient.'),
+            action: SnackBarAction(
+              label: 'Réessayer',
+              onPressed: () => _openPatient(event),
+            ),
+          ),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _busy = false);
     }
   }
 
@@ -320,7 +392,7 @@ class _PlanningPrototypeScreenState extends State<PlanningPrototypeScreen> {
     if (!_controller.allEvents.contains(event)) return;
     final success = await _write(
       () async {
-        await widget.repository?.delete(event.event as String);
+        await widget.repository?.delete(planningEventId(event.event)!);
       },
       () => _controller.remove(event),
       retry: () => _deleteEvent(event),
@@ -353,7 +425,10 @@ class _PlanningPrototypeScreenState extends State<PlanningPrototypeScreen> {
         final repository = widget.repository;
         if (repository != null) {
           await repository.insert(
-            planningAppointmentFromCalendar(event, id: event.event as String),
+            planningAppointmentFromCalendar(
+              event,
+              id: planningEventId(event.event)!,
+            ),
           );
         }
       },
@@ -384,7 +459,8 @@ class _PlanningPrototypeScreenState extends State<PlanningPrototypeScreen> {
       viewportKey: _calendarViewportKey,
       onChanged: (updated) => _saveEvent(updated, event, navigate: false),
       child: Tooltip(
-        message: '${event.title}\n$time${overlaps ? '\n$overlapDetails' : ''}',
+        message:
+            '${event.title}\n${planningPatientLabel(event.event).isEmpty ? '' : '${planningPatientLabel(event.event)}\n'}$time${overlaps ? '\n$overlapDetails' : ''}',
         child: Container(
           margin: const EdgeInsets.all(1),
           padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
@@ -411,7 +487,11 @@ class _PlanningPrototypeScreenState extends State<PlanningPrototypeScreen> {
                   fit: BoxFit.scaleDown,
                   alignment: Alignment.topLeft,
                   child: Text(
-                    event.title,
+                    [
+                      event.title,
+                      if (planningPatientLabel(event.event).isNotEmpty)
+                        planningPatientLabel(event.event),
+                    ].join(' · '),
                     style: const TextStyle(fontSize: 12, color: Colors.black87),
                   ),
                 );
@@ -432,7 +512,11 @@ class _PlanningPrototypeScreenState extends State<PlanningPrototypeScreen> {
                       ],
                       Expanded(
                         child: Text(
-                          event.title,
+                          [
+                            event.title,
+                            if (planningPatientLabel(event.event).isNotEmpty)
+                              planningPatientLabel(event.event),
+                          ].join(' · '),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: const TextStyle(

@@ -20,7 +20,7 @@ fictifs. Le menu principal reste inchangé.
 
 Le modèle accepte les horaires d’une journée jusqu’à minuit ; le formulaire
 actuel conserve sa plage 07:00–21:00. Pas de récurrence, rendez-vous multijours,
-association patient/praticien, ni statut métier dans cette première préparation.
+association praticien, ni statut métier dans cette première préparation.
 Les dates/heures sont celles du calendrier local du cabinet, sans conversion UTC.
 Un usage dans plusieurs fuseaux horaires nécessiterait une politique dédiée.
 
@@ -54,3 +54,23 @@ Les tests SQLite utilisent uniquement des fichiers temporaires. Ils couvrent
 fermeture/réouverture, migration v31, intégrité des données préexistantes,
 réinitialisation et sauvegarde/restauration. Les tests d’interface vérifient
 l’identité stable, les écritures retardées, les erreurs, la suppression et Annuler.
+
+## Association patient (v33)
+
+La migration v33 ajoute `patient_id` nullable et un index. Les rendez-vous
+existants restent sans patient et conservent leurs autres champs. Le nom du
+patient est obtenu par jointure lors du chargement, sans copie persistante.
+
+Le formulaire propose une recherche parmi les patients actifs (nom, prénom,
+date de naissance ISO). Les 30 premiers résultats sont affichés, avec la date
+pour distinguer les homonymes. Choisir, changer ou retirer le patient ne prend
+effet qu’après Enregistrer ; Annuler conserve l’association précédente.
+Le titre du rendez-vous reste indépendant du patient.
+
+Les rendez-vous de patients archivés gardent leur lien et portent la mention
+« archivé » au prochain chargement. Une suppression définitive du patient
+retire le lien sans supprimer le rendez-vous, via un déclencheur SQLite même
+lorsque les clés étrangères ne sont pas activées. Les écritures vérifient dans
+leur transaction que le patient existe. Si un patient a été supprimé dans une
+autre fenêtre, recharger le planning ou retirer le patient du formulaire avant
+d’enregistrer. Aucune modification automatique du titre ou des notes.
