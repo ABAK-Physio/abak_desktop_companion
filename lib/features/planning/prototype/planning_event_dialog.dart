@@ -13,10 +13,12 @@ class PlanningEventDialog extends StatefulWidget {
     this.onSave,
     this.persistent = false,
     this.searchPatients,
+    this.defaultDurationMinutes = 45,
   });
 
   final Future<bool> Function(CalendarEventData<Object?>)? onSave;
   final bool persistent;
+  final int defaultDurationMinutes;
   final Future<List<Patient>> Function(String)? searchPatients;
   final DateTime date;
   final CalendarEventData<Object?>? event;
@@ -37,6 +39,10 @@ class _PlanningEventDialogState extends State<PlanningEventDialog> {
   late final TextEditingController _end;
   late DateTime _date;
   late bool _allDay;
+  late int _durationMinutes;
+
+  String _clock(int value) =>
+      '${(value ~/ 60).toString().padLeft(2, '0')}:${(value % 60).toString().padLeft(2, '0')}';
 
   @override
   void initState() {
@@ -50,20 +56,21 @@ class _PlanningEventDialogState extends State<PlanningEventDialog> {
     _allDay = event?.isFullDayEvent ?? false;
     final minute = (widget.date.hour * 60 + widget.date.minute).clamp(
       420,
-      1245,
+      1259,
     );
-    String clock(int value) =>
-        '${(value ~/ 60).toString().padLeft(2, '0')}:${(value % 60).toString().padLeft(2, '0')}';
+    _durationMinutes = event?.startTime != null && event?.endTime != null
+        ? event!.endTime!.difference(event.startTime!).inMinutes
+        : widget.defaultDurationMinutes;
     _title = TextEditingController(text: event?.title ?? '');
     _notes = TextEditingController(text: event?.description ?? '');
     _start = TextEditingController(
       text: event?.startTime == null
-          ? clock(minute)
+          ? _clock(minute)
           : DateFormat.Hm().format(event!.startTime!),
     );
     _end = TextEditingController(
       text: event?.endTime == null
-          ? clock((minute + 45).clamp(420, 1260))
+          ? _clock(minute + _durationMinutes)
           : DateFormat.Hm().format(event!.endTime!),
     );
   }
@@ -83,6 +90,20 @@ class _PlanningEventDialogState extends State<PlanningEventDialog> {
     final minute = int.parse(match[2]!);
     if (hour > 23 || minute > 59) return null;
     return hour * 60 + minute;
+  }
+
+  void _startChanged(String value) {
+    final start = _minutes(value);
+    if (start == null || start < 420 || start >= 1260) return;
+    _end.text = _clock(start + _durationMinutes);
+  }
+
+  void _endChanged(String value) {
+    final start = _minutes(_start.text);
+    final end = _minutes(value);
+    if (start != null && end != null && end > start && end <= 1260) {
+      _durationMinutes = end - start;
+    }
   }
 
   String? _validateTime(String? value, {bool end = false}) {
@@ -253,7 +274,9 @@ class _PlanningEventDialogState extends State<PlanningEventDialog> {
                       children: [
                         Expanded(
                           child: TextFormField(
+                            key: const ValueKey('planning-start'),
                             controller: _start,
+                            onChanged: _startChanged,
                             decoration: const InputDecoration(
                               labelText: 'Début',
                               hintText: '09:00',
@@ -264,7 +287,9 @@ class _PlanningEventDialogState extends State<PlanningEventDialog> {
                         const SizedBox(width: 16),
                         Expanded(
                           child: TextFormField(
+                            key: const ValueKey('planning-end'),
                             controller: _end,
+                            onChanged: _endChanged,
                             decoration: const InputDecoration(
                               labelText: 'Fin',
                               hintText: '09:45',

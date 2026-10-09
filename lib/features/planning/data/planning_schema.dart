@@ -5,6 +5,7 @@ Future<void> createPlanningTables(DatabaseExecutor db) async {
   await db.execute('''
     CREATE TABLE IF NOT EXISTS planning_appointments (
       appointment_id TEXT PRIMARY KEY NOT NULL CHECK(length(trim(appointment_id)) > 0),
+      practitioner_id TEXT,
       patient_id TEXT REFERENCES patients(patient_id) ON DELETE SET NULL,
       event_kind TEXT NOT NULL DEFAULT 'appointment' CHECK(event_kind IN ('appointment', 'unavailable')),
       title TEXT NOT NULL CHECK(length(trim(title)) > 0),
@@ -21,6 +22,7 @@ Future<void> createPlanningTables(DatabaseExecutor db) async {
       )
     )
   ''');
+  await migratePlanningPractitioner(db);
   await db.execute('''
     CREATE INDEX IF NOT EXISTS idx_planning_appointments_date
     ON planning_appointments(appointment_date, start_minute)
@@ -54,4 +56,16 @@ Future<void> migratePlanningEventKind(DatabaseExecutor db) async {
       "ALTER TABLE planning_appointments ADD COLUMN event_kind TEXT NOT NULL DEFAULT 'appointment' CHECK(event_kind IN ('appointment', 'unavailable'))",
     );
   }
+}
+
+Future<void> migratePlanningPractitioner(DatabaseExecutor db) async {
+  final columns = await db.rawQuery('PRAGMA table_info(planning_appointments)');
+  if (!columns.any((column) => column['name'] == 'practitioner_id')) {
+    await db.execute(
+      'ALTER TABLE planning_appointments ADD COLUMN practitioner_id TEXT',
+    );
+  }
+  await db.execute(
+    'CREATE INDEX IF NOT EXISTS idx_planning_practitioner ON planning_appointments(practitioner_id, appointment_date)',
+  );
 }

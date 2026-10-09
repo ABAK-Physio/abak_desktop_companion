@@ -35,6 +35,28 @@ void main() {
     await temp.delete(recursive: true);
   });
 
+  test(
+    'v35 migration adds practitioner attribution without deleting data',
+    () async {
+      final db = await DatabaseService.database;
+      await db.execute('DROP INDEX idx_planning_practitioner');
+      await db.execute(
+        'ALTER TABLE planning_appointments DROP COLUMN practitioner_id',
+      );
+      await db.execute(
+        "INSERT INTO planning_appointments (appointment_id, title, appointment_date, color_argb) VALUES ('old', 'Ancien RV', '2026-10-09', 0)",
+      );
+      await db.setVersion(35);
+      await DatabaseService.closeDatabase();
+      final migrated = await DatabaseService.database;
+      expect(await migrated.getVersion(), 38);
+      final rows = await migrated.query('planning_appointments');
+      expect(rows.single['appointment_id'], 'old');
+      expect(rows.single.containsKey('practitioner_id'), isTrue);
+      expect(rows.single['practitioner_id'], isNull);
+    },
+  );
+
   test('fresh schema, snapshot restore and reset include planning', () async {
     final repository = PlanningRepository(
       database: () => DatabaseService.database,
@@ -49,7 +71,7 @@ void main() {
     );
     await repository.insert(item);
     final db = await DatabaseService.database;
-    expect(await db.getVersion(), 34);
+    expect(await db.getVersion(), 38);
     final snapshot = '${temp.path}/snapshot.db';
     await db.execute('VACUUM INTO ?', [snapshot]);
     await CompanionBackupArchive.validateDatabase(snapshot);
@@ -94,7 +116,7 @@ void main() {
     await db.close();
     db = await DatabaseService.openDatabaseFile(path);
     try {
-      expect(await db.getVersion(), 34);
+      expect(await db.getVersion(), 38);
       for (final entry in before.entries) {
         expect(await db.query(entry.key), entry.value, reason: entry.key);
       }

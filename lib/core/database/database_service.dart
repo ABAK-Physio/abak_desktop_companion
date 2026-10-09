@@ -9,7 +9,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 class DatabaseService {
-  static const int schemaVersion = 34;
+  static const int schemaVersion = 38;
   static Database? _database;
   static Completer<void>? _restoreGate;
 
@@ -102,6 +102,16 @@ class DatabaseService {
         if (oldVersion < 32) await createPlanningTables(db);
         if (oldVersion < 33) await migratePlanningPatients(db);
         if (oldVersion < 34) await migratePlanningEventKind(db);
+        if (oldVersion < 38) {
+          await _addColumnIfMissing(db, 'practitioners', 'appointment_duration_minutes', 'INTEGER NOT NULL DEFAULT 45 CHECK(appointment_duration_minutes BETWEEN 1 AND 840)');
+        }
+        if (oldVersion < 37) {
+          await _addColumnIfMissing(db, 'practitioners', 'appointment_step_minutes', 'INTEGER NOT NULL DEFAULT 15 CHECK(appointment_step_minutes IN (15, 20, 30))');
+        }
+        if (oldVersion < 36) await migratePlanningPractitioner(db);
+        if (oldVersion < 35) {
+          await _addColumnIfMissing(db, 'practitioners', 'working_hours_json', 'TEXT NULL');
+        }
         if (oldVersion < 31) await createKobusTables(db);
         if (oldVersion < 30) {
           await _createPatientDocumentFoldersTable(db);
@@ -647,6 +657,9 @@ class DatabaseService {
       CREATE TABLE practitioners (
         practitioner_id TEXT PRIMARY KEY,
         display_name TEXT NOT NULL,
+        working_hours_json TEXT NULL,
+        appointment_step_minutes INTEGER NOT NULL DEFAULT 15 CHECK(appointment_step_minutes IN (15, 20, 30)),
+        appointment_duration_minutes INTEGER NOT NULL DEFAULT 45 CHECK(appointment_duration_minutes BETWEEN 1 AND 840),
         first_name TEXT NULL,
         last_name TEXT NULL,
         professional_id TEXT NULL,

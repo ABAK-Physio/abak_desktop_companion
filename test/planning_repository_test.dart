@@ -45,6 +45,55 @@ void main() {
   });
 
   test(
+    'practitioner isolation persists appointments and pauses after reopening',
+    () async {
+      await db.execute(
+        'CREATE TABLE practitioners (practitioner_id TEXT PRIMARY KEY, is_active INTEGER, archived_at INTEGER)',
+      );
+      for (final id in ['a', 'b']) {
+        await db.insert('practitioners', {
+          'practitioner_id': id,
+          'is_active': 1,
+        });
+        await repository.insert(
+          PlanningAppointment(
+            id: 'rv-$id',
+            practitionerId: id,
+            title: 'RV',
+            date: day,
+            startMinute: 540,
+            endMinute: 570,
+          ),
+        );
+        await repository.insert(
+          PlanningAppointment(
+            id: 'pause-$id',
+            practitionerId: id,
+            title: 'Pause',
+            date: day,
+            startMinute: 720,
+            endMinute: 780,
+            isUnavailable: true,
+          ),
+        );
+      }
+      await repository.insert(appointment('legacy'));
+      await db.close();
+      db = await databaseFactoryFfi.openDatabase('${temporary.path}/test.db');
+      final alice = await repository.listForPractitioner('a');
+      expect(alice.map((e) => e.id), ['rv-a', 'pause-a']);
+      expect(alice.every((e) => e.practitionerId == 'a'), isTrue);
+      await repository.delete('rv-a');
+      await repository.insert(alice.first);
+      expect((await repository.listForPractitioner('b')).map((e) => e.id), [
+        'rv-b',
+        'pause-b',
+      ]);
+      expect(await repository.listForPractitioner('unknown'), isEmpty);
+    },
+  );
+
+  test(
     'save, reopen, edit, delete and undo retain the same identity',
     () async {
       final original = appointment('stable-id');

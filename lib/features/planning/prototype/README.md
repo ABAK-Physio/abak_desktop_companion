@@ -1,13 +1,17 @@
 # Prototype planning
 
-Depuis la racine du dépôt, lancer le point d’entrée dédié :
+Depuis le lancement habituel de Companion (`lib/main.dart`), ouvrir **Planning**
+dans le menu principal, entre **Praticiens** et **Correspondants**. Le planning
+utilise les mêmes rendez-vous SQLite et paramètres que l’entrée dédiée.
+
+L’entrée dédiée reste disponible pour les essais isolés :
 
 ```sh
 flutter run -d macos -t lib/main_planning.dart
 ```
 
 L’entrée dédiée utilise maintenant la base SQLite Companion et sa migration v34.
-Le menu principal reste inchangé. Une base planning vide affiche un calendrier
+Le menu principal propose aussi l’accès direct au planning. Une base planning vide affiche un calendrier
 vide : aucun événement fictif ni rendez-vous de l’ancienne session en mémoire
 n’est importé automatiquement. Les tests sans dépôt injecté gardent la démo.
 
@@ -32,8 +36,9 @@ restent temporaires jusqu’à leur fermeture.
 - En Jour/Semaine, glisser une carte pour changer son horaire sans modifier sa
   durée. En Semaine, la déposer dans une autre colonne change aussi son jour.
 - Tirer la petite poignée du bord inférieur pour changer l’heure de fin.
-  Le pas est de 15 minutes, la durée minimale après redimensionnement de
-  15 minutes et les horaires restent entre 07:00 et 21:00.
+  Le pas est celui de la fiche praticien (15, 20 ou 30 minutes ; 15 par défaut).
+  Le redimensionnement garde au moins un pas, dans la limite de 21:00.
+  Les horaires restent entre 07:00 et 21:00.
 - L’aperçu indique les horaires proposés. Relâcher applique le changement ;
   Échap ou un relâchement hors de la grille annule. Les chevauchements sont
   recalculés au relâchement. Ces gestes concernent les rendez-vous horaires,
@@ -88,7 +93,7 @@ La flèche Retour ramène au planning à la même date et dans la même vue ; le
 associations et noms sont rechargés. Un créneau sans patient ne propose pas ce
 bouton. Si le patient a été supprimé entre-temps, un message l’indique et le
 planning est actualisé. Le lancement dédié inclut les traductions Companion
-nécessaires à cet écran. Le menu principal reste inchangé.
+nécessaires à cet écran. Le menu principal propose aussi l’accès direct au planning.
 
 ## Zoom vertical des vues Jour et Semaine
 
@@ -101,7 +106,7 @@ l’heure au sommet de la zone visible, dans les limites du défilement.
 Comparer un rendez-vous de 15 minutes à 100 %, 200 % puis 250 % ; utiliser 300 %
 si les bordures de chevauchement réduisent la place disponible. En vue Jour,
 l’horaire utilise une taille de 12 et apparaît lorsque deux lignes tiennent.
-Déplacer et redimensionner à chaque échelle : le pas reste de 15 minutes,
+Déplacer et redimensionner à chaque échelle : le pas reste celui du praticien,
 indépendamment du nombre de pixels parcourus. Le réglage ne modifie aucune
 donnée et revient à 100 % après redémarrage.
 
@@ -155,5 +160,54 @@ persistantes et bénéficient des mêmes gestes, de Supprimer et d’Annuler.
 Pour vérifier : définir 09:00–12:00 un jour, créer un RV 09:00–10:00 et une pause
 10:00–11:40. La case doit afficher 1 RV le matin et 20 min disponibles. Allonger
 la pause jusqu’à midi doit supprimer ce créneau, sans modifier le nombre de RV.
-Les horaires individuels des praticiens ne sont pas encore appliqués : les
-horaires du cabinet sont utilisés par défaut.
+Les disponibilités utilisent les horaires individuels du praticien sélectionné,
+ou ceux du cabinet si sa fiche indique de les suivre. Une journée personnalisée
+vide est non travaillée ; elle ne reprend pas les horaires du cabinet.
+
+## Choix du praticien — première étape
+
+Le sélecteur Praticien affiche les praticiens actifs et non archivés, avec leur
+nom dans le titre du planning. Un seul praticien actif est sélectionné d’office ;
+sinon le choix est explicite. La sélection reste pendant le passage entre les
+vues ; le bouton de rechargement actualise la liste. Elle n’est pas enregistrée
+entre deux ouvertures du planning.
+
+Les nouveaux rendez-vous et pauses appartiennent au praticien sélectionné.
+Les trois vues ne chargent que ses événements ; les compteurs et chevauchements
+portent donc uniquement sur ce praticien. Sans sélection, la création est désactivée.
+Changer de praticien efface les actions Annuler du planning précédent.
+Les horaires individuels sont appliqués aux disponibilités mensuelles.
+Aucune vue combinée n’est ajoutée.
+
+
+## Périodes non travaillées
+
+En Jour et Semaine, un fond gris bleuté indique les périodes en dehors des horaires
+du praticien (ou du cabinet en mode par défaut), y compris les journées entières
+non travaillées et les coupures entre plages. Une légende explique cette couleur.
+Le fond suit le zoom et les dates affichées, sans créer d’événements ni modifier
+les compteurs. Les rendez-vous restent au premier plan et les gestes de création,
+déplacement et redimensionnement restent possibles, y compris hors horaires.
+Sans horaires connus, aucune période n’est grisée.
+
+
+## Pas des rendez-vous
+
+La fiche praticien propose 15, 20 ou 30 minutes. Le réglage s’applique au clic
+sur une zone vide, au déplacement et au redimensionnement en Jour et Semaine,
+quel que soit le zoom. Le planning indique le pas actif dans son aide.
+La saisie manuelle des horaires et de la durée reste libre ; la durée proposée
+à la création est celle de la fiche praticien (45 minutes par défaut). Les événements existants ne sont pas arrondis
+lors d’un changement de réglage et un déplacement conserve leur durée.
+
+
+## Durée habituelle des rendez-vous
+
+La fiche praticien permet de saisir une durée entière en minutes, indépendante du
+pas de placement (par exemple 20 ou 30 minutes). Elle est sauvegardée avec la fiche.
+À la création, la fin vaut le début plus cette durée. Un changement du début
+recalcule la fin ; une fin modifiée manuellement redéfinit la durée conservée lors
+des changements suivants du début. En modification, c’est la durée du rendez-vous
+existant qui est conservée, sans remplacement par la durée habituelle.
+Les événements sur toute la journée restent sans horaires. Une fin calculée après
+21:00 doit être ajustée avant enregistrement ; aucune réduction silencieuse.

@@ -1,6 +1,7 @@
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import '../models/planning_appointment.dart';
+import '../../practitioners/models/practitioner.dart';
 import '../models/planning_opening_hours.dart';
 import 'planning_opening_hours_repository.dart';
 import '../../patients/models/patient.dart';
@@ -16,6 +17,16 @@ class PlanningRepository {
       'SELECT a.*, '
       "trim(p.last_name || ' ' || p.first_name) || CASE WHEN p.archived_at IS NOT NULL THEN ' (archivé)' ELSE '' END AS patient_label "
       'FROM planning_appointments a LEFT JOIN patients p ON p.patient_id = a.patient_id';
+
+  Future<List<Practitioner>> getPlanningPractitioners() async {
+    final db = await database();
+    final rows = await db.query(
+      'practitioners',
+      where: 'archived_at IS NULL AND is_active = 1',
+      orderBy: 'display_name COLLATE NOCASE, practitioner_id',
+    );
+    return rows.map(Practitioner.fromMap).toList();
+  }
 
   Future<PlanningOpeningHours?> loadOpeningHours() =>
       PlanningOpeningHoursRepository(database: database).load();
@@ -63,6 +74,26 @@ class PlanningRepository {
     if (rows.isEmpty) throw StateError('Patient introuvable.');
   }
 
+  Future<List<PlanningAppointment>> listForPractitioner(String id) async {
+    final db = await database();
+    final rows = await db.rawQuery(
+      '$_select WHERE a.practitioner_id = ? ORDER BY a.appointment_date, a.start_minute, a.appointment_id',
+      [id],
+    );
+    return rows.map(PlanningAppointment.fromMap).toList();
+  }
+
+  Future<void> _checkPractitioner(DatabaseExecutor db, String? id) async {
+    if (id == null) return; // Legacy records remain readable after migration.
+    final rows = await db.query(
+      'practitioners',
+      columns: ['practitioner_id'],
+      where: 'practitioner_id = ? AND is_active = 1 AND archived_at IS NULL',
+      whereArgs: [id],
+    );
+    if (rows.isEmpty) throw StateError('Praticien indisponible.');
+  }
+
   Future<List<PlanningAppointment>> listAll() async {
     final db = await database();
     final rows = await db.rawQuery(
@@ -95,6 +126,7 @@ class PlanningRepository {
     final db = await database();
     await db.transaction((txn) async {
       await _checkPatient(txn, appointment.patientId);
+      await _checkPractitioner(txn, appointment.practitionerId);
       await txn.insert(
         _table,
         appointment.toMap(),
@@ -107,6 +139,7 @@ class PlanningRepository {
     final db = await database();
     final count = await db.transaction((txn) async {
       await _checkPatient(txn, appointment.patientId);
+      await _checkPractitioner(txn, appointment.practitionerId);
       return txn.update(
         _table,
         appointment.toMap(),

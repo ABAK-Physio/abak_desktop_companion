@@ -14,6 +14,7 @@ class PlanningMonthCell extends StatelessWidget {
     required this.inMonth,
     required this.hours,
     required this.hoursFailed,
+    this.individualHours = false,
     required this.onOpen,
   });
   final DateTime date;
@@ -22,6 +23,7 @@ class PlanningMonthCell extends StatelessWidget {
   final bool inMonth;
   final PlanningOpeningHours? hours;
   final bool hoursFailed;
+  final bool individualHours;
   final ValueChanged<bool> onOpen;
 
   @override
@@ -85,7 +87,7 @@ class PlanningMonthCell extends StatelessWidget {
         : minutes == null
         ? 'À définir'
         : summary.closed
-        ? 'Fermé'
+        ? (individualHours ? 'Repos' : 'Fermé')
         : minutes >= 30
         ? '≥30 min'
         : minutes >= 20
@@ -96,7 +98,9 @@ class PlanningMonthCell extends StatelessWidget {
         : minutes == null
         ? 'Horaires à définir'
         : summary.closed
-        ? 'Cabinet fermé'
+        ? (individualHours
+              ? 'Praticien absent selon ses horaires de travail'
+              : 'Cabinet fermé')
         : 'Plus grand créneau libre : $minutes minutes';
     final label =
         '${DateFormat.yMMMMd('fr_FR').format(date)}, ${afternoon ? 'après-midi' : 'matin'} : ${summary.count} RV. $detail. Ouvrir la journée.';

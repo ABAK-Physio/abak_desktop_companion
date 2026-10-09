@@ -42,9 +42,16 @@ void main() {
       'archived_at': 1,
     });
     repository = PlanningRepository(database: () => DatabaseService.database);
+    await (await DatabaseService.database).insert('practitioners', {
+      'practitioner_id': 'a',
+      'display_name': 'Alice',
+      'is_active': 1,
+      'created_at': 1,
+    });
     final now = DateTime.now();
     await repository.insert(
       PlanningAppointment(
+        practitionerId: 'a',
         id: 'rv',
         title: 'Consultation',
         date: DateTime(now.year, now.month, now.day),

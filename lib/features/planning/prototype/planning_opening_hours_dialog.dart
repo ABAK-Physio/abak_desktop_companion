@@ -20,7 +20,14 @@ class PlanningOpeningHoursDialog extends StatefulWidget {
     super.key,
     required this.load,
     required this.save,
+    this.title = 'Horaires d’ouverture',
+    this.description =
+        'Horaires habituels du cabinet. Les rendez-vous restent possibles hors ouverture, entre 07:00 et 21:00.',
+    this.saveLabel = 'Enregistrer',
+    this.closedLabel = 'Fermé',
+    this.openLabel = 'Ouvert',
   });
+  final String title, description, saveLabel, closedLabel, openLabel;
   final Future<PlanningOpeningHours?> Function() load;
   final Future<void> Function(PlanningOpeningHours) save;
   @override
@@ -131,7 +138,7 @@ class _PlanningOpeningHoursDialogState
   Widget build(BuildContext context) => PopScope(
     canPop: !_saving,
     child: AlertDialog(
-      title: const Text('Horaires d’ouverture'),
+      title: Text(widget.title),
       content: SizedBox(
         width: 620,
         height: 440,
@@ -154,9 +161,7 @@ class _PlanningOpeningHoursDialogState
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      const Text(
-                        'Horaires habituels du cabinet. Les rendez-vous restent possibles hors ouverture, entre 07:00 et 21:00.',
-                      ),
+                      Text(widget.description),
                       if (_unconfigured)
                         const Padding(
                           padding: EdgeInsets.only(top: 8),
@@ -196,7 +201,7 @@ class _PlanningOpeningHoursDialogState
         ),
         FilledButton(
           onPressed: _loading || _loadFailed || _saving ? null : _save,
-          child: Text(_saving ? 'Enregistrement…' : 'Enregistrer'),
+          child: Text(_saving ? 'Enregistrement…' : widget.saveLabel),
         ),
       ],
     ),
@@ -210,7 +215,9 @@ class _PlanningOpeningHoursDialogState
           key: ValueKey('opening-day-$day'),
           contentPadding: EdgeInsets.zero,
           title: Text(PlanningOpeningHours.dayNames[day]),
-          subtitle: Text(_days[day].isEmpty ? 'Fermé' : 'Ouvert'),
+          subtitle: Text(
+            _days[day].isEmpty ? widget.closedLabel : widget.openLabel,
+          ),
           value: _days[day].isNotEmpty,
           onChanged: (open) => setState(() {
             if (open) {

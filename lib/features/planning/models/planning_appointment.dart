@@ -9,6 +9,7 @@ class PlanningAppointment {
     this.endMinute,
     this.isUnavailable = false,
     this.patientId,
+    this.practitionerId,
     this.patientLabel,
     this.notes = '',
     this.colorArgb = 0xFFB2DFDB,
@@ -41,6 +42,7 @@ class PlanningAppointment {
 
   final bool isUnavailable;
   final String? patientId;
+  final String? practitionerId;
 
   /// Display-only, resolved from the patient record on reading.
   final String? patientLabel;
@@ -62,6 +64,7 @@ class PlanningAppointment {
   Map<String, Object?> toMap() => {
     'appointment_id': id,
     'patient_id': patientId,
+    'practitioner_id': practitionerId,
     'event_kind': isUnavailable ? 'unavailable' : 'appointment',
     'title': title,
     'appointment_date': dateKey(date),
@@ -80,6 +83,7 @@ class PlanningAppointment {
     return PlanningAppointment(
       id: row['appointment_id'] as String,
       patientId: row['patient_id'] as String?,
+      practitionerId: row['practitioner_id'] as String?,
       isUnavailable: row['event_kind'] == 'unavailable',
       patientLabel: row['patient_label'] as String?,
       title: row['title'] as String,

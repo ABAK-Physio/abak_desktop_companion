@@ -1,3 +1,4 @@
+import 'package:abak_desktop_companion/features/practitioners/models/practitioner.dart';
 import 'dart:async';
 import 'package:abak_desktop_companion/features/planning/prototype/planning_calendar_adapter.dart';
 
@@ -17,7 +18,16 @@ class _Repository extends PlanningRepository {
   bool failWrite = false;
   Completer<void>? pending;
   @override
-  Future<List<PlanningAppointment>> listAll() async {
+  Future<List<Practitioner>> getPlanningPractitioners() async => [
+    const Practitioner(
+      practitionerId: 'a',
+      displayName: 'Alice',
+      isActive: true,
+      createdAt: 1,
+    ),
+  ];
+  @override
+  Future<List<PlanningAppointment>> listForPractitioner(String id) async {
     if (failLoad) throw StateError('load');
     return rows.values.toList();
   }
@@ -88,6 +98,7 @@ void main() {
       await tester.pumpAndSettle();
       expect(repo.rows.keys.single, id);
       expect(repo.rows[id]!.title, 'Modifié');
+      expect(repo.rows[id]!.practitionerId, 'a');
       await tester.tap(find.text('Modifié').first);
       await tester.pumpAndSettle();
       await tester.tap(find.text('Supprimer'));

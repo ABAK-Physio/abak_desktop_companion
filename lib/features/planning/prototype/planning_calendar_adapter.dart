@@ -56,6 +56,7 @@ CalendarEventData<Object?> planningCalendarEvent(PlanningAppointment item) {
 PlanningAppointment planningAppointmentFromCalendar(
   CalendarEventData<Object?> event, {
   required String id,
+  String? practitionerId,
 }) {
   if (event.isRecurringEvent ||
       !DateUtils.isSameDay(event.date, event.endDate)) {
@@ -68,6 +69,7 @@ PlanningAppointment planningAppointmentFromCalendar(
   final end = event.endTime;
   return PlanningAppointment(
     id: id,
+    practitionerId: practitionerId,
     isUnavailable: planningIsUnavailable(event.event),
     patientId: event.event is PlanningPatientLink
         ? (event.event as PlanningPatientLink).patientId

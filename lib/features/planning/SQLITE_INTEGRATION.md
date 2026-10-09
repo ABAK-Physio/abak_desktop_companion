@@ -2,7 +2,7 @@
 
 État : activée par `main_planning.dart`, via `DatabaseService.database`.
 La migration v32 ajoute `planning_appointments` sans importer les événements
-fictifs. Le menu principal reste inchangé.
+fictifs. Le menu principal propose maintenant une entrée Planning.
 
 ## Couche de données
 
@@ -103,3 +103,60 @@ plage d’ouverture. Il conserve le plus grand intervalle restant, sans addition
 les petits trous ni traiter une période fermée comme disponible. Un événement
 toute la journée occupe les deux demi-journées. L’absence d’horaires et une erreur
 de lecture sont affichées sans inventer de disponibilité.
+
+## Horaires individuels des praticiens (v35)
+
+La fiche praticien propose « Suivre les horaires du cabinet » par défaut, ou une
+semaine personnalisée avec plusieurs plages par jour (07:00–21:00). Une journée
+sans plage est non travaillée. La colonne nullable `practitioners.working_hours_json`
+utilise le même format hebdomadaire validé que les horaires du cabinet. `NULL`
+signifie suivre les horaires actuels du cabinet, sans copie figée ; une semaine
+personnalisée vide signifie explicitement aucune présence. Les praticiens
+existants migrent vers le mode par défaut sans changement d’identité ou de statut.
+
+L’éditeur partagé des horaires applique un brouillon à la fiche, sans écriture.
+Seule la validation de la fiche renvoie le praticien au dépôt pour enregistrement
+avec ses autres champs ; Annuler abandonne les changements. Le premier brouillon
+personnalisé est prérempli avec les horaires actuels du cabinet lorsqu’ils existent.
+Les horaires du cabinet ne sont jamais modifiés par cette fiche.
+
+Les calculs mensuels utilisent la semaine personnalisée du praticien lorsqu’elle
+existe, sinon les horaires du cabinet. « Repos » indique une demi-journée non
+travaillée dans sa semaine personnalisée. RV et pauses sont déduits de ces plages ;
+les RV exceptionnels hors horaires restent comptés. Aucune restriction de saisie
+supplémentaire n’est ajoutée (limites maintenues : 07:00–21:00).
+
+
+## Accès depuis Companion
+
+L’entrée Planning du menu principal est placée après Praticiens et avant
+Correspondants. `PlanningEntryScreen` initialise les formats de date et les
+libellés du calendrier avant d’afficher l’écran existant avec le dépôt SQLite.
+Aucune seconde application ni base n’est créée. Les autres destinations sont
+conservées ; le menu peut défiler verticalement sur une fenêtre basse.
+
+
+## Rattachement des événements — schéma 36
+
+`planning_appointments.practitioner_id` rattache RV et pauses au praticien choisi.
+La requête du planning filtre cet identifiant en SQLite, avec un index par praticien
+et date. Création, modification et annulation de suppression conservent ce lien.
+Les anciens événements sans praticien restent conservés par la migration, mais
+ne figurent pas dans les agendas individuels. La remise à zéro demandée pour les
+tests a été faite séparément sur la base locale, sans suppression automatique
+au démarrage ni à la restauration d’une sauvegarde.
+
+
+## Pas individuel — schéma 37
+
+`practitioners.appointment_step_minutes` est obligatoire, vaut 15 par défaut
+et accepte uniquement 15, 20 ou 30. La migration ne modifie aucun rendez-vous.
+Le réglage est sauvegardé avec la fiche et abandonné si elle est annulée.
+
+
+## Durée habituelle — schéma 38
+
+`practitioners.appointment_duration_minutes` est obligatoire, vaut 45 par défaut
+(comportement précédent) et accepte de 1 à 840 minutes. La migration conserve
+les pas choisis et ne modifie aucun rendez-vous existant. La durée est enregistrée
+avec la fiche praticien ; son annulation abandonne aussi ce changement.

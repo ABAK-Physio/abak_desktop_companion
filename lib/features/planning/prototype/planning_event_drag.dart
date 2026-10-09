@@ -10,16 +10,25 @@ CalendarEventData<Object?> shiftPlanningEvent(
   required double minuteDelta,
   int dayDelta = 0,
   bool resize = false,
+  int stepMinutes = 15,
 }) {
+  if (![15, 20, 30].contains(stepMinutes)) {
+    throw ArgumentError.value(stepMinutes, 'stepMinutes');
+  }
   final start = event.startTime!.hour * 60 + event.startTime!.minute;
   final end = event.endTime!.hour * 60 + event.endTime!.minute;
   final duration = end - start;
-  int snap(double value) => (value / 15).round() * 15;
+  int snap(double value) => (value / stepMinutes).round() * stepMinutes;
   final newStart = resize
       ? start
-      : snap(start + minuteDelta).clamp(420, 1260 - duration);
+      : (minuteDelta.abs() < 0.001 ? start : snap(start + minuteDelta)).clamp(
+          420,
+          1260 - duration,
+        );
   final newEnd = resize
-      ? snap(end + minuteDelta).clamp(start + 15, 1260)
+      ? snap(
+          end + minuteDelta,
+        ).clamp((start + stepMinutes).clamp(420, 1260), 1260)
       : newStart + duration;
   final date = DateTime(
     event.date.year,
@@ -44,6 +53,7 @@ class PlanningEventDrag extends StatefulWidget {
     required this.boundary,
     required this.columnWidth,
     this.heightPerMinute = 1,
+    this.stepMinutes = 15,
     required this.weekView,
     required this.viewportKey,
     required this.onChanged,
@@ -54,6 +64,7 @@ class PlanningEventDrag extends StatefulWidget {
   final Rect boundary;
   final double columnWidth;
   final double heightPerMinute;
+  final int stepMinutes;
   final bool weekView;
   final GlobalKey viewportKey;
   final ValueChanged<CalendarEventData<Object?>> onChanged;
@@ -133,6 +144,7 @@ class _PlanningEventDragState extends State<PlanningEventDrag> {
           ? targetDay - (widget.event.date.weekday - 1)
           : 0,
       resize: _resizing,
+      stepMinutes: widget.stepMinutes,
     );
     _overlay!.markNeedsBuild();
   }

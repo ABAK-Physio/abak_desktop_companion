@@ -1,9 +1,14 @@
+import 'planning_slot_detector.dart';
+import 'planning_working_hours_background.dart';
+import '../models/planning_appointment.dart';
 import 'dart:async';
 import 'package:calendar_view/calendar_view.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 import '../data/planning_repository.dart';
+import '../../practitioners/models/practitioner.dart';
+import 'planning_practitioner_selector.dart';
 import '../data/planning_opening_hours_repository.dart';
 import 'planning_opening_hours_dialog.dart';
 import '../models/planning_opening_hours.dart';
@@ -41,6 +46,7 @@ class _PlanningPrototypeScreenState extends State<PlanningPrototypeScreen> {
   DateTime _date = DateUtils.dateOnly(DateTime.now());
   _PlanningView _view = _PlanningView.week;
   int _revision = 0;
+  Practitioner? _selectedPractitioner;
   double _dayZoom = 1;
   double _weekZoom = 1;
   GlobalKey<WeekViewState<Object?>> _weekKey = GlobalKey();
@@ -77,22 +83,53 @@ class _PlanningPrototypeScreenState extends State<PlanningPrototypeScreen> {
     }
   }
 
+  int get _appointmentStep =>
+      _selectedPractitioner?.appointmentStepMinutes ?? 15;
+
+  int _loadGeneration = 0;
+
+  void _selectPractitioner(Practitioner? practitioner) {
+    if (!mounted) return;
+    final changed =
+        practitioner?.practitionerId != _selectedPractitioner?.practitionerId;
+    setState(() => _selectedPractitioner = practitioner);
+    if (changed) {
+      ScaffoldMessenger.of(context).clearSnackBars();
+      _load();
+    }
+  }
+
   Future<void> _load() async {
+    final generation = ++_loadGeneration;
+    final practitionerId = _selectedPractitioner?.practitionerId;
+    _controller.clear();
     setState(() {
       _loading = true;
       _loadFailed = false;
     });
     try {
-      final items = await widget.repository!.listAll();
-      if (!mounted) return;
+      final items = practitionerId == null
+          ? <PlanningAppointment>[]
+          : await widget.repository!.listForPractitioner(practitionerId);
+      if (!mounted || generation != _loadGeneration) return;
       _controller.clear();
       _controller.addAll(items.map(planningCalendarEvent).toList());
       await _loadHours();
     } catch (_) {
-      if (mounted) setState(() => _loadFailed = true);
+      if (mounted && generation == _loadGeneration) {
+        setState(() => _loadFailed = true);
+      }
     } finally {
-      if (mounted) setState(() => _loading = false);
+      if (mounted && generation == _loadGeneration) {
+        setState(() => _loading = false);
+      }
     }
+  }
+
+  // A custom week replaces the default, including explicitly empty days.
+  PlanningOpeningHours? get _effectiveHours {
+    if (widget.repository != null && _selectedPractitioner == null) return null;
+    return _selectedPractitioner?.workingHours ?? _openingHours;
   }
 
   Future<void> _loadHours() async {
@@ -172,6 +209,10 @@ class _PlanningPrototypeScreenState extends State<PlanningPrototypeScreen> {
       return Future.value(false);
     }
     final repository = widget.repository;
+    final practitionerId = _selectedPractitioner?.practitionerId;
+    if (repository != null && practitionerId == null) {
+      return Future.value(false);
+    }
     final saved = repository == null
         ? result
         : result.copyWith(
@@ -194,6 +235,7 @@ class _PlanningPrototypeScreenState extends State<PlanningPrototypeScreen> {
         final item = planningAppointmentFromCalendar(
           saved,
           id: planningEventId(saved.event)!,
+          practitionerId: practitionerId,
         );
         if (previous == null) {
           await repository.insert(item);
@@ -312,10 +354,15 @@ class _PlanningPrototypeScreenState extends State<PlanningPrototypeScreen> {
     CalendarEventData<Object?>? event,
     DateTime? date,
   }) async {
-    if (_blocked) return;
+    if (_blocked ||
+        (widget.repository != null && _selectedPractitioner == null)) {
+      return;
+    }
     await showDialog<CalendarEventData<Object?>>(
       context: context,
       builder: (_) => PlanningEventDialog(
+        defaultDurationMinutes:
+            _selectedPractitioner?.appointmentDurationMinutes ?? 45,
         event: event,
         persistent: widget.repository != null,
         searchPatients: widget.repository?.searchPatients,
@@ -470,6 +517,7 @@ class _PlanningPrototypeScreenState extends State<PlanningPrototypeScreen> {
 
   Future<void> _deleteEvent(CalendarEventData<Object?> event) async {
     if (!_controller.allEvents.contains(event)) return;
+    final owner = _selectedPractitioner?.practitionerId;
     final success = await _write(
       () async {
         await widget.repository?.delete(planningEventId(event.event)!);
@@ -489,7 +537,7 @@ class _PlanningPrototypeScreenState extends State<PlanningPrototypeScreen> {
           label: 'Annuler',
           onPressed: () {
             if (mounted && !_controller.allEvents.contains(event)) {
-              _restoreEvent(event);
+              _restoreEvent(event, owner);
             }
           },
         ),
@@ -497,9 +545,16 @@ class _PlanningPrototypeScreenState extends State<PlanningPrototypeScreen> {
     );
   }
 
-  Future<bool> _restoreEvent(CalendarEventData<Object?> event) async {
+  Future<bool> _restoreEvent(
+    CalendarEventData<Object?> event,
+    String? owner,
+  ) async {
     await _pending?.future;
-    if (!mounted || _controller.allEvents.contains(event)) return false;
+    if (!mounted ||
+        owner != _selectedPractitioner?.practitionerId ||
+        _controller.allEvents.contains(event)) {
+      return false;
+    }
     return _write(
       () async {
         final repository = widget.repository;
@@ -508,12 +563,13 @@ class _PlanningPrototypeScreenState extends State<PlanningPrototypeScreen> {
             planningAppointmentFromCalendar(
               event,
               id: planningEventId(event.event)!,
+              practitionerId: owner,
             ),
           );
         }
       },
       () => _controller.add(event),
-      retry: () => _restoreEvent(event),
+      retry: () => _restoreEvent(event, owner),
     );
   }
 
@@ -536,6 +592,7 @@ class _PlanningPrototypeScreenState extends State<PlanningPrototypeScreen> {
       boundary: boundary,
       columnWidth: columnWidth,
       heightPerMinute: _verticalZoom,
+      stepMinutes: _appointmentStep,
       weekView: _view == _PlanningView.week,
       viewportKey: _calendarViewportKey,
       onChanged: (updated) => _saveEvent(updated, event, navigate: false),
@@ -629,6 +686,36 @@ class _PlanningPrototypeScreenState extends State<PlanningPrototypeScreen> {
     );
   }
 
+  Widget _timeSlotDetector({
+    required DateTime date,
+    required double height,
+    required double width,
+    required double heightPerMinute,
+    required MinuteSlotSize minuteSlotSize,
+  }) => SizedBox(
+    width: width,
+    height: height,
+    child: Stack(
+      fit: StackFit.expand,
+      children: [
+        PlanningWorkingHoursBackground(
+          date: date,
+          hours: _effectiveHours,
+          heightPerMinute: heightPerMinute,
+          leadingWidth: _view == _PlanningView.day ? 65 : 0,
+        ),
+        PlanningSlotDetector(
+          date: date,
+          height: height,
+          width: width,
+          heightPerMinute: heightPerMinute,
+          stepMinutes: _appointmentStep,
+          onDateTap: (date) => _editEvent(date: date),
+        ),
+      ],
+    ),
+  );
+
   Widget _calendar(double width) {
     final key = ValueKey((_view, _revision));
     switch (_view) {
@@ -642,6 +729,7 @@ class _PlanningPrototypeScreenState extends State<PlanningPrototypeScreen> {
           heightPerMinute: _dayZoom,
           timeLineWidth: 65,
           timeLineBuilder: (date) => Text(DateFormat.Hm().format(date)),
+          dayDetectorBuilder: _timeSlotDetector,
           dayTitleBuilder: (_) => const SizedBox.shrink(),
           eventArranger: const PlanningStackArranger<Object?>(),
           eventTileBuilder: (date, events, boundary, start, end) => _eventTile(
@@ -668,6 +756,7 @@ class _PlanningPrototypeScreenState extends State<PlanningPrototypeScreen> {
           timeLineWidth: 65,
           timeLineStringBuilder: (date, {secondaryDate}) =>
               DateFormat.Hm().format(date),
+          weekDetectorBuilder: _timeSlotDetector,
           weekPageHeaderBuilder: (_, _) => const SizedBox.shrink(),
           weekDayBuilder: (date) =>
               Center(child: Text(DateFormat('EEE d', 'fr_FR').format(date))),
@@ -702,8 +791,12 @@ class _PlanningPrototypeScreenState extends State<PlanningPrototypeScreen> {
                   events: events,
                   today: today,
                   inMonth: inMonth,
-                  hours: _openingHours,
-                  hoursFailed: _hoursFailed,
+                  hours: _effectiveHours,
+                  individualHours: _selectedPractitioner?.workingHours != null,
+                  hoursFailed:
+                      _selectedPractitioner != null &&
+                      _selectedPractitioner?.workingHours == null &&
+                      _hoursFailed,
                   onOpen: (afternoon) => _openMonthPeriod(date, afternoon),
                 ),
             headerBuilder: (_) => const SizedBox.shrink(),
@@ -749,7 +842,13 @@ class _PlanningPrototypeScreenState extends State<PlanningPrototypeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Planning — Prototype'),
+        title: Text(
+          _selectedPractitioner == null
+              ? 'Planning'
+              : 'Planning — ${_selectedPractitioner!.displayName}',
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
         actions: [
           if (widget.repository != null)
             TextButton.icon(
@@ -760,7 +859,12 @@ class _PlanningPrototypeScreenState extends State<PlanningPrototypeScreen> {
           Padding(
             padding: const EdgeInsets.only(right: 16),
             child: FilledButton.icon(
-              onPressed: _blocked ? null : () => _editEvent(),
+              onPressed:
+                  _blocked ||
+                      (widget.repository != null &&
+                          _selectedPractitioner == null)
+                  ? null
+                  : () => _editEvent(),
               icon: const Icon(Icons.add),
               label: const Text('Nouveau rendez-vous'),
             ),
@@ -791,7 +895,9 @@ class _PlanningPrototypeScreenState extends State<PlanningPrototypeScreen> {
                           ? 'Données fictives · Aucune sauvegarde · Cliquez sur un rendez-vous pour le consulter.'
                           : _busy
                           ? 'Enregistrement en cours…'
-                          : 'Rendez-vous enregistrés sur cet ordinateur.',
+                          : (_selectedPractitioner == null
+                                ? 'Choisissez un praticien pour afficher son planning.'
+                                : 'Rendez-vous et pauses du praticien sélectionné · Enregistrés sur cet ordinateur.'),
                     ),
                     const SizedBox(height: 16),
                     Wrap(
@@ -799,6 +905,15 @@ class _PlanningPrototypeScreenState extends State<PlanningPrototypeScreen> {
                       runSpacing: 12,
                       crossAxisAlignment: WrapCrossAlignment.center,
                       children: [
+                        if (widget.repository != null)
+                          SizedBox(
+                            width: 300,
+                            child: PlanningPractitionerSelector(
+                              selectedId: _selectedPractitioner?.practitionerId,
+                              load: widget.repository!.getPlanningPractitioners,
+                              onChanged: _selectPractitioner,
+                            ),
+                          ),
                         SegmentedButton<_PlanningView>(
                           segments: const [
                             ButtonSegment(
@@ -883,6 +998,28 @@ class _PlanningPrototypeScreenState extends State<PlanningPrototypeScreen> {
                           style: const TextStyle(fontSize: 12),
                         ),
                       ),
+                    if (_view != _PlanningView.month && _effectiveHours != null)
+                      const Padding(
+                        padding: EdgeInsets.only(bottom: 8),
+                        child: Row(
+                          children: [
+                            SizedBox(
+                              width: 14,
+                              height: 14,
+                              child: ColoredBox(
+                                color: PlanningWorkingHoursBackground.shade,
+                              ),
+                            ),
+                            SizedBox(width: 6),
+                            Expanded(
+                              child: Text(
+                                'Grisé : hors horaires de travail · Rendez-vous exceptionnel possible.',
+                                style: TextStyle(fontSize: 12),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     if (_view != _PlanningView.month) ...[
                       const Row(
                         children: [
@@ -906,11 +1043,11 @@ class _PlanningPrototypeScreenState extends State<PlanningPrototypeScreen> {
                       const SizedBox(height: 8),
                     ],
                     if (_view != _PlanningView.month)
-                      const Padding(
-                        padding: EdgeInsets.only(bottom: 8),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 8),
                         child: Text(
-                          'Glissez une carte pour la déplacer ; tirez sa poignée du bas pour ajuster la durée (pas de 15 min).',
-                          style: TextStyle(fontSize: 12),
+                          'Glissez une carte pour la déplacer ; tirez sa poignée du bas pour ajuster la durée (pas de $_appointmentStep min).',
+                          style: const TextStyle(fontSize: 12),
                         ),
                       ),
                     Expanded(
