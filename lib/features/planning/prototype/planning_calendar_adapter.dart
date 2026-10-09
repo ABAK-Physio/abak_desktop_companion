@@ -3,6 +3,13 @@ import 'package:flutter/material.dart';
 
 import '../models/planning_appointment.dart';
 
+class PlanningBlockLink {
+  const PlanningBlockLink(this.appointmentId);
+  final String? appointmentId;
+}
+
+bool planningIsUnavailable(Object? payload) => payload is PlanningBlockLink;
+
 class PlanningPatientLink {
   const PlanningPatientLink({
     this.appointmentId,
@@ -14,8 +21,11 @@ class PlanningPatientLink {
   final String label;
 }
 
-String? planningEventId(Object? payload) =>
-    payload is PlanningPatientLink ? payload.appointmentId : payload as String?;
+String? planningEventId(Object? payload) => payload is PlanningBlockLink
+    ? payload.appointmentId
+    : payload is PlanningPatientLink
+    ? payload.appointmentId
+    : payload as String?;
 String planningPatientLabel(Object? payload) =>
     payload is PlanningPatientLink ? payload.label : '';
 
@@ -24,7 +34,9 @@ CalendarEventData<Object?> planningCalendarEvent(PlanningAppointment item) {
   DateTime at(int minutes) =>
       DateTime(item.date.year, item.date.month, item.date.day, 0, minutes);
   return CalendarEventData<Object?>(
-    event: item.patientId == null
+    event: item.isUnavailable
+        ? PlanningBlockLink(item.id)
+        : item.patientId == null
         ? item.id
         : PlanningPatientLink(
             appointmentId: item.id,
@@ -56,6 +68,7 @@ PlanningAppointment planningAppointmentFromCalendar(
   final end = event.endTime;
   return PlanningAppointment(
     id: id,
+    isUnavailable: planningIsUnavailable(event.event),
     patientId: event.event is PlanningPatientLink
         ? (event.event as PlanningPatientLink).patientId
         : null,

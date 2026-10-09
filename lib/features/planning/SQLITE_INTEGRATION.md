@@ -74,3 +74,32 @@ lorsque les clés étrangères ne sont pas activées. Les écritures vérifient 
 leur transaction que le patient existe. Si un patient a été supprimé dans une
 autre fenêtre, recharger le planning ou retirer le patient du formulaire avant
 d’enregistrer. Aucune modification automatique du titre ou des notes.
+
+## Horaires d’ouverture
+
+`PlanningOpeningHoursRepository` stocke le calendrier hebdomadaire sous la clé
+`planning_opening_hours_v1` dans `application_settings`, sans migration du schéma.
+La valeur JSON versionnée contient exactement sept jours et leurs plages en
+minutes locales. Une valeur absente signifie « non configuré », une liste vide
+pour un jour signifie « fermé ». L’enregistrement remplace la semaine entière en
+une écriture atomique ; aucun autre paramètre n’est modifié. Les sauvegardes et
+réinitialisations habituelles de la table des paramètres incluent cette valeur.
+Les données invalides ou de version inconnue sont rejetées à la lecture, sans
+remplacement automatique. Aucune restriction d’écriture des rendez-vous ne
+dépend de ces paramètres. La vue mensuelle utilise ces paramètres, en attendant les horaires individuels
+des praticiens.
+
+
+## Types et synthèse mensuelle (v34)
+
+`event_kind` prend les valeurs `appointment` (défaut) ou `unavailable`.
+La migration conserve les événements existants comme rendez-vous. L’adaptateur
+transporte le type pendant les modifications, gestes, suppressions et annulations.
+La conversion en indisponibilité retire l’association patient.
+
+Le calcul par demi-journée découpe à 12:00, compte les RV qui intersectent la
+période et soustrait l’union des plages occupées (RV et indisponibilités) de chaque
+plage d’ouverture. Il conserve le plus grand intervalle restant, sans additionner
+les petits trous ni traiter une période fermée comme disponible. Un événement
+toute la journée occupe les deux demi-journées. L’absence d’horaires et une erreur
+de lecture sont affichées sans inventer de disponibilité.

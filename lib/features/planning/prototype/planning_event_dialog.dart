@@ -27,6 +27,7 @@ class PlanningEventDialog extends StatefulWidget {
 
 class _PlanningEventDialogState extends State<PlanningEventDialog> {
   PlanningPatientLink? _patient;
+  bool _unavailable = false;
   bool _saving = false;
   bool _failed = false;
   final _form = GlobalKey<FormState>();
@@ -41,6 +42,7 @@ class _PlanningEventDialogState extends State<PlanningEventDialog> {
   void initState() {
     super.initState();
     final event = widget.event;
+    _unavailable = planningIsUnavailable(event?.event);
     _patient = event?.event is PlanningPatientLink
         ? event!.event as PlanningPatientLink
         : null;
@@ -104,8 +106,12 @@ class _PlanningEventDialogState extends State<PlanningEventDialog> {
       description: _notes.text.trim(),
       startTime: _allDay ? null : at(_minutes(_start.text)!),
       endTime: _allDay ? null : at(_minutes(_end.text)!),
-      color: widget.event?.color ?? Colors.teal.shade100,
-      event: _patient ?? planningEventId(widget.event?.event),
+      color: _unavailable
+          ? Colors.blueGrey.shade100
+          : widget.event?.color ?? Colors.teal.shade100,
+      event: _unavailable
+          ? PlanningBlockLink(planningEventId(widget.event?.event))
+          : _patient ?? planningEventId(widget.event?.event),
     );
     setState(() {
       _saving = true;
@@ -147,6 +153,25 @@ class _PlanningEventDialogState extends State<PlanningEventDialog> {
                       'Enregistrement impossible. Votre saisie est conservée. Réessayez.',
                       style: TextStyle(color: Colors.red),
                     ),
+                  DropdownButtonFormField<bool>(
+                    initialValue: _unavailable,
+                    decoration: const InputDecoration(labelText: 'Type'),
+                    items: const [
+                      DropdownMenuItem(
+                        value: false,
+                        child: Text('Rendez-vous'),
+                      ),
+                      DropdownMenuItem(
+                        value: true,
+                        child: Text('Pause ou indisponibilité'),
+                      ),
+                    ],
+                    onChanged: _saving
+                        ? null
+                        : (value) =>
+                              setState(() => _unavailable = value ?? false),
+                  ),
+                  const SizedBox(height: 8),
                   TextFormField(
                     controller: _title,
                     autofocus: true,
@@ -156,7 +181,7 @@ class _PlanningEventDialogState extends State<PlanningEventDialog> {
                         : null,
                   ),
                   const SizedBox(height: 16),
-                  if (widget.searchPatients != null) ...[
+                  if (widget.searchPatients != null && !_unavailable) ...[
                     Text(
                       _patient == null
                           ? 'Sans patient'

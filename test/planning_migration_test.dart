@@ -49,7 +49,7 @@ void main() {
     );
     await repository.insert(item);
     final db = await DatabaseService.database;
-    expect(await db.getVersion(), 33);
+    expect(await db.getVersion(), 34);
     final snapshot = '${temp.path}/snapshot.db';
     await db.execute('VACUUM INTO ?', [snapshot]);
     await CompanionBackupArchive.validateDatabase(snapshot);
@@ -94,7 +94,7 @@ void main() {
     await db.close();
     db = await DatabaseService.openDatabaseFile(path);
     try {
-      expect(await db.getVersion(), 33);
+      expect(await db.getVersion(), 34);
       for (final entry in before.entries) {
         expect(await db.query(entry.key), entry.value, reason: entry.key);
       }
@@ -204,4 +204,57 @@ void main() {
     );
     expect((await repository.listAll()).single.patientId, isNull);
   });
+  test(
+    'v33 migration retains RV and persists pauses through edits and reopen',
+    () async {
+      final db = await DatabaseService.database;
+      await db.execute(
+        'ALTER TABLE planning_appointments DROP COLUMN event_kind',
+      );
+      await db.setVersion(33);
+      await db.insert('planning_appointments', {
+        'appointment_id': 'old',
+        'title': 'Ancien',
+        'appointment_date': '2026-10-10',
+        'start_minute': 540,
+        'end_minute': 585,
+        'notes': 'Garder',
+        'color_argb': 0xFFB2DFDB,
+      });
+      await DatabaseService.reopenDatabase();
+      final repository = PlanningRepository(
+        database: () => DatabaseService.database,
+      );
+      final old = (await repository.listAll()).single;
+      expect(old.isUnavailable, isFalse);
+      expect(old.notes, 'Garder');
+      final pause = PlanningAppointment(
+        id: 'pause',
+        title: 'Pause',
+        date: old.date,
+        startMinute: 720,
+        endMinute: 780,
+        isUnavailable: true,
+      );
+      await repository.insert(pause);
+      final shifted = shiftPlanningEvent(
+        planningCalendarEvent(pause),
+        minuteDelta: 30,
+      );
+      final moved = planningAppointmentFromCalendar(
+        shifted,
+        id: planningEventId(shifted.event)!,
+      );
+      await repository.update(moved);
+      await repository.delete(moved.id);
+      await repository.insert(moved);
+      await DatabaseService.reopenDatabase();
+      final loaded = (await repository.listAll()).singleWhere(
+        (item) => item.id == 'pause',
+      );
+      expect(loaded.isUnavailable, isTrue);
+      expect(loaded.startMinute, 750);
+      expect(loaded.patientId, isNull);
+    },
+  );
 }

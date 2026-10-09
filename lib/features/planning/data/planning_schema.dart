@@ -6,6 +6,7 @@ Future<void> createPlanningTables(DatabaseExecutor db) async {
     CREATE TABLE IF NOT EXISTS planning_appointments (
       appointment_id TEXT PRIMARY KEY NOT NULL CHECK(length(trim(appointment_id)) > 0),
       patient_id TEXT REFERENCES patients(patient_id) ON DELETE SET NULL,
+      event_kind TEXT NOT NULL DEFAULT 'appointment' CHECK(event_kind IN ('appointment', 'unavailable')),
       title TEXT NOT NULL CHECK(length(trim(title)) > 0),
       appointment_date TEXT NOT NULL
         CHECK(appointment_date GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]'),
@@ -44,4 +45,13 @@ Future<void> migratePlanningPatients(DatabaseExecutor db) async {
       UPDATE planning_appointments SET patient_id = NULL WHERE patient_id = OLD.patient_id;
     END
   ''');
+}
+
+Future<void> migratePlanningEventKind(DatabaseExecutor db) async {
+  final columns = await db.rawQuery('PRAGMA table_info(planning_appointments)');
+  if (!columns.any((column) => column['name'] == 'event_kind')) {
+    await db.execute(
+      "ALTER TABLE planning_appointments ADD COLUMN event_kind TEXT NOT NULL DEFAULT 'appointment' CHECK(event_kind IN ('appointment', 'unavailable'))",
+    );
+  }
 }

@@ -9,7 +9,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 class DatabaseService {
-  static const int schemaVersion = 33;
+  static const int schemaVersion = 34;
   static Database? _database;
   static Completer<void>? _restoreGate;
 
@@ -101,6 +101,7 @@ class DatabaseService {
       onUpgrade: (db, oldVersion, newVersion) async {
         if (oldVersion < 32) await createPlanningTables(db);
         if (oldVersion < 33) await migratePlanningPatients(db);
+        if (oldVersion < 34) await migratePlanningEventKind(db);
         if (oldVersion < 31) await createKobusTables(db);
         if (oldVersion < 30) {
           await _createPatientDocumentFoldersTable(db);

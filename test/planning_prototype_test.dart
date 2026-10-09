@@ -200,6 +200,10 @@ void main() {
       controller.addAll([a, b]);
       await tester.tap(find.text(view));
       await tester.pumpAndSettle();
+      if (view == 'Mois') {
+        await tester.tap(find.byKey(ValueKey(('month-half', date, false))));
+        await tester.pumpAndSettle();
+      }
       await tester.tapAt(
         tester.getTopLeft(find.text('À supprimer').first) + const Offset(4, 4),
       );

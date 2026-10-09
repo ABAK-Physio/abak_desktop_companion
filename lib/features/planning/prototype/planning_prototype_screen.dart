@@ -4,6 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 import '../data/planning_repository.dart';
+import '../data/planning_opening_hours_repository.dart';
+import 'planning_opening_hours_dialog.dart';
+import '../models/planning_opening_hours.dart';
+import 'planning_month_cell.dart';
 import '../../patients/patient_detail_screen.dart';
 import 'planning_calendar_adapter.dart';
 
@@ -37,6 +41,13 @@ class _PlanningPrototypeScreenState extends State<PlanningPrototypeScreen> {
   DateTime _date = DateUtils.dateOnly(DateTime.now());
   _PlanningView _view = _PlanningView.week;
   int _revision = 0;
+  double _dayZoom = 1;
+  double _weekZoom = 1;
+  GlobalKey<WeekViewState<Object?>> _weekKey = GlobalKey();
+  double get _verticalZoom => _view == _PlanningView.day ? _dayZoom : _weekZoom;
+  GlobalKey<DayViewState<Object?>> _dayKey = GlobalKey();
+  PlanningOpeningHours? _openingHours;
+  bool _hoursFailed = false;
   bool _loading = false;
   bool _busy = false;
   Completer<void>? _pending;
@@ -76,10 +87,45 @@ class _PlanningPrototypeScreenState extends State<PlanningPrototypeScreen> {
       if (!mounted) return;
       _controller.clear();
       _controller.addAll(items.map(planningCalendarEvent).toList());
+      await _loadHours();
     } catch (_) {
       if (mounted) setState(() => _loadFailed = true);
     } finally {
       if (mounted) setState(() => _loading = false);
+    }
+  }
+
+  Future<void> _loadHours() async {
+    try {
+      final hours = await widget.repository!.loadOpeningHours();
+      if (mounted) {
+        setState(() {
+          _openingHours = hours;
+          _hoursFailed = false;
+        });
+      }
+    } catch (_) {
+      if (mounted) {
+        setState(() {
+          _openingHours = null;
+          _hoursFailed = true;
+        });
+      }
+    }
+  }
+
+  void _openMonthPeriod(DateTime date, bool afternoon) {
+    setState(() => _view = _PlanningView.day);
+    _goTo(date);
+    if (afternoon) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final scroll = _dayKey.currentState?.scrollController;
+        if (mounted && scroll != null && scroll.hasClients) {
+          scroll.jumpTo(
+            (300 * _dayZoom).clamp(0.0, scroll.position.maxScrollExtent),
+          );
+        }
+      });
     }
   }
 
@@ -129,7 +175,11 @@ class _PlanningPrototypeScreenState extends State<PlanningPrototypeScreen> {
     final saved = repository == null
         ? result
         : result.copyWith(
-            event: result.event is PlanningPatientLink
+            event: planningIsUnavailable(result.event)
+                ? PlanningBlockLink(
+                    planningEventId(previous?.event) ?? const Uuid().v4(),
+                  )
+                : result.event is PlanningPatientLink
                 ? PlanningPatientLink(
                     appointmentId:
                         planningEventId(previous?.event) ?? const Uuid().v4(),
@@ -175,10 +225,40 @@ class _PlanningPrototypeScreenState extends State<PlanningPrototypeScreen> {
     super.dispose();
   }
 
+  void _changeVerticalZoom(double zoom) {
+    final view = _view;
+    ScrollController? scrollForView() => view == _PlanningView.day
+        ? _dayKey.currentState?.scrollController
+        : _weekKey.currentState?.scrollController;
+    final scroll = scrollForView();
+    final minute = scroll != null && scroll.hasClients
+        ? scroll.offset / _verticalZoom
+        : 0.0;
+    setState(() {
+      if (view == _PlanningView.day) {
+        _dayZoom = zoom;
+      } else {
+        _weekZoom = zoom;
+      }
+    });
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      if (_view != view) return;
+      final current = scrollForView();
+      if (current != null && current.hasClients) {
+        current.jumpTo(
+          (minute * zoom).clamp(0.0, current.position.maxScrollExtent),
+        );
+      }
+    });
+  }
+
   void _goTo(DateTime date) {
     setState(() {
       _date = DateUtils.dateOnly(date);
       _revision++;
+      _dayKey = GlobalKey();
+      _weekKey = GlobalKey();
     });
   }
 
@@ -268,7 +348,7 @@ class _PlanningPrototypeScreenState extends State<PlanningPrototypeScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            '${event.title}\n${planningPatientLabel(event.event).isEmpty ? '' : 'Patient : ${planningPatientLabel(event.event)}\n'}${event.isFullDayEvent ? 'Toute la journée' : '${DateFormat.Hm().format(event.startTime!)} – ${DateFormat.Hm().format(event.endTime!)}'}\n${event.description ?? ''}',
+                            '${planningIsUnavailable(event.event) ? 'Pause ou indisponibilité\n' : ''}${event.title}\n${planningPatientLabel(event.event).isEmpty ? '' : 'Patient : ${planningPatientLabel(event.event)}\n'}${event.isFullDayEvent ? 'Toute la journée' : '${DateFormat.Hm().format(event.startTime!)} – ${DateFormat.Hm().format(event.endTime!)}'}\n${event.description ?? ''}',
                           ),
                           if (_overlapDetails(event).isNotEmpty)
                             Padding(
@@ -455,12 +535,13 @@ class _PlanningPrototypeScreenState extends State<PlanningPrototypeScreen> {
       event: event,
       boundary: boundary,
       columnWidth: columnWidth,
+      heightPerMinute: _verticalZoom,
       weekView: _view == _PlanningView.week,
       viewportKey: _calendarViewportKey,
       onChanged: (updated) => _saveEvent(updated, event, navigate: false),
       child: Tooltip(
         message:
-            '${event.title}\n${planningPatientLabel(event.event).isEmpty ? '' : '${planningPatientLabel(event.event)}\n'}$time${overlaps ? '\n$overlapDetails' : ''}',
+            '${planningIsUnavailable(event.event) ? 'Pause ou indisponibilité\n' : ''}${event.title}\n${planningPatientLabel(event.event).isEmpty ? '' : '${planningPatientLabel(event.event)}\n'}$time${overlaps ? '\n$overlapDetails' : ''}',
         child: Container(
           margin: const EdgeInsets.all(1),
           padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
@@ -527,13 +608,15 @@ class _PlanningPrototypeScreenState extends State<PlanningPrototypeScreen> {
                       ),
                     ],
                   ),
-                  if (constraints.maxHeight >= 28)
+                  if (constraints.maxHeight >=
+                      (_view == _PlanningView.day ? 30 : 28))
                     Text(
                       time,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontSize: 11,
+                      style: TextStyle(
+                        fontSize: _view == _PlanningView.day ? 12 : 11,
+                        height: _view == _PlanningView.day ? 1.1 : null,
                         color: Colors.black87,
                       ),
                     ),
@@ -551,12 +634,12 @@ class _PlanningPrototypeScreenState extends State<PlanningPrototypeScreen> {
     switch (_view) {
       case _PlanningView.day:
         return DayView<Object?>(
-          key: key,
+          key: _dayKey,
           controller: _controller,
           initialDay: _date,
           startHour: 7,
           endHour: 21,
-          heightPerMinute: 1,
+          heightPerMinute: _dayZoom,
           timeLineWidth: 65,
           timeLineBuilder: (date) => Text(DateFormat.Hm().format(date)),
           dayTitleBuilder: (_) => const SizedBox.shrink(),
@@ -576,12 +659,12 @@ class _PlanningPrototypeScreenState extends State<PlanningPrototypeScreen> {
         );
       case _PlanningView.week:
         return WeekView<Object?>(
-          key: key,
+          key: _weekKey,
           controller: _controller,
           initialDay: _date,
           startHour: 7,
           endHour: 21,
-          heightPerMinute: 1,
+          heightPerMinute: _weekZoom,
           timeLineWidth: 65,
           timeLineStringBuilder: (date, {secondaryDate}) =>
               DateFormat.Hm().format(date),
@@ -613,6 +696,16 @@ class _PlanningPrototypeScreenState extends State<PlanningPrototypeScreen> {
             useAvailableVerticalSpace: true,
           ),
           monthViewBuilders: MonthViewBuilders<Object?>(
+            cellBuilder: (date, events, today, inMonth, hide) =>
+                PlanningMonthCell(
+                  date: date,
+                  events: events,
+                  today: today,
+                  inMonth: inMonth,
+                  hours: _openingHours,
+                  hoursFailed: _hoursFailed,
+                  onOpen: (afternoon) => _openMonthPeriod(date, afternoon),
+                ),
             headerBuilder: (_) => const SizedBox.shrink(),
             weekDayStringBuilder: (day) => const [
               'lun.',
@@ -634,12 +727,36 @@ class _PlanningPrototypeScreenState extends State<PlanningPrototypeScreen> {
     }
   }
 
+  Future<void> _editOpeningHours() async {
+    final repository = widget.repository;
+    if (_blocked || repository == null) return;
+    final hours = PlanningOpeningHoursRepository(database: repository.database);
+    final saved = await showDialog<bool>(
+      context: context,
+      builder: (_) =>
+          PlanningOpeningHoursDialog(load: hours.load, save: hours.save),
+    );
+    if (mounted && saved == true) {
+      await _loadHours();
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Horaires d’ouverture enregistrés.')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Planning — Prototype'),
         actions: [
+          if (widget.repository != null)
+            TextButton.icon(
+              onPressed: _blocked ? null : _editOpeningHours,
+              icon: const Icon(Icons.schedule),
+              label: const Text('Horaires d’ouverture'),
+            ),
           Padding(
             padding: const EdgeInsets.only(right: 16),
             child: FilledButton.icon(
@@ -701,6 +818,34 @@ class _PlanningPrototypeScreenState extends State<PlanningPrototypeScreen> {
                           onSelectionChanged: (selection) =>
                               setState(() => _view = selection.single),
                         ),
+                        if (_view != _PlanningView.month)
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Text('Zoom vertical : '),
+                              DropdownButton<double>(
+                                key: ValueKey(
+                                  _view == _PlanningView.day
+                                      ? 'day-zoom'
+                                      : 'week-zoom',
+                                ),
+                                value: _verticalZoom,
+                                items: [1.0, 1.5, 2.0, 2.5, 3.0]
+                                    .map(
+                                      (zoom) => DropdownMenuItem(
+                                        value: zoom,
+                                        child: Text(
+                                          '${(zoom * 100).round()} %',
+                                        ),
+                                      ),
+                                    )
+                                    .toList(),
+                                onChanged: (zoom) {
+                                  if (zoom != null) _changeVerticalZoom(zoom);
+                                },
+                              ),
+                            ],
+                          ),
                         Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
@@ -728,6 +873,16 @@ class _PlanningPrototypeScreenState extends State<PlanningPrototypeScreen> {
                       ],
                     ),
                     const SizedBox(height: 16),
+                    if (_view == _PlanningView.month)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 8),
+                        child: Text(
+                          _hoursFailed
+                              ? 'Horaires indisponibles : ouvrez Horaires d’ouverture pour réessayer.'
+                              : 'M : matin (avant 12 h) · A : après-midi · Disponibilité : plus grand créneau libre pendant l’ouverture. Cliquez pour ouvrir la journée.',
+                          style: const TextStyle(fontSize: 12),
+                        ),
+                      ),
                     if (_view != _PlanningView.month) ...[
                       const Row(
                         children: [

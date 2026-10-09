@@ -139,4 +139,230 @@ void main() {
       await tester.pumpAndSettle();
     });
   }
+  for (final zoom in [1.5, 2.0, 2.5, 3.0]) {
+    testWidgets(
+      'Day zoom $zoom scales cards and gestures without changing Week',
+      (tester) async {
+        tester.view.devicePixelRatio = 1;
+        tester.view.physicalSize = const Size(900, 650);
+        addTearDown(tester.view.resetPhysicalSize);
+        addTearDown(tester.view.resetDevicePixelRatio);
+        await tester.pumpWidget(const PlanningPrototypeApp());
+        await tester.pumpAndSettle();
+        final controller = tester
+            .widget<WeekView<Object?>>(find.byType(WeekView<Object?>))
+            .controller!;
+        final day = DateUtils.dateOnly(DateTime.now());
+        controller.clear();
+        controller.add(
+          CalendarEventData<Object?>(
+            title: 'Court',
+            date: day,
+            startTime: DateTime(day.year, day.month, day.day, 7, 30),
+            endTime: DateTime(day.year, day.month, day.day, 7, 45),
+          ),
+        );
+        expect(find.byKey(const ValueKey('day-zoom')), findsNothing);
+        await tester.tap(find.text('Jour'));
+        await tester.pumpAndSettle();
+        await tester.tap(find.byKey(const ValueKey('day-zoom')));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('${(zoom * 100).round()} %').last);
+        await tester.pumpAndSettle();
+        expect(
+          tester
+              .widget<DayView<Object?>>(find.byType(DayView<Object?>))
+              .heightPerMinute,
+          zoom,
+        );
+        expect(
+          tester.getSize(find.byType(PlanningEventDrag)).height,
+          closeTo(15 * zoom, 1),
+        );
+        if (zoom >= 2.5) expect(find.text('07:30 – 07:45'), findsOneWidget);
+        Future<void> drag(Offset origin, double distance) async {
+          final gesture = await tester.createGesture(
+            kind: PointerDeviceKind.mouse,
+          );
+          await gesture.down(origin);
+          await gesture.moveBy(Offset(0, distance / 2));
+          await tester.pump();
+          await gesture.moveBy(Offset(0, distance / 2));
+          await tester.pump();
+          await gesture.up();
+          await tester.pumpAndSettle();
+        }
+
+        await drag(
+          tester.getTopLeft(find.byType(PlanningEventDrag)) +
+              const Offset(15, 5),
+          30 * zoom,
+        );
+        expect(controller.allEvents.single.startTime!.hour, 8);
+        expect(controller.allEvents.single.startTime!.minute, 0);
+        expect(controller.allEvents.single.duration.inMinutes, 15);
+        await drag(
+          tester.getBottomLeft(find.byType(PlanningEventDrag)) +
+              const Offset(12, -3),
+          15 * zoom,
+        );
+        expect(controller.allEvents.single.duration.inMinutes, 30);
+        final state = tester.state<DayViewState<Object?>>(
+          find.byType(DayView<Object?>),
+        );
+        state.scrollController.jumpTo(100 * zoom);
+        await tester.pumpAndSettle();
+        await tester.tap(find.byKey(const ValueKey('day-zoom')));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('100 %').last);
+        await tester.pumpAndSettle();
+        expect(state.scrollController.offset, closeTo(100, 1));
+        await tester.tap(find.byKey(const ValueKey('day-zoom')));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('${(zoom * 100).round()} %').last);
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Semaine'));
+        await tester.pumpAndSettle();
+        expect(find.byKey(const ValueKey('day-zoom')), findsNothing);
+        expect(
+          tester
+              .widget<WeekView<Object?>>(find.byType(WeekView<Object?>))
+              .heightPerMinute,
+          1,
+        );
+        await tester.tap(find.text('Mois'));
+        await tester.pumpAndSettle();
+        expect(find.byKey(const ValueKey('day-zoom')), findsNothing);
+        await tester.tap(find.text('Jour'));
+        await tester.pumpAndSettle();
+        expect(
+          tester
+              .widget<DayView<Object?>>(find.byType(DayView<Object?>))
+              .heightPerMinute,
+          zoom,
+        );
+        expect(tester.takeException(), isNull);
+      },
+    );
+  }
+  for (final zoom in [1.5, 2.0, 2.5, 3.0]) {
+    testWidgets(
+      'Week zoom $zoom preserves transfer, resize and independent Day zoom',
+      (tester) async {
+        tester.view.devicePixelRatio = 1;
+        tester.view.physicalSize = const Size(900, 650);
+        addTearDown(tester.view.resetPhysicalSize);
+        addTearDown(tester.view.resetDevicePixelRatio);
+        await tester.pumpWidget(const PlanningPrototypeApp());
+        await tester.pumpAndSettle();
+        final controller = tester
+            .widget<WeekView<Object?>>(find.byType(WeekView<Object?>))
+            .controller!;
+        final day = DateUtils.dateOnly(DateTime.now());
+        controller.clear();
+        controller.add(
+          CalendarEventData<Object?>(
+            title: 'Semaine zoom',
+            date: day,
+            startTime: DateTime(day.year, day.month, day.day, 7, 30),
+            endTime: DateTime(day.year, day.month, day.day, 8),
+          ),
+        );
+        Future<void> setZoom(String key, double value) async {
+          await tester.tap(find.byKey(ValueKey(key)));
+          await tester.pumpAndSettle();
+          await tester.tap(find.text('${(value * 100).round()} %').last);
+          await tester.pumpAndSettle();
+        }
+
+        await setZoom('week-zoom', zoom);
+        expect(
+          tester
+              .widget<WeekView<Object?>>(find.byType(WeekView<Object?>))
+              .heightPerMinute,
+          zoom,
+        );
+        expect(
+          tester.getSize(find.byType(PlanningEventDrag)).height,
+          closeTo(30 * zoom, 1),
+        );
+        Future<void> drag(Offset origin, Offset delta) async {
+          final gesture = await tester.createGesture(
+            kind: PointerDeviceKind.mouse,
+          );
+          await gesture.down(origin);
+          await gesture.moveBy(delta / 2);
+          await tester.pump();
+          await gesture.moveBy(delta / 2);
+          await tester.pump();
+          await gesture.up();
+          await tester.pumpAndSettle();
+        }
+
+        final direction = day.weekday == 7 ? -1 : 1;
+        final column = tester
+            .widget<PlanningEventDrag>(find.byType(PlanningEventDrag))
+            .columnWidth;
+        await drag(
+          tester.getTopLeft(find.byType(PlanningEventDrag)) +
+              const Offset(15, 8),
+          Offset(direction * column, 30 * zoom),
+        );
+        final moved = controller.allEvents.single;
+        expect(moved.date, DateTime(day.year, day.month, day.day + direction));
+        expect(moved.startTime!.hour, 8);
+        expect(moved.startTime!.minute, 0);
+        expect(moved.duration.inMinutes, 30);
+        // At high zoom on a short window, scroll to keep the resize drop visible.
+        tester
+            .state<WeekViewState<Object?>>(find.byType(WeekView<Object?>))
+            .scrollController
+            .jumpTo(60 * zoom);
+        await tester.pumpAndSettle();
+        await drag(
+          tester.getBottomLeft(find.byType(PlanningEventDrag)) +
+              const Offset(12, -3),
+          Offset(0, 15 * zoom),
+        );
+        expect(controller.allEvents.single.duration.inMinutes, 45);
+        final state = tester.state<WeekViewState<Object?>>(
+          find.byType(WeekView<Object?>),
+        );
+        state.scrollController.jumpTo(100 * zoom);
+        await tester.pumpAndSettle();
+        await setZoom('week-zoom', 1);
+        expect(state.scrollController.offset, closeTo(100, 1));
+        await setZoom('week-zoom', zoom);
+        await tester.tap(find.text('Jour'));
+        await tester.pumpAndSettle();
+        expect(
+          tester
+              .widget<DayView<Object?>>(find.byType(DayView<Object?>))
+              .heightPerMinute,
+          1,
+        );
+        await setZoom('day-zoom', 2.5);
+        await tester.tap(find.text('Semaine'));
+        await tester.pumpAndSettle();
+        expect(
+          tester
+              .widget<WeekView<Object?>>(find.byType(WeekView<Object?>))
+              .heightPerMinute,
+          zoom,
+        );
+        await tester.tap(find.text('Mois'));
+        await tester.pumpAndSettle();
+        expect(find.byKey(const ValueKey('week-zoom')), findsNothing);
+        await tester.tap(find.text('Jour'));
+        await tester.pumpAndSettle();
+        expect(
+          tester
+              .widget<DayView<Object?>>(find.byType(DayView<Object?>))
+              .heightPerMinute,
+          2.5,
+        );
+        expect(tester.takeException(), isNull);
+      },
+    );
+  }
 }

@@ -1,6 +1,8 @@
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import '../models/planning_appointment.dart';
+import '../models/planning_opening_hours.dart';
+import 'planning_opening_hours_repository.dart';
 import '../../patients/models/patient.dart';
 
 /// Explicit database provider: constructing this repository never opens or
@@ -14,6 +16,9 @@ class PlanningRepository {
       'SELECT a.*, '
       "trim(p.last_name || ' ' || p.first_name) || CASE WHEN p.archived_at IS NOT NULL THEN ' (archivé)' ELSE '' END AS patient_label "
       'FROM planning_appointments a LEFT JOIN patients p ON p.patient_id = a.patient_id';
+
+  Future<PlanningOpeningHours?> loadOpeningHours() =>
+      PlanningOpeningHoursRepository(database: database).load();
 
   Future<Patient?> getPatient(String id) async {
     final db = await database();

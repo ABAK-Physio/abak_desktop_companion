@@ -7,11 +7,17 @@ class PlanningAppointment {
     required this.date,
     this.startMinute,
     this.endMinute,
+    this.isUnavailable = false,
     this.patientId,
     this.patientLabel,
     this.notes = '',
     this.colorArgb = 0xFFB2DFDB,
   }) {
+    if (isUnavailable && patientId != null) {
+      throw ArgumentError(
+        'Une indisponibilité ne peut pas être associée à un patient.',
+      );
+    }
     if (id.trim().isEmpty || title.trim().isEmpty) {
       throw ArgumentError('Identifiant et titre obligatoires.');
     }
@@ -33,6 +39,7 @@ class PlanningAppointment {
     }
   }
 
+  final bool isUnavailable;
   final String? patientId;
 
   /// Display-only, resolved from the patient record on reading.
@@ -55,6 +62,7 @@ class PlanningAppointment {
   Map<String, Object?> toMap() => {
     'appointment_id': id,
     'patient_id': patientId,
+    'event_kind': isUnavailable ? 'unavailable' : 'appointment',
     'title': title,
     'appointment_date': dateKey(date),
     'start_minute': startMinute,
@@ -72,6 +80,7 @@ class PlanningAppointment {
     return PlanningAppointment(
       id: row['appointment_id'] as String,
       patientId: row['patient_id'] as String?,
+      isUnavailable: row['event_kind'] == 'unavailable',
       patientLabel: row['patient_label'] as String?,
       title: row['title'] as String,
       date: date,

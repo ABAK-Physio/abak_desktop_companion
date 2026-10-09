@@ -43,6 +43,7 @@ class PlanningEventDrag extends StatefulWidget {
     required this.event,
     required this.boundary,
     required this.columnWidth,
+    this.heightPerMinute = 1,
     required this.weekView,
     required this.viewportKey,
     required this.onChanged,
@@ -52,6 +53,7 @@ class PlanningEventDrag extends StatefulWidget {
   final CalendarEventData<Object?> event;
   final Rect boundary;
   final double columnWidth;
+  final double heightPerMinute;
   final bool weekView;
   final GlobalKey viewportKey;
   final ValueChanged<CalendarEventData<Object?>> onChanged;
@@ -116,7 +118,7 @@ class _PlanningEventDragState extends State<PlanningEventDrag> {
     _valid =
         _viewport.contains(pointer) &&
         pointer.dy >= _gridTop &&
-        pointer.dy <= _gridTop + 840 &&
+        pointer.dy <= _gridTop + 840 * widget.heightPerMinute &&
         pointer.dx >= _gridLeft &&
         pointer.dx < _gridLeft + widget.columnWidth * columns;
     final targetDay = ((pointer.dx - _gridLeft) / widget.columnWidth)
@@ -124,7 +126,9 @@ class _PlanningEventDragState extends State<PlanningEventDrag> {
         .clamp(0, columns - 1);
     _preview = shiftPlanningEvent(
       widget.event,
-      minuteDelta: pointer.dy - _pointerDown!.dy + _initialGridTop - _gridTop,
+      minuteDelta:
+          (pointer.dy - _pointerDown!.dy + _initialGridTop - _gridTop) /
+          widget.heightPerMinute,
       dayDelta: widget.weekView
           ? targetDay - (widget.event.date.weekday - 1)
           : 0,
@@ -155,9 +159,9 @@ class _PlanningEventDragState extends State<PlanningEventDrag> {
         : 0;
     final position = Rect.fromLTWH(
       _origin.dx + dayOffset * widget.columnWidth - _viewport.left,
-      _gridTop + start - 420 - _viewport.top,
+      _gridTop + (start - 420) * widget.heightPerMinute - _viewport.top,
       widget.boundary.width,
-      (end - start).toDouble(),
+      (end - start) * widget.heightPerMinute,
     );
     final label =
         '${DateFormat('EEE d', 'fr_FR').format(event.date)} · ${DateFormat.Hm().format(event.startTime!)}–${DateFormat.Hm().format(event.endTime!)}';
