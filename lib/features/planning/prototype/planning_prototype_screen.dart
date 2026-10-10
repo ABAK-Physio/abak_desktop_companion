@@ -620,7 +620,7 @@ class _PlanningPrototypeScreenState extends State<PlanningPrototypeScreen> {
           ),
           child: LayoutBuilder(
             builder: (context, constraints) {
-              if (constraints.maxHeight < 20) {
+              if (constraints.maxHeight < 48) {
                 return FittedBox(
                   fit: BoxFit.scaleDown,
                   alignment: Alignment.topLeft,
@@ -666,7 +666,7 @@ class _PlanningPrototypeScreenState extends State<PlanningPrototypeScreen> {
                     ],
                   ),
                   if (constraints.maxHeight >=
-                      (_view == _PlanningView.day ? 30 : 28))
+                      (_view == _PlanningView.day ? 30 : 48))
                     Text(
                       time,
                       maxLines: 1,
@@ -702,7 +702,7 @@ class _PlanningPrototypeScreenState extends State<PlanningPrototypeScreen> {
           date: date,
           hours: _effectiveHours,
           heightPerMinute: heightPerMinute,
-          leadingWidth: _view == _PlanningView.day ? 65 : 0,
+          leadingWidth: _view == _PlanningView.day ? 85 : 0,
         ),
         PlanningSlotDetector(
           date: date,
