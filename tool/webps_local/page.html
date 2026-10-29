@@ -1,0 +1,37 @@
+<!doctype html><html lang="fr"><meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; connect-src 'none'; img-src 'none'; frame-src 'none'; object-src 'none'; form-action 'none'; base-uri 'none'">
+<title>ABAK — contrôle de fenêtre locale</title>
+<style>body{font:18px system-ui;max-width:850px;margin:40px auto;padding:20px;background:#f3faf8;color:#163b37}button,select{font:inherit;padding:12px;margin:8px}aside{padding:20px;background:#dceee9}#status{white-space:pre-wrap}</style>
+<h1>Contrôle de fenêtre locale</h1>
+<p>Aucune page DMP, aucune CPS et aucun appel réseau. Les patients A et B sont entièrement fictifs.</p>
+<label>Contexte <select id="patient"><option>Patient fictif A</option><option>Patient fictif B</option></select></label>
+<p><button id="dashboard">Ouvrir le tableau de bord local</button><button id="dossier">Ouvrir le contexte patient local</button></p>
+<button id="second">Tester une ouverture concurrente</button><button id="close">Fermer la fenêtre locale</button>
+<aside id="status" role="status"></aside>
+<p>Ce prototype contrôle uniquement sa propre fenêtre. Il ne valide pas le navigateur pour Web-PS. Ne rechargez pas la page pendant le test : après rechargement, une réservation conservée bloque les ouvertures faute de fermeture confirmée.</p>
+<script>
+'use strict';
+let child=null,busy=false,timer=null,context='';
+const key='ABAK_LOCAL_WINDOW_TEST_RESERVED_V1';
+const $=id=>document.getElementById(id);
+function show(text){$('status').textContent=text;for(const id of ['dashboard','dossier','patient'])$(id).disabled=busy;$('close').disabled=!child;}
+try{busy=sessionStorage.getItem(key)==='yes';}catch(e){busy=true;}
+show(busy?'Réservation précédente ou stockage indisponible : accès bloqués. Aucune fermeture supposée.':'Prêt. Aucune fenêtre ouverte.');
+function reserve(){try{sessionStorage.setItem(key,'yes');return true;}catch(e){busy=true;show('Stockage indisponible : ouverture bloquée.');return false;}}
+function release(){try{sessionStorage.removeItem(key);}catch(e){show('Fermeture observée, stockage indisponible : blocage conservé.');return;}child=null;busy=false;clearInterval(timer);show('Fermeture confirmée. Un autre contexte peut être ouvert.');}
+function openLocal(patient){
+ if(busy){show('Seconde ouverture refusée. Contexte conservé : '+context);return;}
+ if(!reserve())return;
+ busy=true;context=patient?$('patient').value:'Tableau de bord sans patient';show('Ouverture du contexte : '+context);
+ try{child=window.open('about:blank','ABAK_TD09_LOCAL_ONLY','popup,width=700,height=500');}catch(e){show('Ouverture incertaine : blocage conservé.');return;}
+ if(!child){show('Fenêtre bloquée par le navigateur. Réservation conservée par prudence.');return;}
+ const d=child.document;
+ d.open();d.write('<!doctype html><html lang="fr"><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src \'none\'; style-src \'unsafe-inline\'; connect-src \'none\'; form-action \'none\'"><title>ABAK — FENÊTRE LOCALE</title><body style="font:22px system-ui;padding:30px;background:#f3faf8"><h1>Fenêtre locale neutre</h1><p id="context"></p><p>Aucune authentification, aucun document, aucune connexion DMP.</p><p>Fermez cette fenêtre avec le bouton de fermeture du navigateur.</p></body></html>');d.close();
+ d.getElementById('context').textContent=context;
+ show('Fenêtre ouverte : '+context+'\nAutre accès et changement de patient bloqués.');
+ timer=setInterval(()=>{try{if(child&&child.closed)release();}catch(e){show('Fermeture non confirmée : blocage conservé.');}},300);
+}
+$('dashboard').onclick=()=>openLocal(false);$('dossier').onclick=()=>openLocal(true);
+$('second').onclick=()=>{if(busy)show('Seconde ouverture refusée. Contexte conservé : '+context);else show('Ouvrez d’abord une fenêtre locale.');};
+$('close').onclick=()=>{if(child){try{child.close();if(child.closed)release();else show('Fermeture non confirmée : blocage conservé.');}catch(e){show('Fermeture non confirmée : blocage conservé.');}}};
+</script></html>

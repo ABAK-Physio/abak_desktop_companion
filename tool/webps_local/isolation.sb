@@ -1,0 +1,6 @@
+(version 1)
+(allow default)
+(deny network-outbound (remote ip "*:*"))
+(deny network-inbound (local ip "*:*"))
+(deny file-read* (subpath "/usr/local/lib") (subpath "/Library/Preferences/santesocial") (subpath "/Library/Frameworks/PCSC.framework") (subpath "/System/Library/Frameworks/PCSC.framework"))
+(deny mach-lookup (global-name "com.apple.pcscd") (global-name "com.apple.security.smartcard"))
