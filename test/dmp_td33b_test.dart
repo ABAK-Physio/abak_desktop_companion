@@ -111,9 +111,10 @@ void main() {
       expect(request, isNot(contains('Deleted')));
       final after = entry.copy()
         ..children.add(
-          XmlElement(XmlName('VersionInfo', 'rim'), [
-            XmlAttribute(XmlName('versionName'), '4'),
-          ]),
+          XmlElement(
+            XmlName.parts('VersionInfo', prefix: 'rim', namespaceUri: rim),
+            [XmlAttribute(XmlName('versionName'), '4')],
+          ),
         );
       DmpNativeTd33b.verifyAfter(before, entry, after);
       for (final replacement in [
