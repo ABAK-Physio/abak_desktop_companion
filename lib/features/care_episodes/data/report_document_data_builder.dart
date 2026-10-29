@@ -82,7 +82,7 @@ class ReportDocumentDataBuilder {
     );
 
     final authorPractitioner = report.authorPractitionerId == null
-        ? referringPractitioner
+        ? null
         : await _practitionerRepository.getPractitionerById(
       report.authorPractitionerId!,
     );

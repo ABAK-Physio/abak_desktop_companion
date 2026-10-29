@@ -90,7 +90,8 @@ class SoapDraftCard extends StatelessWidget {
                     await onDocumentTypeChanged(selectedType);
                   },
                 ),
-                if (documentAuthorFuture != null) ...[
+                if (documentAuthorFuture != null &&
+                    documentType == ClinicalDocumentType.assessment) ...[
                   const Spacer(),
                   FutureBuilder<Practitioner?>(
                     future: documentAuthorFuture,
@@ -149,6 +150,46 @@ class SoapDraftCard extends StatelessWidget {
                 ],
               ],
             ),
+            if (documentTypeSelected &&
+                documentType == ClinicalDocumentType.report &&
+                documentAuthorFuture != null) ...[
+              const SizedBox(height: 12),
+              Wrap(
+                spacing: 12,
+                runSpacing: 8,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: [
+                  FutureBuilder<Practitioner?>(
+                    future: documentAuthorFuture,
+                    builder: (context, snapshot) {
+                      final author = snapshot.data;
+                      final fullName = [
+                        author?.firstName ?? '',
+                        author?.lastName ?? '',
+                      ].where((part) => part.trim().isNotEmpty).join(' ');
+                      final authorName = fullName.isNotEmpty
+                          ? fullName
+                          : author?.displayName ?? 'Non renseigné';
+                      return OutlinedButton.icon(
+                        onPressed: loading ? null : onDocumentAuthorPressed,
+                        icon: const Icon(Icons.person_outline),
+                        label: Text('Kiné rédacteur : $authorName'),
+                      );
+                    },
+                  ),
+                  TextButton.icon(
+                    onPressed: loading ? null : onDocumentRecipientPressed,
+                    icon: const Icon(Icons.send_outlined),
+                    label: Text(
+                      documentRecipientText == null ||
+                              documentRecipientText!.trim().isEmpty
+                          ? 'Destinataire(s) : Non renseigné'
+                          : 'Destinataire(s) : $documentRecipientText',
+                    ),
+                  ),
+                ],
+              ),
+            ],
             const SizedBox(height: 12),
             Row(
               children: [

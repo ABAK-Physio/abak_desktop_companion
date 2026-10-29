@@ -36,7 +36,9 @@ class MacosDirectoryAccessService {
   static const _channel = MethodChannel('abak/directory_access');
   static const _prefix = 'macos_directory_bookmark_v1_';
 
-  String _key(String path) => '$_prefix${base64Url.encode(utf8.encode(path))}';
+  String _key(String path, {bool readOnly = false}) =>
+      '${readOnly ? 'macos_readonly_directory_bookmark_v1_' : _prefix}'
+      '${base64Url.encode(utf8.encode(path))}';
 
   void _requireMacos() {
     if (!Platform.isMacOS) {
@@ -46,22 +48,33 @@ class MacosDirectoryAccessService {
 
   /// Sélection explicite et stockage de l’autorisation.
   /// Une annulation ne modifie pas les préférences.
-  Future<MacosDirectoryAccess?> chooseDirectory({required String title}) async {
+  Future<MacosDirectoryAccess?> chooseDirectory({
+    required String title,
+    bool readOnly = false,
+    String? expectedPath,
+    String? initialPath,
+  }) async {
     _requireMacos();
-    final value = await _channel.invokeMapMethod<String, dynamic>(
-      'chooseDirectory',
-      {'title': title},
-    );
+    final value = await _channel
+        .invokeMapMethod<String, dynamic>('chooseDirectory', {
+          'title': title,
+          'readOnly': readOnly,
+          'expectedPath': ?expectedPath,
+          'initialPath': ?initialPath,
+        });
     if (value == null) return null;
-    return _saveAndCreateAccess(value);
+    return _saveAndCreateAccess(value, readOnly: readOnly);
   }
 
   /// Restaure l’autorisation associée au chemin déjà enregistré par l’application.
   /// Un ancien chemin sans bookmark exige une nouvelle sélection explicite.
-  Future<MacosDirectoryAccess> acquireDirectory(String savedPath) async {
+  Future<MacosDirectoryAccess> acquireDirectory(
+    String savedPath, {
+    bool readOnly = false,
+  }) async {
     _requireMacos();
     final preferences = await SharedPreferences.getInstance();
-    final bookmark = preferences.getString(_key(savedPath));
+    final bookmark = preferences.getString(_key(savedPath, readOnly: readOnly));
     if (bookmark == null || bookmark.isEmpty) {
       throw DirectoryAuthorizationRequired(savedPath);
     }
@@ -70,7 +83,7 @@ class MacosDirectoryAccessService {
     try {
       value = await _channel.invokeMapMethod<String, dynamic>(
         'restoreDirectory',
-        {'bookmark': bookmark},
+        {'bookmark': bookmark, 'readOnly': readOnly},
       );
     } on PlatformException catch (error) {
       if (error.code == 'DIRECTORY_ACCESS_FAILED' ||
@@ -82,7 +95,11 @@ class MacosDirectoryAccessService {
     if (value == null) {
       throw DirectoryAuthorizationRequired(savedPath);
     }
-    return _saveAndCreateAccess(value, savedPath: savedPath);
+    return _saveAndCreateAccess(
+      value,
+      savedPath: savedPath,
+      readOnly: readOnly,
+    );
   }
 
   /// Oublie seulement le bookmark ; ne supprime aucun dossier ni fichier.
@@ -96,9 +113,10 @@ class MacosDirectoryAccessService {
   }
 
   Future<MacosDirectoryAccess> _saveAndCreateAccess(
-      Map<String, dynamic> value, {
-        String? savedPath,
-      }) async {
+    Map<String, dynamic> value, {
+    String? savedPath,
+    bool readOnly = false,
+  }) async {
     final token = value['token'];
     final path = value['path'];
     final bookmark = value['bookmark'];
@@ -107,19 +125,31 @@ class MacosDirectoryAccessService {
     }
 
     try {
-      if (path is! String || path.isEmpty ||
-          bookmark is! String || bookmark.isEmpty) {
-        throw StateError('Réponse macOS invalide : dossier ou autorisation absent.');
+      if (path is! String ||
+          path.isEmpty ||
+          bookmark is! String ||
+          bookmark.isEmpty) {
+        throw StateError(
+          'Réponse macOS invalide : dossier ou autorisation absent.',
+        );
       }
       final preferences = await SharedPreferences.getInstance();
-      if (!await preferences.setString(_key(path), bookmark)) {
+      if (!await preferences.setString(
+        _key(path, readOnly: readOnly),
+        bookmark,
+      )) {
         throw StateError('Impossible de mémoriser l’autorisation du dossier.');
       }
       // Si macOS retrouve un dossier déplacé, conserver aussi l’association
       // avec le chemin historique encore présent dans les réglages existants.
       if (savedPath != null && savedPath != path) {
-        if (!await preferences.setString(_key(savedPath), bookmark)) {
-          throw StateError('Impossible d’actualiser l’autorisation du dossier.');
+        if (!await preferences.setString(
+          _key(savedPath, readOnly: readOnly),
+          bookmark,
+        )) {
+          throw StateError(
+            'Impossible d’actualiser l’autorisation du dossier.',
+          );
         }
       }
       return MacosDirectoryAccess._(path, token);

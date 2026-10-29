@@ -1,0 +1,9 @@
+HTTP/1.1 200 OK
+Date: Fri, 16 Oct 2026 08:38:24 GMT
+content-type: multipart/related; type="application/xop+xml"; boundary="uuid:b84d4419-7e0b-4315-820e-400828e895f2"; start="<root.message@cxf.apache.org>"; start-info="application/soap+xml"
+content-length: 1572
+Strict-Transport-Security: max-age=31536000; includesubdomains; preload
+Referrer-Policy: strict-origin-when-cross-origin
+X-Content-Type-Options: nosniff
+X-Frame-Options: DENY
+Connection: close

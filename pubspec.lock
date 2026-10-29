@@ -48,7 +48,7 @@ packages:
     source: hosted
     version: "2.7.0"
   asn1lib:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: asn1lib
       sha256: "9a8f69025044eb466b9b60ef3bc3ac99b4dc6c158ae9c56d25eeccf5bc56d024"
@@ -563,7 +563,7 @@ packages:
     source: hosted
     version: "2.2.1"
   path_provider_platform_interface:
-    dependency: transitive
+    dependency: "direct dev"
     description:
       name: path_provider_platform_interface
       sha256: "484838772624c3a4b94f1e44a3e19897fee738f2d5c4ce448443b0417f7c9dda"
@@ -952,7 +952,7 @@ packages:
     source: hosted
     version: "1.2.2"
   test_api:
-    dependency: transitive
+    dependency: "direct dev"
     description:
       name: test_api
       sha256: "2a122cbe059f8b610d3a5415f42e255b6c17b1f21eee1d960f31080237fb4f11"

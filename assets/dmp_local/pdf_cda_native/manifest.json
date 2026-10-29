@@ -1,0 +1,155 @@
+[
+  {
+    "id": "positif",
+    "label": "Témoin PDF/A-1b conforme",
+    "pdf": "positif_pdf.pdf",
+    "pdfResult": "positif_pdf_result.json",
+    "cdaResult": "positif_cda_result.json",
+    "files": {
+      "positif_pdf.pdf": "cd0108f787479457adeeaef4f7d0d0b241a374f7cc74fa9ed02b9aa42df3abf6",
+      "positif_pdf_result.json": "d378dfe5fe00206077cb480bf9f5545c007b41d13b66672494ee194ba283c481",
+      "positif_pdf_report.xml": "2e792643573b05ec97c72ab20917c5f0ac76be2fa7821531c1863701f2555aa1",
+      "positif_cda_result.json": "75dae39aa3bf6a6126340aecf537eb9bb60205d8d251a3fb2b22b531594b00d0",
+      "positif_cda.xml": "b22eeaa330086cf3ff802dcef30e3179536fd07af1b5e950cffb1b9a4c4d9ddd"
+    },
+    "clinicalBlock": false
+  },
+  {
+    "id": "sans_xmp",
+    "label": "Métadonnées PDF absentes",
+    "pdf": "sans_xmp_pdf.pdf",
+    "pdfResult": "sans_xmp_pdf_result.json",
+    "cdaResult": null,
+    "files": {
+      "sans_xmp_pdf.pdf": "5631f811c12d01c33170005a21b797eab20f89c16f63f95a1db5d09461213c30",
+      "sans_xmp_pdf_result.json": "257a3108257c6dbb6ea8f52d3464c753482e20eda06298730182d133df3042f9",
+      "sans_xmp_pdf_report.xml": "7275090552f0f1f2022552eb81bb689b4d11caa105286780fb8d181a35b091d2"
+    },
+    "clinicalBlock": false
+  },
+  {
+    "id": "sans_profil_couleur",
+    "label": "Profil couleur absent",
+    "pdf": "sans_profil_couleur_pdf.pdf",
+    "pdfResult": "sans_profil_couleur_pdf_result.json",
+    "cdaResult": null,
+    "files": {
+      "sans_profil_couleur_pdf.pdf": "20044c50ed26a2be14be21471a7958785d12019c56df09d4331d04259084fb50",
+      "sans_profil_couleur_pdf_result.json": "0e5f007196ac59cd5449a345221ba7deba1bfd3f3a517b5da666c47f5ecd1cc7",
+      "sans_profil_couleur_pdf_report.xml": "186e1bc2843f694a76a1ec1f755c3ec50a8be3745dd4b6179117a316a95b68b1"
+    },
+    "clinicalBlock": false
+  },
+  {
+    "id": "police_non_incorporee",
+    "label": "Police non incorporée",
+    "pdf": "police_non_incorporee_pdf.pdf",
+    "pdfResult": "police_non_incorporee_pdf_result.json",
+    "cdaResult": null,
+    "files": {
+      "police_non_incorporee_pdf.pdf": "e656cd4713c871198452b6f37cbb51bbc43c2abeacf0c889805fe3528f8842b6",
+      "police_non_incorporee_pdf_result.json": "42845579e6a16de07b87ae3501c5bfba91102cf3af63056315346ea07125a7de",
+      "police_non_incorporee_pdf_report.xml": "9c998ffe41ff83d52b642e6889952a87c0825f82b41a4fdf8fcfe8a60304598b"
+    },
+    "clinicalBlock": false
+  },
+  {
+    "id": "action_javascript",
+    "label": "Action interdite",
+    "pdf": "action_javascript_pdf.pdf",
+    "pdfResult": "action_javascript_pdf_result.json",
+    "cdaResult": null,
+    "files": {
+      "action_javascript_pdf.pdf": "e5b7d93c2c4c6447c52585335c860d672aa949f68d7553a067284aa3ec1b0291",
+      "action_javascript_pdf_result.json": "1ebcece0006c8b672f55d356c177f376e51e93681fe9454c07f8e86e84ce696e",
+      "action_javascript_pdf_report.xml": "21cefe2630e18948fb694420459b9b27f41b8be3611c61834c330e951ba4bbfa"
+    },
+    "clinicalBlock": false
+  },
+  {
+    "id": "chiffre",
+    "label": "PDF chiffré",
+    "pdf": "chiffre_pdf.pdf",
+    "pdfResult": "chiffre_pdf_result.json",
+    "cdaResult": null,
+    "files": {
+      "chiffre_pdf.pdf": "5e04ef450239ec41e4f12dafbb5e14977b13e516fcc5acaa43e0abc5463df412",
+      "chiffre_pdf_result.json": "d76bb8d1fa1bd7990bd886d1780b6fda5e1a8cbc7a286b4e57e7b6a3e25f5ed9",
+      "chiffre_pdf_report.xml": "18cc3af498417351792d091665041bd6146b71baa5173c0a2ec7674f737f935e"
+    },
+    "clinicalBlock": false
+  },
+  {
+    "id": "tronque",
+    "label": "PDF tronqué",
+    "pdf": "tronque_pdf.pdf",
+    "pdfResult": "tronque_pdf_result.json",
+    "cdaResult": null,
+    "files": {
+      "tronque_pdf.pdf": "91188d9ce367cef8169fb719ca7431a5bc595be23bba0cd986a34e5d00d0eae7",
+      "tronque_pdf_result.json": "c97e1b9129cb80df7466e93d612b8094aa255a85064044f1c83636bf38e3f5ad",
+      "tronque_pdf_report.xml": "50789bc301228cf9937e4c18454a78e0cf0be4aa00f728c6edbffe70581a17f8"
+    },
+    "clinicalBlock": false
+  },
+  {
+    "id": "blanc",
+    "label": "Page blanche",
+    "pdf": "blanc_pdf.pdf",
+    "pdfResult": "blanc_pdf_result.json",
+    "cdaResult": "blanc_cda_result.json",
+    "files": {
+      "blanc_pdf.pdf": "217bd9cc43924a725ec4b1809cde9d78cb3b519716be2a0f31db13cfc5bd91a0",
+      "blanc_pdf_result.json": "a31064469de50d31139704026f9dbe778222e6eca1086204f2513ac00dc83d26",
+      "blanc_pdf_report.xml": "e1daa674c5054a0d4502a9861f922f77d4c0f25ae9d53ad10f2f5f124095283c",
+      "blanc_cda_result.json": "af3a528ca47e9672fb64132341575ba8412117e1a0d6a2e365969318ebff60db",
+      "blanc_cda.xml": "3ce33a44b663de4d74fcb34b622a6dde613c12b33efc23b7f1ccab119f8b2d71"
+    },
+    "clinicalBlock": true
+  },
+  {
+    "id": "entete",
+    "label": "En-tête sans contenu clinique",
+    "pdf": "entete_pdf.pdf",
+    "pdfResult": "entete_pdf_result.json",
+    "cdaResult": "entete_cda_result.json",
+    "files": {
+      "entete_pdf.pdf": "de507826b34b01c4b19b3497149702fe5b09dccb044d96563ab69f35f7117cb3",
+      "entete_pdf_result.json": "efcff17456a657967b166dd27f38faa785f3a792f93318167b6ba42c927f505f",
+      "entete_pdf_report.xml": "a96a3a152f3ce032a82192d92fffc2d9a1610d4a1e228e595e21458bc2502b9e",
+      "entete_cda_result.json": "67b32a079e35a46a6090a3a9be971e30583945da6157b213f1ea994a94909c51",
+      "entete_cda.xml": "7ffd30f9790ddd3a59ad48086a9dd3c2390595e86032e4ea5c2272be99c3e6bd"
+    },
+    "clinicalBlock": true
+  },
+  {
+    "id": "contenu_modifie",
+    "label": "Contenu modifié",
+    "pdf": "contenu_modifie_pdf.pdf",
+    "pdfResult": "contenu_modifie_pdf_result.json",
+    "cdaResult": "contenu_modifie_cda_result.json",
+    "files": {
+      "contenu_modifie_pdf.pdf": "bcb526a3ad1c1175a46d78a178d34df3b2cf016e91a46d295708e3ba27125010",
+      "contenu_modifie_pdf_result.json": "c65d14a322c7bb56691d97998a08ee7cf94dde6668d725ab957cb3b406c7b70a",
+      "contenu_modifie_pdf_report.xml": "e60da2a897fa8e7a735d62c2cd5e52558380525f2b5f684124b1875bbae9066c",
+      "contenu_modifie_cda_result.json": "05d0b59370d776ad33c218cecb421943770b42c459636b5f4f896bff211ade7e",
+      "contenu_modifie_cda.xml": "69f21f163b37c2a2fc03c287544c1d3838550e3224bd1e1b0a1449567f61bcb0"
+    },
+    "clinicalBlock": false
+  },
+  {
+    "id": "sans_patient",
+    "label": "CDA sans patient",
+    "pdf": "sans_patient_pdf.pdf",
+    "pdfResult": "sans_patient_pdf_result.json",
+    "cdaResult": "sans_patient_cda_result.json",
+    "files": {
+      "sans_patient_pdf.pdf": "cd0108f787479457adeeaef4f7d0d0b241a374f7cc74fa9ed02b9aa42df3abf6",
+      "sans_patient_pdf_result.json": "d378dfe5fe00206077cb480bf9f5545c007b41d13b66672494ee194ba283c481",
+      "sans_patient_pdf_report.xml": "2e792643573b05ec97c72ab20917c5f0ac76be2fa7821531c1863701f2555aa1",
+      "sans_patient_cda_result.json": "e2ae05c6a9c7e59f4fdd8e0476588c6bbf1115879536ff8e6954145dde3c565b",
+      "sans_patient_cda.xml": "2413d3c3b54cbdfdae40df176c390fa96678420f328b328fec2f91a6fec73ac8"
+    },
+    "clinicalBlock": false
+  }
+]

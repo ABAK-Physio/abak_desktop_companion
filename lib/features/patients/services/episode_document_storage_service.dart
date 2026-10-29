@@ -4,6 +4,10 @@ import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
 class EpisodeDocumentStorageService {
+  EpisodeDocumentStorageService({
+    Future<Directory> Function()? supportDirectory,
+  }) : _supportDirectory = supportDirectory ?? getApplicationSupportDirectory;
+  final Future<Directory> Function() _supportDirectory;
   Future<String> copyDocumentToEpisodeFolder({
     required String caseId,
     required String sourcePath,
@@ -14,7 +18,7 @@ class EpisodeDocumentStorageService {
       throw Exception('Fichier source introuvable : $sourcePath');
     }
 
-    final appSupportDir = await getApplicationSupportDirectory();
+    final appSupportDir = await _supportDirectory();
 
     final documentsDir = Directory(
       p.join(appSupportDir.path, 'episode_documents', caseId),

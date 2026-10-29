@@ -1,3 +1,4 @@
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'dart:io';
 
 import 'package:path/path.dart' as p;
@@ -30,9 +31,31 @@ class PatientDocumentsService {
     }
   }
 
+  Future<PatientDocumentFolders?> findForEpisode({
+    required String episodeId,
+    required String rootPath,
+    DatabaseExecutor? database,
+  }) async {
+    final db = database ?? await DatabaseService.database;
+    final rows = await db.query(
+      'care_episodes',
+      columns: ['patient_id'],
+      where: 'care_episode_id=?',
+      whereArgs: [episodeId],
+      limit: 1,
+    );
+    if (rows.isEmpty) return null;
+    return findInRoot(
+      patientId: rows.single['patient_id'] as String,
+      rootPath: rootPath,
+      database: db,
+    );
+  }
+
   Future<PatientDocumentFolders?> findInRoot({
     required String patientId,
     required String rootPath,
+    DatabaseExecutor? database,
   }) async {
     final root = Directory(p.normalize(p.absolute(rootPath)));
 
@@ -43,7 +66,7 @@ class PatientDocumentsService {
       );
     }
 
-    final db = await DatabaseService.database;
+    final db = database ?? await DatabaseService.database;
     final rows = await db.query(
       'patient_document_folders',
       columns: ['folder_name'],

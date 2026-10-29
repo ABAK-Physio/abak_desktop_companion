@@ -8,6 +8,7 @@ import '../../core/expert/expert_context_info.dart';
 import '../../core/expert/expert_info_button.dart';
 
 import '../../core/settings/cabinet_identity_service.dart';
+import 'cabinet_practice_screen.dart';
 import '../../generated/l10n.dart';
 
 class OrganizationScreen extends StatefulWidget {
@@ -355,6 +356,13 @@ class _OrganizationScreenState extends State<OrganizationScreen> {
                   Text(
                     s.organization_identityTitle,
                     style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                  OutlinedButton.icon(
+                    icon: const Icon(Icons.groups_outlined),
+                    label: const Text('Cabinet et rattachements des kinés'),
+                    onPressed: () => Navigator.of(context).push(
+                      MaterialPageRoute(builder: (_) => const CabinetPracticeScreen()),
+                    ),
                   ),
                   const SizedBox(height: 24),
 

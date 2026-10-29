@@ -1,4 +1,14 @@
 import 'dart:async';
+import 'document_versions_schema.dart';
+import 'document_medical_schema.dart';
+import 'document_controls_schema.dart';
+import 'document_journal_schema.dart';
+import 'document_chain_schema.dart';
+import 'document_reconciliation_schema.dart';
+import 'document_dv1_schema.dart';
+import 'practitioner_cps_schema.dart';
+import 'cabinet_practice_schema.dart';
+import 'patient_qualification_schema.dart';
 import '../../features/kobus/kobus_schema.dart';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
@@ -8,7 +18,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 class DatabaseService {
-  static const int schemaVersion = 31;
+  static const int schemaVersion = 48;
   static Database? _database;
   static Completer<void>? _restoreGate;
 
@@ -90,209 +100,227 @@ class DatabaseService {
   }
 
   /// Open/migrate a prepared copy without replacing the active database.
-  static Future<Database> openDatabaseFile(String path) async {
-    return openDatabase(
+  static Future<Database> openDatabaseFile(
+    String path, {
+    DatabaseFactory? factory,
+  }) async {
+    return (factory ?? databaseFactory).openDatabase(
       path,
-      version: schemaVersion,
-      onCreate: (db, version) async {
-        await _createAllTables(db);
-      },
-      onUpgrade: (db, oldVersion, newVersion) async {
-        if (oldVersion < 31) await createKobusTables(db);
-        if (oldVersion < 30) {
-          await _createPatientDocumentFoldersTable(db);
-        }
-        if (oldVersion < 29) {
-          await _createBodymapTable(db);
-        }
-        if (oldVersion < 2) {
-          await _addColumnIfMissing(
-            db,
-            'care_episodes',
-            'initial_report_docx_path',
-            'TEXT NULL',
-          );
-        }
+      options: OpenDatabaseOptions(
+        version: schemaVersion,
+        onCreate: (db, version) async {
+          await _createAllTables(db);
+        },
+        onUpgrade: (db, oldVersion, newVersion) async {
+          if (oldVersion < 31) await createKobusTables(db);
+          if (oldVersion < 30) {
+            await _createPatientDocumentFoldersTable(db);
+          }
+          if (oldVersion < 29) {
+            await _createBodymapTable(db);
+          }
+          if (oldVersion < 2) {
+            await _addColumnIfMissing(
+              db,
+              'care_episodes',
+              'initial_report_docx_path',
+              'TEXT NULL',
+            );
+          }
 
-        if (oldVersion < 3) {
-          await _addColumnIfMissing(
-            db,
-            'desktop_import_sessions',
-            'summary_patient_label',
-            'TEXT NULL',
-          );
-          await _addColumnIfMissing(
-            db,
-            'desktop_import_sessions',
-            'summary_episode_label',
-            'TEXT NULL',
-          );
-          await _addColumnIfMissing(
-            db,
-            'desktop_import_sessions',
-            'summary_exercises_label',
-            'TEXT NULL',
-          );
-        }
+          if (oldVersion < 3) {
+            await _addColumnIfMissing(
+              db,
+              'desktop_import_sessions',
+              'summary_patient_label',
+              'TEXT NULL',
+            );
+            await _addColumnIfMissing(
+              db,
+              'desktop_import_sessions',
+              'summary_episode_label',
+              'TEXT NULL',
+            );
+            await _addColumnIfMissing(
+              db,
+              'desktop_import_sessions',
+              'summary_exercises_label',
+              'TEXT NULL',
+            );
+          }
 
-        if (oldVersion < 4) {
-          await _createApplicationSettingsTable(db);
-        }
+          if (oldVersion < 4) {
+            await _createApplicationSettingsTable(db);
+          }
 
-        if (oldVersion < 5) {
-          await _addColumnIfMissing(
-            db,
-            'care_episodes',
-            'objective_data',
-            'TEXT NULL',
-          );
-        }
+          if (oldVersion < 5) {
+            await _addColumnIfMissing(
+              db,
+              'care_episodes',
+              'objective_data',
+              'TEXT NULL',
+            );
+          }
 
-        if (oldVersion < 6) {
-          await _addColumnIfMissing(
-            db,
-            'care_episodes',
-            'assessment_data',
-            'TEXT NULL',
-          );
-        }
+          if (oldVersion < 6) {
+            await _addColumnIfMissing(
+              db,
+              'care_episodes',
+              'assessment_data',
+              'TEXT NULL',
+            );
+          }
 
-        if (oldVersion < 7) {
-          await _addColumnIfMissing(
-            db,
-            'care_episodes',
-            'treatment_plan',
-            'TEXT NULL',
-          );
-        }
+          if (oldVersion < 7) {
+            await _addColumnIfMissing(
+              db,
+              'care_episodes',
+              'treatment_plan',
+              'TEXT NULL',
+            );
+          }
 
-        if (oldVersion < 8) {
-          await _addColumnIfMissing(
-            db,
-            'desktop_import_sessions',
-            'duplicate_results_count',
-            'INTEGER NOT NULL DEFAULT 0',
-          );
+          if (oldVersion < 8) {
+            await _addColumnIfMissing(
+              db,
+              'desktop_import_sessions',
+              'duplicate_results_count',
+              'INTEGER NOT NULL DEFAULT 0',
+            );
 
-          await _addColumnIfMissing(
-            db,
-            'desktop_import_session_files',
-            'duplicate_results_count',
-            'INTEGER NOT NULL DEFAULT 0',
-          );
-        }
-        if (oldVersion < 10) {
-          await _addColumnIfMissing(db, 'patients', 'nir', 'TEXT NULL');
-        }
+            await _addColumnIfMissing(
+              db,
+              'desktop_import_session_files',
+              'duplicate_results_count',
+              'INTEGER NOT NULL DEFAULT 0',
+            );
+          }
+          if (oldVersion < 10) {
+            await _addColumnIfMissing(db, 'patients', 'nir', 'TEXT NULL');
+          }
 
-        if (oldVersion < 11) {
-          await _createCareEpisodeAssessmentTables(db);
-          await _createCareEpisodeReportTables(db);
-        }
+          if (oldVersion < 11) {
+            await _createCareEpisodeAssessmentTables(db);
+            await _createCareEpisodeReportTables(db);
+          }
 
-        if (oldVersion < 12) {
-          await _addColumnIfMissing(
-            db,
-            'care_episode_reports',
-            'status',
-            "TEXT NOT NULL DEFAULT 'draft'",
-          );
-        }
-        if (oldVersion < 13) {
-          await _createCareEpisodeReferringPractitionerTables(db);
-        }
-        if (oldVersion < 14) {
-          await _addColumnIfMissing(
-            db,
-            'desktop_results',
-            'practitioner_verification_status',
-            'TEXT NULL',
-          );
-        }
-        if (oldVersion < 15) {
-          await _migrateResultTablesToVersion15(db);
-        }
-        if (oldVersion < 16) {
-          await _createEpisodeDocumentsTable(db);
-        }
-        if (oldVersion < 17) {
-          await _createPatientFrHealthIdentityTable(db);
-        }
-        if (oldVersion < 18) {
-          await _createCareEpisodeDocumentEditDraftsTable(db);
-        }
-        if (oldVersion < 19) {
-          await _addColumnIfMissing(
-            db,
-            'care_episode_notes',
-            'title',
-            "TEXT NOT NULL DEFAULT ''",
-          );
-        }
-        if (oldVersion < 20) {
-          await _createAssessmentTemplateDraftsTable(db);
-        }
-        if (oldVersion < 21) {
-          await _addColumnIfMissing(
-            db,
-            'care_episodes',
-            'opened_at',
-            'INTEGER NULL',
-          );
-        }
-        if (oldVersion < 22) {
-          await _addColumnIfMissing(
-            db,
-            'care_episode_assessments',
-            'author_practitioner_id',
-            'TEXT NULL',
-          );
+          if (oldVersion < 12) {
+            await _addColumnIfMissing(
+              db,
+              'care_episode_reports',
+              'status',
+              "TEXT NOT NULL DEFAULT 'draft'",
+            );
+          }
+          if (oldVersion < 13) {
+            await _createCareEpisodeReferringPractitionerTables(db);
+          }
+          if (oldVersion < 14) {
+            await _addColumnIfMissing(
+              db,
+              'desktop_results',
+              'practitioner_verification_status',
+              'TEXT NULL',
+            );
+          }
+          if (oldVersion < 15) {
+            await _migrateResultTablesToVersion15(db);
+          }
+          if (oldVersion < 16) {
+            await _createEpisodeDocumentsTable(db);
+          }
+          if (oldVersion < 17) {
+            await _createPatientFrHealthIdentityTable(db);
+          }
+          if (oldVersion < 18) {
+            await _createCareEpisodeDocumentEditDraftsTable(db);
+          }
+          if (oldVersion < 19) {
+            await _addColumnIfMissing(
+              db,
+              'care_episode_notes',
+              'title',
+              "TEXT NOT NULL DEFAULT ''",
+            );
+          }
+          if (oldVersion < 20) {
+            await _createAssessmentTemplateDraftsTable(db);
+          }
+          if (oldVersion < 21) {
+            await _addColumnIfMissing(
+              db,
+              'care_episodes',
+              'opened_at',
+              'INTEGER NULL',
+            );
+          }
+          if (oldVersion < 22) {
+            await _addColumnIfMissing(
+              db,
+              'care_episode_assessments',
+              'author_practitioner_id',
+              'TEXT NULL',
+            );
 
-          await _addColumnIfMissing(
-            db,
-            'care_episode_assessments',
-            'recipient_text',
-            'TEXT NULL',
-          );
-        }
-        if (oldVersion < 23) {
-          await db.execute(
-            'ALTER TABLE care_episode_assessments '
-            'ADD COLUMN docx_file_name TEXT NULL',
-          );
-        }
-        if (oldVersion < 24) {
-          await _createExternalCorrespondentsTable(db);
+            await _addColumnIfMissing(
+              db,
+              'care_episode_assessments',
+              'recipient_text',
+              'TEXT NULL',
+            );
+          }
+          if (oldVersion < 23) {
+            await db.execute(
+              'ALTER TABLE care_episode_assessments '
+              'ADD COLUMN docx_file_name TEXT NULL',
+            );
+          }
+          if (oldVersion < 24) {
+            await _createExternalCorrespondentsTable(db);
 
-          await db.execute(
-            'ALTER TABLE care_episodes '
-            'ADD COLUMN prescribing_correspondent_id TEXT NULL',
-          );
-        }
-        if (oldVersion < 25) {
-          await db.execute(
-            'ALTER TABLE care_episode_reports '
-                'ADD COLUMN author_practitioner_id TEXT NULL',
-          );
-        }
-        if (oldVersion < 26) {
-          await db.execute(
-            'ALTER TABLE care_episode_reports '
-                'ADD COLUMN docx_file_name TEXT NULL',
-          );
-        }
-        if (oldVersion < 27) {
-          await _createCareEpisodeReportSelectionTables(db);
-        }
-        if (oldVersion < 28) {
-          await _addColumnIfMissing(
-            db,
-            'care_episode_reports',
-            'recipient_text',
-            'TEXT NULL',
-          );
-        }
-      },
+            await db.execute(
+              'ALTER TABLE care_episodes '
+              'ADD COLUMN prescribing_correspondent_id TEXT NULL',
+            );
+          }
+          if (oldVersion < 25) {
+            await db.execute(
+              'ALTER TABLE care_episode_reports '
+              'ADD COLUMN author_practitioner_id TEXT NULL',
+            );
+          }
+          if (oldVersion < 26) {
+            await db.execute(
+              'ALTER TABLE care_episode_reports '
+              'ADD COLUMN docx_file_name TEXT NULL',
+            );
+          }
+          if (oldVersion < 27) {
+            await _createCareEpisodeReportSelectionTables(db);
+          }
+          if (oldVersion < 28) {
+            await _addColumnIfMissing(
+              db,
+              'care_episode_reports',
+              'recipient_text',
+              'TEXT NULL',
+            );
+          }
+          if (oldVersion < 32) await createDocumentVersionsTable(db);
+          if (oldVersion < 33) await createDocumentMedicalTables(db);
+          if (oldVersion < 34) await createDocumentControlsTables(db);
+          if (oldVersion < 35) await createDocumentJournalTables(db);
+          if (oldVersion < 36) await createDocumentChainTables(db);
+          if (oldVersion < 37) await createDocumentReconciliationTables(db);
+          if (oldVersion < 38) await createDocumentDv1Tables(db);
+          if (oldVersion < 39) await createPractitionerCpsTables(db);
+          if (oldVersion < 40) await createPractitionerCpsDatesTable(db);
+          if (oldVersion < 41) await createCabinetPracticeTables(db);
+          if (oldVersion < 42) await createPatientQualificationTables(db);
+          if (oldVersion < 43) await createPatientQualificationTables(db);
+          if (oldVersion < 48) await createDocumentDv1Tables(db);
+        },
+      ),
     );
   }
 
@@ -525,6 +553,7 @@ class DatabaseService {
     await createKobusTables(db);
     await _createPatientDocumentFoldersTable(db);
     await _createPatientFrHealthIdentityTable(db);
+    await createPatientQualificationTables(db);
     await _createApplicationSettingsTable(db);
     await _createPatientClinicalTables(db);
     await _createCareEpisodeTables(db);
@@ -543,9 +572,55 @@ class DatabaseService {
     await _createRestoreHistoryTables(db);
     await _createResultConflictTables(db);
     await _createAssessmentTemplateDraftsTable(db);
+    await createDocumentVersionsTable(db);
+    await createDocumentMedicalTables(db);
+    await createCabinetPracticeTables(db);
+    await createDocumentControlsTables(db);
+    await createDocumentJournalTables(db);
+    await createDocumentChainTables(db);
+    await createDocumentReconciliationTables(db);
+    await createDocumentDv1Tables(db);
   }
 
   static Future<void> _resetDatabase(Database db) async {
+    final medicalTriggers = await db.rawQuery(
+      "SELECT name FROM sqlite_master WHERE type='trigger' AND (name LIKE 'reconciliation_%' OR name LIKE 'chain_%' OR name LIKE 'journal_%' OR name LIKE 'controls_%' OR name LIKE 'medical_%' OR name LIKE 'document_medical_%' OR name LIKE 'document_approval_%')",
+    );
+    for (final row in medicalTriggers) {
+      final name = (row['name'] as String).replaceAll('"', '""');
+      await db.execute('DROP TRIGGER "$name"');
+    }
+    for (final table in [
+      'document_reconciliations',
+      'document_chain_steps',
+      'document_events',
+      'document_attempt_results',
+      'document_attempts',
+      'document_holds',
+      'document_restore_barriers',
+      'document_control_invalidations',
+      'document_control_results',
+      'document_control_runs',
+      'document_control_config',
+      'document_medical_changes',
+      'document_approval_invalidations',
+      'document_medical_approvals',
+      'document_preparations',
+      'document_practice_contexts',
+      'practitioner_cabinet_memberships',
+      'cabinet_practices',
+      'practitioner_cps_dates',
+      'practitioner_cps_profiles',
+      'patient_identity_events',
+      'patient_vitale_readings',
+      'patient_fr_health_identity',
+    ]) {
+      await db.execute('DROP TABLE IF EXISTS $table');
+    }
+    for (final table in ['episode_documents', 'care_episodes', 'patients']) {
+      await db.execute('DROP TRIGGER IF EXISTS ${table}_keep_pdf_versions');
+    }
+    await db.execute('DROP TABLE IF EXISTS episode_document_versions');
     await db.execute('DROP TABLE IF EXISTS kobus_archives');
     await db.execute('DROP TABLE IF EXISTS kobus_items');
     await db.execute('DROP TABLE IF EXISTS kobus_runs');
@@ -738,9 +813,7 @@ class DatabaseService {
     ''');
   }
 
-  static Future<void> _createExternalCorrespondentsTable(
-      Database db,
-      ) async {
+  static Future<void> _createExternalCorrespondentsTable(Database db) async {
     await db.execute('''
     CREATE TABLE external_correspondents (
       correspondent_id TEXT PRIMARY KEY,
@@ -929,8 +1002,8 @@ CREATE TABLE care_episode_notes (
   }
 
   static Future<void> _createCareEpisodeReportSelectionTables(
-      Database db,
-      ) async {
+    Database db,
+  ) async {
     await db.execute('''
     CREATE TABLE IF NOT EXISTS care_episode_report_tests (
       report_id TEXT NOT NULL,
@@ -1067,9 +1140,7 @@ CREATE TABLE care_episode_notes (
     ''');
   }
 
-  static Future<void> _createEpisodeDocumentsTable(
-      Database db,
-      ) async {
+  static Future<void> _createEpisodeDocumentsTable(Database db) async {
     await db.execute('''
     CREATE TABLE IF NOT EXISTS episode_documents (
       document_id TEXT PRIMARY KEY,

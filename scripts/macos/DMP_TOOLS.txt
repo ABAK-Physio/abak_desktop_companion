@@ -1,0 +1,44 @@
+Composants PDF/A privés fournis avec Companion
+
+L’application contient veraPDF CLI et un runtime Java privé. L’activation de
+« Utiliser le DMP » ne télécharge rien, ne demande pas de privilège administrateur
+et ne modifie pas Java sur la machine. Elle contrôle l’intégrité du paquet et
+exécute deux tests synthétiques (conforme / non conforme) via le service XPC signé.
+La préférence n’est enregistrée qu’après succès. Chaque précontrôle réexamine
+les empreintes. L’import reste indépendant de la validation médicale et du CDA.
+Les références CDA ne sont pas incluses dans ce paquet : leur configuration
+reste distincte. L’activation ne vaut pas autorisation de dépôt.
+
+Préparation développeur, avant compilation macOS :
+python3 scripts/macos/prepare_dmp_tools.py --java-home <JDK17/Home> \
+  --vera-jar <cli-1.30.3.jar> --arch arm64
+Les empreintes des entrées doivent correspondre à dmp_tools.lock.json.
+Sortie : .dart_tool/dmp-tools/arm64, cache ignoré par Git, jamais requis chez le kiné.
+Conserver ce cache pour les builds hors ligne ; après nettoyage, le régénérer.
+Le build Xcode vérifie le cache, copie les composants dans Contents/Resources/
+DmpTools, signe les binaires Java, recalcule le manifeste, puis signe l’application.
+Les scripts de compilation existants utilisent la même phase Xcode.
+Un cache absent ou altéré bloque la compilation, pas de faux paquet prêt.
+Le programme de recette nécessite --native-picker --bundled-tools pour tester
+l’activation privée sans sélectionner les dossiers externes Java/veraPDF/CDA.
+
+Périmètre initial : macOS Apple Silicon (arm64). Le mécanisme de paquet prévoit
+x86_64, mais aucun runtime Intel n’est actuellement épinglé ou fourni. Une copie
+exécutée sous une architecture non fournie refuse l’activation avec un message.
+Windows : préparation automatique non implémentée ; l’activation est refusée.
+Ne pas annoncer ces plateformes comme couvertes par cette livraison.
+
+Mises à jour : sélectionner explicitement les distributions officielles,
+vérifier provenance, licences et architecture, mettre à jour les empreintes,
+recréer le cache, refaire les tests puis recompiler/signature/notarisation.
+Le composant n’effectue jamais de mise à jour autonome de code exécutable.
+Notices veraPDF (option MPL 2.0) et Java (GPLv2 avec Classpath Exception) incluses.
+Le paquet est privé à Companion et distribué avec ses notices ; les sources
+correspondantes sont référencées dans NOTICE.txt et java/release.
+
+Compatibilité : une installation avec configuration manuelle existante reste
+visiblement activée jusqu’à changement explicite. L’activation explicite bascule
+le précontrôle vers les composants fournis ; les nouveaux réglages CDA proposent
+ces chemins automatiquement. Les contrôles déjà configurés manuellement ne
+sont pas modifiés silencieusement. La désactivation conserve leurs preuves,
+mais bloque la préparation et les opérations DV1 réelles.

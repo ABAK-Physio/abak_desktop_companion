@@ -4,6 +4,8 @@ import '../../generated/l10n.dart';
 import 'data/practitioner_repository.dart';
 import 'models/practitioner.dart';
 import 'widgets/practitioner_form_dialog.dart';
+import 'widgets/practitioner_cps_dialog.dart';
+import 'data/practitioner_cps_service.dart';
 import '../../core/utils/date_format_utils.dart';
 import 'widgets/practitioner_qr_dialog.dart';
 
@@ -12,7 +14,6 @@ import '../../core/expert/expert_info_button.dart';
 import '../../core/settings/application_settings_service.dart';
 
 import 'package:abak_shared/abak_shared.dart';
-
 
 class PractitionerListScreen extends StatefulWidget {
   const PractitionerListScreen({super.key});
@@ -38,7 +39,7 @@ class _PractitionerListScreenState extends State<PractitionerListScreen> {
   bool _showArchived = false;
 
   final ApplicationSettingsService _applicationSettingsService =
-  const ApplicationSettingsService();
+      const ApplicationSettingsService();
 
   bool _expertModeEnabled = false;
 
@@ -50,8 +51,8 @@ class _PractitionerListScreenState extends State<PractitionerListScreen> {
   }
 
   Future<void> _loadExpertMode() async {
-    final expertModeEnabled =
-    await _applicationSettingsService.isExpertModeEnabled();
+    final expertModeEnabled = await _applicationSettingsService
+        .isExpertModeEnabled();
 
     if (!mounted) return;
 
@@ -80,6 +81,18 @@ class _PractitionerListScreenState extends State<PractitionerListScreen> {
     await _reloadPractitioners();
   }
 
+  Future<void> _importCps([Practitioner? practitioner]) async {
+    final id = await showDialog<String>(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => PractitionerCpsDialog(
+        service: PractitionerCpsService(),
+        targetId: practitioner?.practitionerId,
+      ),
+    );
+    if (id != null && mounted) await _reloadPractitioners();
+  }
+
   Future<void> _editPractitioner(Practitioner practitioner) async {
     final updated = await showDialog<Practitioner>(
       context: context,
@@ -100,9 +113,7 @@ class _PractitionerListScreenState extends State<PractitionerListScreen> {
         return AlertDialog(
           title: Text(s.practitionerList_archivePractitioner),
           content: Text(
-            s.practitionerList_archiveConfirmation(
-              practitioner.displayName,
-            ),
+            s.practitionerList_archiveConfirmation(practitioner.displayName),
           ),
           actions: [
             TextButton(
@@ -136,15 +147,13 @@ class _PractitionerListScreenState extends State<PractitionerListScreen> {
   Future<void> _showPractitionerQrCode(Practitioner practitioner) async {
     await showDialog<void>(
       context: context,
-      builder: (_) => PractitionerQrDialog(
-        practitioner: practitioner,
-      ),
+      builder: (_) => PractitionerQrDialog(practitioner: practitioner),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final s=S.of(context);
+    final s = S.of(context);
     return FutureBuilder<List>(
       future: _practitionersFuture,
       builder: (context, snapshot) {
@@ -154,37 +163,38 @@ class _PractitionerListScreenState extends State<PractitionerListScreen> {
           appBar: AppBar(
             title: Text(s.practitionerList_title),
             actions: [
+              if (!_showArchived)
+                TextButton.icon(
+                  onPressed: () => _importCps(),
+                  icon: const Icon(Icons.badge_outlined),
+                  label: const Text('Importer depuis une CPS'),
+                ),
               ContextHelpButton(
                 technicalInformationLabel: S.of(context).g_helpTooltip,
                 title: s.practitionerList_title,
                 content: s.help_practitionerList_helpText,
               ),
-              if (_expertModeEnabled)
-                ExpertInfoButton(info: _expertInfo(s)),
+              if (_expertModeEnabled) ExpertInfoButton(info: _expertInfo(s)),
             ],
           ),
-          body: _buildBody(
-            context,
-            snapshot,
-            practitioners,
-          ),
+          body: _buildBody(context, snapshot, practitioners),
           floatingActionButton: _showArchived
               ? null
               : FloatingActionButton.extended(
-            onPressed: _createPractitioner,
-            icon: const Icon(Icons.person_add_alt_1),
-            label: Text(s.practitionerList_button_create),
-          ),
+                  onPressed: _createPractitioner,
+                  icon: const Icon(Icons.person_add_alt_1),
+                  label: Text(s.practitionerList_button_create),
+                ),
         );
       },
     );
   }
 
   Widget _buildBody(
-      BuildContext context,
-      AsyncSnapshot<List> snapshot,
-      List practitioners,
-      ) {
+    BuildContext context,
+    AsyncSnapshot<List> snapshot,
+    List practitioners,
+  ) {
     final s = S.of(context);
     if (snapshot.connectionState == ConnectionState.waiting) {
       return const Center(child: CircularProgressIndicator());
@@ -266,21 +276,21 @@ class _PractitionerListScreenState extends State<PractitionerListScreen> {
                       subtitle: Text(
                         _showArchived
                             ? s.practitionerList_archivedOn(
-                          DateFormatUtils.formatTimestampForDisplay(
-                            context,
-                            practitioner.archivedAt,
-                          ),
-                        )
+                                DateFormatUtils.formatTimestampForDisplay(
+                                  context,
+                                  practitioner.archivedAt,
+                                ),
+                              )
                             : [
-                          if (practitioner.professionalId != null)
-                            s.practitionerList_professionalId(
-                              practitioner.professionalId!,
-                            ),
-                          if (practitioner.email != null)
-                            practitioner.email!,
-                          if (practitioner.phone != null)
-                            practitioner.phone!,
-                        ].join(' · '),
+                                if (practitioner.professionalId != null)
+                                  s.practitionerList_professionalId(
+                                    practitioner.professionalId!,
+                                  ),
+                                if (practitioner.email != null)
+                                  practitioner.email!,
+                                if (practitioner.phone != null)
+                                  practitioner.phone!,
+                              ].join(' · '),
                       ),
                       trailing: _showArchived
                           ? IconButton(
@@ -291,23 +301,31 @@ class _PractitionerListScreenState extends State<PractitionerListScreen> {
                             )
                           : Row(
                               mainAxisSize: MainAxisSize.min,
-                        children: [
-                          IconButton(
-                            tooltip: s.practitionerList_showQrCode,
-                            icon: const Icon(Icons.qr_code_2_outlined),
-                            onPressed: () => _showPractitionerQrCode(practitioner),
-                          ),
-                          IconButton(
-                            tooltip: s.practitionerList_edit,
-                            icon: const Icon(Icons.edit_outlined),
-                            onPressed: () => _editPractitioner(practitioner),
-                          ),
-                          IconButton(
-                            tooltip: s.practitionerList_archive,
-                            icon: const Icon(Icons.archive_outlined),
-                            onPressed: () => _archivePractitioner(practitioner),
-                          ),
-                        ],
+                              children: [
+                                IconButton(
+                                  tooltip: 'Données CPS du kiné',
+                                  icon: const Icon(Icons.badge_outlined),
+                                  onPressed: () => _importCps(practitioner),
+                                ),
+                                IconButton(
+                                  tooltip: s.practitionerList_showQrCode,
+                                  icon: const Icon(Icons.qr_code_2_outlined),
+                                  onPressed: () =>
+                                      _showPractitionerQrCode(practitioner),
+                                ),
+                                IconButton(
+                                  tooltip: s.practitionerList_edit,
+                                  icon: const Icon(Icons.edit_outlined),
+                                  onPressed: () =>
+                                      _editPractitioner(practitioner),
+                                ),
+                                IconButton(
+                                  tooltip: s.practitionerList_archive,
+                                  icon: const Icon(Icons.archive_outlined),
+                                  onPressed: () =>
+                                      _archivePractitioner(practitioner),
+                                ),
+                              ],
                             ),
                     );
                   },

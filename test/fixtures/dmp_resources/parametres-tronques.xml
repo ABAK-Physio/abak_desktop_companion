@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SYNTHETIQUE : preparation de tests hors reseau, pas une publication DMP -->
+<dmp-parameters version="1.0"><parameter-list code="param-si-dmp">
+<parameter code="fonctions-gestion-mineurs" value="true"/>
+<parameter code="cumul-invisible_patient-masque_ps" value="false"/>
+<parameter code="age-majorite" value="18"/>
+<parameter code="hr-periode-max-mois" value="24"/>
+</paramet

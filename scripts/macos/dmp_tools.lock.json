@@ -1,0 +1,7 @@
+{
+  "arm64": {
+    "java": "421024d84ef3baf0e5ee25beaf13810d1b8996ef9fa27483df7f72aec33df68e",
+    "release": "eb17c7b1ad44562eedb97a591987a2c456feaa5190ef5d025a1cf9896735499d",
+    "vera": "19f6edd5c92841a38d9b3b018a555b7ba173b13e4e0d29edecc232e5ba6c1d70"
+  }
+}

@@ -37,6 +37,7 @@ import '../../practitioners/widgets/practitioner_selector.dart';
 import '../data/care_episode_referring_practitioner_repository.dart';
 import '../widgets/referring_practitioner_history_dialog.dart';
 import '../../patients/screens/episode_documents_screen.dart';
+import 'report_docx_pdf_screen.dart';
 
 import '../data/care_episode_document_edit_draft_repository.dart';
 import 'care_episode_reports_workspace/widgets/assessment_template_guide.dart';
@@ -111,6 +112,7 @@ class _CareEpisodeReportsWorkspaceScreenState
   late Future<ExternalCorrespondent?> _prescribingCorrespondentFuture;
 
   bool _returningHome = false;
+  bool _openingReportPdf = false;
   AssessmentTemplateAnswers? _pendingTemplateAnswers;
   Timer? _draftSaveTimer;
   Timer? _assessmentTemplateSaveTimer;
@@ -866,33 +868,42 @@ class _CareEpisodeReportsWorkspaceScreenState
       return;
     }
 
+    String? practitionerId = report.authorPractitionerId;
     final selectedPractitionerId = await showDialog<String?>(
       context: context,
       builder: (dialogContext) {
-        String? practitionerId = report.authorPractitionerId;
-
         return AlertDialog(
-          title: Row(
-            children: [
-              Expanded(
-                child: Text(S.of(dialogContext).documentAuthor_title),
-              ),
-              ContextHelpButton(
-                technicalInformationLabel: S.of(dialogContext).g_helpTooltip,
-                title: S.of(dialogContext).documentAuthor_title,
-                content: S.of(dialogContext).documentAuthor_help,
-              ),
-            ],
-          ),
+          title: const Text('Kiné rédacteur du rapport'),
           content: SizedBox(
-            width: 420,
-            child: PractitionerSelector(
-              label: S.of(context).careEpisodeReportsWorkspaceScreen_author,
-              selectedPractitionerId: practitionerId,
-              allowEmpty: false,
-              onChanged: (value) {
-                practitionerId = value;
-              },
+            width: 520,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Ce choix concerne ce rapport et ne change pas le kiné référent. '
+                  'Dans le parcours DMP actuel, le rédacteur valide médicalement '
+                  'le PDF, puis signe le lot contenant ce PDF avec sa CPS.',
+                ),
+                const SizedBox(height: 16),
+                PractitionerSelector(
+                  label: 'Kiné rédacteur',
+                  selectedPractitionerId: practitionerId,
+                  allowEmpty: false,
+                  onChanged: (value) {
+                    practitionerId = value;
+                  },
+                ),
+                if ((report.docxFileName ?? '').isNotEmpty) ...[
+                  const SizedBox(height: 16),
+                  const Text(
+                    'Le DOCX existant reste inchangé. S’il mentionne un autre '
+                    'rédacteur, corrigez-le dans Word avant de créer une nouvelle '
+                    'version du PDF. Un changement de rédacteur impose une '
+                    'nouvelle validation médicale.',
+                  ),
+                ],
+              ],
             ),
           ),
           actions: [
@@ -913,7 +924,9 @@ class _CareEpisodeReportsWorkspaceScreenState
       },
     );
 
-    if (selectedPractitionerId == null || !mounted) {
+    if (selectedPractitionerId == null ||
+        selectedPractitionerId == report.authorPractitionerId ||
+        !mounted) {
       return;
     }
 
@@ -2363,16 +2376,11 @@ class _CareEpisodeReportsWorkspaceScreenState
 
     final now = DateTime.now().millisecondsSinceEpoch;
 
-    final currentReferringPractitioner =
-    await _loadCurrentReferringPractitioner();
-
     final savedReport = CareEpisodeReport(
       reportId: report.reportId,
       careEpisodeId: report.careEpisodeId,
       sourceAssessmentId: report.sourceAssessmentId,
-      authorPractitionerId:
-      report.authorPractitionerId ??
-          currentReferringPractitioner?.practitionerId,
+      authorPractitionerId: report.authorPractitionerId,
       recipientText: report.recipientText,
       docxFileName: report.docxFileName,
       title: title,
@@ -3093,7 +3101,7 @@ class _CareEpisodeReportsWorkspaceScreenState
       );
     }
 
-    return _loadCurrentReferringPractitioner();
+    return null;
   }
 
   Future<void> _editReferringPractitioner() async {
@@ -3283,6 +3291,24 @@ class _CareEpisodeReportsWorkspaceScreenState
       );
     } finally {
       if (mounted) setState(() => _returningHome = false);
+    }
+  }
+
+  Future<void> _createReportPdf(CareEpisodeReport report) async {
+    if (_openingReportPdf) return;
+    _openingReportPdf = true;
+    try {
+      await Navigator.of(context).push(
+        MaterialPageRoute(builder: (_) => ReportDocxPdfScreen(
+          episodeId: widget.episode.careEpisodeId,
+          patientId: widget.episode.patientId,
+          patientName: widget.patientName,
+          reportId: report.reportId,
+          reportTitle: report.title,
+        )),
+      );
+    } finally {
+      _openingReportPdf = false;
     }
   }
 
@@ -3656,6 +3682,7 @@ class _CareEpisodeReportsWorkspaceScreenState
                                       ? _cancelReportChanges
                                       : null,
                                   onEditReport: _editReport,
+                                  onCreatePdf: _createReportPdf,
                                   onDuplicateReport: _duplicateReport,
                                   onArchiveReport: _archiveReport,
                                   onExpand: () {
@@ -3690,6 +3717,7 @@ class _CareEpisodeReportsWorkspaceScreenState
                                             ? _cancelReportChanges
                                             : null,
                                         onEditReport: _editReport,
+                                        onCreatePdf: _createReportPdf,
                                         onDuplicateReport: _duplicateReport,
                                         onArchiveReport: (report) async {
                                           final navigator = Navigator.of(

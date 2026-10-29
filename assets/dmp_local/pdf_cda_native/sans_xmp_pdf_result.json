@@ -1,0 +1,22 @@
+{
+  "sha256": "5631f811c12d01c33170005a21b797eab20f89c16f63f95a1db5d09461213c30",
+  "status": "refuse",
+  "simulated": false,
+  "kind": "non_conformite",
+  "returncode": 1,
+  "reportSha256": "7275090552f0f1f2022552eb81bb689b4d11caa105286780fb8d181a35b091d2",
+  "batchSummary": {
+    "failedToParse": 0,
+    "encrypted": 0,
+    "outOfMemory": 0,
+    "veraExceptions": 0
+  },
+  "item": "/Users/jeanclaudebrucher/.codex/.chatgpt-projects/g-p-6a7829f3ecf4819196e1ba1ec7f49eaa/output/regression-pdfa-cda-native/execution-1/variants/sans_xmp.pdf",
+  "profile": "PDF/A-1b validation profile",
+  "details": {
+    "passedRules": 127,
+    "failedRules": 2,
+    "passedChecks": 827,
+    "failedChecks": 2
+  }
+}

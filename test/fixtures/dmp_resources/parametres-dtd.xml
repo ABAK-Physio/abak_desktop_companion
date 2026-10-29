@@ -1,0 +1,1 @@
+<!DOCTYPE dmp-parameters [<!ENTITY test SYSTEM "file:///CHEMIN_FICTIF_INTERDIT">]><dmp-parameters version="1.0">&test;</dmp-parameters>

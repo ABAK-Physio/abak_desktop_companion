@@ -1,0 +1,136 @@
+{
+  "fixtures": {
+    "positif": {
+      "label": "Témoin conforme",
+      "file": "positif.pdf",
+      "clinicalBlocked": false
+    },
+    "contenu_modifie": {
+      "label": "PDF modifié",
+      "file": "contenu_modifie.pdf",
+      "clinicalBlocked": false
+    },
+    "blanc": {
+      "label": "Page blanche",
+      "file": "blanc.pdf",
+      "clinicalBlocked": true
+    },
+    "entete": {
+      "label": "En-tête sans contenu clinique",
+      "file": "entete.pdf",
+      "clinicalBlocked": true
+    },
+    "sans_xmp": {
+      "label": "Métadonnées PDF absentes",
+      "file": "sans_xmp.pdf",
+      "clinicalBlocked": false
+    }
+  },
+  "entries": {
+    "cd0108f787479457adeeaef4f7d0d0b241a374f7cc74fa9ed02b9aa42df3abf6": {
+      "inspection": {
+        "allWhite": false,
+        "pages": 1,
+        "text": "DOCUMENT SYNTHETIQUE - NE PAS ENVOYER\n\nRapport clinique SYNTHETIQUE\n\nBanc local PDF/CDA - 17 octobre 2026\n\nPatient fictif : SIM-A - Fictif SYNTHETIQUE\n\nNaissance fictive : 01/01/1987\n\nAuteur : SIM-KINE | Structure : SIM-CABINET\n\nEpisode fictif : SIM-EPISODE\n\nObservation simulée\n\nDans cet exercice fictif, le patient décrit une gêne du genou lors de la montée des\nescaliers. La flexion mesurée pour le test est de 110 degrés. La douleur fictive est\ncotée à 3 sur 10.\n\nEvolution simulée\n\nAprès les séances fictives, la flexion est de 120 degrés et la douleur de 1 sur 10. La\nmontée d'un étage est décrite comme plus aisée. Ces valeurs servent uniquement à\nvérifier la conservation du contenu clinique dans le PDF.\n\nConclusion du jeu de test\n\nEvolution favorable simulée. Aucun soin réel, aucune prescription et aucune donnée\nde patient réel ne sont associés à ce document.\n\nIdentifiants non qualifiés. Aucune signature CPS. Document réservé aux validations\ntechniques hors réseau.\n\f",
+        "previews": {
+          "page-1.png": "417c00b3eb370868b52eda0308c01a10bf0b6492a874c19e4dc9254e618b1cd7"
+        }
+      },
+      "images": {
+        "page-1.png": {
+          "asset": "positif-page-1.png",
+          "sha256": "417c00b3eb370868b52eda0308c01a10bf0b6492a874c19e4dc9254e618b1cd7"
+        }
+      }
+    },
+    "bcb526a3ad1c1175a46d78a178d34df3b2cf016e91a46d295708e3ba27125010": {
+      "inspection": {
+        "allWhite": false,
+        "pages": 1,
+        "text": "DOCUMENT SYNTHETIQUE - NE PAS ENVOYER\n\nRapport clinique SYNTHETIQUE\n\nBanc local PDF/CDA - 17 octobre 2026\n\nPatient fictif : SIM-A - Fictif SYNTHETIQUE\n\nNaissance fictive : 01/01/1987\n\nAuteur : SIM-KINE | Structure : SIM-CABINET\n\nEpisode fictif : SIM-EPISODE\n\nObservation simulée\n\nDans cet exercice fictif, le patient décrit une gêne du genou lors de la montée des\nescaliers. La flexion mesurée pour le test est de 110 degrés. La douleur fictive est\ncotée à 3 sur 10.\n\nEvolution simulée\n\nAprès les séances fictives, la flexion est de 120 degrés et la douleur de 1 sur 10. La\nmontée d'un étage est décrite comme plus aisée. Ces valeurs servent uniquement à\nvérifier la conservation du contenu clinique dans le PDF.\n\nConclusion du jeu de test\n\nEvolution favorable simulée. Aucun soin réel, aucune prescription et aucune donnée\nde patient réel ne sont associés à ce document.\n\nIdentifiants non qualifiés. Aucune signature CPS. Document réservé aux validations\ntechniques hors réseau.\n\f",
+        "previews": {
+          "page-1.png": "dfe26ccfafec411a33929c931086108f5900ce5e9630c192f60049dd349904d4"
+        }
+      },
+      "images": {
+        "page-1.png": {
+          "asset": "contenu_modifie-page-1.png",
+          "sha256": "dfe26ccfafec411a33929c931086108f5900ce5e9630c192f60049dd349904d4"
+        }
+      }
+    },
+    "217bd9cc43924a725ec4b1809cde9d78cb3b519716be2a0f31db13cfc5bd91a0": {
+      "inspection": {
+        "allWhite": true,
+        "pages": 1,
+        "text": "\f",
+        "previews": {
+          "page-1.png": "f4838edef36d79cb8c8903253756c9eb87280d379ada7a040b95733cd846830f"
+        }
+      },
+      "images": {
+        "page-1.png": {
+          "asset": "blanc-page-1.png",
+          "sha256": "f4838edef36d79cb8c8903253756c9eb87280d379ada7a040b95733cd846830f"
+        }
+      }
+    },
+    "de507826b34b01c4b19b3497149702fe5b09dccb044d96563ab69f35f7117cb3": {
+      "inspection": {
+        "allWhite": false,
+        "pages": 1,
+        "text": "SYNTHETIQUE - EN-TETE SEUL\n\f",
+        "previews": {
+          "page-1.png": "ac673c29cec9f5882888623fbb5a887abfb26d3bae26a154fab0bb2a0511f4bf"
+        }
+      },
+      "images": {
+        "page-1.png": {
+          "asset": "entete-page-1.png",
+          "sha256": "ac673c29cec9f5882888623fbb5a887abfb26d3bae26a154fab0bb2a0511f4bf"
+        }
+      }
+    },
+    "5631f811c12d01c33170005a21b797eab20f89c16f63f95a1db5d09461213c30": {
+      "inspection": {
+        "allWhite": false,
+        "pages": 1,
+        "text": "DOCUMENT SYNTHETIQUE - NE PAS ENVOYER\n\nRapport clinique SYNTHETIQUE\n\nBanc local PDF/CDA - 17 octobre 2026\n\nPatient fictif : SIM-A - Fictif SYNTHETIQUE\n\nNaissance fictive : 01/01/1987\n\nAuteur : SIM-KINE | Structure : SIM-CABINET\n\nEpisode fictif : SIM-EPISODE\n\nObservation simulée\n\nDans cet exercice fictif, le patient décrit une gêne du genou lors de la montée des\nescaliers. La flexion mesurée pour le test est de 110 degrés. La douleur fictive est\ncotée à 3 sur 10.\n\nEvolution simulée\n\nAprès les séances fictives, la flexion est de 120 degrés et la douleur de 1 sur 10. La\nmontée d'un étage est décrite comme plus aisée. Ces valeurs servent uniquement à\nvérifier la conservation du contenu clinique dans le PDF.\n\nConclusion du jeu de test\n\nEvolution favorable simulée. Aucun soin réel, aucune prescription et aucune donnée\nde patient réel ne sont associés à ce document.\n\nIdentifiants non qualifiés. Aucune signature CPS. Document réservé aux validations\ntechniques hors réseau.\n\f",
+        "previews": {
+          "page-1.png": "417c00b3eb370868b52eda0308c01a10bf0b6492a874c19e4dc9254e618b1cd7"
+        }
+      },
+      "images": {
+        "page-1.png": {
+          "asset": "sans_xmp-page-1.png",
+          "sha256": "417c00b3eb370868b52eda0308c01a10bf0b6492a874c19e4dc9254e618b1cd7"
+        }
+      }
+    }
+  },
+  "context": {
+    "author": "SIM-KINE",
+    "class": "11",
+    "confidentiality": "N",
+    "date": "20261017120000+0200",
+    "id": "C2672AF2-EEA6-4075-A3DD-4EDAEDB07C25",
+    "patient": "SIM-A",
+    "setId": "D82AB609-CBB0-470F-B3AB-B666FD5FDCCC",
+    "structure": "SIM-CABINET",
+    "title": "Rapport clinique SYNTHETIQUE",
+    "type": "11506-3",
+    "version": "1"
+  },
+  "files": {
+    "positif.pdf": "cd0108f787479457adeeaef4f7d0d0b241a374f7cc74fa9ed02b9aa42df3abf6",
+    "positif-page-1.png": "417c00b3eb370868b52eda0308c01a10bf0b6492a874c19e4dc9254e618b1cd7",
+    "contenu_modifie.pdf": "bcb526a3ad1c1175a46d78a178d34df3b2cf016e91a46d295708e3ba27125010",
+    "contenu_modifie-page-1.png": "dfe26ccfafec411a33929c931086108f5900ce5e9630c192f60049dd349904d4",
+    "blanc.pdf": "217bd9cc43924a725ec4b1809cde9d78cb3b519716be2a0f31db13cfc5bd91a0",
+    "blanc-page-1.png": "f4838edef36d79cb8c8903253756c9eb87280d379ada7a040b95733cd846830f",
+    "entete.pdf": "de507826b34b01c4b19b3497149702fe5b09dccb044d96563ab69f35f7117cb3",
+    "entete-page-1.png": "ac673c29cec9f5882888623fbb5a887abfb26d3bae26a154fab0bb2a0511f4bf",
+    "sans_xmp.pdf": "5631f811c12d01c33170005a21b797eab20f89c16f63f95a1db5d09461213c30",
+    "sans_xmp-page-1.png": "417c00b3eb370868b52eda0308c01a10bf0b6492a874c19e4dc9254e618b1cd7"
+  }
+}

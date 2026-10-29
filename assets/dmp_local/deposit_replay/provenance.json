@@ -1,0 +1,38 @@
+{
+  "assets/dmp_local/deposit_replay/signature-request.xml": {
+    "source": "/Users/jeanclaudebrucher/.codex/.chatgpt-projects/g-p-6a7829f3ecf4819196e1ba1ec7f49eaa/output/depot-td21/resultats/td21-7053b026-5dfd-4a9c-ba2d-ba543c695481/requete-soap.xml",
+    "sha256": "689092c0bf9aff3a283ad7dc83ab6cbe9935607a04eea5176966ec5fce412d5a"
+  },
+  "assets/dmp_local/deposit_replay/signature-response.bin": {
+    "source": "/Users/jeanclaudebrucher/.codex/.chatgpt-projects/g-p-6a7829f3ecf4819196e1ba1ec7f49eaa/output/depot-td21/resultats/td21-7053b026-5dfd-4a9c-ba2d-ba543c695481/reponse.xml",
+    "sha256": "1f9b289f1934374d6937f3446f7092635534be008da21e1b291351c65bebf6aa"
+  },
+  "assets/dmp_local/deposit_replay/signature-headers.txt": {
+    "source": "/Users/jeanclaudebrucher/.codex/.chatgpt-projects/g-p-6a7829f3ecf4819196e1ba1ec7f49eaa/output/depot-td21/resultats/td21-7053b026-5dfd-4a9c-ba2d-ba543c695481/http.txt",
+    "sha256": "25b4b2170b29a45dda77b9c3e5c4c5100b37ab4078dac6801b45a9b6360757e9"
+  },
+  "assets/dmp_local/deposit_replay/metadata-request.xml": {
+    "source": "/Users/jeanclaudebrucher/.codex/.chatgpt-projects/g-p-6a7829f3ecf4819196e1ba1ec7f49eaa/output/depot-td21-r5/resultats/td21-b04fd3a6-cb99-4631-9103-5a30719a9691/requete-soap.xml",
+    "sha256": "21eb4ebc8888cb47dc95309ba68dd95f31ebef7c1c8d729b26a4418824edfe21"
+  },
+  "assets/dmp_local/deposit_replay/metadata-response.bin": {
+    "source": "/Users/jeanclaudebrucher/.codex/.chatgpt-projects/g-p-6a7829f3ecf4819196e1ba1ec7f49eaa/output/depot-td21-r5/resultats/td21-b04fd3a6-cb99-4631-9103-5a30719a9691/reponse.xml",
+    "sha256": "99241a3ca1777cf4a8d3a2ada790d086159113bf3a12f8a9dd8581ab0620d775"
+  },
+  "assets/dmp_local/deposit_replay/metadata-headers.txt": {
+    "source": "/Users/jeanclaudebrucher/.codex/.chatgpt-projects/g-p-6a7829f3ecf4819196e1ba1ec7f49eaa/output/depot-td21-r5/resultats/td21-b04fd3a6-cb99-4631-9103-5a30719a9691/http.txt",
+    "sha256": "b397e81b1feae632511f249977fbfb9940af32b6dbfd6a350b032fbc8960f8cb"
+  },
+  "assets/dmp_local/deposit_replay/accepted-request.xml": {
+    "source": "/Users/jeanclaudebrucher/.codex/.chatgpt-projects/g-p-6a7829f3ecf4819196e1ba1ec7f49eaa/output/depot-td21-r6/resultats/td21-c544acd5-9fdd-43c1-9b75-b176eee37e80/requete-soap.xml",
+    "sha256": "ca0e658c81650fa6532124cf6490b4d283ab53105a5b10f82d9411e7a424b5b2"
+  },
+  "assets/dmp_local/deposit_replay/accepted-response.bin": {
+    "source": "/Users/jeanclaudebrucher/.codex/.chatgpt-projects/g-p-6a7829f3ecf4819196e1ba1ec7f49eaa/output/depot-td21-r6/resultats/td21-c544acd5-9fdd-43c1-9b75-b176eee37e80/reponse.xml",
+    "sha256": "b234cea5ed30d12e2736e3a429772b73b0fbb15366a62814d3c5bca169ff1dce"
+  },
+  "assets/dmp_local/deposit_replay/accepted-headers.txt": {
+    "source": "/Users/jeanclaudebrucher/.codex/.chatgpt-projects/g-p-6a7829f3ecf4819196e1ba1ec7f49eaa/output/depot-td21-r6/resultats/td21-c544acd5-9fdd-43c1-9b75-b176eee37e80/http.txt",
+    "sha256": "5dc8407000a2662d6f4f34816bde3c33f19c5006f05383017c8aa2828dde8d89"
+  }
+}

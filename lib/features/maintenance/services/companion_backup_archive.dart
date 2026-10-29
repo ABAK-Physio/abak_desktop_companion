@@ -8,9 +8,16 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import '../../../core/database/database_service.dart';
 import 'backup_directory_access.dart';
+import 'document_backup_contents.dart';
 
 class PreparedBackup {
-  PreparedBackup(this.directory, this.folders, {required this.legacy});
+  PreparedBackup(
+    this.directory,
+    this.folders, {
+    required this.legacy,
+    this.managed = const [],
+  });
+  final List<Map<String, dynamic>> managed;
   final Directory directory;
   final List<Map<String, dynamic>> folders;
   final bool legacy;
@@ -59,7 +66,9 @@ class CompanionBackupArchive {
         final before = await entry.stat();
         await entry.copy(destination);
         final after = await entry.stat();
-        if (before.size != after.size || before.modified != after.modified) {
+        if (before.size != after.size ||
+            before.modified != after.modified ||
+            await digest(entry) != await digest(File(destination))) {
           throw FileSystemException(
             'Document modifié pendant la sauvegarde',
             entry.path,
@@ -110,10 +119,19 @@ class CompanionBackupArchive {
     required String outputPath,
     required BackupDirectoryAccess access,
   }) async {
-    final staging = await Directory.systemTemp.createTemp('abak_backup_');
+    final allocated = await Directory.systemTemp.createTemp('abak_backup_');
+    final staging = Directory(await allocated.resolveSymbolicLinks());
     final leases = <String, BackupDirectoryLease>{};
     ZipFileEncoder? encoder;
     try {
+      final support = await DocumentBackupContents.support();
+      for (final name in DocumentBackupContents.names) {
+        if (p.isWithin(p.join(support.path, name), p.absolute(outputPath))) {
+          throw const FormatException(
+            'La sauvegarde doit être placée hors du stockage des pièces',
+          );
+        }
+      }
       final db = await DatabaseService.database;
       final snapshot = p.join(staging.path, 'database.db');
       // SQLite makes a consistent snapshot, including committed WAL contents.
@@ -124,7 +142,9 @@ class CompanionBackupArchive {
         options: OpenDatabaseOptions(readOnly: true, singleInstance: false),
       );
       late List<Map<String, Object?>> rows;
+      late List<Map<String, dynamic>> managed;
       try {
+        managed = await DocumentBackupContents.capture(copy, staging);
         rows = await copy.query(
           'patient_document_folders',
           orderBy: 'root_path, patient_id',
@@ -181,7 +201,8 @@ class CompanionBackupArchive {
       await File(p.join(staging.path, 'manifest.json')).writeAsString(
         jsonEncode({
           'format': 'abak-companion-backup',
-          'version': 1,
+          'version': 2,
+          'managed': managed,
           'createdAt': DateTime.now().toUtc().toIso8601String(),
           'folders': folders,
           'entries': entries,
@@ -205,7 +226,8 @@ class CompanionBackupArchive {
   }
 
   Future<PreparedBackup> prepare(String backupPath) async {
-    final staging = await Directory.systemTemp.createTemp('abak_restore_');
+    final allocated = await Directory.systemTemp.createTemp('abak_restore_');
+    final staging = Directory(await allocated.resolveSymbolicLinks());
     InputFileStream? input;
     try {
       if (p.extension(backupPath).toLowerCase() == '.db') {
@@ -236,13 +258,19 @@ class CompanionBackupArchive {
           jsonDecode(utf8.decode(manifestFile.readBytes()!))
               as Map<String, dynamic>;
       if (manifest['format'] != 'abak-companion-backup' ||
-          manifest['version'] != 1) {
+          ![1, 2].contains(manifest['version'])) {
         throw const FormatException('Format de sauvegarde non pris en charge');
       }
       final entries = (manifest['entries'] as List)
           .cast<Map<String, dynamic>>();
       final folders = (manifest['folders'] as List)
           .cast<Map<String, dynamic>>();
+      final managed = manifest['version'] == 2
+          ? (manifest['managed'] as List).cast<Map<String, dynamic>>()
+          : <Map<String, dynamic>>[];
+      if (manifest['version'] == 2) {
+        DocumentBackupContents.validateRoots(managed);
+      }
       final allowed = <String>{'manifest.json'};
       for (final entry in entries) {
         final name = entry['path'] as String;
@@ -296,6 +324,14 @@ class CompanionBackupArchive {
         final name = entry['path'] as String;
         if (name != 'database.db' &&
             name != 'documents' &&
+            !(managed.isNotEmpty &&
+                (name == 'managed' ||
+                    managed.any(
+                      (m) =>
+                          m['present'] == true &&
+                          (name == 'managed/${m['name']}' ||
+                              name.startsWith('managed/${m['name']}/')),
+                    ))) &&
             !folders.any(
               (f) =>
                   name == f['archivePath'] ||
@@ -311,6 +347,9 @@ class CompanionBackupArchive {
         options: OpenDatabaseOptions(readOnly: true, singleInstance: false),
       );
       try {
+        if (managed.isNotEmpty) {
+          await DocumentBackupContents.validate(db, staging, managed);
+        }
         final associations = await db.query('patient_document_folders');
         if (associations.length != folders.length ||
             folders.any(
@@ -328,7 +367,7 @@ class CompanionBackupArchive {
       } finally {
         await db.close();
       }
-      return PreparedBackup(staging, folders, legacy: false);
+      return PreparedBackup(staging, folders, legacy: false, managed: managed);
     } catch (_) {
       await staging.delete(recursive: true);
       rethrow;

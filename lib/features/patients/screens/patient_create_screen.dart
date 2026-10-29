@@ -7,6 +7,7 @@ import '../../../core/utils/date_format_utils.dart';
 import '../../../generated/l10n.dart';
 import '../data/patient_repository.dart';
 import '../models/patient.dart';
+import '../services/patient_qualification_service.dart';
 import '../../smart_card/widgets/vitale_beneficiary_selector.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/services.dart';
@@ -51,6 +52,7 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
   bool _loadingVitale = false;
   bool _identityReadFromVitale = false;
   DateTime? _vitaleReadAt;
+  VitaleIdentity? _vitaleIdentity;
 
   final ApplicationSettingsService _applicationSettingsService =
       const ApplicationSettingsService();
@@ -271,7 +273,12 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
         await _patientRepository.attachNirToPatient(
           patientId: patient.patientId,
           nir: nir,
+          vitaleIdentity: _vitaleIdentity,
+          vitaleReadAt: _vitaleReadAt,
         );
+      } else if (_vitaleIdentity != null && _vitaleReadAt != null) {
+        await PatientQualificationService().recordVitale(
+          patient.patientId, _vitaleIdentity!, _vitaleReadAt!);
       }
     } catch (error) {
       if (!mounted) {
@@ -360,8 +367,19 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
           : <Patient>[];
 
       if (patientsWithSameNir.isNotEmpty) {
-        final patient = patientsWithSameNir.first;
-
+        final patient = await _selectMatchingPatient(patientsWithSameNir);
+        if (patient == null || !mounted) return true;
+        try {
+          await PatientQualificationService().recordVitale(
+            patient.patientId, identity, _vitaleReadAt!);
+        } catch (_) {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Impossible de conserver la lecture Vitale.')));
+          }
+          return true;
+        }
+        if (!mounted) return true;
         await showDialog<void>(
           context: context,
           barrierDismissible: false,
@@ -416,6 +434,8 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
             await _patientRepository.attachNirToPatient(
               patientId: selectedPatient.patientId,
               nir: nir,
+              vitaleIdentity: identity,
+              vitaleReadAt: _vitaleReadAt,
             );
           } catch (error) {
             if (!mounted) {
@@ -739,10 +759,18 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
       return;
     }
 
+    final previousIdentity = _vitaleIdentity;
+    final previousReadAt = _vitaleReadAt;
+    _vitaleIdentity = identity;
+    _vitaleReadAt = DateTime.now();
     final existingPatientResolved =
     await _resolveExistingPatient(identity);
 
     if (!mounted || existingPatientResolved) {
+      // A cancelled association must not attach this beneficiary's reading to
+      // the patient whose form was already being edited.
+      _vitaleIdentity = previousIdentity;
+      _vitaleReadAt = previousReadAt;
       return;
     }
 
@@ -775,7 +803,6 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
       _nir = nir?.isNotEmpty == true ? nir : null;
 
       _identityReadFromVitale = true;
-      _vitaleReadAt = DateTime.now();
     });
 
     ScaffoldMessenger.of(context).showSnackBar(
@@ -807,6 +834,8 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
         birthDate: _birthDateToIsoOrNull(),
         sexCode: _sexCode,
         nir: _nir,
+        vitaleIdentity: _vitaleIdentity,
+        vitaleReadAt: _vitaleReadAt,
       );
 
       if (!mounted) return;

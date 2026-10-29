@@ -7,6 +7,7 @@ import '../models/practitioner.dart';
 import '../../../core/expert/expert_context_info.dart';
 import '../../../core/expert/expert_info_button.dart';
 import '../../../core/settings/application_settings_service.dart';
+import '../practitioner_report_settings_screen.dart';
 
 class PractitionerFormDialog extends StatefulWidget {
   final Practitioner? initialPractitioner;
@@ -22,14 +23,14 @@ class _PractitionerFormDialogState extends State<PractitionerFormDialog> {
     return ExpertContextInfo(
       contextName: s.practitionerNew_newPractitioner,
       sourceFile:
-      'lib/features/practitioners/widgets/practitioner_form_dialog.dart',
+          'lib/features/practitioners/widgets/practitioner_form_dialog.dart',
       arbPrefix: 'practitionerNew',
       comment: s.practitionerNew_cet_ecran_permet,
     );
   }
 
   final ApplicationSettingsService _applicationSettingsService =
-  const ApplicationSettingsService();
+      const ApplicationSettingsService();
 
   bool _expertModeEnabled = false;
 
@@ -43,8 +44,6 @@ class _PractitionerFormDialogState extends State<PractitionerFormDialog> {
   late final TextEditingController _phoneController;
 
   bool get _isEditing => widget.initialPractitioner != null;
-
-
 
   @override
   void initState() {
@@ -64,8 +63,8 @@ class _PractitionerFormDialogState extends State<PractitionerFormDialog> {
   }
 
   Future<void> _loadExpertMode() async {
-    final expertModeEnabled =
-    await _applicationSettingsService.isExpertModeEnabled();
+    final expertModeEnabled = await _applicationSettingsService
+        .isExpertModeEnabled();
 
     if (!mounted) return;
 
@@ -134,10 +133,7 @@ class _PractitionerFormDialogState extends State<PractitionerFormDialog> {
                 : s.practitionerNew_newPractitioner,
             content: s.practitionerNew_help,
           ),
-          if (_expertModeEnabled)
-            ExpertInfoButton(
-              info: _expertInfo(s),
-            ),
+          if (_expertModeEnabled) ExpertInfoButton(info: _expertInfo(s)),
         ],
       ),
       content: SizedBox(
@@ -150,7 +146,9 @@ class _PractitionerFormDialogState extends State<PractitionerFormDialog> {
               children: [
                 TextFormField(
                   controller: _displayNameController,
-                  decoration: InputDecoration(labelText: s.practitionerNew_displayName),
+                  decoration: InputDecoration(
+                    labelText: s.practitionerNew_displayName,
+                  ),
                   validator: (value) {
                     if (value == null || value.trim().isEmpty) {
                       return s.practitionerNew_displayNameRequired;
@@ -161,12 +159,16 @@ class _PractitionerFormDialogState extends State<PractitionerFormDialog> {
                 const SizedBox(height: 12),
                 TextFormField(
                   controller: _firstNameController,
-                  decoration: InputDecoration(labelText: s.practitionerNew_firstName),
+                  decoration: InputDecoration(
+                    labelText: s.practitionerNew_firstName,
+                  ),
                 ),
                 const SizedBox(height: 12),
                 TextFormField(
                   controller: _lastNameController,
-                  decoration: InputDecoration(labelText: s.practitionerNew_lastName),
+                  decoration: InputDecoration(
+                    labelText: s.practitionerNew_lastName,
+                  ),
                 ),
                 const SizedBox(height: 12),
                 TextFormField(
@@ -179,13 +181,35 @@ class _PractitionerFormDialogState extends State<PractitionerFormDialog> {
                 const SizedBox(height: 12),
                 TextFormField(
                   controller: _emailController,
-                  decoration: InputDecoration(labelText: s.practitionerNew_email),
+                  decoration: InputDecoration(
+                    labelText: s.practitionerNew_email,
+                  ),
                 ),
                 const SizedBox(height: 12),
                 TextFormField(
                   controller: _phoneController,
-                  decoration: InputDecoration(labelText: s.practitionerNew_phone),
+                  decoration: InputDecoration(
+                    labelText: s.practitionerNew_phone,
+                  ),
                 ),
+                if (_isEditing) ...[
+                  const SizedBox(height: 16),
+                  OutlinedButton.icon(
+                    icon: const Icon(Icons.description_outlined),
+                    label: const Text(
+                      'Situations d’exercice et paramètres des rapports',
+                    ),
+                    onPressed: () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => PractitionerReportSettingsScreen(
+                          practitionerId:
+                              widget.initialPractitioner!.practitionerId,
+                          name: widget.initialPractitioner!.displayName,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ],
             ),
           ),
@@ -198,7 +222,9 @@ class _PractitionerFormDialogState extends State<PractitionerFormDialog> {
         ),
         FilledButton(
           onPressed: _submit,
-          child: Text(_isEditing ? s.practitionerNew_save : s.practitionerNew_create),
+          child: Text(
+            _isEditing ? s.practitionerNew_save : s.practitionerNew_create,
+          ),
         ),
       ],
     );

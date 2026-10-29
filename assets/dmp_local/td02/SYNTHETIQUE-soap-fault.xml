@@ -1,0 +1,1 @@
+<s:Envelope xmlns:s='http://www.w3.org/2003/05/soap-envelope'><s:Body><s:Fault><s:Code><s:Value>s:Receiver</s:Value></s:Code><s:Reason><s:Text xml:lang='fr'>Erreur synthétique</s:Text></s:Reason></s:Fault></s:Body></s:Envelope>

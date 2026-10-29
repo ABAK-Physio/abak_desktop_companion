@@ -1,0 +1,22 @@
+{
+  "sha256": "e656cd4713c871198452b6f37cbb51bbc43c2abeacf0c889805fe3528f8842b6",
+  "status": "refuse",
+  "simulated": false,
+  "kind": "non_conformite",
+  "returncode": 1,
+  "reportSha256": "9c998ffe41ff83d52b642e6889952a87c0825f82b41a4fdf8fcfe8a60304598b",
+  "batchSummary": {
+    "failedToParse": 0,
+    "encrypted": 0,
+    "outOfMemory": 0,
+    "veraExceptions": 0
+  },
+  "item": "/Users/jeanclaudebrucher/.codex/.chatgpt-projects/g-p-6a7829f3ecf4819196e1ba1ec7f49eaa/output/regression-pdfa-cda-native/execution-1/variants/police_non_incorporee.pdf",
+  "profile": "PDF/A-1b validation profile",
+  "details": {
+    "passedRules": 128,
+    "failedRules": 1,
+    "passedChecks": 853,
+    "failedChecks": 1
+  }
+}

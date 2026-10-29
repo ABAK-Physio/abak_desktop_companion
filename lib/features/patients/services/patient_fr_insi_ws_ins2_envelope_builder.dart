@@ -3,8 +3,7 @@ import 'package:xml/xml.dart';
 class PatientFrInsiWsIns2EnvelopeBuilder {
   const PatientFrInsiWsIns2EnvelopeBuilder();
 
-  static const String soapNamespace =
-      'http://www.w3.org/2003/05/soap-envelope';
+  static const String soapNamespace = 'http://www.w3.org/2003/05/soap-envelope';
 
   static const String addressingNamespace =
       'http://www.w3.org/2005/08/addressing';
@@ -22,22 +21,18 @@ class PatientFrInsiWsIns2EnvelopeBuilder {
     required String contexteBamXml,
     required String bodyXml,
     String? psAssertionXml,
+    String operationAction = action,
+    String? vitaleAssertionXml,
   }) {
-    final contexteLps =
-        XmlDocument.parse(contexteLpsXml).rootElement;
-    final messageId =
-        XmlDocument.parse(messageIdXml).rootElement;
-    final contexteBam =
-        XmlDocument.parse(contexteBamXml).rootElement;
-    final body =
-        XmlDocument.parse(bodyXml).rootElement;
+    final contexteLps = XmlDocument.parse(contexteLpsXml).rootElement;
+    final messageId = XmlDocument.parse(messageIdXml).rootElement;
+    final contexteBam = XmlDocument.parse(contexteBamXml).rootElement;
+    final body = XmlDocument.parse(bodyXml).rootElement;
 
     XmlElement? psAssertion;
 
-    if (psAssertionXml != null &&
-        psAssertionXml.trim().isNotEmpty) {
-      psAssertion =
-          XmlDocument.parse(psAssertionXml).rootElement;
+    if (psAssertionXml != null && psAssertionXml.trim().isNotEmpty) {
+      psAssertion = XmlDocument.parse(psAssertionXml).rootElement;
     }
 
     final builder = XmlBuilder();
@@ -55,10 +50,7 @@ class PatientFrInsiWsIns2EnvelopeBuilder {
           nest: () {
             builder.xml(contexteBam.toXmlString());
 
-            builder.element(
-              'add:Action',
-              nest: action,
-            );
+            builder.element('add:Action', nest: operationAction);
 
             builder.xml(contexteLps.toXmlString());
             builder.xml(messageId.toXmlString());
@@ -67,9 +59,14 @@ class PatientFrInsiWsIns2EnvelopeBuilder {
               builder.element(
                 'wsse:Security',
                 nest: () {
-                  builder.xml(
-                    psAssertion!.toXmlString(),
-                  );
+                  builder.xml(psAssertion!.toXmlString());
+                  if (vitaleAssertionXml != null) {
+                    builder.xml(
+                      XmlDocument.parse(
+                        vitaleAssertionXml,
+                      ).rootElement.toXmlString(),
+                    );
+                  }
                 },
               );
             }
@@ -87,5 +84,4 @@ class PatientFrInsiWsIns2EnvelopeBuilder {
 
     return builder.buildDocument().toXmlString();
   }
-
 }

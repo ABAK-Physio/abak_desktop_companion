@@ -1,0 +1,8 @@
+
+--uuid:874b1b2d-3b90-490d-b69b-70e12fbd2b35
+Content-Type: application/xop+xml; charset=UTF-8; type="application/soap+xml"
+Content-Transfer-Encoding: binary
+Content-ID: <root.message@cxf.apache.org>
+
+<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope"><soap:Header><Action xmlns="http://www.w3.org/2005/08/addressing">urn:ihe:iti:2007:ProvideAndRegisterDocumentSet-bResponse</Action><MessageID xmlns="http://www.w3.org/2005/08/addressing">urn:uuid:d29cb9b0-c00a-468c-a4de-8eea04dcd4ad</MessageID><To xmlns="http://www.w3.org/2005/08/addressing">http://www.w3.org/2005/08/addressing/anonymous</To><RelatesTo xmlns="http://www.w3.org/2005/08/addressing">urn:uuid:9dab34d1-72ee-49c8-88d8-51b98b8fbec4</RelatesTo></soap:Header><soap:Body><ns2:RegistryResponse xmlns:ns2="urn:oasis:names:tc:ebxml-regrep:xsd:rs:3.0" xmlns:ns3="urn:oasis:names:tc:ebxml-regrep:xsd:lcm:3.0" xmlns:ns4="urn:ihe:iti:xds-b:2007" xmlns:ns5="urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0" xmlns:ns6="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" status="urn:oasis:names:tc:ebxml-regrep:ResponseStatusType:Success"/></soap:Body></soap:Envelope>
+--uuid:874b1b2d-3b90-490d-b69b-70e12fbd2b35--

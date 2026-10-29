@@ -1,3 +1,5 @@
+import 'package:abak_vitale/abak_vitale.dart';
+import '../services/patient_qualification_service.dart';
 import '../../../core/database/database_service.dart';
 import 'package:uuid/uuid.dart';
 
@@ -144,6 +146,8 @@ class PatientRepository {
         'care_episodes',
         'patient_identity',
         'patient_attributes',
+        'patient_identity_events',
+        'patient_vitale_readings',
         'patient_fr_health_identity',
         'patients',
       ]) {
@@ -162,6 +166,8 @@ class PatientRepository {
     String? birthDate,
     String sexCode = 'U',
     String? nir,
+    VitaleIdentity? vitaleIdentity,
+    DateTime? vitaleReadAt,
   }) async {
     final db = await DatabaseService.database;
     final now = DateTime.now().millisecondsSinceEpoch;
@@ -177,10 +183,13 @@ class PatientRepository {
       updatedAt: now,
     );
 
-    await db.insert(
-      'patients',
-      patient.toMap(),
-    );
+    await db.transaction((txn) async {
+      await txn.insert('patients', patient.toMap());
+      if (vitaleIdentity != null && vitaleReadAt != null) {
+        await PatientQualificationService.recordVitaleInTransaction(txn,
+          patientId: patient.patientId, identity: vitaleIdentity, readAt: vitaleReadAt);
+      }
+    });
 
     return patient;
   }
@@ -223,12 +232,15 @@ class PatientRepository {
   Future<void> updatePatient(Patient patient) async {
     final db = await DatabaseService.database;
 
-    await db.update(
-      'patients',
-      patient.toMap(),
-      where: 'patient_id = ?',
-      whereArgs: [patient.patientId],
-    );
+    await db.transaction((txn) async {
+      final existing = await txn.query('patients', where: 'patient_id = ?',
+          whereArgs: [patient.patientId]);
+      if (existing.length != 1) throw StateError('Fiche patient indisponible.');
+      await PatientQualificationService.synchronizePatientEdit(
+          txn, existing.single, patient.toMap());
+      await txn.update('patients', patient.toMap(),
+          where: 'patient_id = ?', whereArgs: [patient.patientId]);
+    });
   }
 
   Future<List<Patient>> getArchivedPatients() async {
@@ -404,6 +416,8 @@ class PatientRepository {
   Future<void> attachNirToPatient({
     required String patientId,
     required String nir,
+    VitaleIdentity? vitaleIdentity,
+    DateTime? vitaleReadAt,
   }) async {
     final normalizedNir = nir.trim();
 
@@ -413,15 +427,16 @@ class PatientRepository {
 
     final db = await DatabaseService.database;
 
-    await db.update(
-      'patients',
-      {
+    await db.transaction((txn) async {
+      await txn.update('patients', {
         'nir': normalizedNir,
         'updated_at': DateTime.now().millisecondsSinceEpoch,
-      },
-      where: 'patient_id = ?',
-      whereArgs: [patientId],
-    );
+      }, where: 'patient_id = ?', whereArgs: [patientId]);
+      if (vitaleIdentity != null && vitaleReadAt != null) {
+        await PatientQualificationService.recordVitaleInTransaction(txn,
+          patientId: patientId, identity: vitaleIdentity, readAt: vitaleReadAt);
+      }
+    });
   }
 
 }

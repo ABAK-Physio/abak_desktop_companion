@@ -41,15 +41,12 @@ class CompanionVersion {
     _buildNumber;
   }
 
-  /// Les builds distribués doivent être croissants, même si la version change.
+  /// Le build identifie l'ordre des livraisons, indépendamment du libellé CNDA.
+  /// Un changement de version commerciale à build égal n'est pas un retour arrière.
   bool isOlderThan(CompanionVersion other) {
-    final left = _parts;
-    final right = other._parts;
-    if (_buildNumber < other._buildNumber) return true;
-    for (var index = 0; index < left.length; index++) {
-      if (left[index] != right[index]) return left[index] < right[index];
-    }
-    return false;
+    validate();
+    other.validate();
+    return _buildNumber < other._buildNumber;
   }
 
   bool sameAs(CompanionVersion other) =>

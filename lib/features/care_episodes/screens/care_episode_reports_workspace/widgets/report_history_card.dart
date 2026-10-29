@@ -16,6 +16,7 @@ class ReportHistoryCard extends StatelessWidget {
   final ValueChanged<CareEpisodeReport> onArchiveReport;
   final VoidCallback? onExpand;
   final ValueChanged<CareEpisodeReport> onDuplicateReport;
+  final ValueChanged<CareEpisodeReport>? onCreatePdf;
 
   const ReportHistoryCard({
     super.key,
@@ -28,6 +29,7 @@ class ReportHistoryCard extends StatelessWidget {
     required this.onArchiveReport,
     required this.onExpand,
     required this.onDuplicateReport,
+    this.onCreatePdf,
   });
 
   @override
@@ -46,9 +48,10 @@ class ReportHistoryCard extends StatelessWidget {
             ),
           IconButton(
             onPressed: onCreateReportPressed,
-            tooltip: isEditingReport
-                ? s.careEpisodeReportsWorkspace_returnToReportDraft
-                : s.careEpisodeReportsWorkspace_createOrResumeReport,
+            tooltip:
+                isEditingReport
+                    ? s.careEpisodeReportsWorkspace_returnToReportDraft
+                    : s.careEpisodeReportsWorkspace_createOrResumeReport,
             icon: const Icon(Icons.description_outlined),
           ),
           if (isEditingReport)
@@ -60,9 +63,10 @@ class ReportHistoryCard extends StatelessWidget {
           if (isEditingReport || onSaveReportPressed != null)
             IconButton(
               onPressed: onSaveReportPressed,
-              tooltip: isEditingReport
-                  ? s.careEpisodeReportsWorkspace_updateReport
-                  : s.careEpisodeReportsWorkspace_saveReport,
+              tooltip:
+                  isEditingReport
+                      ? s.careEpisodeReportsWorkspace_updateReport
+                      : s.careEpisodeReportsWorkspace_saveReport,
               icon: const Icon(Icons.save_outlined),
             ),
         ],
@@ -71,27 +75,19 @@ class ReportHistoryCard extends StatelessWidget {
         future: reportsFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
+            return const Center(child: CircularProgressIndicator());
           }
 
           if (snapshot.hasError) {
             return Center(
-              child: Text(
-                s.careEpisodeReportsWorkspace_reportsLoadError,
-              ),
+              child: Text(s.careEpisodeReportsWorkspace_reportsLoadError),
             );
           }
 
           final reports = snapshot.data ?? [];
 
           if (reports.isEmpty) {
-            return Center(
-              child: Text(
-                s.careEpisodeReportsWorkspace_noReports,
-              ),
-            );
+            return Center(child: Text(s.careEpisodeReportsWorkspace_noReports));
           }
 
           return Column(
@@ -100,15 +96,11 @@ class ReportHistoryCard extends StatelessWidget {
                 columns: [
                   Expanded(
                     flex: 5,
-                    child: Text(
-                      s.careEpisodeReportsWorkspace_name,
-                    ),
+                    child: Text(s.careEpisodeReportsWorkspace_name),
                   ),
                   Expanded(
                     flex: 2,
-                    child: Text(
-                      s.careEpisodeReportsWorkspace_date,
-                    ),
+                    child: Text(s.careEpisodeReportsWorkspace_date),
                   ),
                   const SizedBox(width: 42),
                   const SizedBox(width: 42),
@@ -128,47 +120,69 @@ class ReportHistoryCard extends StatelessWidget {
                         horizontal: 8,
                         vertical: 8,
                       ),
-                      child: Row(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          Expanded(
-                            flex: 5,
-                            child: Text(
-                              report.title,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                          Expanded(
-                            flex: 2,
-                            child: Text(
-                              DateFormatUtils.formatTimestampForDisplay(
-                                context,
-                                report.reportDate,
+                          Row(
+                            children: [
+                              Expanded(
+                                flex: 5,
+                                child: Text(
+                                  report.title,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
                               ),
-                            ),
+                              Expanded(
+                                flex: 2,
+                                child: Text(
+                                  DateFormatUtils.formatTimestampForDisplay(
+                                    context,
+                                    report.reportDate,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                width: 42,
+                                child: IconButton(
+                                  onPressed: () => onEditReport(report),
+                                  tooltip: s.careEpisodeReportsWorkspace_edit,
+                                  icon: const Icon(Icons.edit_outlined),
+                                ),
+                              ),
+                              SizedBox(
+                                width: 42,
+                                child: IconButton(
+                                  onPressed: () => onDuplicateReport(report),
+                                  tooltip:
+                                      s.careEpisodeReportsWorkspace_duplicate,
+                                  icon: const Icon(Icons.copy_outlined),
+                                ),
+                              ),
+                              SizedBox(
+                                width: 42,
+                                child: IconButton(
+                                  onPressed: () => onArchiveReport(report),
+                                  tooltip:
+                                      s.careEpisodeReportsWorkspace_moveToTrash,
+                                  icon: const Icon(Icons.delete_outline),
+                                ),
+                              ),
+                            ],
                           ),
-                          SizedBox(
-                            width: 42,
-                            child: IconButton(
-                              onPressed: () => onEditReport(report),
-                              tooltip: s.careEpisodeReportsWorkspace_edit,
-                              icon: const Icon(Icons.edit_outlined),
-                            ),
-                          ),
-                          SizedBox(
-                            width: 42,
-                            child: IconButton(
-                              onPressed: () => onDuplicateReport(report),
-                              tooltip: s.careEpisodeReportsWorkspace_duplicate,
-                              icon: const Icon(Icons.copy_outlined),
-                            ),
-                          ),
-                          SizedBox(
-                            width: 42,
-                            child: IconButton(
-                              onPressed: () => onArchiveReport(report),
-                              tooltip: s.careEpisodeReportsWorkspace_moveToTrash,
-                              icon: const Icon(Icons.delete_outline),
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: Tooltip(
+                              message:
+                                  'Importer le PDF exporté depuis votre logiciel habituel.',
+                              child: TextButton.icon(
+                                onPressed:
+                                    onCreatePdf == null
+                                        ? null
+                                        : () => onCreatePdf!(report),
+                                icon: const Icon(Icons.picture_as_pdf_outlined),
+                                label: const Text('Préparer le PDF'),
+                              ),
                             ),
                           ),
                         ],

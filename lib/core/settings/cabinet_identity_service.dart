@@ -220,12 +220,17 @@ class CabinetIdentityService {
 
   Future<void> _setValue(String key, String value) async {
     final db = await DatabaseService.database;
-
-    await db.insert('application_settings', {
-      'setting_key': key,
-      'setting_value': value,
-      'updated_at': DateTime.now().millisecondsSinceEpoch,
-    }, conflictAlgorithm: ConflictAlgorithm.replace);
+    await db.transaction((txn) async {
+      final current = await txn.query('application_settings',
+        columns: ['setting_value'], where: 'setting_key=?', whereArgs: [key]);
+      // Re-saving unchanged coordinates must not invalidate report approvals.
+      if (current.firstOrNull?['setting_value'] == value) return;
+      await txn.insert('application_settings', {
+        'setting_key': key,
+        'setting_value': value,
+        'updated_at': DateTime.now().millisecondsSinceEpoch,
+      }, conflictAlgorithm: ConflictAlgorithm.replace);
+    });
   }
 
   Future<void> _deleteValue(String key) async {

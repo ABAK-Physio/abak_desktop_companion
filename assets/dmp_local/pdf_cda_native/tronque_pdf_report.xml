@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<report>
+  <buildInformation>
+    <releaseDetails id="core" version="1.30.3" buildDate="2026-10-07T10:02:00+02:00"></releaseDetails>
+    <releaseDetails id="validation-model" version="1.30.3" buildDate="2026-10-07T13:44:00+02:00"></releaseDetails>
+    <releaseDetails id="apps" version="1.30.3" buildDate="2026-10-07T13:52:00+02:00"></releaseDetails>
+  </buildInformation>
+  <jobs>
+    <job>
+      <item size="400">
+        <name>/Users/jeanclaudebrucher/.codex/.chatgpt-projects/g-p-6a7829f3ecf4819196e1ba1ec7f49eaa/output/regression-pdfa-cda-native/execution-1/variants/tronque.pdf</name>
+      </item>
+      <taskException type="PARSE" isExecuted="true" isSuccess="false">
+        <duration start="1792229005683" finish="1792229005700">00:00:00.017</duration>
+        <exceptionMessage>Exception: Couldn't parse stream caused by exception: Document doesn't contain startxref keyword</exceptionMessage>
+      </taskException>
+      <duration start="1792229005683" finish="1792229005700">00:00:00.017</duration>
+    </job>
+  </jobs>
+  <batchSummary totalJobs="1" failedToParse="1" encrypted="0" outOfMemory="0" veraExceptions="0">
+    <validationReports compliant="0" nonCompliant="0" failedJobs="1">1</validationReports>
+    <featureReports failedJobs="0">0</featureReports>
+    <repairReports failedJobs="0">0</repairReports>
+    <duration start="1792229005677" finish="1792229005705">00:00:00.028</duration>
+  </batchSummary>
+</report>

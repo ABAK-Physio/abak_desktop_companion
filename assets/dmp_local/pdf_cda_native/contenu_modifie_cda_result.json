@@ -1,0 +1,29 @@
+{
+  "sha256": "69f21f163b37c2a2fc03c287544c1d3838550e3224bd1e1b0a1449567f61bcb0",
+  "status": "conforme",
+  "simulated": false,
+  "profiles": {
+    "structurationMinimale/ASIP-STRUCT-MIN-StrucMin": {
+      "failed-assert": [],
+      "successful-report": []
+    },
+    "IHE": {
+      "failed-assert": [],
+      "successful-report": []
+    },
+    "CI-SIS_ModelesDeContenusCDA": {
+      "failed-assert": [],
+      "successful-report": []
+    },
+    "CI-SIS_Modeles_ANS": {
+      "failed-assert": [],
+      "successful-report": []
+    },
+    "terminologies/schematron/terminologie": {
+      "failed-assert": [],
+      "successful-report": []
+    }
+  },
+  "xsd": true,
+  "xsdErrors": []
+}

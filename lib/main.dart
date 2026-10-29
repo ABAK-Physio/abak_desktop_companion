@@ -15,20 +15,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter/foundation.dart' show kReleaseMode;
 import 'package:window_manager/window_manager.dart';
-import 'package:xml/xml.dart';
 
-import 'features/patients/models/patient_fr_insi_ps_assertion_data.dart';
-import 'features/patients/services/patient_fr_insi_contexte_bam_builder.dart';
-import 'features/patients/services/patient_fr_insi_contexte_lps_builder.dart';
-import 'features/patients/services/patient_fr_insi_message_id_builder.dart';
-import 'features/patients/services/patient_fr_insi_pkcs11_object_service.dart';
-import 'features/patients/services/patient_fr_insi_ws_ins2_envelope_builder.dart';
-import 'features/patients/services/patient_fr_insi_ws_ins2_request_builder.dart';
 import 'generated/l10n.dart';
 import 'app.dart';
 import 'core/database/database_service.dart';
@@ -40,26 +32,23 @@ import 'features/maintenance/data/database_backup_repository.dart';
 import 'features/maintenance/services/local_backup_cleanup_service.dart';
 import 'features/patients/services/patient_purge_service.dart';
 import 'core/ui/app_messenger.dart';
-import 'features/patients/services/patient_fr_insi_pkcs11_diagnostic_service.dart';
-import 'features/patients/services/patient_fr_insi_pkcs11_login_service.dart';
 import 'core/speech/abak_whisper_speech_provider.dart';
 import 'core/speech/speech_to_text_provider_registry.dart';
-import 'features/patients/services/patient_fr_insi_pkcs11_signing_certificate_service.dart';
-import 'features/patients/services/patient_fr_insi_pkcs11_test_signature_service.dart';
-import 'features/patients/services/patient_fr_insi_ps_method_channel_signer.dart';
-import 'features/patients/services/patient_fr_insi_ps_signed_info_builder.dart';
-import 'features/patients/services/patient_fr_insi_ps_signed_info_canonicalizer.dart';
-import 'features/patients/services/patient_fr_insi_ps_signature_verification_service.dart';
-import 'features/patients/services/patient_fr_insi_ps_assertion_signing_service.dart';
-import 'features/patients/services/patient_fr_insi_ws_ins2_transport_service.dart';
 import 'core/ui/macos_installation_guard.dart';
+import 'core/maintenance/maintenance_session.dart';
+import 'core/maintenance/maintenance_screen.dart';
+import 'package:path_provider/path_provider.dart';
 
-Future<void> main() async {
+CompanionInstanceLock? _instanceLock;
+
+Future<void> main(List<String> arguments) async {
   WidgetsFlutterBinding.ensureInitialized();
 
   try {
-    await _startApplication();
+    await _startApplication(StartupRequest.parse(arguments));
   } catch (error, stackTrace) {
+    // Keep any normal-startup lock until exit: a partially started background
+    // service must not coexist with a second owner of this database.
     debugPrint('Échec du démarrage : $error');
     debugPrintStack(stackTrace: stackTrace);
     runApp(const _StartupFailureApp());
@@ -74,7 +63,40 @@ Future<void> main() async {
   }
 }
 
-Future<void> _startApplication() async {
+Future<void> _startApplication(StartupRequest request) async {
+  // Separate read-only surface: no business routes, history writes, network,
+  // imports, recovery, purges, speech, CPS or INSi startup is reachable here.
+  if (request.maintenance) {
+    final session = await MaintenanceSession.open(request);
+    try {
+      await windowManager.ensureInitialized();
+      runApp(
+        CompanionMaintenanceApp(
+          session: session,
+          coordinatedRequest: request.coordinatedPhase == null ? null : request,
+          bundleRecipeRoot: request.bundleResourcesRecipe
+              ? request.syntheticRoot
+              : null,
+        ),
+      );
+      await windowManager.waitUntilReadyToShow(
+        const WindowOptions(
+          size: Size(820, 620),
+          center: true,
+          title: 'ABAK Companion — Maintenance',
+        ),
+        () async {
+          await windowManager.show();
+          await windowManager.focus();
+        },
+      );
+    } catch (_) {
+      await session.close();
+      rethrow;
+    }
+    return;
+  }
+
   MacosLaunchSnapshot? launchSnapshot;
   // Ne pas polluer l’historique de la Release depuis une session de développement.
   if (Platform.isMacOS && kReleaseMode) {
@@ -122,283 +144,6 @@ Future<void> _startApplication() async {
     }
   }
 
-  try {
-    final diagnostic = await const PatientFrInsiPkcs11DiagnosticService()
-        .diagnose();
-
-    debugPrint('🔐 Diagnostic PKCS#11 : $diagnostic');
-
-    final loginResult = await const PatientFrInsiPkcs11LoginService().login(
-      pin: '1234',
-    );
-
-    debugPrint('🔐 Login PKCS#11 : $loginResult');
-
-    final objects = await const PatientFrInsiPkcs11ObjectService().listObjects(
-      pin: '1234',
-    );
-
-    debugPrint('🔐 Objets PKCS#11 : $objects');
-
-    final certificates = (objects['certificates'] as List)
-        .cast<Map<dynamic, dynamic>>();
-
-    for (final certificate in certificates) {
-      final label = certificate['label'] as String;
-      final certificateBase64 = certificate['certificateBase64'] as String;
-
-      final fileName = label.contains('Signature')
-          ? '/tmp/abak_cps_signature.der'
-          : '/tmp/abak_cps_authentication.der';
-
-      await File(fileName).writeAsBytes(base64Decode(certificateBase64));
-
-      debugPrint(
-        '🔐 Certificat exporté : '
-        '$label → $fileName',
-      );
-    }
-
-    final signingCertificate =
-        await const PatientFrInsiPkcs11SigningCertificateService()
-            .getCertificate(pin: '1234');
-
-    debugPrint(
-      '🔐 Certificat signature CPS : '
-      '{success: ${signingCertificate['success']}, '
-      'label: ${signingCertificate['label']}, '
-      'id: ${signingCertificate['id']}, '
-      'certificateLength: ${signingCertificate['certificateLength']}}',
-    );
-
-    final testSignature = await const PatientFrInsiPkcs11TestSignatureService()
-        .sign(pin: '1234');
-
-    debugPrint(
-      '🔐 Signature CPS de test : '
-      '{success: ${testSignature['success']}, '
-      'step: ${testSignature['step']}, '
-      'keyLabel: ${testSignature['keyLabel']}, '
-      'mechanism: ${testSignature['mechanism']}, '
-      'signatureLength: ${testSignature['signatureLength']}}',
-    );
-
-    const signedInfoBuilder = PatientFrInsiPsSignedInfoBuilder();
-
-    const signedInfoCanonicalizer = PatientFrInsiPsSignedInfoCanonicalizer();
-
-    const psSigner = PatientFrInsiPsMethodChannelSigner();
-
-    final signedInfoXml = signedInfoBuilder.build(
-      assertionId: '_e451e702-85aa-4c55-a083-7f02da22cc40',
-      digestValue: 'TEST_DIGEST_BASE64',
-    );
-
-    final canonicalSignedInfo = signedInfoCanonicalizer.canonicalize(
-      signedInfoXml,
-    );
-
-    final signatureValue = await psSigner.sign(
-      canonicalSignedInfo: canonicalSignedInfo,
-    );
-
-    debugPrint(
-      '🔐 Signature INSi réelle : '
-      'length=${signatureValue.length}',
-    );
-
-    final verification =
-        await const PatientFrInsiPsSignatureVerificationService().verify(
-          canonicalSignedInfo: canonicalSignedInfo,
-          signatureBase64: signatureValue,
-          certificateBase64: signingCertificate['certificateBase64'] as String,
-        );
-
-    debugPrint('🔐 Vérification signature INSi : $verification');
-
-    const realAssertionSigningService =
-        PatientFrInsiPsAssertionSigningService();
-
-    final realAssertionData = PatientFrInsiPsAssertionData(
-      assertionId: '_abak-test-insi-ps-0001',
-      issueInstant: DateTime.now().toUtc(),
-      issuer:
-          'SN=MASSAGE0087058+CN=899700870589+GN=MICHEL,'
-          'title=Masseur-Kinésithérapeute,C=FR',
-      professionalId: '899700870589',
-      billingIdentifier: '991130972',
-      activitySector: 'SA07',
-    );
-
-    final signedAssertionXml = await realAssertionSigningService
-        .buildSignedAssertion(
-          data: realAssertionData,
-          x509Certificate: signingCertificate['certificateBase64'] as String,
-        );
-
-    debugPrint(
-      '🔐 Assertion PS signée complète : '
-      'length=${signedAssertionXml.length}',
-    );
-
-    const contexteBamBuilder = PatientFrInsiContexteBamBuilder();
-    const contexteLpsBuilder = PatientFrInsiContexteLpsBuilder();
-    const messageIdBuilder = PatientFrInsiMessageIdBuilder();
-    const requestBuilder = PatientFrInsiWsIns2RequestBuilder();
-    const envelopeBuilder = PatientFrInsiWsIns2EnvelopeBuilder();
-
-    final now = DateTime.now().toUtc();
-
-    final contexteBamXml = contexteBamBuilder.build(
-      id: 'bam-test-cps',
-      time: now,
-      emitter: '899900063480',
-    );
-
-    final contexteLpsXml = contexteLpsBuilder.build(
-      id: 'lps-test-cps',
-      time: now,
-      emitter: '899900063480',
-      idam: 'NumAutorisation',
-      idamReference: '4',
-      lpsVersion: '01.00',
-      instance: 'test-instance',
-      name: 'ABAK',
-    );
-
-    final messageIdXml = messageIdBuilder.build(
-      'e451e702-85aa-4c55-a083-7f02da22cc40',
-    );
-
-    final bodyXml = requestBuilder.buildBody(
-      birthLastName: 'ADRDEUX',
-      firstNames: const ['LAURENT'],
-      sexCode: 'M',
-      birthDate: '1981-01-01',
-    );
-
-    final completeEnvelopeXml = envelopeBuilder.build(
-      contexteLpsXml: contexteLpsXml,
-      messageIdXml: messageIdXml,
-      contexteBamXml: contexteBamXml,
-      bodyXml: bodyXml,
-      psAssertionXml: signedAssertionXml,
-    );
-
-    debugPrint(
-      '🔐 Enveloppe WS_INS2 avec Assertion CPS : '
-      'length=${completeEnvelopeXml.length}',
-    );
-
-    final envelopeDocument = XmlDocument.parse(completeEnvelopeXml);
-
-    XmlElement singleEnvelopeElement(String localName) {
-      return envelopeDocument.descendants.whereType<XmlElement>().singleWhere(
-        (element) => element.name.local == localName,
-      );
-    }
-
-    final security = singleEnvelopeElement('Security');
-
-    final assertion = singleEnvelopeElement('Assertion');
-
-    final signatureValueElement = singleEnvelopeElement('SignatureValue');
-
-    final certificateElement = singleEnvelopeElement('X509Certificate');
-
-    final referenceElement = singleEnvelopeElement('Reference');
-
-    final requestElement = singleEnvelopeElement('RECSANSVITALE');
-
-    final assertionId = assertion.getAttribute('ID');
-
-    final referenceUri = referenceElement.getAttribute('URI');
-
-    final envelopeIsValid =
-        security.name.namespaceUri ==
-            PatientFrInsiWsIns2EnvelopeBuilder.wsSecurityNamespace &&
-        assertionId != null &&
-        referenceUri == '#$assertionId' &&
-        signatureValueElement.innerText.trim().isNotEmpty &&
-        certificateElement.innerText.trim().isNotEmpty &&
-        requestElement.name.namespaceUri == 'http://www.cnamts.fr/INSiRecSans';
-
-    debugPrint(
-      '🔐 Contrôle enveloppe WS_INS2 : '
-      '{valid: $envelopeIsValid, '
-      'assertionId: $assertionId, '
-      'referenceUri: $referenceUri, '
-      'signatureLength: ${signatureValueElement.innerText.trim().length}, '
-      'certificateLength: ${certificateElement.innerText.trim().length}}',
-    );
-
-    final finalSignedInfoElement = envelopeDocument.descendants
-        .whereType<XmlElement>()
-        .singleWhere((element) => element.name.local == 'SignedInfo');
-
-    final finalSignatureValue = envelopeDocument.descendants
-        .whereType<XmlElement>()
-        .singleWhere((element) => element.name.local == 'SignatureValue')
-        .innerText
-        .trim();
-
-    final finalCertificateBase64 = envelopeDocument.descendants
-        .whereType<XmlElement>()
-        .singleWhere((element) => element.name.local == 'X509Certificate')
-        .innerText
-        .trim();
-
-    final finalCanonicalSignedInfo =
-        const PatientFrInsiPsSignedInfoCanonicalizer().canonicalize(
-          finalSignedInfoElement.toXmlString(),
-        );
-
-    final finalVerification =
-        await const PatientFrInsiPsSignatureVerificationService().verify(
-          canonicalSignedInfo: finalCanonicalSignedInfo,
-          signatureBase64: finalSignatureValue,
-          certificateBase64: finalCertificateBase64,
-        );
-
-    debugPrint(
-      '🔐 Vérification signature extraite enveloppe finale : '
-      '$finalVerification',
-    );
-
-    if (!envelopeIsValid) {
-      throw StateError('Enveloppe WS_INS2 locale invalide');
-    }
-
-    final transportService = PatientFrInsiWsIns2TransportService();
-
-    try {
-      debugPrint('🌐 Envoi WS_INS2 vers environnement de qualification...');
-
-      final response = await transportService.send(
-        envelopeXml: completeEnvelopeXml,
-      );
-
-      debugPrint(
-        '🌐 Réponse WS_INS2 : '
-        'statusCode=${response.statusCode}, '
-        'bodyLength=${response.body.length}',
-      );
-
-      debugPrint(
-        '🌐 Content-Type réponse : '
-        '${response.headers['content-type']}',
-      );
-
-      debugPrint('🌐 Corps réponse WS_INS2 :');
-
-      debugPrint(response.body, wrapWidth: 1024);
-    } finally {
-      transportService.close();
-    }
-  } catch (e) {
-    debugPrint('❌ Test PKCS#11 : $e');
-  }
-
   await windowManager.ensureInitialized();
 
   final windowOptions = WindowOptions(
@@ -410,6 +155,21 @@ Future<void> _startApplication() async {
         : 'ABAK Companion — ${launchSnapshot.current.label}',
   );
 
+  // Kernel-backed lock before SQLite opens or migrates, independent of network.
+  final support = await getApplicationSupportDirectory();
+  await support.create(recursive: true);
+  try {
+    _instanceLock = await CompanionInstanceLock.acquire(
+      File('${support.path}/.companion-instance.lock'),
+    );
+  } on CompanionAlreadyRunning {
+    runApp(const _AlreadyRunningApp());
+    await windowManager.waitUntilReadyToShow(windowOptions, () async {
+      await windowManager.show();
+      await windowManager.focus();
+    });
+    return;
+  }
   await DatabaseService.database;
 
   SpeechToTextProviderRegistry.register(AbakWhisperSpeechProvider());
@@ -417,6 +177,9 @@ Future<void> _startApplication() async {
   try {
     await LocalExchangeServer.instance.start();
   } on LocalExchangeServerAlreadyRunningException {
+    await DatabaseService.closeDatabase();
+    await _instanceLock?.close();
+    _instanceLock = null;
     runApp(const _AlreadyRunningApp());
 
     windowManager.waitUntilReadyToShow(windowOptions, () async {
@@ -462,7 +225,9 @@ Future<void> _startApplication() async {
       '${backupCleanupResult.failedPaths.length} échec(s) de nettoyage',
     );
   } catch (error, stackTrace) {
-    debugPrint('Nettoyage des sauvegardes indisponible, démarrage poursuivi : $error');
+    debugPrint(
+      'Nettoyage des sauvegardes indisponible, démarrage poursuivi : $error',
+    );
     debugPrintStack(stackTrace: stackTrace);
   }
 
@@ -481,6 +246,13 @@ class _AlreadyRunningApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      localizationsDelegates: const [
+        S.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: S.delegate.supportedLocales,
       title: 'ABAK Desktop Companion',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),

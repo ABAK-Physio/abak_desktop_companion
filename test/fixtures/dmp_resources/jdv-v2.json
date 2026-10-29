@@ -1,0 +1,19 @@
+{
+  "synthetic": true,
+  "format": "banc-normalise-non-NOS",
+  "version": "TEST-2",
+  "entries": [
+    {
+      "system": "urn:abak:test:system",
+      "code": "TEST_A",
+      "label": "Libellé modifié",
+      "active": true
+    },
+    {
+      "system": "urn:abak:test:system",
+      "code": "TEST_B",
+      "label": "Nouvelle valeur",
+      "active": true
+    }
+  ]
+}

@@ -71,7 +71,10 @@ class _PatientFormDialogState extends State<PatientFormDialog> {
       firstName: _firstNameController.text.trim(),
       birthDate: _toIsoDate(_birthDateController.text),
       sexCode: _sexCode,
+      nir: initial?.nir,
       createdAt: initial?.createdAt ?? now,
+      updatedAt: now,
+      archivedAt: initial?.archivedAt,
     );
 
     Navigator.of(context).pop(patient);

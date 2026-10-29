@@ -11,6 +11,8 @@ import '../../../generated/l10n.dart';
 import '../../maintenance/services/backup_directory_access.dart';
 import '../../maintenance/services/companion_backup_archive.dart';
 import '../models/restore_result.dart';
+import '../../maintenance/services/document_backup_contents.dart';
+import '../../patients/services/document_journal_service.dart';
 
 class LocalDatabaseRestoreService {
   const LocalDatabaseRestoreService({
@@ -181,6 +183,46 @@ class LocalDatabaseRestoreService {
           'folder_name': name,
         });
       }
+      // Stage both private roots with the same rollback plan as patient folders.
+      final support = await DocumentBackupContents.support();
+      for (final managed in prepared.managed) {
+        if (managed['present'] != true) continue;
+        final name = managed['name'] as String;
+        final destination = p.join(support.path, name);
+        final type = await FileSystemEntity.type(
+          destination,
+          followLinks: false,
+        );
+        if (type != FileSystemEntityType.directory &&
+            type != FileSystemEntityType.notFound) {
+          throw const FormatException(
+            'Un lien ou fichier occupe le stockage des pièces',
+          );
+        }
+        final temporary = p.join(support.path, '.abak_restore_$id', name);
+        final plan = _FolderRestore(
+          destination,
+          temporary,
+          p.join(support.path, 'ABAK_AVANT_RESTAURATION_$stamp', name),
+          type == FileSystemEntityType.directory,
+        );
+        plans.add(plan);
+        if (plan.hadOriginal) {
+          await CompanionBackupArchive.copyTree(
+            Directory(destination),
+            Directory(temporary),
+          );
+        }
+        await DocumentBackupContents.overlay(
+          Directory(p.join(prepared.directory.path, 'managed', name)),
+          Directory(temporary),
+          immutable: name == 'episode_document_versions',
+        );
+      }
+      await DocumentBackupContents.rebind(candidate, prepared.managed, support);
+      // A database-only or older backup cannot prove that no later attempt took
+      // place. Apply the same permanent barrier to every restored generation.
+      await DocumentJournalService.suspendAfterRestore(candidate, id);
       // Rebind the configured root to the authorized destination on this machine.
       final configured = await candidate.query(
         'application_settings',
@@ -224,6 +266,7 @@ class LocalDatabaseRestoreService {
       final message =
           '${S.current.localDatabaseRestoreService_success}'
           '${prepared.legacy ? '\n${S.current.backupArchive_legacy}' : ''}\n'
+          'Préparations DMP suspendues après restauration ; réconciliation nécessaire.\n'
           '${S.current.backupArchive_safetyCopies}\n$safetyBackupPath'
           '${documentSafetyPaths.isEmpty ? '' : '\n${documentSafetyPaths.join('\n')}'}';
       // Keep the selected archive available even though its history entry was
@@ -319,8 +362,11 @@ class LocalDatabaseRestoreService {
     } finally {
       await candidate?.close();
       // Only discard our private staging folders, never a safety copy.
-      for (final root in roots.values) {
-        final temp = Directory(p.join(root.path, '.abak_restore_$id'));
+      for (final root in {
+        ...roots.values.map((r) => r.path),
+        ...plans.map((r) => p.dirname(r.destination)),
+      }) {
+        final temp = Directory(p.join(root, '.abak_restore_$id'));
         try {
           if (await temp.exists()) await temp.delete(recursive: true);
         } catch (_) {}

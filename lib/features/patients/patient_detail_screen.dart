@@ -18,6 +18,8 @@ import 'package:abak_shared/abak_shared.dart';
 
 import 'data/patient_fr_health_identity_repository.dart';
 import 'models/patient_fr_health_identity.dart';
+import 'data/patient_repository.dart';
+import 'screens/patient_qualification_screen.dart';
 
 class PatientDetailScreen extends StatefulWidget {
   final Patient patient;
@@ -30,6 +32,10 @@ class PatientDetailScreen extends StatefulWidget {
 
 class _PatientDetailScreenState extends State<PatientDetailScreen> {
   int _refreshToken = 0;
+  Patient? _updatedPatient;
+  Patient get _patient => _updatedPatient ?? widget.patient;
+  final _identityOpening = ValueNotifier<bool>(false);
+  final _identityOpenError = ValueNotifier<String?>(null);
   bool _expertModeEnabled = false;
 
   final ApplicationSettingsService _applicationSettingsService =
@@ -47,6 +53,13 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
   void initState() {
     super.initState();
     _loadExpertMode();
+  }
+
+  @override
+  void dispose() {
+    _identityOpening.dispose();
+    _identityOpenError.dispose();
+    super.dispose();
   }
 
   Future<void> _loadExpertMode() async {
@@ -71,11 +84,11 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
 
   String _formatBirthDate(BuildContext context) {
     final s = S.of(context);
-    if (widget.patient.birthDate == null) {
+    if (_patient.birthDate == null) {
       return s.patientDetail_noBirthdate;
     }
 
-    final birthDate = DateTime.parse(widget.patient.birthDate!);
+    final birthDate = DateTime.parse(_patient.birthDate!);
     final now = DateTime.now();
 
     var age = now.year - birthDate.year;
@@ -87,18 +100,56 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
 
     final date = DateFormatUtils.formatIsoDateForDisplay(
       context,
-      widget.patient.birthDate,
+      _patient.birthDate,
     );
 
     return '$date ($age ${s.patientDetail_years})';
   }
 
   String _formatPatientTitle() {
-    return '${widget.patient.lastName.toUpperCase()} ${widget.patient.firstName}';
+    return '${_patient.lastName.toUpperCase()} ${_patient.firstName}';
   }
 
   void _refresh() {
     setState(() => _refreshToken++);
+  }
+
+  Future<void> _openIdentity() async {
+    if (_identityOpening.value) return;
+    _identityOpenError.value = null;
+    _identityOpening.value = true;
+    final patientId = _patient.patientId;
+    try {
+      await Navigator.of(context).push<bool>(MaterialPageRoute<bool>(
+        settings: const RouteSettings(name: '/patient/identity'),
+        builder: (_) => PatientQualificationScreen(patientId: patientId),
+      ));
+    } catch (error, stack) {
+      FlutterError.reportError(FlutterErrorDetails(
+        exception: error,
+        stack: stack,
+        library: 'ABAK — ouverture de la fiche d’identité',
+      ));
+      if (mounted) {
+        _identityOpenError.value =
+            'Impossible d’ouvrir la fiche d’identité. Fermez puis rouvrez '
+            'la fiche patient. Si le problème persiste, signalez ce message '
+            'à l’assistance (IDENTITE-OUVERTURE).';
+      }
+      return;
+    } finally {
+      if (mounted) _identityOpening.value = false;
+    }
+    if (!mounted) return;
+    try {
+      final patient = await PatientRepository().getPatientById(patientId);
+      if (mounted) setState(() { _updatedPatient = patient; _refreshToken++; });
+    } catch (_) {
+      if (mounted) {
+        _identityOpenError.value =
+            'La fiche patient n’a pas pu être actualisée. Fermez puis rouvrez cette fiche.';
+      }
+    }
   }
 
   @override
@@ -128,15 +179,15 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
                 crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
                   Text(
-                    '${widget.patient.lastName.toUpperCase()} '
-                        '${widget.patient.firstName}',
+                    '${_patient.lastName.toUpperCase()} '
+                        '${_patient.firstName}',
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                   Text(
                     '${s.patientDetail_bornOn} $birthDateText',
                   ),
                   Text(
-                    '${s.patientDetail_sex} : ${widget.patient.sexCode}',
+                    '${s.patientDetail_sex} : ${_patient.sexCode}',
                   ),
                 ],
               ),
@@ -147,17 +198,20 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
 
           _PatientFrHealthIdentitySection(
             repository: _patientFrHealthIdentityRepository,
-            patientId: widget.patient.patientId,
+            onEdit: _openIdentity,
+            opening: _identityOpening,
+            openingError: _identityOpenError,
+            patientId: _patient.patientId,
             refreshToken: _refreshToken,
           ),
           const SizedBox(height: 16),
 
-          PatientDocumentsCard(patientId: widget.patient.patientId),
+          PatientDocumentsCard(patientId: _patient.patientId),
           const SizedBox(height: 16),
 
           CareEpisodesPanel(
-            key: ValueKey(widget.patient.patientId),
-            patientId: widget.patient.patientId,
+            key: ValueKey(_patient.patientId),
+            patientId: _patient.patientId,
             patientName: _formatPatientTitle(),
           ),
 
@@ -165,7 +219,7 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
           _PatientClinicalDataSection(
             identityRepository: _patientIdentityRepository,
             attributeRepository: _patientAttributeRepository,
-            patientId: widget.patient.patientId,
+            patientId: _patient.patientId,
             refreshToken: _refreshToken,
             onRefresh: () {
               setState(() {
@@ -259,16 +313,53 @@ class _InfoRow extends StatelessWidget {
   }
 }
 
-class _PatientFrHealthIdentitySection extends StatelessWidget {
+class _PatientFrHealthIdentitySection extends StatefulWidget {
   final PatientFrHealthIdentityRepository repository;
   final String patientId;
   final int refreshToken;
+  final VoidCallback onEdit;
+  final ValueNotifier<bool> opening;
+  final ValueNotifier<String?> openingError;
 
   const _PatientFrHealthIdentitySection({
     required this.repository,
     required this.patientId,
     required this.refreshToken,
+    required this.onEdit,
+    required this.opening,
+    required this.openingError,
   });
+
+  @override
+  State<_PatientFrHealthIdentitySection> createState() =>
+      _PatientFrHealthIdentitySectionState();
+}
+
+class _PatientFrHealthIdentitySectionState
+    extends State<_PatientFrHealthIdentitySection> {
+  late Future<PatientFrHealthIdentity?> _identity;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadIdentity();
+  }
+
+  @override
+  void didUpdateWidget(covariant _PatientFrHealthIdentitySection oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.patientId != widget.patientId ||
+        oldWidget.refreshToken != widget.refreshToken ||
+        oldWidget.repository != widget.repository) {
+      _loadIdentity();
+    }
+  }
+
+  void _loadIdentity() {
+    // Keep the button mounted during incidental parent/theme/focus rebuilds.
+    // Refresh only when the patient changes or the identity form returns.
+    _identity = widget.repository.getByPatientId(widget.patientId);
+  }
 
   String _statusLabel(
       PatientFrHealthIdentity? identity,
@@ -294,7 +385,7 @@ class _PatientFrHealthIdentitySection extends StatelessWidget {
       case 'validated':
         return 'Identité contrôlée, INS à rechercher';
       case 'qualified':
-        return 'Identité conforme';
+        return 'Identité contrôlée et INS concordante';
       case 'provisional':
       default:
         return 'Identité à compléter';
@@ -305,12 +396,11 @@ class _PatientFrHealthIdentitySection extends StatelessWidget {
   Widget build(BuildContext context) {
     final s = S.of(context);
     return FutureBuilder<PatientFrHealthIdentity?>(
-      key: ValueKey('patient-fr-health-identity-$refreshToken'),
-      future: repository.getByPatientId(patientId),
+      future: _identity,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return _SectionCard(
-            title: s.patientDetail_frHealthIdentity,
+            title: 'Identité et qualification',
             icon: Icons.badge_outlined,
             children: [
               Padding(
@@ -323,7 +413,7 @@ class _PatientFrHealthIdentitySection extends StatelessWidget {
 
         if (snapshot.hasError) {
           return _SectionCard(
-            title: s.patientDetail_frHealthIdentity,
+            title: 'Identité et qualification',
             icon: Icons.badge_outlined,
             children: [
               Text('Erreur : ${snapshot.error}'),
@@ -334,7 +424,7 @@ class _PatientFrHealthIdentitySection extends StatelessWidget {
         final identity = snapshot.data;
 
         return _SectionCard(
-          title: s.patientDetail_frHealthIdentity,
+          title: 'Identité et qualification',
           icon: Icons.badge_outlined,
           children: [
             _InfoRow(
@@ -344,6 +434,25 @@ class _PatientFrHealthIdentitySection extends StatelessWidget {
             _InfoRow(
               label: s.patientDetail_state,
               value: _statusDescription(identity),
+            ),
+            const SizedBox(height: 12),
+            ValueListenableBuilder<bool>(
+              valueListenable: widget.opening,
+              builder: (context, busy, _) => OutlinedButton.icon(
+                onPressed: busy ? null : widget.onEdit,
+                icon: const Icon(Icons.badge_outlined),
+                label: Text(busy ? 'Ouverture…' : 'Compléter l’identité et ses justificatifs'),
+              ),
+            ),
+            ValueListenableBuilder<String?>(
+              valueListenable: widget.openingError,
+              builder: (context, message, _) => message == null
+                  ? const SizedBox.shrink()
+                  : Padding(
+                      padding: const EdgeInsets.only(top: 8),
+                      child: Text(message,
+                        style: TextStyle(color: Theme.of(context).colorScheme.error)),
+                    ),
             ),
           ],
         );

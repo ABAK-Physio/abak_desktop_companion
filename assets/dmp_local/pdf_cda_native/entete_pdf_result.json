@@ -1,0 +1,22 @@
+{
+  "sha256": "de507826b34b01c4b19b3497149702fe5b09dccb044d96563ab69f35f7117cb3",
+  "status": "conforme",
+  "simulated": false,
+  "kind": "conformite",
+  "returncode": 0,
+  "reportSha256": "a96a3a152f3ce032a82192d92fffc2d9a1610d4a1e228e595e21458bc2502b9e",
+  "batchSummary": {
+    "failedToParse": 0,
+    "encrypted": 0,
+    "outOfMemory": 0,
+    "veraExceptions": 0
+  },
+  "item": "/Users/jeanclaudebrucher/.codex/.chatgpt-projects/g-p-6a7829f3ecf4819196e1ba1ec7f49eaa/output/regression-pdfa-cda-native/execution-1/variants/entete.pdf",
+  "profile": "PDF/A-1b validation profile",
+  "details": {
+    "passedRules": 129,
+    "failedRules": 0,
+    "passedChecks": 444,
+    "failedChecks": 0
+  }
+}

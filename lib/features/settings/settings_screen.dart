@@ -1,4 +1,20 @@
+import '../dmp_setup/dmp_setup_tile.dart';
+import '../dmp_dv1_access/access_screen.dart';
+import '../dmp_piece_isolated/piece_screen.dart';
+import '../dmp_pdf_cda_unified/unified_screen.dart';
+import '../dmp_identity_isolated/identity_screen.dart';
+import '../dmp_pdf_cda_isolated/native_archive_screen.dart';
+import '../dmp_pdf_isolated/pdf_demo_screen.dart';
+import '../dmp_integration/dossier_demo_screen.dart';
+import '../dmp_automation/automation_screen.dart';
+import '../dmp_minors/minors_screen.dart';
+import '../dmp_resources/resources_screen.dart';
+import '../dmp_webps/webps_screen.dart';
+import '../dmp_transfer/transfer_screen.dart';
+import '../dmp_td02/td02_screen.dart';
+import '../cps/cps_access_screen.dart';
 import '../kobus/kobus_screen.dart';
+import '../organization/cabinet_practice_screen.dart';
 import 'dart:io';
 import '../../generated/l10n.dart';
 import 'package:flutter/material.dart';
@@ -419,6 +435,207 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
                 const SizedBox(height: 8),
 
+                const DmpSetupTile(),
+                Card(
+                  child: ListTile(
+                    leading: const Icon(Icons.groups_outlined),
+                    title: const Text('Cabinet et rattachements des kinés'),
+                    subtitle: const Text('Entité juridique, paramètres communs et exercice des praticiens.'),
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute(builder: (_) => const CabinetPracticeScreen()),
+                    ),
+                  ),
+                ),
+                Card(
+                  child: ListTile(
+                    leading: const Icon(Icons.badge_outlined),
+                    title: const Text('Recette DMP — accès réel DV1 sans dépôt'),
+                    subtitle: const Text('CPS titulaire ou remplaçant, patient fictif CNDA et preuves TD0.2.'),
+                    onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                      builder: (_) => const Dv1AccessScreen(),
+                    )),
+                  ),
+                ),
+                Card(
+                  child: ListTile(
+                    title: const Text('DMP — pièce PDF et identité simulées'),
+                    subtitle: const Text(
+                      'Pièce synthétique, revue versionnée et stockage isolé.',
+                    ),
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute(builder: (_) => const PieceScreen()),
+                    ),
+                  ),
+                ),
+                Card(
+                  child: ListTile(
+                    title: const Text('DMP — identité qualifiée simulée'),
+                    subtitle: const Text(
+                      'Identité synthétique, confirmation versionnée et contrôles locaux.',
+                    ),
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute(builder: (_) => const IdentityScreen()),
+                    ),
+                  ),
+                ),
+                Card(
+                  child: ListTile(
+                    leading: const Icon(Icons.link),
+                    title: const Text('DMP — parcours PDF/A et CDA isolé'),
+                    subtitle: const Text(
+                      'PDF validé, contrôles natifs et persistance isolée',
+                    ),
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => const UnifiedScreen(),
+                      ),
+                    ),
+                  ),
+                ),
+                Card(
+                  child: ListTile(
+                    leading: const Icon(Icons.fact_check_outlined),
+                    title: const Text('DMP — contrôles PDF/A et CDA isolés'),
+                    subtitle: const Text(
+                      'Résultats natifs archivés et stockage isolé',
+                    ),
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => const NativeArchiveScreen(),
+                      ),
+                    ),
+                  ),
+                ),
+                Card(
+                  child: ListTile(
+                    leading: const Icon(Icons.picture_as_pdf_outlined),
+                    title: const Text('DMP — PDF final simulé'),
+                    subtitle: const Text(
+                      'Aperçu, validation et retenue en stockage isolé',
+                    ),
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => const PdfDemoScreen(),
+                      ),
+                    ),
+                  ),
+                ),
+                Card(
+                  child: ListTile(
+                    leading: const Icon(Icons.storage_outlined),
+                    title: const Text('DMP — dossier et stockage simulés'),
+                    subtitle: const Text(
+                      'Dossier fictif, validation et persistance isolées',
+                    ),
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => const DossierDemoScreen(),
+                      ),
+                    ),
+                  ),
+                ),
+                Card(
+                  child: ListTile(
+                    leading: const Icon(Icons.playlist_add_check),
+                    title: const Text('DMP — automatisation simulée'),
+                    subtitle: const Text(
+                      'Validation médicale, retenue et 42 scénarios locaux',
+                    ),
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => const AutomationScreen(),
+                      ),
+                    ),
+                  ),
+                ),
+                Card(
+                  child: ListTile(
+                    leading: const Icon(Icons.privacy_tip_outlined),
+                    title: const Text(
+                      'DMP — mineurs et connexion secrète simulés',
+                    ),
+                    subtitle: const Text(
+                      '23 scénarios locaux et documents fictifs',
+                    ),
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => const MinorsScreen(),
+                      ),
+                    ),
+                  ),
+                ),
+                Card(
+                  child: ListTile(
+                    leading: const Icon(Icons.sync),
+                    title: const Text(
+                      'DMP — paramètres et nomenclatures simulés',
+                    ),
+                    subtitle: const Text(
+                      'Suivi et mise à jour périodique hors réseau',
+                    ),
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => const ResourcesScreen(),
+                      ),
+                    ),
+                  ),
+                ),
+                Card(
+                  child: ListTile(
+                    leading: const Icon(Icons.fact_check_outlined),
+                    title: const Text('DMP — simulations TD0.2'),
+                    subtitle: const Text(
+                      'Vérifier les états et les actions, sans connexion',
+                    ),
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => const Td02Screen(),
+                      ),
+                    ),
+                  ),
+                ),
+                Card(
+                  child: ListTile(
+                    leading: const Icon(Icons.security_outlined),
+                    title: const Text('DMP — simulations TLS et dépôt'),
+                    subtitle: const Text(
+                      'Vérifier les erreurs et les blocages, sans connexion',
+                    ),
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => const TransferScreen(),
+                      ),
+                    ),
+                  ),
+                ),
+                Card(
+                  child: ListTile(
+                    leading: const Icon(Icons.web_outlined),
+                    title: const Text('DMP — accès Web-PS simulé'),
+                    subtitle: const Text('Préparer TD0.9 sans navigateur réel'),
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => const WebPsScreen(),
+                      ),
+                    ),
+                  ),
+                ),
+                if (Platform.isMacOS)
+                  Card(
+                    child: ListTile(
+                      leading: const Icon(Icons.badge_outlined),
+                      title: const Text('Carte CPS'),
+                      subtitle: const Text(
+                        'Lire votre identité et vos situations d’exercice',
+                      ),
+                      trailing: const Icon(Icons.chevron_right),
+                      onTap: () => Navigator.of(context).push(
+                        MaterialPageRoute<void>(
+                          builder: (_) => const CpsAccessScreen(),
+                        ),
+                      ),
+                    ),
+                  ),
                 Card(
                   child: ListTile(
                     leading: const Icon(Icons.folder_open),
@@ -566,7 +783,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       label: Text(s.settings_importAbakFile),
                     ),
                     OutlinedButton.icon(
-                      onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const KobusScreen())),
+                      onPressed: () => Navigator.of(context).push(
+                        MaterialPageRoute(builder: (_) => const KobusScreen()),
+                      ),
                       icon: const Icon(Icons.archive_outlined),
                       label: Text(s.kobus_title),
                     ),

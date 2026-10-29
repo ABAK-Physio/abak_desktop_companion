@@ -45,12 +45,12 @@ class VitaleBeneficiarySelector {
 
                 return ListTile(
                   leading: CircleAvatar(
-                    child: Text('${index + 1}'),
+                    child: const Icon(Icons.person_outline),
                   ),
                   title: Text(
                     '${identity.lastName ?? ''} ${identity.firstName ?? ''}',
                   ),
-                  subtitle: Text(birthDate),
+                  subtitle: Text('$birthDate${identity.birthOrder == null ? '' : '\nRang de naissance : ${identity.birthOrder}'}'),
                   onTap: () {
                     Navigator.of(context).pop(identity);
                   },

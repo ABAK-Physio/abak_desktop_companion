@@ -9,6 +9,11 @@ class AppDelegate: FlutterAppDelegate {
     return true
   }
 
+  override func applicationWillTerminate(_ notification: Notification) {
+    WebPsBrowserBridge.shared.terminateOwnedBrowser()
+    super.applicationWillTerminate(notification)
+  }
+
   override func applicationSupportsSecureRestorableState(
       _ app: NSApplication
   ) -> Bool {

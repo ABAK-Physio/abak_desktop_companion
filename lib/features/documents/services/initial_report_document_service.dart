@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/services.dart';
 import 'package:path/path.dart' as p;
 
 import '../../../generated/l10n.dart';
@@ -39,7 +40,12 @@ class InitialReportDocumentService {
     }
 
     if (Platform.isMacOS) {
-      await Process.run('open', [path]);
+      await const MethodChannel(
+        'abak/directory_access',
+      ).invokeMethod<void>(
+        p.extension(path).toLowerCase() == '.pdf' ? 'openPdf' : 'openDocx',
+        {'path': path},
+      );
       return;
     }
 

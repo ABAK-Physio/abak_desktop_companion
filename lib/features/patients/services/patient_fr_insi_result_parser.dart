@@ -34,9 +34,8 @@ class PatientFrInsiResultParser {
   PatientFrInsiResult parseXml(String xml) {
     final document = XmlDocument.parse(xml);
 
-    String? singleElementText(String localName) {
-      final elements = document
-          .descendants
+    String? singleElementText(String localName, [XmlNode? scope]) {
+      final elements = (scope ?? document).descendants
           .whereType<XmlElement>()
           .where((element) => element.name.local == localName)
           .toList();
@@ -59,15 +58,12 @@ class PatientFrInsiResultParser {
     final codeCr = singleElementText('CodeCR');
 
     if (codeCr == null) {
-      throw const FormatException(
-        'Réponse INSi invalide : CodeCR absent',
-      );
+      throw const FormatException('Réponse INSi invalide : CodeCR absent');
     }
 
     final status = patientFrInsiStatusFromCodeCr(codeCr);
 
-    final individuElements = document
-        .descendants
+    final individuElements = document.descendants
         .whereType<XmlElement>()
         .where((element) => element.name.local == 'INDIVIDU')
         .toList();
@@ -80,21 +76,31 @@ class PatientFrInsiResultParser {
     }
 
     if (status != PatientFrInsiResultStatus.success) {
-      return parse(
-        codeCr: codeCr,
-      );
+      return parse(codeCr: codeCr);
     }
 
+    XmlElement one(String name) {
+      final elements = individuElements.single.childElements
+          .where((e) => e.name.local == name)
+          .toList();
+      if (elements.length != 1) {
+        throw FormatException('Réponse INSi : $name absent ou multiple.');
+      }
+      return elements.single;
+    }
+
+    final active = one('INSACTIF');
+    final traits = one('TIQ');
     return parse(
       codeCr: codeCr,
-      insNumber: singleElementText('NumIdentifiant'),
-      insKey: singleElementText('Cle'),
-      insOid: singleElementText('OID'),
-      birthLastName: singleElementText('NomNaissance'),
-      birthFirstNames: singleElementText('ListePrenom'),
-      birthDate: singleElementText('DateNaissance'),
-      sexCode: singleElementText('Sexe'),
-      birthPlaceCode: singleElementText('LieuNaissance'),
+      insNumber: singleElementText('NumIdentifiant', active),
+      insKey: singleElementText('Cle', active),
+      insOid: singleElementText('OID', active),
+      birthLastName: singleElementText('NomNaissance', traits),
+      birthFirstNames: singleElementText('ListePrenom', traits),
+      birthDate: singleElementText('DateNaissance', traits),
+      sexCode: singleElementText('Sexe', traits),
+      birthPlaceCode: singleElementText('LieuNaissance', traits),
     );
   }
 }

@@ -1,0 +1,42 @@
+{
+  "sha256": "2413d3c3b54cbdfdae40df176c390fa96678420f328b328fec2f91a6fec73ac8",
+  "status": "refuse",
+  "simulated": false,
+  "profiles": {
+    "structurationMinimale/ASIP-STRUCT-MIN-StrucMin": {
+      "failed-assert": [
+        {
+          "location": "/ClinicalDocument",
+          "role": "error",
+          "text": "(Structuration minimale Documents de santé): element hl7:recordTarget[not(@nullFlavor)] is mandatory [min 1x]."
+        },
+        {
+          "location": "/ClinicalDocument",
+          "role": "error",
+          "text": "(Structuration minimale Documents de santé): Erreur de conformité CI-SIS : Dans le cadre de l'INS, les traits de l'INS (Nom de naissance, premier prénom de l'acte de naissance, prénoms de l’acte de naissance, date de naissance, lieu de naissance (COG) et sexe) sont obligatoires"
+        }
+      ],
+      "successful-report": []
+    },
+    "IHE": {
+      "failed-assert": [],
+      "successful-report": []
+    },
+    "CI-SIS_ModelesDeContenusCDA": {
+      "failed-assert": [],
+      "successful-report": []
+    },
+    "CI-SIS_Modeles_ANS": {
+      "failed-assert": [],
+      "successful-report": []
+    },
+    "terminologies/schematron/terminologie": {
+      "failed-assert": [],
+      "successful-report": []
+    }
+  },
+  "xsd": false,
+  "xsdErrors": [
+    "<string>:2:0:ERROR:SCHEMASV:SCHEMAV_ELEMENT_CONTENT: Element '{urn:hl7-org:v3}author': This element is not expected. Expected is one of ( {urn:hl7-org:v3}copyTime, {urn:hl7-org:v3}recordTarget )."
+  ]
+}

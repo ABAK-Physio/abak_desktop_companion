@@ -400,13 +400,14 @@ class _PatientListScreenState extends State<PatientListScreen> {
                                 ),
                               ],
                             ),
-                      onTap: () {
-                        Navigator.of(context).push(
+                      onTap: () async {
+                        await Navigator.of(context).push(
                           MaterialPageRoute(
                             builder: (_) =>
                                 PatientDetailScreen(patient: patient),
                           ),
                         );
+                        if (mounted) await _reloadPatients();
                       },
                     );
                   },

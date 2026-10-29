@@ -2,18 +2,113 @@ import Cocoa
 import FlutterMacOS
 import Darwin
 import Security
+import CryptoKit
 
 class MainFlutterWindow: NSWindow {
   override func awakeFromNib() {
-    let flutterViewController = FlutterViewController()
+    let arguments = Array(CommandLine.arguments.dropFirst())
+    let bundleResources = arguments.contains("--abak-bundle-resources")
+    let coordinated = arguments.contains(where: { $0.hasPrefix("--abak-coordinated-phase=") })
+    if coordinated {
+      guard arguments.contains("--abak-maintenance"), arguments.contains("--abak-maintenance-authorize"),
+            Bundle.main.object(forInfoDictionaryKey: "ABAKCoordinatedRecipeOnly") as? Bool == true,
+            Bundle.main.object(forInfoDictionaryKey: "ABAKMaintenanceRecipeOnly") as? Bool == true,
+            Bundle.main.bundleIdentifier?.hasPrefix("fr.abakphysio.maintenance.recipe.") == true else { exit(78) }
+    }
+    if bundleResources {
+      guard arguments.contains("--abak-maintenance"),
+            arguments.contains("--abak-maintenance-authorize"),
+            Bundle.main.object(forInfoDictionaryKey: "ABAKBundleResourcesRecipeOnly") as? Bool == true,
+            Bundle.main.object(forInfoDictionaryKey: "ABAKMaintenanceRecipeOnly") as? Bool == true,
+            Bundle.main.bundleIdentifier?.hasPrefix("fr.abakphysio.maintenance.recipe.") == true else { exit(78) }
+    }
+    // A recipe copy must never fall through into normal startup when opened
+    // from Finder or without the complete explicit synthetic-maintenance flags.
+    if Bundle.main.object(forInfoDictionaryKey: "ABAKMaintenanceRecipeOnly") as? Bool == true {
+      guard arguments.contains("--abak-maintenance"),
+            arguments.contains(where: { $0.hasPrefix("--abak-maintenance-root=") }) else {
+        fputs("Copie de recette : lancement métier interdit.\n", stderr)
+        exit(78)
+      }
+    }
+    // Forward explicit launch options; no CPS/INSi call is made here.
+    let project = FlutterDartProject()
+    project.dartEntrypointArguments = arguments
+    let flutterViewController = FlutterViewController(project: project)
     let windowFrame = self.frame
     self.contentViewController = flutterViewController
     self.setFrame(windowFrame, display: true)
 
     RegisterGeneratedPlugins(registry: flutterViewController)
+    AbakDocumentControlsBridge.shared.register(with: flutterViewController.engine.binaryMessenger)
+    if arguments.contains("--abak-maintenance") {
+      AbakMaintenanceAccess.shared.register(with: flutterViewController.engine.binaryMessenger)
+      if bundleResources {
+        let channel = FlutterMethodChannel(name: "abak/bundle_resources_recipe", binaryMessenger: flutterViewController.engine.binaryMessenger)
+        channel.setMethodCallHandler { call, result in
+          if call.method == "context" {
+            result(["identity": Bundle.main.bundleIdentifier!,
+                    "generation": Bundle.main.bundleURL.deletingLastPathComponent().path])
+          } else { result(FlutterMethodNotImplemented) }
+        }
+      }
+      // Test-only entry point, with a fresh signed identity and restricted rights.
+      // Never expose preference restoration or the directory bridge in normal maintenance.
+      if Bundle.main.object(forInfoDictionaryKey: "ABAKPreferencesRecipeOnly") as? Bool == true || coordinated {
+        guard Bundle.main.bundleIdentifier?.hasPrefix("fr.abakphysio.maintenance.recipe.") == true,
+              Bundle.main.object(forInfoDictionaryKey: "ABAKMaintenanceRecipeOnly") as? Bool == true else {
+          exit(78)
+        }
+        AbakDirectoryAccessBridge.shared.register(with: flutterViewController.engine.binaryMessenger)
+        AbakPreferencesRecipe.register(with: flutterViewController.engine.binaryMessenger)
+      }
+      super.awakeFromNib()
+      return
+    }
     AbakDirectoryAccessBridge.shared.register(
         with: flutterViewController.engine.binaryMessenger
     )
+
+    let consultationDisplay = FlutterMethodChannel(name: "abak/dmp_consultation_display", binaryMessenger: flutterViewController.engine.binaryMessenger)
+    consultationDisplay.setMethodCallHandler { call, result in
+      guard call.method == "pdf", let args = call.arguments as? [String: Any],
+            let bytes = args["bytes"] as? FlutterStandardTypedData,
+            bytes.data.count <= 16 * 1024 * 1024, let mime = args["mime"] as? String else {
+        result(FlutterError(code: "DISPLAY", message: "Contenu invalide", details: nil)); return
+      }
+      // In-memory AppKit rendering only. No file, browser, external URL or print dialog.
+      if mime == "application/rtf" || mime == "text/rtf" {
+        guard let attributed = NSAttributedString(rtf: bytes.data, documentAttributes: nil), attributed.length <= 500000 else {
+          result(FlutterError(code: "DISPLAY", message: "RTF illisible", details: nil)); return
+        }
+        let text = NSTextView(frame: NSRect(x: 0, y: 0, width: 600, height: 800))
+        text.textStorage?.setAttributedString(attributed)
+        text.textContainer?.containerSize = NSSize(width: 580, height: 100000)
+        text.textContainer?.widthTracksTextView = false
+        guard let manager = text.layoutManager, let container = text.textContainer else { result(FlutterError(code: "DISPLAY", message: "RTF illisible", details: nil)); return }
+        manager.ensureLayout(for: container)
+        let height = manager.usedRect(for: container).height + 40
+        guard height > 0, height < 30000 else { result(FlutterError(code: "DISPLAY", message: "RTF trop volumineux", details: nil)); return }
+        text.setFrameSize(NSSize(width: 600, height: height))
+        result(FlutterStandardTypedData(bytes: text.dataWithPDF(inside: text.bounds)))
+      } else if mime == "image/tiff" {
+        let reps = NSBitmapImageRep.imageReps(with: bytes.data)
+        guard !reps.isEmpty, reps.count <= 40, reps.allSatisfy({ $0.pixelsWide > 0 && $0.pixelsHigh > 0 && Double($0.pixelsWide)*Double($0.pixelsHigh) <= 20000000 }) else { result(FlutterError(code: "DISPLAY", message: "TIFF illisible", details: nil)); return }
+        let heights = reps.map { 600 * Double($0.pixelsHigh) / Double($0.pixelsWide) }
+        let height = heights.reduce(0,+)
+        guard height < 30000 else { result(FlutterError(code: "DISPLAY", message: "TIFF trop volumineux", details: nil)); return }
+        let view = NSView(frame:NSRect(x:0,y:0,width:600,height:height))
+        var y = height
+        for (index, rep) in reps.enumerated() {
+          y -= heights[index]
+          let image = NSImage(size:NSSize(width:rep.pixelsWide,height:rep.pixelsHigh)); image.addRepresentation(rep)
+          let imageView=NSImageView(frame:NSRect(x:0,y:y,width:600,height:heights[index])); imageView.image=image; imageView.imageScaling = .scaleProportionallyUpOrDown; view.addSubview(imageView)
+        }
+        result(FlutterStandardTypedData(bytes:view.dataWithPDF(inside:view.bounds)))
+      } else { result(FlutterError(code:"DISPLAY",message:"Format non pris en charge",details:nil)) }
+    }
+
+    WebPsBrowserBridge.shared.register(flutterViewController.engine.binaryMessenger)
 
     let dmpChannel = FlutterMethodChannel(
         name: "abak_dmp_fr",
@@ -22,6 +117,38 @@ class MainFlutterWindow: NSWindow {
 
     dmpChannel.setMethodCallHandler { call, result in
       switch call.method {
+      case "readCpsProfile", "testCpsSignature", "signDmpLotLocal", "prepareDmpLotLocal":
+        guard let arguments = call.arguments as? [String: Any],
+              let pin = arguments["pin"] as? String,
+              !pin.isEmpty, pin.utf8.count <= 16,
+              pin.utf8.allSatisfy({ $0 >= 48 && $0 <= 57 }) else {
+          result(FlutterError(code: "INVALID_ARGUMENTS", message: "Saisissez le PIN de la CPS", details: nil))
+          return
+        }
+        if call.method == "testCpsSignature" || call.method == "signDmpLotLocal" || call.method == "prepareDmpLotLocal" {
+          guard let expectedId = arguments["expectedNationalId"] as? String,
+                !expectedId.isEmpty else {
+            result(FlutterError(code: "INVALID_ARGUMENTS", message: "Relisez la CPS avant le test", details: nil))
+            return
+          }
+          if call.method == "prepareDmpLotLocal" {
+            result(Self.readCpsProfile(pin: pin, testFor: expectedId, readSigningMaterial: true))
+          } else if call.method == "signDmpLotLocal" {
+            guard let signedInfo = arguments["signedInfo"] as? String,
+                  let certificate = arguments["certificateBase64"] as? String,
+                  signedInfo.utf8.count <= 32768, !signedInfo.isEmpty, !certificate.isEmpty else {
+              result(FlutterError(code: "INVALID_ARGUMENTS", message: "Lot local incomplet", details: nil))
+              return
+            }
+            result(Self.readCpsProfile(pin: pin, testFor: expectedId,
+                                      dmpSignedInfo: signedInfo, expectedCertificate: certificate))
+          } else {
+            result(Self.readCpsProfile(pin: pin, testFor: expectedId))
+          }
+        } else {
+          result(Self.readCpsProfile(pin: pin))
+        }
+
       case "diagnosePkcs11":
         result(Self.diagnosePkcs11())
 
@@ -114,8 +241,13 @@ class MainFlutterWindow: NSWindow {
           return
         }
 
+        // Preserve the INSi channel contract, but never guess or retain a PIN.
+        guard let pin = (arguments["pin"] as? String) ?? Self.requestCpsPin() else {
+          result(FlutterError(code: "CPS_CANCELLED", message: "Signature annulée", details: nil))
+          return
+        }
         let signatureResult = Self.signPkcs11Message(
-            pin: "1234",
+            pin: pin,
             message: canonicalSignedInfo
         )
 
@@ -1035,6 +1167,569 @@ class MainFlutterWindow: NSWindow {
       "sessionFlags": sessionInfo.flags,
       "sessionDeviceError": sessionInfo.deviceError,
     ]
+  }
+
+  private static func requestCpsPin() -> String? {
+    let alert = NSAlert()
+    alert.messageText = "Signature INSi avec votre CPS"
+    alert.informativeText = "Saisissez votre PIN. Une seule tentative sera effectuée."
+    alert.addButton(withTitle: "Signer")
+    alert.addButton(withTitle: "Annuler")
+    let field = NSSecureTextField(frame: NSRect(x: 0, y: 0, width: 240, height: 24))
+    alert.accessoryView = field
+    alert.window.initialFirstResponder = field
+    let response = alert.runModal()
+    let pin = field.stringValue
+    field.stringValue = ""
+    guard response == .alertFirstButtonReturn, !pin.isEmpty else { return nil }
+    return pin
+  }
+
+  private static func readCpsProfile(pin: String, testFor expectedId: String? = nil, dmpSignedInfo: String? = nil, expectedCertificate: String? = nil, readSigningMaterial: Bool = false) -> [String: Any] {
+    let libraryPath = "/usr/local/lib/libcps3_pkcs11_osx.dylib"
+
+    // PKCS#11
+    let ckuUser: UInt = 1
+    let ckfSerialSession: UInt = 0x00000004
+
+
+    let ckaClass: UInt = 0
+    let ckaLabel: UInt = 3
+    let ckaValue: UInt = 0x11
+
+    struct CKAttribute {
+      var type: UInt
+      var value: UnsafeMutableRawPointer?
+      var valueLen: UInt
+    }
+
+    guard let library = dlopen(libraryPath, RTLD_NOW) else {
+      let error = dlerror().map {
+        String(cString: $0)
+      } ?? "Erreur inconnue"
+
+      return [
+        "success": false,
+        "step": "dlopen",
+        "error": error,
+      ]
+    }
+
+    defer {
+      dlclose(library)
+    }
+
+    guard
+        let initializeSymbol = dlsym(library, "C_Initialize"),
+        let finalizeSymbol = dlsym(library, "C_Finalize"),
+        let getSlotListSymbol = dlsym(library, "C_GetSlotList"),
+        let openSessionSymbol = dlsym(library, "C_OpenSession"),
+        let loginSymbol = dlsym(library, "C_Login"),
+        let logoutSymbol = dlsym(library, "C_Logout"),
+        let closeSessionSymbol = dlsym(library, "C_CloseSession"),
+        let findObjectsInitSymbol = dlsym(library, "C_FindObjectsInit"),
+        let findObjectsSymbol = dlsym(library, "C_FindObjects"),
+        let findObjectsFinalSymbol = dlsym(library, "C_FindObjectsFinal"),
+        let getAttributeValueSymbol = dlsym(library, "C_GetAttributeValue")
+    else {
+      return [
+        "success": false,
+        "step": "dlsym",
+        "error": "Un ou plusieurs symboles PKCS#11 sont introuvables",
+      ]
+    }
+
+    typealias CInitialize = @convention(c) (
+        UnsafeMutableRawPointer?
+    ) -> UInt
+
+    typealias CFinalize = @convention(c) (
+        UnsafeMutableRawPointer?
+    ) -> UInt
+
+    typealias CGetSlotList = @convention(c) (
+        UInt8,
+        UnsafeMutablePointer<UInt>?,
+        UnsafeMutablePointer<UInt>?
+    ) -> UInt
+
+    typealias COpenSession = @convention(c) (
+        UInt,
+        UInt,
+        UnsafeMutableRawPointer?,
+        UnsafeMutableRawPointer?,
+        UnsafeMutablePointer<UInt>?
+    ) -> UInt
+
+    typealias CLogin = @convention(c) (
+        UInt,
+        UInt,
+        UnsafeMutablePointer<UInt8>?,
+        UInt
+    ) -> UInt
+
+    typealias CLogout = @convention(c) (
+        UInt
+    ) -> UInt
+
+    typealias CCloseSession = @convention(c) (
+        UInt
+    ) -> UInt
+
+    typealias CFindObjectsInit = @convention(c) (
+        UInt,
+        UnsafeMutableRawPointer?,
+        UInt
+    ) -> UInt
+
+    typealias CFindObjects = @convention(c) (
+        UInt,
+        UnsafeMutablePointer<UInt>?,
+        UInt,
+        UnsafeMutablePointer<UInt>?
+    ) -> UInt
+
+    typealias CFindObjectsFinal = @convention(c) (
+        UInt
+    ) -> UInt
+
+    typealias CGetAttributeValue = @convention(c) (
+        UInt,
+        UInt,
+        UnsafeMutableRawPointer?,
+        UInt
+    ) -> UInt
+
+    let cInitialize = unsafeBitCast(
+        initializeSymbol,
+        to: CInitialize.self
+    )
+
+    let cFinalize = unsafeBitCast(
+        finalizeSymbol,
+        to: CFinalize.self
+    )
+
+    let cGetSlotList = unsafeBitCast(
+        getSlotListSymbol,
+        to: CGetSlotList.self
+    )
+
+    let cOpenSession = unsafeBitCast(
+        openSessionSymbol,
+        to: COpenSession.self
+    )
+
+    let cLogin = unsafeBitCast(
+        loginSymbol,
+        to: CLogin.self
+    )
+
+    let cLogout = unsafeBitCast(
+        logoutSymbol,
+        to: CLogout.self
+    )
+
+    let cCloseSession = unsafeBitCast(
+        closeSessionSymbol,
+        to: CCloseSession.self
+    )
+
+    let cFindObjectsInit = unsafeBitCast(
+        findObjectsInitSymbol,
+        to: CFindObjectsInit.self
+    )
+
+    let cFindObjects = unsafeBitCast(
+        findObjectsSymbol,
+        to: CFindObjects.self
+    )
+
+    let cFindObjectsFinal = unsafeBitCast(
+        findObjectsFinalSymbol,
+        to: CFindObjectsFinal.self
+    )
+
+    let cGetAttributeValue = unsafeBitCast(
+        getAttributeValueSymbol,
+        to: CGetAttributeValue.self
+    )
+
+    // ------------------------------------------------------------
+    // Lecture d'un attribut PKCS#11
+    // ------------------------------------------------------------
+
+    var readFailure: [String: Any]?
+
+    func readAttribute(
+        session: UInt,
+        object: UInt,
+        type: UInt
+    ) -> [UInt8]? {
+      var attribute = CKAttribute(
+          type: type,
+          value: nil,
+          valueLen: 0
+      )
+
+      let sizeResult =
+          withUnsafeMutablePointer(to: &attribute) { pointer in
+            cGetAttributeValue(
+                session,
+                object,
+                UnsafeMutableRawPointer(pointer),
+                1
+            )
+          }
+
+      guard
+          sizeResult == 0,
+          attribute.valueLen > 0,
+          attribute.valueLen <= 65536
+      else {
+        readFailure = ["success": false, "step": "C_GetAttributeValue(size)", "returnCode": sizeResult]
+        return nil
+      }
+
+      var bytes = Array<UInt8>(
+          repeating: 0,
+          count: Int(attribute.valueLen)
+      )
+
+      let readResult = bytes.withUnsafeMutableBytes { buffer in
+        attribute.value = buffer.baseAddress
+
+        return withUnsafeMutablePointer(to: &attribute) { pointer in
+          cGetAttributeValue(
+              session,
+              object,
+              UnsafeMutableRawPointer(pointer),
+              1
+          )
+        }
+      }
+
+      guard readResult == 0 else {
+        readFailure = ["success": false, "step": "C_GetAttributeValue", "returnCode": readResult]
+        return nil
+      }
+
+      guard attribute.valueLen <= UInt(bytes.count) else { return nil }
+      return Array(bytes.prefix(Int(attribute.valueLen)))
+    }
+
+    // ANS CPS3 business data: search each CKO_DATA by its exact label.
+    func readObject(session: UInt, label: String) -> [UInt8]? {
+      var objectClass: UInt = 0
+      var token: UInt8 = 1
+      var isPrivate: UInt8 = label.hasPrefix("CPS_ACTIVITY_") ? 1 : 0
+      var labelBytes = Array(label.utf8)
+      let initCode = withUnsafeMutablePointer(to: &objectClass) { cls in
+        withUnsafeMutablePointer(to: &token) { tok in
+          withUnsafeMutablePointer(to: &isPrivate) { priv in
+            labelBytes.withUnsafeMutableBytes { bytes in
+              var attributes = [
+                CKAttribute(type: ckaClass, value: UnsafeMutableRawPointer(cls), valueLen: UInt(MemoryLayout<UInt>.size)),
+                CKAttribute(type: 1, value: UnsafeMutableRawPointer(tok), valueLen: 1),
+                CKAttribute(type: 2, value: UnsafeMutableRawPointer(priv), valueLen: 1),
+                CKAttribute(type: ckaLabel, value: bytes.baseAddress, valueLen: UInt(bytes.count)),
+              ]
+              return attributes.withUnsafeMutableBytes { attrs in
+                cFindObjectsInit(session, attrs.baseAddress, 4)
+              }
+            }
+          }
+        }
+      }
+      guard initCode == 0 else {
+        readFailure = ["success": false, "step": "C_FindObjectsInit", "returnCode": initCode]
+        return nil
+      }
+      var handles: [UInt] = [0, 0]
+      var count: UInt = 0
+      let findCode = cFindObjects(session, &handles, 2, &count)
+      let finalCode = cFindObjectsFinal(session)
+      guard findCode == 0 else {
+        readFailure = ["success": false, "step": "C_FindObjects", "returnCode": findCode]
+        return nil
+      }
+      guard finalCode == 0 else {
+        readFailure = ["success": false, "step": "C_FindObjectsFinal", "returnCode": finalCode]
+        return nil
+      }
+      if count == 0 { return [] }
+      guard count == 1 else { return nil }
+      return readAttribute(session: session, object: handles[0], type: ckaValue)
+    }
+
+    // ------------------------------------------------------------
+    // Initialisation
+    // ------------------------------------------------------------
+
+    let initializeReturnCode = cInitialize(nil)
+
+    guard initializeReturnCode == 0 else {
+      return [
+        "success": false,
+        "step": "C_Initialize",
+        "returnCode": initializeReturnCode,
+      ]
+    }
+
+    defer {
+      _ = cFinalize(nil)
+    }
+
+    // ------------------------------------------------------------
+    // Recherche du token
+    // ------------------------------------------------------------
+
+    var tokenSlotCount: UInt = 0
+
+    let slotCountReturnCode = cGetSlotList(
+        1,
+        nil,
+        &tokenSlotCount
+    )
+
+    guard
+        slotCountReturnCode == 0,
+        tokenSlotCount == 1
+    else {
+      return [
+        "success": false,
+        "step": "C_GetSlotList",
+        "returnCode": slotCountReturnCode,
+        "tokenSlotCount": tokenSlotCount,
+      ]
+    }
+
+    var tokenSlotIds = Array<UInt>(
+        repeating: 0,
+        count: Int(tokenSlotCount)
+    )
+
+    let slotListReturnCode = cGetSlotList(
+        1,
+        &tokenSlotIds,
+        &tokenSlotCount
+    )
+
+    guard slotListReturnCode == 0, tokenSlotCount == 1 else {
+      return [
+        "success": false,
+        "step": "C_GetSlotList(ids)",
+        "returnCode": slotListReturnCode,
+        "tokenSlotCount": tokenSlotCount,
+      ]
+    }
+
+    let tokenSlotId = tokenSlotIds[0]
+
+    // ------------------------------------------------------------
+    // Session
+    // ------------------------------------------------------------
+
+    var sessionHandle: UInt = 0
+
+    let openSessionReturnCode = cOpenSession(
+        tokenSlotId,
+        ckfSerialSession,
+        nil,
+        nil,
+        &sessionHandle
+    )
+
+    guard openSessionReturnCode == 0 else {
+      return [
+        "success": false,
+        "step": "C_OpenSession",
+        "returnCode": openSessionReturnCode,
+      ]
+    }
+
+    defer {
+      _ = cCloseSession(sessionHandle)
+    }
+
+    // ------------------------------------------------------------
+    // Authentification utilisateur
+    // ------------------------------------------------------------
+
+    var pinBytes = Array(pin.utf8)
+
+    let loginReturnCode =
+        pinBytes.withUnsafeMutableBufferPointer { buffer in
+          cLogin(
+              sessionHandle,
+              ckuUser,
+              buffer.baseAddress,
+              UInt(buffer.count)
+          )
+        }
+
+    _ = pinBytes.withUnsafeMutableBytes { $0.initializeMemory(as: UInt8.self, repeating: 0) }
+
+    guard loginReturnCode == 0 else {
+      return [
+        "success": false,
+        "step": "C_Login",
+        "loginReturnCode": loginReturnCode,
+      ]
+    }
+
+    defer {
+      _ = cLogout(sessionHandle)
+    }
+
+    var objects: [String: FlutterStandardTypedData] = [:]
+    let labels = ["CPS_ID_CARD", "CPS_NAME_PS", "CPS_INFO_PS"] +
+        (1...16).map { String(format: "CPS_ACTIVITY_%02d_PS", $0) }
+    for label in labels {
+      guard let bytes = readObject(session: sessionHandle, label: label) else {
+        var failure = readFailure ?? ["success": false, "step": "C_ReadObject"]
+        failure["objectLabel"] = label
+        return failure
+      }
+      if !bytes.isEmpty {
+        objects[label] = FlutterStandardTypedData(bytes: Data(bytes))
+      }
+    }
+    guard let expectedId = expectedId else {
+      return ["success": true, "objects": objects]
+    }
+
+    // A single session and login for the entire local test. INSi entry points
+    // remain unchanged. Never export or request CKA_VALUE on a private key.
+    func failure(_ step: String, _ message: String, _ code: UInt? = nil) -> [String: Any] {
+      var value: [String: Any] = ["success": false, "step": step, "error": message]
+      if let code = code { value["returnCode"] = code }
+      return value
+    }
+    func findUnique(_ objectClass: UInt, _ label: String) -> UInt? {
+      var cls = objectClass
+      var name = Array(label.utf8)
+      let rv = withUnsafeMutablePointer(to: &cls) { ptr in
+        name.withUnsafeMutableBytes { bytes in
+          var attrs = [
+            CKAttribute(type: ckaClass, value: UnsafeMutableRawPointer(ptr), valueLen: UInt(MemoryLayout<UInt>.size)),
+            CKAttribute(type: ckaLabel, value: bytes.baseAddress, valueLen: UInt(bytes.count))
+          ]
+          return attrs.withUnsafeMutableBytes { cFindObjectsInit(sessionHandle, $0.baseAddress, 2) }
+        }
+      }
+      guard rv == 0 else { return nil }
+      var handles: [UInt] = [0, 0]
+      var count: UInt = 0
+      let found = cFindObjects(sessionHandle, &handles, 2, &count)
+      let finished = cFindObjectsFinal(sessionHandle)
+      guard found == 0, finished == 0, count == 1 else { return nil }
+      return handles[0]
+    }
+    var certificates: [[String: Any]] = []
+    var signingData: Data?
+    var signingId: [UInt8]?
+    var signingCertificate: SecCertificate?
+    for (role, label) in [("signature", "Certificat de Signature CPS"),
+                          ("authentification", "Certificat d'Authentification CPS")] {
+      guard let handle = findUnique(1, label),
+            let bytes = readAttribute(session: sessionHandle, object: handle, type: ckaValue),
+            let cert = SecCertificateCreateWithData(nil, Data(bytes) as CFData) else {
+        return failure("certificates", "Certificat CPS absent, ambigu ou illisible : " + role)
+      }
+      var commonName: CFString?
+      guard SecCertificateCopyCommonName(cert, &commonName) == errSecSuccess,
+            let cn = commonName, (cn as String) == expectedId else {
+        return failure("identity", "La carte ou le certificat ne correspond pas à l’identité affichée. Relisez la CPS.")
+      }
+      let dates = SecCertificateCopyValues(cert,
+          [kSecOIDX509V1ValidityNotBefore, kSecOIDX509V1ValidityNotAfter] as CFArray, nil) as? [String: Any]
+      func dateValue(_ oid: CFString) -> Date? {
+        let item = dates?[oid as String] as? [String: Any]
+        guard let value = item?[kSecPropertyKeyValue as String] as? NSNumber else { return nil }
+        return Date(timeIntervalSinceReferenceDate: value.doubleValue)
+      }
+      guard let start = dateValue(kSecOIDX509V1ValidityNotBefore),
+            let end = dateValue(kSecOIDX509V1ValidityNotAfter) else {
+        return failure("certificates", "Dates du certificat illisibles")
+      }
+      let data = Data(bytes)
+      certificates.append([
+        "role": role, "nationalId": expectedId,
+        "certificateBase64": data.base64EncodedString(),
+        "sha256": SHA256.hash(data: data).map { String(format: "%02X", $0) }.joined(),
+        "validFrom": ISO8601DateFormatter().string(from: start),
+        "validUntil": ISO8601DateFormatter().string(from: end)
+      ])
+      guard start <= Date(), Date() <= end else {
+        return failure("certificates", "Certificat hors période de validité : " + role)
+      }
+      if role == "signature" {
+        signingData = data
+        signingCertificate = cert
+        signingId = readAttribute(session: sessionHandle, object: handle, type: 0x102)
+      }
+    }
+    // Explicit local preparation: public certificates only, no C_Sign call.
+    if readSigningMaterial {
+      return ["success": true, "objects": objects, "certificates": certificates,
+              "nationalId": expectedId]
+    }
+    guard let key = findUnique(3, "CPS_PRIV_SIG"),
+          let keyId = readAttribute(session: sessionHandle, object: key, type: 0x102),
+          let certId = signingId, !certId.isEmpty, keyId == certId,
+          let cert = signingCertificate, let certData = signingData,
+          let publicKey = SecCertificateCopyKey(cert) else {
+      return failure("keyBinding", "Impossible d’associer la clé de signature au certificat CPS")
+    }
+    if dmpSignedInfo != nil && certData.base64EncodedString() != expectedCertificate {
+      return failure("identity", "Le certificat de la carte a changé depuis la préparation du lot")
+    }
+    typealias SignInit = @convention(c) (UInt, UnsafeMutableRawPointer?, UInt) -> UInt
+    typealias Sign = @convention(c) (UInt, UnsafeMutablePointer<UInt8>?, UInt,
+                                    UnsafeMutablePointer<UInt8>?, UnsafeMutablePointer<UInt>?) -> UInt
+    guard let initSymbol = dlsym(library, "C_SignInit"), let symbol = dlsym(library, "C_Sign") else {
+      return failure("dlsym", "Fonctions de signature absentes")
+    }
+    let signInit = unsafeBitCast(initSymbol, to: SignInit.self)
+    let sign = unsafeBitCast(symbol, to: Sign.self)
+    struct Mechanism { var type: UInt; var parameter: UnsafeMutableRawPointer?; var length: UInt }
+    // SHA-1 only for the offline reproduction of SEL-MP-037 A6-2.
+    // Existing CPS diagnostic and all INSi signing retain SHA-256.
+    var mechanism = Mechanism(type: dmpSignedInfo == nil ? 0x40 : 0x06, parameter: nil, length: 0)
+    let initialized = withUnsafeMutablePointer(to: &mechanism) {
+      signInit(sessionHandle, UnsafeMutableRawPointer($0), key)
+    }
+    guard initialized == 0 else { return failure("C_SignInit", "Initialisation de signature refusée", initialized) }
+    let message = dmpSignedInfo ?? ("ABAK CPS LOCAL SIGNATURE TEST | " + UUID().uuidString)
+    var messageBytes = Array(message.utf8)
+    var length: UInt = 0
+    let sized = messageBytes.withUnsafeMutableBufferPointer {
+      sign(sessionHandle, $0.baseAddress, UInt($0.count), nil, &length)
+    }
+    guard sized == 0, length > 0, length <= 16384 else {
+      return failure("C_Sign(size)", "Taille de signature invalide", sized)
+    }
+    var bytes = [UInt8](repeating: 0, count: Int(length))
+    let signed = messageBytes.withUnsafeMutableBufferPointer { msg in
+      bytes.withUnsafeMutableBufferPointer { sig in
+        sign(sessionHandle, msg.baseAddress, UInt(msg.count), sig.baseAddress, &length)
+      }
+    }
+    guard signed == 0, length <= bytes.count else { return failure("C_Sign", "Signature refusée", signed) }
+    let signature = Data(bytes.prefix(Int(length)))
+    let algorithm: SecKeyAlgorithm = dmpSignedInfo == nil ? .rsaSignatureMessagePKCS1v15SHA256 : .rsaSignatureMessagePKCS1v15SHA1
+    guard SecKeyIsAlgorithmSupported(publicKey, .verify, algorithm),
+          SecKeyVerifySignature(publicKey, algorithm, Data(message.utf8) as CFData, signature as CFData, nil),
+          !SecKeyVerifySignature(publicKey, algorithm, Data((message + " altered").utf8) as CFData, signature as CFData, nil) else {
+      return failure("verification", "La vérification locale de la signature a échoué")
+    }
+    return ["success": true, "objects": objects, "certificates": certificates,
+            "nationalId": expectedId, "verified": true, "tamperedMessageRejected": true,
+            "algorithm": dmpSignedInfo == nil ? "RSA-SHA256 / PKCS#1 v1.5" : "RSA-SHA1 / PKCS#1 v1.5 (lot local)", "message": message,
+            "signatureBase64": signature.base64EncodedString(),
+            "signingCertificateBase64": certData.base64EncodedString()]
+
   }
 
   private static func listPkcs11Objects(pin: String) -> [String: Any] {
@@ -2686,6 +3381,62 @@ class MainFlutterWindow: NSWindow {
 // À ajouter après la dernière accolade de MainFlutterWindow.swift.
 // Les imports Cocoa et FlutterMacOS existent déjà dans ce fichier.
 
+final class AbakMaintenanceAccess {
+  static let shared = AbakMaintenanceAccess()
+  private var activeURL: URL?
+  private var channel: FlutterMethodChannel?
+
+  func register(with messenger: FlutterBinaryMessenger) {
+    let bridge = FlutterMethodChannel(name: "abak/maintenance_access", binaryMessenger: messenger)
+    bridge.setMethodCallHandler { [weak self] call, result in
+      guard let self = self else { result(nil); return }
+      if call.method == "release" {
+        self.activeURL?.stopAccessingSecurityScopedResource()
+        self.activeURL = nil
+        result(nil)
+        return
+      }
+      guard call.method == "authorize",
+            let args = call.arguments as? [String: Any],
+            let path = args["path"] as? String,
+            path.hasPrefix("/"),
+            URL(fileURLWithPath: path).lastPathComponent.hasPrefix("abak-maintenance-"),
+            !path.split(separator: "/").contains(where: { ["Applications", "Containers", "Group Containers"].contains(String($0)) }) else {
+        result(FlutterError(code: "SYNTHETIC_ONLY", message: "Dossier synthétique requis.", details: nil))
+        return
+      }
+      let expected = URL(fileURLWithPath: path, isDirectory: true).standardizedFileURL
+      guard expected.path == path else { result(nil); return }
+      let panel = NSOpenPanel()
+      panel.canChooseDirectories = true
+      panel.canChooseFiles = false
+      panel.allowsMultipleSelection = false
+      panel.canCreateDirectories = false
+      panel.title = "Maintenance — autoriser uniquement le dossier synthétique"
+      panel.message = "Sélectionnez exactement : \(path)"
+      panel.prompt = "Autoriser la recette"
+      panel.directoryURL = expected
+      NSApp.activate(ignoringOtherApps: true)
+      guard panel.runModal() == .OK, let selected = panel.url,
+            selected.standardizedFileURL.path == path,
+            selected.resolvingSymlinksInPath().path == path else {
+        result(nil)
+        return
+      }
+      let started = selected.startAccessingSecurityScopedResource()
+      guard (try? String(contentsOf: selected.appendingPathComponent("SYNTHETIC-ONLY"), encoding: .utf8)) == "ABAK-MAINTENANCE-SYNTHETIC-V1\n" else {
+        if started { selected.stopAccessingSecurityScopedResource() }
+        result(nil)
+        return
+      }
+      self.activeURL?.stopAccessingSecurityScopedResource()
+      self.activeURL = started ? selected : nil
+      result(path)
+    }
+    channel = bridge
+  }
+}
+
 final class AbakDirectoryAccessBridge {
   static let shared = AbakDirectoryAccessBridge()
 
@@ -2740,24 +3491,85 @@ final class AbakDirectoryAccessBridge {
         )
         result(opened)
 
+      case "openDocx", "openPdf":
+        let extensionName = call.method == "openPdf" ? "pdf" : "docx"
+        let documentKind = extensionName.uppercased()
+        guard let path = args["path"] as? String, path.hasPrefix("/"),
+              !path.contains("\0") else {
+          throw NSError(domain: "AbakDocumentOpen", code: 1,
+                        userInfo: [NSLocalizedDescriptionKey: "Chemin du \(documentKind) invalide."])
+        }
+        let document = URL(fileURLWithPath: path).standardizedFileURL
+        let resolved = document.resolvingSymlinksInPath()
+        guard document.pathExtension.lowercased() == extensionName,
+              resolved.pathExtension.lowercased() == extensionName,
+              try resolved.resourceValues(forKeys: [.isRegularFileKey]).isRegularFile == true,
+              FileManager.default.isReadableFile(atPath: resolved.path) else {
+          throw NSError(domain: "AbakDocumentOpen", code: 2,
+                        userInfo: [NSLocalizedDescriptionKey: "Le \(documentKind) est absent ou inaccessible. Vérifiez l’accès au dossier des documents."])
+        }
+        guard let application = NSWorkspace.shared.urlForApplication(toOpen: document) else {
+          throw NSError(domain: "AbakDocumentOpen", code: 3,
+                        userInfo: [NSLocalizedDescriptionKey: "Aucune application par défaut pour les fichiers \(documentKind). Choisissez-en une dans le Finder."])
+        }
+        // Open the document with its registered application explicitly. Launching
+        // an already-running application with a custom Apple event can succeed
+        // without opening the requested document.
+        let configuration = NSWorkspace.OpenConfiguration()
+        configuration.activates = true
+        NSWorkspace.shared.open([document], withApplicationAt: application,
+                                configuration: configuration) { _, error in
+          DispatchQueue.main.async {
+            if let error = error {
+              result(FlutterError(code: "\(documentKind)_OPEN_FAILED",
+                                  message: error.localizedDescription, details: nil))
+            } else {
+              result(nil)
+            }
+          }
+        }
+
       case "chooseDirectory":
+        let readOnly = args["readOnly"] as? Bool ?? false
+        let expectedPath = args["expectedPath"] as? String
+        if let expectedPath {
+          guard readOnly, expectedPath.hasPrefix("/"),
+                expectedPath != "/",
+                URL(fileURLWithPath: expectedPath).standardizedFileURL.path == expectedPath else {
+            throw NSError(domain: "AbakDirectoryAccess", code: 2,
+                          userInfo: [NSLocalizedDescriptionKey: "Chemin de dossier invalide."])
+          }
+        }
         let panel = NSOpenPanel()
         panel.canChooseDirectories = true
         panel.canChooseFiles = false
         panel.allowsMultipleSelection = false
-        panel.canCreateDirectories = true
+        panel.canCreateDirectories = !readOnly
+        panel.treatsFilePackagesAsDirectories = readOnly
         panel.title = args["title"] as? String ?? "Choisir un dossier"
-        panel.prompt = "Autoriser ce dossier"
+        panel.prompt = readOnly ? "Autoriser la lecture" : "Autoriser ce dossier"
+        if readOnly, let initialPath = args["initialPath"] as? String,
+           initialPath.hasPrefix("/") {
+          panel.directoryURL = URL(fileURLWithPath: initialPath).deletingLastPathComponent()
+        }
+        if let expectedPath {
+          panel.directoryURL = URL(fileURLWithPath: expectedPath).deletingLastPathComponent()
+          panel.message = "Sélectionnez ce dossier pour autoriser sa lecture : \(expectedPath)"
+        }
         guard panel.runModal() == .OK, let url = panel.url else {
           result(nil)
           return
         }
+        if let expectedPath, url.standardizedFileURL.path != expectedPath {
+          throw NSError(domain: "AbakDirectoryAccess", code: 3,
+                        userInfo: [NSLocalizedDescriptionKey: "Sélectionnez exactement le dossier indiqué, ou corrigez le chemin dans le formulaire."])
+        }
         let bookmark = try url.bookmarkData(
-            options: [.withSecurityScope],
+            options: readOnly ? [.withSecurityScope, .securityScopeAllowOnlyReadAccess] : [.withSecurityScope],
             includingResourceValuesForKeys: nil,
             relativeTo: nil
         )
-        result(try activate(bookmark))
+        result(try activate(bookmark, readOnly: readOnly))
 
       case "restoreDirectory":
         guard let encoded = args["bookmark"] as? String,
@@ -2769,7 +3581,7 @@ final class AbakDirectoryAccessBridge {
           ))
           return
         }
-        result(try activate(bookmark))
+        result(try activate(bookmark, readOnly: args["readOnly"] as? Bool ?? false))
 
       case "releaseDirectory":
         guard let token = args["token"] as? String else {
@@ -2804,7 +3616,7 @@ final class AbakDirectoryAccessBridge {
     }
   }
 
-  private func activate(_ bookmark: Data) throws -> [String: Any] {
+  private func activate(_ bookmark: Data, readOnly: Bool = false) throws -> [String: Any] {
     var stale = false
     let url = try URL(
         resolvingBookmarkData: bookmark,
@@ -2826,16 +3638,18 @@ final class AbakDirectoryAccessBridge {
     let values = try url.resourceValues(forKeys: [.isDirectoryKey])
     guard values.isDirectory == true,
           FileManager.default.isReadableFile(atPath: url.path),
-          FileManager.default.isWritableFile(atPath: url.path) else {
+          (readOnly || FileManager.default.isWritableFile(atPath: url.path)) else {
       throw NSError(
           domain: "AbakDirectoryAccess",
           code: 1,
-          userInfo: [NSLocalizedDescriptionKey: "Dossier indisponible ou accès lecture-écriture refusé."]
+          userInfo: [NSLocalizedDescriptionKey: readOnly
+            ? "Dossier indisponible ou accès en lecture refusé."
+            : "Dossier indisponible ou accès lecture-écriture refusé."]
       )
     }
 
     let currentBookmark = stale ? try url.bookmarkData(
-        options: [.withSecurityScope],
+        options: readOnly ? [.withSecurityScope, .securityScopeAllowOnlyReadAccess] : [.withSecurityScope],
         includingResourceValuesForKeys: nil,
         relativeTo: nil
     ) : bookmark
@@ -2851,5 +3665,87 @@ final class AbakDirectoryAccessBridge {
       "bookmark": currentBookmark.base64EncodedString(),
       "token": token,
     ]
+  }
+}
+
+/// Native preferences recipe ONLY. Registered solely by the signed, isolated
+/// recipe branch above. No arbitrary domain argument, no raw plist replacement,
+/// no cfprefsd restart, and no application/business database access.
+private enum AbakPreferencesRecipe {
+  static func register(with messenger: FlutterBinaryMessenger) {
+    let channel = FlutterMethodChannel(name: "abak/preferences_recipe", binaryMessenger: messenger)
+    channel.setMethodCallHandler { call, result in
+      do {
+        guard let domain = Bundle.main.bundleIdentifier,
+              domain.hasPrefix("fr.abakphysio.maintenance.recipe."),
+              (Bundle.main.object(forInfoDictionaryKey: "ABAKPreferencesRecipeOnly") as? Bool == true ||
+               (Bundle.main.object(forInfoDictionaryKey: "ABAKCoordinatedRecipeOnly") as? Bool == true &&
+                CommandLine.arguments.contains(where: { $0.hasPrefix("--abak-coordinated-phase=") }))) else {
+          throw failure("Identité de recette obligatoire.")
+        }
+        let defaults = UserDefaults.standard
+        let args = call.arguments as? [String: Any] ?? [:]
+        switch call.method {
+        case "context":
+          result(["identity": domain,
+                  "target": Bundle.main.object(forInfoDictionaryKey: "ABAKRecipeFolder") as? String ?? ""])
+        case "synchronize":
+          result(defaults.synchronize())
+        case "snapshot":
+          guard defaults.synchronize() else { throw failure("Synchronisation impossible.") }
+          let values = owned(defaults, domain)
+          let data = try PropertyListSerialization.data(fromPropertyList: values, format: .xml, options: 0)
+          result(["format": "ABAK-NATIVE-PREFERENCES-RECIPE-1", "identity": domain,
+                  "payload": data.base64EncodedString(), "sha256": digest(data),
+                  "keys": values.keys.sorted()])
+        case "restore":
+          // Validate everything before changing even one preference.
+          guard let archive = args["archive"] as? [String: Any],
+                archive["format"] as? String == "ABAK-NATIVE-PREFERENCES-RECIPE-1",
+                archive["identity"] as? String == domain,
+                let encoded = archive["payload"] as? String, encoded.utf8.count < 4_000_000,
+                let data = Data(base64Encoded: encoded),
+                archive["sha256"] as? String == digest(data),
+                let values = try PropertyListSerialization.propertyList(from: data, options: [], format: nil) as? [String: Any],
+                archive["keys"] as? [String] == values.keys.sorted(),
+                values.allSatisfy({ $0.key.hasPrefix("flutter.") && valid($0.value) }),
+                let expected = args["expected"] as? String else {
+            throw failure("Sauvegarde invalide ou d’une autre identité : restauration refusée.")
+          }
+          guard defaults.synchronize() else { throw failure("Synchronisation impossible.") }
+          let current = try PropertyListSerialization.data(fromPropertyList: owned(defaults, domain), format: .xml, options: 0)
+          guard digest(current) == expected else { throw failure("Préférences modifiées depuis l’examen : restauration refusée.") }
+          let before = defaults.persistentDomain(forName: domain) ?? [:]
+          var merged = before.filter { !$0.key.hasPrefix("flutter.") }
+          for (key, value) in values { merged[key] = value }
+          defaults.setPersistentDomain(merged, forName: domain)
+          guard defaults.synchronize(), NSDictionary(dictionary: owned(defaults, domain)).isEqual(to: values) else {
+            defaults.setPersistentDomain(before, forName: domain)
+            _ = defaults.synchronize()
+            throw failure("Restauration non vérifiée ; état précédent rétabli à vérifier.")
+          }
+          result(["restored": true, "keys": values.count])
+        default:
+          result(FlutterMethodNotImplemented)
+        }
+      } catch {
+        result(FlutterError(code: "PREFERENCES_RECIPE_REFUSED", message: error.localizedDescription, details: nil))
+      }
+    }
+  }
+  private static func owned(_ defaults: UserDefaults, _ domain: String) -> [String: Any] {
+    return (defaults.persistentDomain(forName: domain) ?? [:]).filter { $0.key.hasPrefix("flutter.") }
+  }
+  private static func valid(_ value: Any) -> Bool {
+    if value is String { return true }
+    if let number = value as? NSNumber { return number.doubleValue.isFinite }
+    if value is [String] { return true }
+    return false
+  }
+  private static func digest(_ data: Data) -> String {
+    SHA256.hash(data: data).map { String(format: "%02x", $0) }.joined()
+  }
+  private static func failure(_ message: String) -> NSError {
+    NSError(domain: "AbakPreferencesRecipe", code: 1, userInfo: [NSLocalizedDescriptionKey: message])
   }
 }

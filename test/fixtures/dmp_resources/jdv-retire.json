@@ -1,0 +1,13 @@
+{
+  "synthetic": true,
+  "format": "banc-normalise-non-NOS",
+  "version": "TEST-3",
+  "entries": [
+    {
+      "system": "urn:abak:test:system",
+      "code": "TEST_A",
+      "label": "Libellé initial",
+      "active": false
+    }
+  ]
+}

@@ -1,11 +1,8 @@
 import '../../../core/database/database_service.dart';
-import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import '../models/patient_fr_health_identity.dart';
 
 class PatientFrHealthIdentityRepository {
-  Future<PatientFrHealthIdentity?> getByPatientId(
-      String patientId,
-      ) async {
+  Future<PatientFrHealthIdentity?> getByPatientId(String patientId) async {
     final db = await DatabaseService.database;
 
     final rows = await db.query(
@@ -22,15 +19,21 @@ class PatientFrHealthIdentityRepository {
     return PatientFrHealthIdentity.fromMap(rows.first);
   }
 
-  Future<void> save(
-      PatientFrHealthIdentity identity,
-      ) async {
+  Future<void> save(PatientFrHealthIdentity identity) async {
     final db = await DatabaseService.database;
 
-    await db.insert(
-      'patient_fr_health_identity',
-      identity.toMap(),
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
+    // Preserve additional identity/provenance columns not represented by this
+    // legacy model. REPLACE would delete them when updating an existing INS.
+    await db.transaction((txn) async {
+      final count = await txn.update(
+        'patient_fr_health_identity',
+        identity.toMap(),
+        where: 'patient_id = ?',
+        whereArgs: [identity.patientId],
+      );
+      if (count == 0) {
+        await txn.insert('patient_fr_health_identity', identity.toMap());
+      }
+    });
   }
 }

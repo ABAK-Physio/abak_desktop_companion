@@ -1,0 +1,19 @@
+{
+  "synthetic": true,
+  "format": "banc-normalise-non-NOS",
+  "version": "TEST-4",
+  "entries": [
+    {
+      "system": "urn:abak:test:system",
+      "code": "TEST_A",
+      "label": "Un",
+      "active": true
+    },
+    {
+      "system": "urn:abak:test:system",
+      "code": "TEST_A",
+      "label": "Deux",
+      "active": true
+    }
+  ]
+}

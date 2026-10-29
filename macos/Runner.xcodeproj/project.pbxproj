@@ -21,6 +21,9 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+        AB9000000000000000000001 = {isa = PBXBuildFile; fileRef = AB9000000000000000000002; };
+        AC0010000000000000000001 /* DocumentControlsBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0010000000000000000003; };
+        AC0010000000000000000002 /* Protocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0010000000000000000004; };
 		0A59382494448E116A7605C7 /* Pods_RunnerTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E1E9AB48AE2A735028695AF /* Pods_RunnerTests.framework */; };
 		23D6569D2FD6B96A00EF0329 /* File.txt in Resources */ = {isa = PBXBuildFile; fileRef = 23D6569C2FD6B96A00EF0329 /* File.txt */; };
 		331C80D8294CF71000263BE5 /* RunnerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331C80D7294CF71000263BE5 /* RunnerTests.swift */; };
@@ -64,6 +67,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+        AB9000000000000000000002 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Runner/WebPsBrowserBridge.swift; sourceTree = SOURCE_ROOT; };
+        AC0010000000000000000003 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Runner/DocumentControlsBridge.swift; sourceTree = SOURCE_ROOT; };
+        AC0010000000000000000004 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentControls/Protocol.swift; sourceTree = SOURCE_ROOT; };
 		0938F2CDA55C4C3070F7AF80 /* Pods-Runner.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.debug.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.debug.xcconfig"; sourceTree = "<group>"; };
 		23D6569C2FD6B96A00EF0329 /* File.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = File.txt; sourceTree = "<group>"; };
 		23D6569E2FD6BAEE00EF0329 /* Runner-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Runner-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -207,6 +213,7 @@
 				23D6569C2FD6B96A00EF0329 /* File.txt */,
 				33CC10F02044A3C60003C045 /* AppDelegate.swift */,
 				33CC11122044BFA00003C045 /* MainFlutterWindow.swift */,
+                AB9000000000000000000002,
 				33E51913231747F40026EE4D /* DebugProfile.entitlements */,
 				33E51914231749380026EE4D /* Release.entitlements */,
 				33CC11242044D66E0003C045 /* Resources */,
@@ -249,6 +256,7 @@
 				33CC110E2044A8840003C045 /* Bundle Framework */,
 				3399D490228B24CF009A79C7 /* ShellScript */,
 				5D5654D9B819C77342323B59 /* [CP] Embed Pods Frameworks */,
+                AC0010000000000000000005 /* Build document controls XPC */,
 			);
 			buildRules = (
 			);
@@ -338,6 +346,17 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+        AC0010000000000000000005 /* Build document controls XPC */ = {
+            isa = PBXShellScriptBuildPhase;
+            alwaysOutOfDate = 1;
+            buildActionMask = 2147483647;
+            files = ();
+            inputPaths = ();
+            outputPaths = ();
+            runOnlyForDeploymentPostprocessing = 0;
+            shellPath = /bin/sh;
+            shellScript = "/usr/bin/python3 \"$SRCROOT/../scripts/macos/build_document_controls.py\"\n";
+        };
 		3399D490228B24CF009A79C7 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
@@ -454,6 +473,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				33CC11132044BFA00003C045 /* MainFlutterWindow.swift in Sources */,
+                AB9000000000000000000001,
+                AC0010000000000000000001 /* DocumentControlsBridge.swift in Sources */,
+                AC0010000000000000000002 /* Protocol.swift in Sources */,
 				33CC10F12044A3C60003C045 /* AppDelegate.swift in Sources */,
 				335BBD1B22A9A15E00E9071D /* GeneratedPluginRegistrant.swift in Sources */,
 			);

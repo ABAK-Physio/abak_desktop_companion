@@ -1,0 +1,16 @@
+{
+  "sha256": "91188d9ce367cef8169fb719ca7431a5bc595be23bba0cd986a34e5d00d0eae7",
+  "status": "non_verifie",
+  "simulated": false,
+  "kind": "document_illisible",
+  "reason": "Validation non aboutie : document_illisible",
+  "returncode": 7,
+  "reportSha256": "50789bc301228cf9937e4c18454a78e0cf0be4aa00f728c6edbffe70581a17f8",
+  "batchSummary": {
+    "failedToParse": 1,
+    "encrypted": 0,
+    "outOfMemory": 0,
+    "veraExceptions": 0
+  },
+  "item": "/Users/jeanclaudebrucher/.codex/.chatgpt-projects/g-p-6a7829f3ecf4819196e1ba1ec7f49eaa/output/regression-pdfa-cda-native/execution-1/variants/tronque.pdf"
+}

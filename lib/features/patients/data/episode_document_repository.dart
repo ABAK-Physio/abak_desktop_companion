@@ -5,10 +5,13 @@ import '../../../core/database/database_service.dart';
 import '../models/episode_document.dart';
 
 class EpisodeDocumentRepository {
+  EpisodeDocumentRepository({Future<Database> Function()? database})
+    : _database = database ?? (() => DatabaseService.database);
+  final Future<Database> Function() _database;
   final Uuid _uuid = const Uuid();
 
   Future<List<EpisodeDocument>> getByCaseId(String caseId) async {
-    final db = await DatabaseService.database;
+    final db = await _database();
 
     final rows = await db.query(
       'episode_documents',
@@ -21,7 +24,7 @@ class EpisodeDocumentRepository {
   }
 
   Future<EpisodeDocument?> getById(String documentId) async {
-    final db = await DatabaseService.database;
+    final db = await _database();
 
     final rows = await db.query(
       'episode_documents',
@@ -42,7 +45,7 @@ class EpisodeDocumentRepository {
     String? mimeType,
     String? source,
   }) async {
-    final db = await DatabaseService.database;
+    final db = await _database();
     final now = DateTime.now().millisecondsSinceEpoch;
 
     final document = EpisodeDocument(
@@ -71,7 +74,7 @@ class EpisodeDocumentRepository {
     String? mimeType,
     String? source,
   }) async {
-    final db = await DatabaseService.database;
+    final db = await _database();
     final now = DateTime.now().millisecondsSinceEpoch;
 
     final values = <String, Object?>{'updated_at': now};
@@ -101,7 +104,7 @@ class EpisodeDocumentRepository {
   }
 
   Future<void> archive(String documentId) async {
-    final db = await DatabaseService.database;
+    final db = await _database();
     final now = DateTime.now().millisecondsSinceEpoch;
 
     await db.update(
@@ -113,7 +116,7 @@ class EpisodeDocumentRepository {
   }
 
   Future<void> deletePermanently(String documentId) async {
-    final db = await DatabaseService.database;
+    final db = await _database();
 
     await db.delete(
       'episode_documents',
@@ -123,7 +126,7 @@ class EpisodeDocumentRepository {
   }
 
   Future<void> archiveByCaseId(String caseId) async {
-    final db = await DatabaseService.database;
+    final db = await _database();
     final now = DateTime.now().millisecondsSinceEpoch;
 
     await db.update(

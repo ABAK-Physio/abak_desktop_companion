@@ -1,3 +1,4 @@
+import 'features/dmp_session/practitioner_session_banner.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
@@ -20,7 +21,7 @@ class AbakDesktopApp extends StatefulWidget {
 
 class _AbakDesktopAppState extends State<AbakDesktopApp> {
   final LanguagePreferenceService _languageService =
-  const LanguagePreferenceService();
+      const LanguagePreferenceService();
 
   Locale? _locale;
 
@@ -43,6 +44,7 @@ class _AbakDesktopAppState extends State<AbakDesktopApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      builder: (context, child) => PractitionerSessionBanner(child: child!),
       scaffoldMessengerKey: rootScaffoldMessengerKey,
       title: 'ABAK Desktop Companion',
       debugShowCheckedModeBanner: false,
@@ -62,10 +64,7 @@ class _AbakDesktopAppState extends State<AbakDesktopApp> {
 
       home: _LaunchNoticeHost(
         snapshot: widget.launchSnapshot,
-        child: _HomeWithDirectoryStatus(
-          onLocaleChanged: _loadLocale,
-          versionLabel: widget.launchSnapshot?.current.label,
-        ),
+        child: _HomeWithDirectoryStatus(onLocaleChanged: _loadLocale),
       ),
     );
   }
@@ -73,12 +72,7 @@ class _AbakDesktopAppState extends State<AbakDesktopApp> {
 
 /// Affiche aussi les problèmes apparus avant runApp, sans bloquer les données.
 class _HomeWithDirectoryStatus extends StatelessWidget {
-  const _HomeWithDirectoryStatus({
-    required this.onLocaleChanged,
-    this.versionLabel,
-  });
-
-  final String? versionLabel;
+  const _HomeWithDirectoryStatus({required this.onLocaleChanged});
 
   final VoidCallback onLocaleChanged;
 
@@ -90,24 +84,16 @@ class _HomeWithDirectoryStatus extends StatelessWidget {
       builder: (context, problem, child) {
         return Column(
           children: [
-            if (versionLabel != null)
-              Material(
-                color: Theme.of(context).colorScheme.surfaceContainerLow,
-                child: SizedBox(
-                  width: double.infinity,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-                    child: Text('ABAK Companion — $versionLabel'),
-                  ),
-                ),
-              ),
             if (problem != null)
               Material(
                 color: Theme.of(context).colorScheme.errorContainer,
                 child: SafeArea(
                   bottom: false,
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
                     child: Row(
                       children: [
                         const Icon(Icons.folder_off_outlined),
@@ -119,7 +105,9 @@ class _HomeWithDirectoryStatus extends StatelessWidget {
                             Navigator.of(context).push<void>(
                               MaterialPageRoute<void>(
                                 builder: (context) => Scaffold(
-                                  appBar: AppBar(title: Text(S.of(context).settings_title)),
+                                  appBar: AppBar(
+                                    title: Text(S.of(context).settings_title),
+                                  ),
                                   body: const SingleChildScrollView(
                                     padding: EdgeInsets.all(16),
                                     child: SettingsScreen(),
@@ -142,6 +130,7 @@ class _HomeWithDirectoryStatus extends StatelessWidget {
     );
   }
 }
+
 /// Mémorise le démarrage réussi après l’affichage de l’accueil, sans dialogue.
 class _LaunchNoticeHost extends StatefulWidget {
   const _LaunchNoticeHost({required this.snapshot, required this.child});
@@ -164,7 +153,9 @@ class _LaunchNoticeHostState extends State<_LaunchNoticeHost> {
 
   Future<void> _finishSuccessfulLaunch() async {
     final snapshot = widget.snapshot;
-    if (snapshot == null || snapshot.kind == MacosLaunchKind.olderVersion) return;
+    if (snapshot == null || snapshot.kind == MacosLaunchKind.olderVersion) {
+      return;
+    }
     if (snapshot.kind == MacosLaunchKind.unchanged) return;
 
     try {
@@ -175,7 +166,7 @@ class _LaunchNoticeHostState extends State<_LaunchNoticeHost> {
         const SnackBar(
           content: Text(
             'La version démarrée n’a pas pu être mémorisée. '
-                'Réessayez en redémarrant l’application.',
+            'Réessayez en redémarrant l’application.',
           ),
           duration: Duration(seconds: 8),
         ),

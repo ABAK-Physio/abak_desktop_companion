@@ -1,0 +1,22 @@
+{
+  "sha256": "217bd9cc43924a725ec4b1809cde9d78cb3b519716be2a0f31db13cfc5bd91a0",
+  "status": "conforme",
+  "simulated": false,
+  "kind": "conformite",
+  "returncode": 0,
+  "reportSha256": "e1daa674c5054a0d4502a9861f922f77d4c0f25ae9d53ad10f2f5f124095283c",
+  "batchSummary": {
+    "failedToParse": 0,
+    "encrypted": 0,
+    "outOfMemory": 0,
+    "veraExceptions": 0
+  },
+  "item": "/Users/jeanclaudebrucher/.codex/.chatgpt-projects/g-p-6a7829f3ecf4819196e1ba1ec7f49eaa/output/regression-pdfa-cda-native/execution-1/variants/blanc.pdf",
+  "profile": "PDF/A-1b validation profile",
+  "details": {
+    "passedRules": 129,
+    "failedRules": 0,
+    "passedChecks": 400,
+    "failedChecks": 0
+  }
+}

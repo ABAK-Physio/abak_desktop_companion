@@ -360,7 +360,12 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
       case 5:
         return PreferencesScreen(onLanguageChanged: widget.onLocaleChanged);
       case 6:
-        return const SettingsScreen();
+        return const Scrollbar(
+          child: SingleChildScrollView(
+            padding: EdgeInsets.all(16),
+            child: SettingsScreen(),
+          ),
+        );
       case 7:
         return const AboutScreen();
       default:
