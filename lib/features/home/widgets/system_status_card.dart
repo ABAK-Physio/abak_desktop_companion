@@ -326,11 +326,14 @@ class _StatusLine extends StatelessWidget {
           Expanded(
             child: Text(label),
           ),
-          Text(
-            value,
-            style: TextStyle(
-              fontWeight: FontWeight.w600,
-              color: color,
+          Flexible(
+            child: Text(
+              value,
+              textAlign: TextAlign.right,
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                color: color,
+              ),
             ),
           ),
         ],

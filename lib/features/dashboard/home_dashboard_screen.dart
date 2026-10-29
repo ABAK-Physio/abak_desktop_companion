@@ -14,6 +14,7 @@ import '../patients/patient_list_screen.dart';
 import '../settings/settings_screen.dart';
 import '../informations/about.dart';
 import '../practitioners/practitioner_list_screen.dart';
+import '../planning/planning_entry_screen.dart';
 import '../devices/device_list_screen.dart';
 import '../external_correspondents/screens/external_correspondents_screen.dart';
 import '../import_export/abak_import_launcher.dart';
@@ -47,7 +48,7 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
   int selectedIndex = 0;
   int _refreshToken = 0;
   final ApplicationSettingsService _applicationSettingsService =
-  const ApplicationSettingsService();
+      const ApplicationSettingsService();
 
   bool _expertModeEnabled = false;
   List<String> _titles(BuildContext context) {
@@ -55,6 +56,7 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
       S.of(context).home_home,
       S.of(context).home_patients,
       'Kinés',
+      'Planning',
       S.of(context).home_correspondents,
       'Appareils',
       'Paramètres',
@@ -110,6 +112,7 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           NavigationRail(
+            scrollable: true,
             selectedIndex: selectedIndex,
             onDestinationSelected: (index) {
               setState(() {
@@ -136,6 +139,11 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
                 icon: Icon(Icons.medical_services_outlined),
                 selectedIcon: Icon(Icons.medical_services),
                 label: Text(S.of(context).home_practitioners),
+              ),
+              const NavigationRailDestination(
+                icon: Icon(Icons.calendar_month_outlined),
+                selectedIcon: Icon(Icons.calendar_month),
+                label: Text('Planning'),
               ),
               NavigationRailDestination(
                 icon: Icon(Icons.contact_page_outlined),
@@ -231,7 +239,7 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
                 const SizedBox(height: 16),
                 SelectableText(
                   '${S.of(context).desktopAddress} : $host\n'
-                      '${S.of(context).desktopPort} : $port',
+                  '${S.of(context).desktopPort} : $port',
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 12),
@@ -354,19 +362,21 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
       case 2:
         return const PractitionerListScreen();
       case 3:
-        return const ExternalCorrespondentsScreen();
+        return const PlanningEntryScreen();
       case 4:
-        return const DeviceListScreen();
+        return const ExternalCorrespondentsScreen();
       case 5:
-        return PreferencesScreen(onLanguageChanged: widget.onLocaleChanged);
+        return const DeviceListScreen();
       case 6:
+        return PreferencesScreen(onLanguageChanged: widget.onLocaleChanged);
+      case 7:
         return const Scrollbar(
           child: SingleChildScrollView(
             padding: EdgeInsets.all(16),
             child: SettingsScreen(),
           ),
         );
-      case 7:
+      case 8:
         return const AboutScreen();
       default:
         return const SizedBox.shrink();

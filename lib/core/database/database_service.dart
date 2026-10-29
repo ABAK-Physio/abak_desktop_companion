@@ -9,6 +9,7 @@ import 'document_dv1_schema.dart';
 import 'practitioner_cps_schema.dart';
 import 'cabinet_practice_schema.dart';
 import 'patient_qualification_schema.dart';
+import '../../features/planning/data/planning_schema.dart';
 import '../../features/kobus/kobus_schema.dart';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
@@ -18,7 +19,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 class DatabaseService {
-  static const int schemaVersion = 48;
+  static const int schemaVersion = 49;
   static Database? _database;
   static Completer<void>? _restoreGate;
 
@@ -306,19 +307,43 @@ class DatabaseService {
               'TEXT NULL',
             );
           }
-          if (oldVersion < 32) await createDocumentVersionsTable(db);
-          if (oldVersion < 33) await createDocumentMedicalTables(db);
-          if (oldVersion < 34) await createDocumentControlsTables(db);
-          if (oldVersion < 35) await createDocumentJournalTables(db);
-          if (oldVersion < 36) await createDocumentChainTables(db);
-          if (oldVersion < 37) await createDocumentReconciliationTables(db);
-          if (oldVersion < 38) await createDocumentDv1Tables(db);
-          if (oldVersion < 39) await createPractitionerCpsTables(db);
-          if (oldVersion < 40) await createPractitionerCpsDatesTable(db);
-          if (oldVersion < 41) await createCabinetPracticeTables(db);
-          if (oldVersion < 42) await createPatientQualificationTables(db);
-          if (oldVersion < 43) await createPatientQualificationTables(db);
-          if (oldVersion < 48) await createDocumentDv1Tables(db);
+          // The DMP and planning branches independently used versions 32–38.
+          // Reconcile both additive schemas regardless of the originating branch.
+          if (oldVersion < 49) {
+            await createDocumentVersionsTable(db);
+            await createDocumentMedicalTables(db);
+            await createDocumentControlsTables(db);
+            await createDocumentJournalTables(db);
+            await createDocumentChainTables(db);
+            await createDocumentReconciliationTables(db);
+            await createDocumentDv1Tables(db);
+            await createPractitionerCpsTables(db);
+            await createPractitionerCpsDatesTable(db);
+            await createCabinetPracticeTables(db);
+            await createPatientQualificationTables(db);
+            await createPlanningTables(db);
+            await migratePlanningPatients(db);
+            await migratePlanningEventKind(db);
+            await migratePlanningPractitioner(db);
+            await _addColumnIfMissing(
+              db,
+              'practitioners',
+              'working_hours_json',
+              'TEXT NULL',
+            );
+            await _addColumnIfMissing(
+              db,
+              'practitioners',
+              'appointment_step_minutes',
+              'INTEGER NOT NULL DEFAULT 15 CHECK(appointment_step_minutes IN (15, 20, 30))',
+            );
+            await _addColumnIfMissing(
+              db,
+              'practitioners',
+              'appointment_duration_minutes',
+              'INTEGER NOT NULL DEFAULT 45 CHECK(appointment_duration_minutes BETWEEN 1 AND 840)',
+            );
+          }
         },
       ),
     );
@@ -550,6 +575,8 @@ class DatabaseService {
 
   static Future<void> _createAllTables(Database db) async {
     await _createCoreTables(db);
+    await createPlanningTables(db);
+    await migratePlanningPatients(db);
     await createKobusTables(db);
     await _createPatientDocumentFoldersTable(db);
     await _createPatientFrHealthIdentityTable(db);
@@ -621,6 +648,13 @@ class DatabaseService {
       await db.execute('DROP TRIGGER IF EXISTS ${table}_keep_pdf_versions');
     }
     await db.execute('DROP TABLE IF EXISTS episode_document_versions');
+    await db.execute('DROP TABLE IF EXISTS planning_appointments');
+    await db.execute(
+      'DROP TABLE IF EXISTS care_episode_referring_practitioners',
+    );
+    await db.execute('DROP TABLE IF EXISTS care_episode_document_edit_drafts');
+    await db.execute('DROP TABLE IF EXISTS assessment_template_drafts');
+    await db.execute('DROP TABLE IF EXISTS external_correspondents');
     await db.execute('DROP TABLE IF EXISTS kobus_archives');
     await db.execute('DROP TABLE IF EXISTS kobus_items');
     await db.execute('DROP TABLE IF EXISTS kobus_runs');
@@ -710,6 +744,9 @@ class DatabaseService {
       CREATE TABLE practitioners (
         practitioner_id TEXT PRIMARY KEY,
         display_name TEXT NOT NULL,
+        working_hours_json TEXT NULL,
+        appointment_step_minutes INTEGER NOT NULL DEFAULT 15 CHECK(appointment_step_minutes IN (15, 20, 30)),
+        appointment_duration_minutes INTEGER NOT NULL DEFAULT 45 CHECK(appointment_duration_minutes BETWEEN 1 AND 840),
         first_name TEXT NULL,
         last_name TEXT NULL,
         professional_id TEXT NULL,

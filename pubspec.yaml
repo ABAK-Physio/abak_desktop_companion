@@ -47,6 +47,7 @@ dependencies:
   printing: ^5.14.3
   crypto: any
   asn1lib: ^1.6.5
+  calendar_view: 2.0.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
