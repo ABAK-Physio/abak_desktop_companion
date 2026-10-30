@@ -3,7 +3,6 @@
 Public entry: compile_macos_local_only.sh (mandatory sandbox boundary).
 """
 import argparse
-import fcntl
 import hashlib
 import json
 import os
@@ -13,6 +12,8 @@ import re
 import shutil
 import subprocess
 import tempfile
+
+from macos_build_lock import acquire_lock
 
 REPO = Path(__file__).resolve().parents[2]
 
@@ -40,6 +41,7 @@ def main():
                     help='Compile only the isolated native preferences test entry point, not a distributable application')
     ap.add_argument('--report-pdf-recipe', action='store_true', help='Compile the isolated synthetic report PDF acceptance entry point')
     args = ap.parse_args()
+    acquire_lock(REPO)  # Also protect direct Python invocations.
     if args.report_pdf_recipe and args.preferences_recipe:
         ap.error('Choisir une seule recette')
     if not re.fullmatch(r'\d+\.\d+\.\d+', args.version) or not re.fullmatch(r'[1-9]\d*', args.build):
@@ -67,8 +69,6 @@ def main():
         ap.error('SDK Flutter local absent ; aucun téléchargement')
     if os.environ.get('ABAK_BUILD_SANDBOX') != 'network-and-install-denied':
         ap.error('Utiliser compile_macos_local_only.sh pour appliquer la sandbox')
-    lock = (REPO / '.dart_tool/compile-only.lock').open('a+')
-    fcntl.lockf(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
     out.mkdir()
     source = {n: tree(REPO / n) for n in ['lib', 'assets', 'macos/Runner', 'macos/DocumentControls', 'macos/Runner.xcodeproj', 'macos/Runner.xcworkspace', 'macos/Flutter']}
     source['pubspec'] = {n: digest(REPO / n) for n in ['pubspec.yaml', 'pubspec.lock']}

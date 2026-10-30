@@ -3,6 +3,11 @@
 # SwiftPM's manifest sandbox cannot be nested in sandbox-exec on this Mac.
 # Scope its exception to xcodebuild child commands; never change Xcode defaults.
 set -euo pipefail
+
+# Acquire before preparation; nested scripts inherit the same kernel lock.
+if ! /usr/bin/python3 "${0:A:h}/macos_build_lock.py" --held; then
+  exec /usr/bin/python3 "${0:A:h}/macos_build_lock.py" /bin/zsh "$0" "$@"
+fi
 cd "$(dirname "$0")/../.."
 WRAPPERS=$(mktemp -d /tmp/abak-offline-build.XXXXXX)
 cleanup() {

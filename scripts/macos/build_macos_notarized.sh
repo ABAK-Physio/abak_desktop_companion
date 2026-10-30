@@ -3,6 +3,11 @@
 # Modifier le numéro de la VERSION BUILD_NAME et le numéro de la release BUILD_Number
 set -euo pipefail
 
+# Acquire before preparation; nested scripts inherit the same kernel lock.
+if ! /usr/bin/python3 "${0:A:h}/macos_build_lock.py" --held; then
+  exec /usr/bin/python3 "${0:A:h}/macos_build_lock.py" /bin/zsh "$0" "$@"
+fi
+
 # Se placer à la racine du projet.
 SCRIPT_DIR="${0:A:h}"
 cd "${SCRIPT_DIR}/../.."

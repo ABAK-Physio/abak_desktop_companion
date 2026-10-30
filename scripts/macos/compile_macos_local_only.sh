@@ -1,5 +1,10 @@
 #!/bin/zsh
 set -euo pipefail
+
+# Acquire before preparation; nested scripts inherit the same kernel lock.
+if ! /usr/bin/python3 "${0:A:h}/macos_build_lock.py" --held; then
+  exec /usr/bin/python3 "${0:A:h}/macos_build_lock.py" /bin/zsh "$0" "$@"
+fi
 cd "$(dirname "$0")/../.."
 # Deny network AND writes to installed applications and every user container.
 # No installer is reachable from this entry; signing uses existing local material.
