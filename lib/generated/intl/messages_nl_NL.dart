@@ -838,6 +838,27 @@ class MessageLookup extends MessageLookupByLibrary {
             "De gegenereerde tekst invoegen"),
         "documentTitle_help": MessageLookupByLibrary.simpleMessage(
             "In dit venster kunt u de titel van de balans of het rapport invoeren.\n\nBehoud de voorgestelde titel of vervang deze door een titel waarmee het document gemakkelijk te herkennen is. De titel mag niet leeg zijn.\n\nKlik op de bevestigingsknop of druk op Enter om te bevestigen. Met ‘Annuleren’ sluit u het venster zonder de titel te bevestigen.\n\nBij het openen en sluiten van deze helpfunctie blijft de ingevoerde tekst behouden."),
+        "episodeAttachments_authorizeFolder":
+            MessageLookupByLibrary.simpleMessage("Map autoriseren"),
+        "episodeAttachments_configureFolder":
+            MessageLookupByLibrary.simpleMessage("Documentenmap kiezen"),
+        "episodeAttachments_destinationReady":
+            MessageLookupByLibrary.simpleMessage(
+                "De map is gereed. U kunt het opnieuw proberen."),
+        "episodeAttachments_destinationRequired":
+            MessageLookupByLibrary.simpleMessage(
+                "Kies of autoriseer de documentenmap en probeer het opnieuw."),
+        "episodeAttachments_destinationUnavailable":
+            MessageLookupByLibrary.simpleMessage(
+                "De documentenmap is niet beschikbaar. Kies een toegankelijke bestemming."),
+        "episodeAttachments_episodeUnavailable":
+            MessageLookupByLibrary.simpleMessage(
+                "De behandeling is niet beschikbaar of is gewijzigd."),
+        "episodeAttachments_invalidAttachment":
+            MessageLookupByLibrary.simpleMessage(
+                "Deze bijlage hoort niet bij de patiëntenmap."),
+        "episodeAttachments_title":
+            MessageLookupByLibrary.simpleMessage("Bijlagen bij de behandeling"),
         "episodeDashboard_documents":
             MessageLookupByLibrary.simpleMessage("Documenten"),
         "episodeDashboard_documentsDescription":
@@ -857,6 +878,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "episodeDashboard_reportDescription":
             MessageLookupByLibrary.simpleMessage(
                 "Samenvatting van de aflevering"),
+        "episodeDmpDocuments_help": MessageLookupByLibrary.simpleMessage(
+            "Importeer een definitieve PDF of converteer een DOCX naar PDF/A. Versies, validaties en DMP-controles zijn beschikbaar bij elk document."),
+        "episodeDmpDocuments_title":
+            MessageLookupByLibrary.simpleMessage("DMP-documenten"),
         "episodeDocuments_addDocument":
             MessageLookupByLibrary.simpleMessage("Een document toevoegen"),
         "episodeDocuments_addError": MessageLookupByLibrary.simpleMessage(

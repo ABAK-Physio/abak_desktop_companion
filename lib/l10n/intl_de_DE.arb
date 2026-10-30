@@ -1082,5 +1082,15 @@
   "walkingAid_none": "Keine",
   "walkingAid_other": "Sonstiges",
   "walkingAid_rollatorFourWheels": "4-Rad-Rollator",
-  "walkingAid_walkerTwoWheels": "Zweirädriger Rollator"
+  "walkingAid_walkerTwoWheels": "Zweirädriger Rollator",
+  "episodeAttachments_title": "Anhänge der Behandlung",
+  "episodeDmpDocuments_title": "DMP-Dokumente",
+  "episodeDmpDocuments_help": "Importieren Sie eine finale PDF-Datei oder konvertieren Sie DOCX in PDF/A. Versionen, Validierungen und DMP-Prüfungen sind über jedes Dokument verfügbar.",
+  "episodeAttachments_configureFolder": "Dokumentenordner wählen",
+  "episodeAttachments_authorizeFolder": "Ordner autorisieren",
+  "episodeAttachments_destinationRequired": "Wählen oder autorisieren Sie den Dokumentenordner und versuchen Sie es erneut.",
+  "episodeAttachments_destinationReady": "Der Ordner ist bereit. Versuchen Sie es erneut.",
+  "episodeAttachments_destinationUnavailable": "Der Dokumentenordner ist nicht verfügbar. Wählen Sie ein erreichbares Ziel.",
+  "episodeAttachments_episodeUnavailable": "Die Behandlung ist nicht verfügbar oder wurde geändert.",
+  "episodeAttachments_invalidAttachment": "Dieser Anhang gehört nicht zum Patientenordner."
 }

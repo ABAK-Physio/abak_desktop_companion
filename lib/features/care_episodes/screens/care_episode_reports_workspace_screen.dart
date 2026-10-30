@@ -37,6 +37,7 @@ import '../../practitioners/widgets/practitioner_selector.dart';
 import '../data/care_episode_referring_practitioner_repository.dart';
 import '../widgets/referring_practitioner_history_dialog.dart';
 import '../../patients/screens/episode_documents_screen.dart';
+import '../../patients/screens/episode_attachments_screen.dart';
 import 'report_docx_pdf_screen.dart';
 
 import '../data/care_episode_document_edit_draft_repository.dart';
@@ -3312,6 +3313,13 @@ class _CareEpisodeReportsWorkspaceScreenState
     }
   }
 
+  void _openEpisodeAttachments() {
+    Navigator.of(context).push(MaterialPageRoute(builder: (_) => EpisodeAttachmentsScreen(
+      caseId: widget.episode.careEpisodeId,
+      caseLabel: '${widget.patientName} — ${widget.episode.pathologyLabel}',
+    )));
+  }
+
   void _openEpisodeDocuments() {
     Navigator.of(context).push(
       MaterialPageRoute(
@@ -3374,7 +3382,8 @@ class _CareEpisodeReportsWorkspaceScreenState
                   episodeLabel: widget.episode.pathologyLabel,
                 ),
               )),
-              onOpenDocuments: _openEpisodeDocuments,
+              onOpenDocuments: _openEpisodeAttachments,
+              onOpenDmpDocuments: _openEpisodeDocuments,
             ),
 
             const SizedBox(height: 12),

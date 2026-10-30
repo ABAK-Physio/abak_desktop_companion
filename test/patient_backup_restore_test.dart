@@ -1,6 +1,8 @@
 import 'package:abak_desktop_companion/features/planning/data/planning_repository.dart';
 import 'package:abak_desktop_companion/features/planning/models/planning_appointment.dart';
 import 'dart:io';
+import 'package:abak_desktop_companion/features/patients/data/episode_document_repository.dart';
+import 'package:abak_desktop_companion/features/patients/services/patient_attachment_service.dart';
 import 'dart:typed_data';
 
 import 'package:archive/archive_io.dart';
@@ -63,6 +65,13 @@ class _FailingRestore extends LocalDatabaseRestoreService {
   }
 }
 
+class _AttachmentAccess extends AttachmentDirectoryAccess {
+  const _AttachmentAccess();
+  @override
+  Future<AttachmentDirectoryLease> acquire(String root) async =>
+      AttachmentDirectoryLease(root);
+}
+
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   late Directory temp;
@@ -75,6 +84,7 @@ void main() {
   setUp(() async {
     await S.load(const Locale('fr', 'FR'));
     temp = await Directory.systemTemp.createTemp('abak_backup_test_');
+    temp = Directory(await temp.resolveSymbolicLinks());
     previous = PathProviderPlatform.instance;
     PathProviderPlatform.instance = _Paths(p.join(temp.path, 'support'));
     root = await Directory(p.join(temp.path, 'patients')).create();
@@ -145,6 +155,168 @@ void main() {
     edit(archive);
     await File(path).writeAsBytes(ZipEncoder().encode(archive));
   }
+
+  Future<void> seedAttachments() async {
+    final db = await DatabaseService.database;
+    await db.insert('care_episodes', {
+      'care_episode_id': 'attachment-episode',
+      'patient_id': patientId,
+      'title': 'Episode',
+      'pathology_label': 'Test',
+      'created_at': 1,
+    });
+    final repo = EpisodeDocumentRepository();
+    final path = p.join(folders.other, 'Sous dossier', 'pièce jointe.bin');
+    await repo.create(
+      caseId: 'attachment-episode',
+      title: 'ordinary',
+      filePath: path,
+      source: 'local_copy',
+    );
+    // Even an atypical final_pdf reference in Autre must not be rewritten.
+    await repo.create(
+      caseId: 'attachment-episode',
+      title: 'dmp',
+      filePath: path,
+      source: 'final_pdf',
+    );
+    final legacy = File(
+      p.join(
+        temp.path,
+        'support',
+        'episode_documents',
+        'attachment-episode',
+        'legacy.txt',
+      ),
+    );
+    await legacy.parent.create(recursive: true);
+    await legacy.writeAsString('legacy');
+    await repo.create(
+      caseId: 'attachment-episode',
+      title: 'legacy',
+      filePath: legacy.path,
+      source: 'local_copy',
+    );
+    final other = (await PatientRepository().createPatient(
+      lastName: 'Other',
+      firstName: 'Patient',
+    )).patientId;
+    await db.insert('care_episodes', {
+      'care_episode_id': 'foreign-episode',
+      'patient_id': other,
+      'title': 'Other',
+      'pathology_label': 'Test',
+      'created_at': 1,
+    });
+    await repo.create(
+      caseId: 'foreign-episode',
+      title: 'foreign',
+      filePath: path,
+      source: 'local_copy',
+    );
+  }
+
+  test(
+    'attachment paths follow relocated and collision-renamed patient folders only',
+    () async {
+      await seedAttachments();
+      final db = await DatabaseService.database;
+      final before = {
+        for (final row in await db.query('episode_documents'))
+          row['title']: row['file_path'],
+      };
+      final archive = await backup();
+      final relocated = Directory(p.join(temp.path, 'attachment-relocated'))
+        ..createSync();
+      Directory(p.join(relocated.path, p.basename(folders.path))).createSync();
+      access.remap[root.path] = relocated.path;
+      final result = await LocalDatabaseRestoreService(
+        access: access,
+      ).restoreDatabase(backupPath: archive);
+      expect(result.success, isTrue, reason: result.message);
+      final documents = await EpisodeDocumentRepository().getByCaseId(
+        'attachment-episode',
+      );
+      final ordinary = documents.singleWhere((d) => d.title == 'ordinary');
+      expect(
+        ordinary.filePath,
+        p.join(
+          relocated.path,
+          '${p.basename(folders.path)}_2',
+          'Autre',
+          'Sous dossier',
+          'pièce jointe.bin',
+        ),
+      );
+      expect(
+        documents.singleWhere((d) => d.title == 'dmp').filePath,
+        before['dmp'],
+      );
+      expect(
+        documents.singleWhere((d) => d.title == 'legacy').filePath,
+        before['legacy'],
+      );
+      expect(
+        (await EpisodeDocumentRepository().getByCaseId(
+          'foreign-episode',
+        )).single.filePath,
+        before['foreign'],
+      );
+      // The old root is no longer available: opening must use the restored path.
+      await root.rename('${root.path}-old');
+      await PatientAttachmentService(access: const _AttachmentAccess()).open(
+        ordinary,
+        openFile: (path) async {
+          expect(await File(path).readAsBytes(), [0, 255, 128, 12]);
+        },
+      );
+    },
+  );
+
+  test(
+    'attachment rebinding rolls back if final database installation fails',
+    () async {
+      await seedAttachments();
+      final original = (await EpisodeDocumentRepository().getByCaseId(
+        'attachment-episode',
+      )).singleWhere((d) => d.title == 'ordinary');
+      final archive = await backup();
+      final relocated = Directory(p.join(temp.path, 'rollback-destination'))
+        ..createSync();
+      access.remap[root.path] = relocated.path;
+      final result = await _FailingRestore(
+        access: access,
+      ).restoreDatabase(backupPath: archive);
+      expect(result.success, isFalse);
+      expect(
+        (await EpisodeDocumentRepository().getById(
+          original.documentId,
+        ))!.filePath,
+        original.filePath,
+      );
+      expect(await File(original.filePath).readAsBytes(), [0, 255, 128, 12]);
+    },
+  );
+
+  test(
+    'restoration rejects an absent archived attachment even if current copy exists',
+    () async {
+      await seedAttachments();
+      final original = p.join(
+        folders.other,
+        'Sous dossier',
+        'pièce jointe.bin',
+      );
+      await File(original).delete();
+      final archive = await backup();
+      await File(original).writeAsString('newer file not in backup');
+      final result = await LocalDatabaseRestoreService(
+        access: access,
+      ).restoreDatabase(backupPath: archive);
+      expect(result.success, isFalse);
+      expect(await File(original).readAsString(), 'newer file not in backup');
+    },
+  );
 
   test(
     'Archive contains database, links, nested documents and empty folders',

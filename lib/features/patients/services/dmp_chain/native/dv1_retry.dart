@@ -107,7 +107,7 @@ class Dv1Retry {
                 qh,
                 'Security',
                 wsse,
-              ).getAttribute('mustUnderstand', namespace: s) !=
+              ).getAttribute('mustUnderstand', namespaceUri: s) !=
               'true') {
         return false;
       }
@@ -203,11 +203,11 @@ class Dv1Retry {
       final id = one(qh, 'MessageID', w).innerText;
       if (!RegExp(r'^urn:uuid:[0-9a-f-]{36}$').hasMatch(id)) return false;
       final entries = q
-          .findAllElements('ExtrinsicObject', namespace: rim)
+          .findAllElements('ExtrinsicObject', namespaceUri: rim)
           .where((e) => e.getAttribute('id') == documentEntry);
       if (entries.length != 1) return false;
       final patientIds = q
-          .findAllElements('ExternalIdentifier', namespace: rim)
+          .findAllElements('ExternalIdentifier', namespaceUri: rim)
           .where(
             (e) => [
               'urn:uuid:58a6f841-87b3-4a3e-92fd-a8ffeff98427',
@@ -298,7 +298,7 @@ class Dv1Retry {
         (submissionEntry, 'RegistryPackage'),
       ]) {
         if (q
-                .findAllElements(pair.$2, namespace: rim)
+                .findAllElements(pair.$2, namespaceUri: rim)
                 .where((e) => e.getAttribute('id') == pair.$1)
                 .length !=
             1) {
@@ -402,7 +402,7 @@ class Dv1Retry {
         (submissionEntry, 'RegistryPackage'),
       ]) {
         if (q
-                .findAllElements(pair.$2, namespace: rim)
+                .findAllElements(pair.$2, namespaceUri: rim)
                 .where((e) => e.getAttribute('id') == pair.$1)
                 .length !=
             1) {
@@ -437,11 +437,11 @@ class Dv1Retry {
         return false;
       }
       final signature = q
-          .findAllElements('ExtrinsicObject', namespace: rim)
+          .findAllElements('ExtrinsicObject', namespaceUri: rim)
           .singleWhere((e) => e.getAttribute('id') == signatureEntry);
       final name = one(one(signature, 'Name', rim), 'LocalizedString', rim);
       final event = signature
-          .findElements('Classification', namespace: rim)
+          .findElements('Classification', namespaceUri: rim)
           .singleWhere(
             (e) =>
                 e.getAttribute('classificationScheme') ==

@@ -145,17 +145,73 @@ void main() {
         options: OpenDatabaseOptions(
           version: 28,
           onCreate: (db, v) async {
-            await db.execute(
-              'CREATE TABLE care_episodes (care_episode_id TEXT PRIMARY KEY, patient_id TEXT, archived_at INTEGER, initial_report TEXT)',
-            );
+            final schema = await File(
+              'test/fixtures/database_v28.sql',
+            ).readAsString();
+            for (final statement in schema.split(';')) {
+              if (statement.trim().isNotEmpty) await db.execute(statement);
+            }
+            await db.insert('patients', {
+              'patient_id': 'p1',
+              'last_name': 'Historique',
+              'first_name': 'Patient',
+              'created_at': 1,
+            });
+            await db.insert('practitioners', {
+              'practitioner_id': 'pr1',
+              'display_name': 'Praticien historique',
+              'created_at': 1,
+            });
             await db.insert('care_episodes', {
               'care_episode_id': 'old',
               'patient_id': 'p1',
+              'title': 'Épisode historique',
+              'pathology_label': 'Test',
               'initial_report': 'Bilan conservé',
+              'created_at': 1,
+            });
+            await db.insert('care_episode_reports', {
+              'report_id': 'r1',
+              'care_episode_id': 'old',
+              'author_practitioner_id': 'pr1',
+              'title': 'Rapport conservé',
+              'content_json': '{}',
+              'status': 'saved',
+              'report_date': 1,
+              'created_at': 1,
+            });
+            await db.insert('episode_documents', {
+              'document_id': 'd1',
+              'case_id': 'old',
+              'title': 'Pièce conservée',
+              'file_path': '/historical/episode_documents/old/note.txt',
+              'source': 'local_copy',
+              'mime_type': 'text/plain',
+              'created_at': 1,
+            });
+            await db.insert('patient_fr_health_identity', {
+              'patient_id': 'p1',
+              'identity_status': 'provisional',
+            });
+            await db.insert('application_settings', {
+              'setting_key': 'migration-test',
+              'setting_value': 'conserver',
+              'updated_at': 1,
             });
           },
         ),
       );
+      expect(await old.getVersion(), 28);
+      final tables = await old.rawQuery(
+        "SELECT name FROM sqlite_master WHERE type = 'table' AND name NOT LIKE 'sqlite_%'",
+      );
+      final before = <String, List<Map<String, Object?>>>{};
+      for (final table in tables) {
+        final name = table['name'] as String;
+        before[name] = await old.query(name);
+      }
+      expect(before, isNot(contains('care_episode_bodymaps')));
+      expect(before, isNot(contains('episode_document_versions')));
       await old.close();
       final current = await DatabaseService.database;
       expect(await current.getVersion(), DatabaseService.schemaVersion);
@@ -163,12 +219,33 @@ void main() {
         (await current.query('care_episodes')).single['initial_report'],
         'Bilan conservé',
       );
+      // Additive migrations may introduce columns, but must preserve every
+      // historical value, including attachment paths and source classifications.
+      for (final entry in before.entries) {
+        final after = await current.query(entry.key);
+        expect(after.length, entry.value.length, reason: entry.key);
+        for (final row in entry.value) {
+          expect(
+            after.any(
+              (candidate) => row.entries.every(
+                (value) => candidate[value.key] == value.value,
+              ),
+            ),
+            isTrue,
+            reason: 'Historical row in ${entry.key}',
+          );
+        }
+      }
+      expect(await current.rawQuery('PRAGMA foreign_key_check'), isEmpty);
+      expect(await current.query('episode_document_versions'), isEmpty);
+      expect(await current.query('document_medical_approvals'), isEmpty);
       final repo = BodymapRepository();
       await repo.save(
         careEpisodeId: 'old',
         patientId: 'p1',
         record: PainRecord({'front-head': PainEntry()}),
       );
+      await DatabaseService.closeDatabase();
       expect(
         (await repo.load(
           careEpisodeId: 'old',
@@ -330,6 +407,7 @@ void main() {
             onEditPractitioner: () {},
             onShowHistory: () {},
             onOpenDocuments: () {},
+            onOpenDmpDocuments: () {},
             onOpenBodymap: () => opened = true,
           ),
         ),

@@ -1082,5 +1082,15 @@
   "walkingAid_none": "None",
   "walkingAid_other": "Other",
   "walkingAid_rollatorFourWheels": "4-Wheel Rollator",
-  "walkingAid_walkerTwoWheels": "2-Wheel Walker"
+  "walkingAid_walkerTwoWheels": "2-Wheel Walker",
+  "episodeAttachments_title": "Episode attachments",
+  "episodeDmpDocuments_title": "DMP documents",
+  "episodeDmpDocuments_help": "Import a final PDF or convert a DOCX to PDF/A. Versions, validations and DMP checks are available from each document.",
+  "episodeAttachments_configureFolder": "Choose documents folder",
+  "episodeAttachments_authorizeFolder": "Authorize folder",
+  "episodeAttachments_destinationRequired": "Choose or authorize the documents folder, then try again.",
+  "episodeAttachments_destinationReady": "The folder is ready. You can try again.",
+  "episodeAttachments_destinationUnavailable": "The documents folder is unavailable. Choose an accessible destination.",
+  "episodeAttachments_episodeUnavailable": "The care episode is unavailable or has changed.",
+  "episodeAttachments_invalidAttachment": "This attachment does not match the patient folder."
 }

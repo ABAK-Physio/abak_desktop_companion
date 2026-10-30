@@ -27,7 +27,7 @@ void main() {
       Map<String, String> slots(String xml) => {
         for (final e in XmlDocument.parse(
           xml,
-        ).findAllElements('Slot', namespace: rim))
+        ).findAllElements('Slot', namespaceUri: rim))
           e.getAttribute('name')!: e.innerText,
       };
       final result = await DmpSubmissionSearch().run(
@@ -52,11 +52,11 @@ void main() {
           expect(slots(request), slots(sent));
           final doc = XmlDocument.parse(response);
           doc
-              .findAllElements('RelatesTo', namespace: wsa)
+              .findAllElements('RelatesTo', namespaceUri: wsa)
               .single
               .innerText = XmlDocument.parse(
             request,
-          ).findAllElements('MessageID', namespace: wsa).single.innerText;
+          ).findAllElements('MessageID', namespaceUri: wsa).single.innerText;
           return DmpTd02Reply(
             item['httpStatus'],
             doc.toXmlString(),

@@ -40,7 +40,7 @@ DmpTd02Reply reply(
 }) {
   final message = XmlDocument.parse(
     request,
-  ).findAllElements('MessageID', namespace: wsa).single.innerText;
+  ).findAllElements('MessageID', namespaceUri: wsa).single.innerText;
   return DmpTd02Reply(
     200,
     '<s:Envelope xmlns:s="$soap" xmlns:w="$wsa"><s:Header><w:RelatesTo>${correlated ? message : 'wrong'}</w:RelatesTo><w:Action>${DmpNativeTd31b.action}Response</w:Action></s:Header><s:Body><AdhocQueryResponse xmlns="${DmpNativeTd31b.query}" status="urn:oasis:names:tc:ebxml-regrep:ResponseStatusType:$status"><RegistryObjectList xmlns="$rim">$objects</RegistryObjectList></AdhocQueryResponse></s:Body></s:Envelope>',
@@ -110,7 +110,7 @@ void main() {
             messages.add(
               XmlDocument.parse(
                 request,
-              ).findAllElements('MessageID', namespace: wsa).single.innerText,
+              ).findAllElements('MessageID', namespaceUri: wsa).single.innerText,
             ),
             isTrue,
           );
@@ -122,7 +122,7 @@ void main() {
             expect(request, contains(Dv1SubmissionPeriod.stamp(period.to)));
             final slots = XmlDocument.parse(
               request,
-            ).findAllElements('Slot', namespace: rim);
+            ).findAllElements('Slot', namespaceUri: rim);
             for (final bound in ['From', 'To']) {
               final value = slots
                   .singleWhere(
@@ -130,7 +130,7 @@ void main() {
                         s.getAttribute('name') ==
                         r'$XDSSubmissionSetSubmissionTime' + bound,
                   )
-                  .findAllElements('Value', namespace: rim)
+                  .findAllElements('Value', namespaceUri: rim)
                   .single
                   .innerText;
               expect(value, matches(RegExp(r'^\d{14}$')));

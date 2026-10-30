@@ -217,7 +217,7 @@ void main() {
         throwsA(anything),
       );
       final rplc = XmlDocument.parse(packet.metadata)
-          .findAllElements('Association', namespace: DmpWireDraft.rim)
+          .findAllElements('Association', namespaceUri: DmpWireDraft.rim)
           .where(
             (e) =>
                 e.getAttribute('associationType') ==

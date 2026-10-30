@@ -1082,5 +1082,15 @@
   "walkingAid_none": "Aucune",
   "walkingAid_other": "Autre",
   "walkingAid_rollatorFourWheels": "Rollator 4 roues",
-  "walkingAid_walkerTwoWheels": "Déambulateur 2 roues"
+  "walkingAid_walkerTwoWheels": "Déambulateur 2 roues",
+  "episodeAttachments_title": "Pièces jointes de la prise en charge",
+  "episodeDmpDocuments_title": "Documents DMP",
+  "episodeDmpDocuments_help": "Importez un PDF final ou convertissez un DOCX en PDF/A. Les versions, validations et contrôles DMP sont accessibles depuis chaque document.",
+  "episodeAttachments_configureFolder": "Choisir le dossier des documents",
+  "episodeAttachments_authorizeFolder": "Autoriser le dossier",
+  "episodeAttachments_destinationRequired": "Choisissez ou autorisez le dossier des documents avant de réessayer.",
+  "episodeAttachments_destinationReady": "Le dossier est prêt. Vous pouvez réessayer.",
+  "episodeAttachments_destinationUnavailable": "Le dossier des documents est indisponible. Choisissez une destination accessible.",
+  "episodeAttachments_episodeUnavailable": "La prise en charge est indisponible ou a changé.",
+  "episodeAttachments_invalidAttachment": "Cette pièce jointe ne correspond pas au dossier du patient."
 }

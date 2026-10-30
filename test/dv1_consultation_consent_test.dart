@@ -176,20 +176,20 @@ void main() {
         final xml = XmlDocument.parse(request);
         expect(
           xml
-              .findAllElements('Action', namespace: Td02Reader.wsa)
+              .findAllElements('Action', namespaceUri: Td02Reader.wsa)
               .single
               .innerText,
           'urn:si-dmp-habilitations:HabilitationsEndPoint:setAuthorization',
         );
         final action = xml
-            .findAllElements('action', namespace: DmpNativeTd03.ns)
+            .findAllElements('action', namespaceUri: DmpNativeTd03.ns)
             .single;
         expect(action.innerText, add ? 'AJOUT' : 'SUPPRESSION');
         expect(request, contains(context.ins));
         expect(request, contains('INVISIBLE_REPRESENTANTS_LEGAUX'));
         expect(request, isNot(contains('MEDECIN_TRAITANT')));
         final messageId = xml
-            .findAllElements('MessageID', namespace: Td02Reader.wsa)
+            .findAllElements('MessageID', namespaceUri: Td02Reader.wsa)
             .single
             .innerText;
         String response({String? id, String status = 'DMPOk'}) =>

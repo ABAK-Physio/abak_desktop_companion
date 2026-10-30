@@ -303,7 +303,7 @@ class DmpLocalLot {
               'PID-5|$fixtureFamilyName^$fixtureGivenName^^^^^L',
               'PID-7|$fixtureBirthDate',
               'PID-8|$fixtureSex',
-            ].map((s) => XmlElement(XmlName('Value'), [], [XmlText(s)])),
+            ].map((s) => XmlElement(XmlName.parts('Value'), [], [XmlText(s)])),
           );
       }
     }
@@ -311,8 +311,9 @@ class DmpLocalLot {
       final label = one(id, 'LocalizedString').getAttribute('value')!;
       final owner = id.getAttribute('registryObject');
       if (label.endsWith('.patientId')) id.setAttribute('value', patient);
-      if (label.endsWith('.sourceId'))
+      if (label.endsWith('.sourceId')) {
         id.setAttribute('value', fixtureSourceOid);
+      }
       if (label.endsWith('.uniqueId')) {
         id.setAttribute(
           'value',
@@ -607,8 +608,9 @@ class DmpLocalLot {
         .toList();
     if (!isReplacement) {
       if (replacements.isNotEmpty ||
-          elements(doc, 'relatedDocument').isNotEmpty)
+          elements(doc, 'relatedDocument').isNotEmpty) {
         throw const FormatException('Remplacement inattendu');
+      }
       return;
     }
     final related = one(doc, 'relatedDocument');

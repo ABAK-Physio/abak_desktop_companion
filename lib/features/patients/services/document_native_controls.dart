@@ -351,11 +351,11 @@ class LocalDocumentControlRunner implements DocumentControlRunner {
         const ns = 'http://purl.oclc.org/dsdl/svrl';
         if (r.name.local != 'schematron-output' ||
             r.namespaceUri != ns ||
-            r.findAllElements('active-pattern', namespace: ns).isEmpty) {
+            r.findAllElements('active-pattern', namespaceUri: ns).isEmpty) {
           throw StateError('Rapport ${cdaProfiles[n]} incomplet');
         }
         final failures = r
-            .findAllElements('failed-assert', namespace: ns)
+            .findAllElements('failed-assert', namespaceUri: ns)
             .toList();
         rejected |= failures.isNotEmpty;
         files.add(name);

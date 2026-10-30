@@ -1082,5 +1082,15 @@
   "walkingAid_none": "Nenhuma",
   "walkingAid_other": "Outros",
   "walkingAid_rollatorFourWheels": "Andador de 4 rodas",
-  "walkingAid_walkerTwoWheels": "Andador de duas rodas"
+  "walkingAid_walkerTwoWheels": "Andador de duas rodas",
+  "episodeAttachments_title": "Anexos do episódio",
+  "episodeDmpDocuments_title": "Documentos DMP",
+  "episodeDmpDocuments_help": "Importe um PDF final ou converta um DOCX em PDF/A. As versões, validações e verificações DMP estão disponíveis em cada documento.",
+  "episodeAttachments_configureFolder": "Escolher pasta de documentos",
+  "episodeAttachments_authorizeFolder": "Autorizar pasta",
+  "episodeAttachments_destinationRequired": "Escolha ou autorize a pasta de documentos e tente novamente.",
+  "episodeAttachments_destinationReady": "A pasta está pronta. Pode tentar novamente.",
+  "episodeAttachments_destinationUnavailable": "A pasta de documentos está indisponível. Escolha um destino acessível.",
+  "episodeAttachments_episodeUnavailable": "O episódio está indisponível ou foi alterado.",
+  "episodeAttachments_invalidAttachment": "Este anexo não corresponde à pasta do paciente."
 }

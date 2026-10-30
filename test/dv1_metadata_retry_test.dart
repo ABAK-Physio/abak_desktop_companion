@@ -56,7 +56,7 @@ void main() {
       final errors = xml
           .findAllElements(
             'RegistryError',
-            namespace: 'urn:oasis:names:tc:ebxml-regrep:xsd:rs:3.0',
+            namespaceUri: 'urn:oasis:names:tc:ebxml-regrep:xsd:rs:3.0',
           )
           .toList();
       errors[n].setAttribute('codeContext', 'other metadata error');
@@ -70,7 +70,7 @@ void main() {
     final errors = xml
         .findAllElements(
           'RegistryError',
-          namespace: 'urn:oasis:names:tc:ebxml-regrep:xsd:rs:3.0',
+          namespaceUri: 'urn:oasis:names:tc:ebxml-regrep:xsd:rs:3.0',
         )
         .toList();
     errors.last.setAttribute(

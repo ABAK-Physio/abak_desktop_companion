@@ -829,6 +829,28 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Insertar el texto generado"),
         "documentTitle_help": MessageLookupByLibrary.simpleMessage(
             "Esta ventana permite introducir el título del balance o del informe.\n\nMantén el título propuesto o sustitúyelo por uno que permita identificar fácilmente el documento. El título no puede quedar en blanco.\n\nHaz clic en el botón de validación o pulsa Intro para confirmar. «Cancelar» cierra la ventana sin validar el título.\n\nAl abrir y cerrar esta ayuda, se conserva el texto introducido."),
+        "episodeAttachments_authorizeFolder":
+            MessageLookupByLibrary.simpleMessage("Autorizar carpeta"),
+        "episodeAttachments_configureFolder":
+            MessageLookupByLibrary.simpleMessage(
+                "Elegir carpeta de documentos"),
+        "episodeAttachments_destinationReady":
+            MessageLookupByLibrary.simpleMessage(
+                "La carpeta está lista. Puede intentarlo de nuevo."),
+        "episodeAttachments_destinationRequired":
+            MessageLookupByLibrary.simpleMessage(
+                "Elija o autorice la carpeta de documentos e inténtelo de nuevo."),
+        "episodeAttachments_destinationUnavailable":
+            MessageLookupByLibrary.simpleMessage(
+                "La carpeta de documentos no está disponible. Elija un destino accesible."),
+        "episodeAttachments_episodeUnavailable":
+            MessageLookupByLibrary.simpleMessage(
+                "El episodio no está disponible o ha cambiado."),
+        "episodeAttachments_invalidAttachment":
+            MessageLookupByLibrary.simpleMessage(
+                "Este archivo adjunto no corresponde a la carpeta del paciente."),
+        "episodeAttachments_title": MessageLookupByLibrary.simpleMessage(
+            "Archivos adjuntos del episodio"),
         "episodeDashboard_documents":
             MessageLookupByLibrary.simpleMessage("Documentos"),
         "episodeDashboard_documentsDescription":
@@ -847,6 +869,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Informe"),
         "episodeDashboard_reportDescription":
             MessageLookupByLibrary.simpleMessage("Resumen del episodio"),
+        "episodeDmpDocuments_help": MessageLookupByLibrary.simpleMessage(
+            "Importe un PDF final o convierta un DOCX a PDF/A. Las versiones, validaciones y controles DMP están disponibles en cada documento."),
+        "episodeDmpDocuments_title":
+            MessageLookupByLibrary.simpleMessage("Documentos DMP"),
         "episodeDocuments_addDocument":
             MessageLookupByLibrary.simpleMessage("Añadir un documento"),
         "episodeDocuments_addError": MessageLookupByLibrary.simpleMessage(

@@ -58,30 +58,30 @@ void main() {
       final first = build();
       final xml = XmlDocument.parse(first);
       expect(
-        xml.findAllElements('To', namespace: wsa).single.innerText,
+        xml.findAllElements('To', namespaceUri: wsa).single.innerText,
         DmpNativeTd31b.endpoint,
       );
       expect(
-        xml.findAllElements('Action', namespace: wsa).single.innerText,
+        xml.findAllElements('Action', namespaceUri: wsa).single.innerText,
         DmpNativeTd31b.action,
       );
       expect(
         xml
-            .findAllElements('ResponseOption', namespace: DmpNativeTd31b.query)
+            .findAllElements('ResponseOption', namespaceUri: DmpNativeTd31b.query)
             .single
             .getAttribute('returnType'),
         'ObjectRef',
       );
       expect(
         xml
-            .findAllElements('Slot', namespace: DmpNativeTd31b.rim)
+            .findAllElements('Slot', namespaceUri: DmpNativeTd31b.rim)
             .single
             .getAttribute('name'),
         r'$XDSDocumentEntryUniqueId',
       );
       expect(
         xml
-            .findAllElements('Value', namespace: DmpNativeTd31b.rim)
+            .findAllElements('Value', namespaceUri: DmpNativeTd31b.rim)
             .single
             .innerText,
         "('2.25.123')",
@@ -89,11 +89,11 @@ void main() {
       expect(first, contains(context.ins));
       expect(first, isNot(contains('setAuthorization')));
       expect(
-        xml.findAllElements('MessageID', namespace: wsa).single.innerText,
+        xml.findAllElements('MessageID', namespaceUri: wsa).single.innerText,
         isNot(
           XmlDocument.parse(
             build(),
-          ).findAllElements('MessageID', namespace: wsa).single.innerText,
+          ).findAllElements('MessageID', namespaceUri: wsa).single.innerText,
         ),
       );
     },

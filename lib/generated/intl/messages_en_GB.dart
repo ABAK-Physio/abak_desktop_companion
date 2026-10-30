@@ -810,6 +810,27 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Insert the generated text"),
         "documentTitle_help": MessageLookupByLibrary.simpleMessage(
             "This window allows you to enter the title of the financial statement or report.\n\nKeep the suggested title or replace it with a title that makes it easy to identify the document. The title cannot be left blank.\n\nClick the Submit button or press Enter to confirm. “Cancel” closes the window without saving the title.\n\nOpening and closing this help window preserves the text you entered."),
+        "episodeAttachments_authorizeFolder":
+            MessageLookupByLibrary.simpleMessage("Authorize folder"),
+        "episodeAttachments_configureFolder":
+            MessageLookupByLibrary.simpleMessage("Choose documents folder"),
+        "episodeAttachments_destinationReady":
+            MessageLookupByLibrary.simpleMessage(
+                "The folder is ready. You can try again."),
+        "episodeAttachments_destinationRequired":
+            MessageLookupByLibrary.simpleMessage(
+                "Choose or authorize the documents folder, then try again."),
+        "episodeAttachments_destinationUnavailable":
+            MessageLookupByLibrary.simpleMessage(
+                "The documents folder is unavailable. Choose an accessible destination."),
+        "episodeAttachments_episodeUnavailable":
+            MessageLookupByLibrary.simpleMessage(
+                "The care episode is unavailable or has changed."),
+        "episodeAttachments_invalidAttachment":
+            MessageLookupByLibrary.simpleMessage(
+                "This attachment does not match the patient folder."),
+        "episodeAttachments_title":
+            MessageLookupByLibrary.simpleMessage("Episode attachments"),
         "episodeDashboard_documents":
             MessageLookupByLibrary.simpleMessage("Documents"),
         "episodeDashboard_documentsDescription":
@@ -827,6 +848,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Report"),
         "episodeDashboard_reportDescription":
             MessageLookupByLibrary.simpleMessage("Episode Summary"),
+        "episodeDmpDocuments_help": MessageLookupByLibrary.simpleMessage(
+            "Import a final PDF or convert a DOCX to PDF/A. Versions, validations and DMP checks are available from each document."),
+        "episodeDmpDocuments_title":
+            MessageLookupByLibrary.simpleMessage("DMP documents"),
         "episodeDocuments_addDocument":
             MessageLookupByLibrary.simpleMessage("Add a document"),
         "episodeDocuments_addError":

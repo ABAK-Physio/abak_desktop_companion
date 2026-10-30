@@ -593,7 +593,7 @@ class DocumentDmpNativePorts
     if (_replacementUniqueId != null) {
       final values = XmlDocument.parse(
         request,
-      ).findAllElements('Value', namespace: DmpNativeTd31b.rim);
+      ).findAllElements('Value', namespaceUri: DmpNativeTd31b.rim);
       if (values.length != 1 ||
           values.single.innerText != "('$_replacementUniqueId')") {
         throw DmpNativeFailure('SESSION');

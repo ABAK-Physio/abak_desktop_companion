@@ -84,6 +84,11 @@ class Preflight extends PdfaPreflightService {
 }
 
 void main() {
+  setUp(() {
+    final previous = WidgetController.hitTestWarningShouldBeFatal;
+    WidgetController.hitTestWarningShouldBeFatal = true;
+    addTearDown(() => WidgetController.hitTestWarningShouldBeFatal = previous);
+  });
   testWidgets(
     'export guide separates evidence and does not import or validate',
     (tester) async {
@@ -112,6 +117,10 @@ void main() {
           ),
         ),
       );
+      await tester.pumpAndSettle();
+      await tester.ensureVisible(find.text('Obtenir le PDF'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Obtenir le PDF'));
       await tester.pumpAndSettle();
       await tester.ensureVisible(
         find.byKey(const Key('report-pdf-export-guide')),
@@ -173,31 +182,48 @@ void main() {
       await tester.pumpAndSettle();
       if (verdict == 'refuse') {
         expect(
-          find.textContaining(
-            'sinon, convertissez le PDF avec un outil adapté',
-          ),
+          find.textContaining('ou convertissez le PDF avec un outil adapté'),
           findsOneWidget,
         );
       }
       if (verdict == 'non_verifie') {
         expect(
-          find.textContaining(
-            'avant de décider si une conversion est nécessaire',
-          ),
+          find.textContaining('puis relancez la vérification'),
           findsOneWidget,
         );
       }
       expect(pdf.imports, 1);
       expect(preflight.calls, 1);
       expect(
-        find.textContaining(PdfaPreflightService.message(verdict)),
+        find.text(switch (verdict) {
+          'conforme' => 'Format conforme',
+          'refuse' => 'Conversion nécessaire',
+          _ => 'Vérification non aboutie',
+        }),
         findsOneWidget,
       );
-      expect(find.text('Convertir avec LibreOffice (option)'), findsOneWidget);
+
       await tester.drag(find.byType(ListView), const Offset(0, -600));
       await tester.pumpAndSettle();
-      expect(find.text('Contexte et validation médicale'), findsOneWidget);
-      expect(find.text('Convertir avec LibreOffice (option)'), findsOneWidget);
+      expect(
+        find.text('Continuer vers la validation du rapport'),
+        findsOneWidget,
+      );
+
+      await tester.ensureVisible(find.text('Obtenir le PDF'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Obtenir le PDF'));
+      await tester.pumpAndSettle();
+      final alternative = find.text(
+        'Autre possibilité : créer le PDF avec LibreOffice',
+      );
+      await tester.ensureVisible(alternative);
+      await tester.pumpAndSettle();
+      await tester.tap(alternative);
+      await tester.pumpAndSettle();
+      expect(find.text('Créer le PDF avec LibreOffice'), findsOneWidget);
+      expect(pdf.imports, 1);
+      expect(preflight.calls, 1);
       expect(tester.takeException(), isNull);
     });
   }
@@ -241,6 +267,8 @@ void main() {
         expect(pdf.imports, 0);
         expect(preflight.calls, 0);
         if (changed) {
+          await tester.drag(find.byType(ListView), const Offset(0, 2000));
+          await tester.pumpAndSettle();
           expect(find.textContaining('Le rapport a changé'), findsOneWidget);
         }
       },

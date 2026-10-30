@@ -60,7 +60,7 @@ void main() {
   String response(String request, String objects) {
     final id = XmlDocument.parse(
       request,
-    ).findAllElements('MessageID', namespace: wsa).single.innerText;
+    ).findAllElements('MessageID', namespaceUri: wsa).single.innerText;
     return '<s:Envelope xmlns:s="$soap" xmlns:w="$wsa"><s:Header><w:RelatesTo>$id</w:RelatesTo><w:Action>${DmpNativeTd31b.action}Response</w:Action></s:Header><s:Body>'
         '<AdhocQueryResponse xmlns="${DmpNativeTd31b.query}" status="urn:oasis:names:tc:ebxml-regrep:ResponseStatusType:Success"><RegistryObjectList xmlns="$rim">$objects</RegistryObjectList></AdhocQueryResponse></s:Body></s:Envelope>';
   }
@@ -77,12 +77,12 @@ void main() {
       final xml = XmlDocument.parse(q);
       expect(
         xml
-            .findAllElements('AdhocQuery', namespace: rim)
+            .findAllElements('AdhocQuery', namespaceUri: rim)
             .single
             .getAttribute('id'),
         DmpNativeTd31b.getDocuments,
       );
-      final slots = xml.findAllElements('Slot', namespace: rim).toList();
+      final slots = xml.findAllElements('Slot', namespaceUri: rim).toList();
       expect(slots.length, 1);
       expect(slots.single.getAttribute('name'), r'$XDSDocumentEntryUniqueId');
       expect(slots.single.innerText, "('2.25.123','2.25.456')");
@@ -188,13 +188,13 @@ void main() {
       final xml = XmlDocument.parse(request);
       expect(
         xml
-            .findAllElements('AdhocQuery', namespace: rim)
+            .findAllElements('AdhocQuery', namespaceUri: rim)
             .single
             .getAttribute('id'),
         DmpNativeTd31a.findDocuments,
       );
       final slots = {
-        for (final e in xml.findAllElements('Slot', namespace: rim))
+        for (final e in xml.findAllElements('Slot', namespaceUri: rim))
           e.getAttribute('name'): e.innerText,
       };
       expect(
@@ -215,7 +215,7 @@ void main() {
         '/private/tmp/abak-finddocuments-synthetic.xml',
       ).writeAsStringSync(request);
       final simple = XmlDocument.parse(build(const Dv1DocumentCriteria()));
-      expect(simple.findAllElements('Slot', namespace: rim).length, 2);
+      expect(simple.findAllElements('Slot', namespaceUri: rim).length, 2);
     },
   );
   test(

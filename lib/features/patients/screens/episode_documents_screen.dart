@@ -69,7 +69,6 @@ class EpisodeDocumentsScreen extends StatefulWidget {
 class _EpisodeDocumentsScreenState extends State<EpisodeDocumentsScreen>
     with WidgetsBindingObserver {
   late final EpisodeDocumentRepository _repository;
-  late final EpisodeDocumentStorageService _storageService;
   late final FinalPdfDocumentService _pdf;
   late final DocumentMedicalService _medical;
   final Map<String, MedicalStatus> _medicalStates = {};
@@ -85,7 +84,6 @@ class _EpisodeDocumentsScreenState extends State<EpisodeDocumentsScreen>
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _repository = widget.repository ?? EpisodeDocumentRepository();
-    _storageService = widget.storage ?? EpisodeDocumentStorageService();
     _pdf = widget.finalPdfService ?? FinalPdfDocumentService();
     _medical = widget.medicalService ?? DocumentMedicalService(pdf: _pdf);
     _futureDocuments = _loadDocuments();
@@ -103,7 +101,9 @@ class _EpisodeDocumentsScreenState extends State<EpisodeDocumentsScreen>
   }
 
   Future<List<EpisodeDocument>> _loadDocuments() async {
-    final docs = await _repository.getByCaseId(widget.caseId);
+    final docs = (await _repository.getByCaseId(
+      widget.caseId,
+    )).where((document) => document.source == 'final_pdf').toList();
     final versions = <String, List<EpisodeDocumentVersion>>{};
     final journal = DocumentJournalService(
       controls:
@@ -134,44 +134,6 @@ class _EpisodeDocumentsScreenState extends State<EpisodeDocumentsScreen>
     setState(() {
       _futureDocuments = _loadDocuments();
     });
-  }
-
-  Future<void> _addDocument() async {
-    final s = S.of(context);
-    if (_busy) return;
-    final path = await _pick(false);
-    if (path == null || !mounted) return;
-    setState(() => _busy = true);
-    try {
-      final copiedPath = await _storageService.copyDocumentToEpisodeFolder(
-        caseId: widget.caseId,
-        sourcePath: path,
-      );
-
-      await _repository.create(
-        caseId: widget.caseId,
-        title: File(path).uri.pathSegments.last,
-        filePath: copiedPath,
-        mimeType: await DocumentMime.forFile(File(copiedPath)),
-        source: 'local_copy',
-      );
-
-      await _refresh();
-
-      if (!mounted) return;
-
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(s.episodeDocuments_documentAdded)));
-    } catch (error) {
-      if (!mounted) return;
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('${s.episodeDocuments_addError} : $error')),
-      );
-    } finally {
-      if (mounted) setState(() => _busy = false);
-    }
   }
 
   Future<void> _openDocument(EpisodeDocument document) async {
@@ -410,7 +372,7 @@ class _EpisodeDocumentsScreenState extends State<EpisodeDocumentsScreen>
           Text(s.episodeDocuments_noDocument, textAlign: TextAlign.center),
           SizedBox(height: 8),
           Text(
-            s.episodeDocuments_emptyDescription,
+            s.episodeDmpDocuments_help,
             textAlign: TextAlign.center,
           ),
         ],
@@ -700,12 +662,12 @@ class _EpisodeDocumentsScreenState extends State<EpisodeDocumentsScreen>
     final s = S.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text(s.episodeDocuments_title),
+        title: Text(s.episodeDmpDocuments_title),
         actions: [
           if (widget.showExpertInfo)
             ExpertModeInfoButton(
               info: ExpertContextInfo(
-                contextName: s.episodeDocuments_title,
+                contextName: s.episodeDmpDocuments_title,
                 sourceFile:
                     'lib/features/patients/screens/episode_documents_screen.dart',
                 arbPrefix: 'episodeDocuments',
@@ -713,8 +675,8 @@ class _EpisodeDocumentsScreenState extends State<EpisodeDocumentsScreen>
             ),
           ContextHelpButton(
             technicalInformationLabel: S.of(context).g_helpTooltip,
-            title: s.episodeDocuments_title,
-            content: s.episodeDocuments_help,
+            title: s.episodeDmpDocuments_title,
+            content: s.episodeDmpDocuments_help,
           ),
           IconButton(
             tooltip: s.episodeDocuments_refresh,
@@ -742,16 +704,6 @@ class _EpisodeDocumentsScreenState extends State<EpisodeDocumentsScreen>
               Text(
                 widget.caseLabel,
                 style: Theme.of(context).textTheme.titleMedium,
-              ),
-              const SizedBox(height: 16),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: FilledButton.icon(
-                  key: const Key('add-ordinary-document'),
-                  onPressed: _busy ? null : _addDocument,
-                  icon: const Icon(Icons.add),
-                  label: Text(s.episodeDocuments_addDocument),
-                ),
               ),
               const SizedBox(height: 16),
               FilledButton.icon(

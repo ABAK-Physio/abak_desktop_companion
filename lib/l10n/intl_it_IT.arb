@@ -1082,5 +1082,15 @@
   "walkingAid_none": "Nessuna",
   "walkingAid_other": "Altro",
   "walkingAid_rollatorFourWheels": "Deambulatore a 4 ruote",
-  "walkingAid_walkerTwoWheels": "Deambulatore a 2 ruote"
+  "walkingAid_walkerTwoWheels": "Deambulatore a 2 ruote",
+  "episodeAttachments_title": "Allegati della presa in carico",
+  "episodeDmpDocuments_title": "Documenti DMP",
+  "episodeDmpDocuments_help": "Importa un PDF finale o converti un DOCX in PDF/A. Versioni, convalide e controlli DMP sono disponibili per ogni documento.",
+  "episodeAttachments_configureFolder": "Scegli cartella documenti",
+  "episodeAttachments_authorizeFolder": "Autorizza cartella",
+  "episodeAttachments_destinationRequired": "Scegli o autorizza la cartella documenti e riprova.",
+  "episodeAttachments_destinationReady": "La cartella è pronta. Puoi riprovare.",
+  "episodeAttachments_destinationUnavailable": "La cartella documenti non è disponibile. Scegli una destinazione accessibile.",
+  "episodeAttachments_episodeUnavailable": "La presa in carico non è disponibile o è cambiata.",
+  "episodeAttachments_invalidAttachment": "Questo allegato non corrisponde alla cartella del paziente."
 }

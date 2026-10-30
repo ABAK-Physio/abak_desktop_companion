@@ -1082,5 +1082,15 @@
   "walkingAid_none": "Geen",
   "walkingAid_other": "Overig",
   "walkingAid_rollatorFourWheels": "Rollator met 4 wielen",
-  "walkingAid_walkerTwoWheels": "Looprek met 2 wielen"
+  "walkingAid_walkerTwoWheels": "Looprek met 2 wielen",
+  "episodeAttachments_title": "Bijlagen bij de behandeling",
+  "episodeDmpDocuments_title": "DMP-documenten",
+  "episodeDmpDocuments_help": "Importeer een definitieve PDF of converteer een DOCX naar PDF/A. Versies, validaties en DMP-controles zijn beschikbaar bij elk document.",
+  "episodeAttachments_configureFolder": "Documentenmap kiezen",
+  "episodeAttachments_authorizeFolder": "Map autoriseren",
+  "episodeAttachments_destinationRequired": "Kies of autoriseer de documentenmap en probeer het opnieuw.",
+  "episodeAttachments_destinationReady": "De map is gereed. U kunt het opnieuw proberen.",
+  "episodeAttachments_destinationUnavailable": "De documentenmap is niet beschikbaar. Kies een toegankelijke bestemming.",
+  "episodeAttachments_episodeUnavailable": "De behandeling is niet beschikbaar of is gewijzigd.",
+  "episodeAttachments_invalidAttachment": "Deze bijlage hoort niet bij de patiëntenmap."
 }

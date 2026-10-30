@@ -545,7 +545,7 @@ class Dv1AccessService {
         record['state'] = 'visibility_accepted';
         await save();
         final expected = Td02Reader.parse(update)
-            .findAllElements('ExtrinsicObject', namespace: DmpNativeTd31b.rim)
+            .findAllElements('ExtrinsicObject', namespaceUri: DmpNativeTd31b.rim)
             .single;
         final afterQuery = queryFor(expected.getAttribute('id')!);
         final after = await exchange(afterQuery, 'td33b-after');

@@ -1082,5 +1082,15 @@
   "walkingAid_none": "Ninguna",
   "walkingAid_other": "Otros",
   "walkingAid_rollatorFourWheels": "Andador de 4 ruedas",
-  "walkingAid_walkerTwoWheels": "Andador de dos ruedas"
+  "walkingAid_walkerTwoWheels": "Andador de dos ruedas",
+  "episodeAttachments_title": "Archivos adjuntos del episodio",
+  "episodeDmpDocuments_title": "Documentos DMP",
+  "episodeDmpDocuments_help": "Importe un PDF final o convierta un DOCX a PDF/A. Las versiones, validaciones y controles DMP están disponibles en cada documento.",
+  "episodeAttachments_configureFolder": "Elegir carpeta de documentos",
+  "episodeAttachments_authorizeFolder": "Autorizar carpeta",
+  "episodeAttachments_destinationRequired": "Elija o autorice la carpeta de documentos e inténtelo de nuevo.",
+  "episodeAttachments_destinationReady": "La carpeta está lista. Puede intentarlo de nuevo.",
+  "episodeAttachments_destinationUnavailable": "La carpeta de documentos no está disponible. Elija un destino accesible.",
+  "episodeAttachments_episodeUnavailable": "El episodio no está disponible o ha cambiado.",
+  "episodeAttachments_invalidAttachment": "Este archivo adjunto no corresponde a la carpeta del paciente."
 }

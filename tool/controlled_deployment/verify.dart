@@ -345,8 +345,9 @@ Future<void> main() async {
             releases++;
             return null;
           }
-          if (call.method == 'authorize')
+          if (call.method == 'authorize') {
             return authorizeResult ? root.path : null;
+          }
           throw StateError('Unexpected maintenance method');
         },
       );

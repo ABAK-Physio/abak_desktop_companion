@@ -822,6 +822,28 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Insérer le texte généré"),
         "documentTitle_help": MessageLookupByLibrary.simpleMessage(
             "Cette fenêtre permet de renseigner le titre du bilan ou du rapport.\n\nConservez le titre proposé ou remplacez-le par un intitulé permettant de reconnaître facilement le document. Le titre ne peut pas être vide.\n\nCliquez sur le bouton de validation ou appuyez sur Entrée pour confirmer. « Annuler » ferme la fenêtre sans valider le titre.\n\nL’ouverture et la fermeture de cette aide conservent le texte saisi."),
+        "episodeAttachments_authorizeFolder":
+            MessageLookupByLibrary.simpleMessage("Autoriser le dossier"),
+        "episodeAttachments_configureFolder":
+            MessageLookupByLibrary.simpleMessage(
+                "Choisir le dossier des documents"),
+        "episodeAttachments_destinationReady":
+            MessageLookupByLibrary.simpleMessage(
+                "Le dossier est prêt. Vous pouvez réessayer."),
+        "episodeAttachments_destinationRequired":
+            MessageLookupByLibrary.simpleMessage(
+                "Choisissez ou autorisez le dossier des documents avant de réessayer."),
+        "episodeAttachments_destinationUnavailable":
+            MessageLookupByLibrary.simpleMessage(
+                "Le dossier des documents est indisponible. Choisissez une destination accessible."),
+        "episodeAttachments_episodeUnavailable":
+            MessageLookupByLibrary.simpleMessage(
+                "La prise en charge est indisponible ou a changé."),
+        "episodeAttachments_invalidAttachment":
+            MessageLookupByLibrary.simpleMessage(
+                "Cette pièce jointe ne correspond pas au dossier du patient."),
+        "episodeAttachments_title": MessageLookupByLibrary.simpleMessage(
+            "Pièces jointes de la prise en charge"),
         "episodeDashboard_documents":
             MessageLookupByLibrary.simpleMessage("Documents"),
         "episodeDashboard_documentsDescription":
@@ -840,6 +862,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Rapport"),
         "episodeDashboard_reportDescription":
             MessageLookupByLibrary.simpleMessage("Synthèse de l’épisode"),
+        "episodeDmpDocuments_help": MessageLookupByLibrary.simpleMessage(
+            "Importez un PDF final ou convertissez un DOCX en PDF/A. Les versions, validations et contrôles DMP sont accessibles depuis chaque document."),
+        "episodeDmpDocuments_title":
+            MessageLookupByLibrary.simpleMessage("Documents DMP"),
         "episodeDocuments_addDocument":
             MessageLookupByLibrary.simpleMessage("Ajouter un document"),
         "episodeDocuments_addError": MessageLookupByLibrary.simpleMessage(

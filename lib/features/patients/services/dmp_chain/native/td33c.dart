@@ -34,7 +34,7 @@ class DmpNativeTd33c {
         DmpNativeTd31b.endpoint;
     final old = Td02Reader.parse(archivedSubmission);
     final submission = old
-        .findAllElements('RegistryPackage', namespace: DmpNativeTd31b.rim)
+        .findAllElements('RegistryPackage', namespaceUri: DmpNativeTd31b.rim)
         .single;
     submission.setAttribute(
       submission.name.prefix == null
@@ -63,7 +63,7 @@ class DmpNativeTd33c {
       if (e.name.local == 'Slot' &&
           e.getAttribute('name') == 'submissionTime') {
         e
-            .findAllElements('Value', namespace: DmpNativeTd31b.rim)
+            .findAllElements('Value', namespaceUri: DmpNativeTd31b.rim)
             .single
             .innerText = now
             .toUtc()
@@ -149,7 +149,7 @@ class DmpNativeTd33c {
         result.getAttribute('status') !=
             'urn:oasis:names:tc:ebxml-regrep:ResponseStatusType:Success' ||
         result
-            .findAllElements('RegistryError', namespace: DmpNativeTd31b.rs)
+            .findAllElements('RegistryError', namespaceUri: DmpNativeTd31b.rs)
             .isNotEmpty) {
       throw StateError(
         'Dépublication refusée ou non confirmée ; réponse conservée, renvoi bloqué.',

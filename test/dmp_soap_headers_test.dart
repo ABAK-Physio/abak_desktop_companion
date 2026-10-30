@@ -103,7 +103,7 @@ void main() {
 
   test('new deposit matches accepted DV1 header policy and preserves VIHF', () {
     final xml = XmlDocument.parse(packet.soap);
-    final header = xml.findAllElements('Header', namespace: soapNs).single;
+    final header = xml.findAllElements('Header', namespaceUri: soapNs).single;
     final accepted = XmlDocument.parse(
       File(
         'assets/dmp_local/deposit_replay/accepted-request.xml',
@@ -115,20 +115,20 @@ void main() {
       ('ReplyTo', wsa),
       ('Security', wsse),
     ]) {
-      final current = header.findElements(pair.$1, namespace: pair.$2).single;
+      final current = header.findElements(pair.$1, namespaceUri: pair.$2).single;
       final reference = accepted
-          .findAllElements(pair.$1, namespace: pair.$2)
+          .findAllElements(pair.$1, namespaceUri: pair.$2)
           .single;
       expect(
-        current.getAttribute('mustUnderstand', namespace: soapNs),
-        reference.getAttribute('mustUnderstand', namespace: soapNs),
+        current.getAttribute('mustUnderstand', namespaceUri: soapNs),
+        reference.getAttribute('mustUnderstand', namespaceUri: soapNs),
       );
     }
-    final security = header.findElements('Security', namespace: wsse).single;
+    final security = header.findElements('Security', namespaceUri: wsse).single;
     expect(
       security.findElements(
         'Assertion',
-        namespace: 'urn:oasis:names:tc:SAML:2.0:assertion',
+        namespaceUri: 'urn:oasis:names:tc:SAML:2.0:assertion',
       ),
       hasLength(1),
     );
@@ -186,10 +186,10 @@ void main() {
       const rim = 'urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0';
       final xml = XmlDocument.parse(packet.soap);
       final ids = xml
-          .findAllElements('ExternalIdentifier', namespace: rim)
+          .findAllElements('ExternalIdentifier', namespaceUri: rim)
           .where(
             (e) => e
-                .findAllElements('LocalizedString', namespace: rim)
+                .findAllElements('LocalizedString', namespaceUri: rim)
                 .any(
                   (n) => (n.getAttribute('value') ?? '').endsWith('.patientId'),
                 ),
@@ -206,7 +206,7 @@ void main() {
       final vihf = xml
           .findAllElements(
             'Attribute',
-            namespace: 'urn:oasis:names:tc:SAML:2.0:assertion',
+            namespaceUri: 'urn:oasis:names:tc:SAML:2.0:assertion',
           )
           .singleWhere(
             (e) =>
@@ -300,9 +300,9 @@ void main() {
         ).readAsStringSync(),
       );
       List<String> slots(XmlNode parent, String name) => parent
-          .findAllElements('Slot', namespace: rim)
+          .findAllElements('Slot', namespaceUri: rim)
           .where((e) => e.getAttribute('name') == name)
-          .expand((e) => e.findAllElements('Value', namespace: rim))
+          .expand((e) => e.findAllElements('Value', namespaceUri: rim))
           .map((e) => e.innerText)
           .toList();
       final expectedSpecialty = slots(
@@ -315,7 +315,7 @@ void main() {
       );
       expect(slots(xml, 'authorSpecialty'), List.filled(3, expectedSpecialty));
       final objects = xml
-          .findAllElements('ExtrinsicObject', namespace: rim)
+          .findAllElements('ExtrinsicObject', namespaceUri: rim)
           .toList();
       final sig = objects.singleWhere(
         (e) => e.getAttribute('id') == draft.signatureEntry,
@@ -329,10 +329,10 @@ void main() {
         'http://www.w3.org/2000/09/xmldsig#',
       ]) {
         XmlElement classification(XmlNode node) => node
-            .findAllElements('Classification', namespace: rim)
+            .findAllElements('Classification', namespaceUri: rim)
             .singleWhere((e) => e.getAttribute('nodeRepresentation') == code);
         String label(XmlNode node) => node
-            .findAllElements('LocalizedString', namespace: rim)
+            .findAllElements('LocalizedString', namespaceUri: rim)
             .single
             .getAttribute('value')!;
         expect(label(classification(sig)), label(classification(accepted)));
@@ -343,7 +343,7 @@ void main() {
       }
       expect(
         sig
-            .findElements('Slot', namespace: rim)
+            .findElements('Slot', namespaceUri: rim)
             .where((e) => e.getAttribute('name') == 'sourcePatientInfo'),
         isEmpty,
       );
@@ -411,18 +411,18 @@ void main() {
   test('signature title equals Source and legacy title is archive-only', () {
     const rim = 'urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0';
     final sig = XmlDocument.parse(packet.metadata)
-        .findAllElements('ExtrinsicObject', namespace: rim)
+        .findAllElements('ExtrinsicObject', namespaceUri: rim)
         .singleWhere((e) => e.getAttribute('id') == draft.signatureEntry);
-    final name = sig.findElements('Name', namespace: rim).single.toXmlString();
+    final name = sig.findElements('Name', namespaceUri: rim).single.toXmlString();
     expect(name, contains('value="Source"'));
     final event = sig
-        .findElements('Classification', namespace: rim)
+        .findElements('Classification', namespaceUri: rim)
         .singleWhere(
           (e) =>
               e.getAttribute('nodeRepresentation') == '1.2.840.10065.1.12.1.14',
         );
     expect(
-      event.findElements('Name', namespace: rim).single.toXmlString(),
+      event.findElements('Name', namespaceUri: rim).single.toXmlString(),
       name,
     );
     final oldName = name.replaceAll('Source', 'Signature du lot');
@@ -479,7 +479,7 @@ void main() {
     }
     final xml = XmlDocument.parse(packet.soap);
     xml
-        .findAllElements('Security', namespace: wsse)
+        .findAllElements('Security', namespaceUri: wsse)
         .single
         .parent!
         .children

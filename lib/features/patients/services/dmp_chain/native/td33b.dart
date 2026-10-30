@@ -54,7 +54,7 @@ class DmpNativeTd33b {
       .toList();
   static String version(XmlElement e) =>
       e
-          .findElements('VersionInfo', namespace: DmpNativeTd31b.rim)
+          .findElements('VersionInfo', namespaceUri: DmpNativeTd31b.rim)
           .single
           .getAttribute('versionName') ??
       '';
@@ -69,11 +69,11 @@ class DmpNativeTd33b {
     }
     final c = hidden(e).single;
     final coding = c
-        .findElements('Slot', namespace: DmpNativeTd31b.rim)
+        .findElements('Slot', namespaceUri: DmpNativeTd31b.rim)
         .where((s) => s.getAttribute('name') == 'codingScheme')
         .single;
     if (coding
-            .findAllElements('Value', namespace: DmpNativeTd31b.rim)
+            .findAllElements('Value', namespaceUri: DmpNativeTd31b.rim)
             .single
             .innerText !=
         system) {

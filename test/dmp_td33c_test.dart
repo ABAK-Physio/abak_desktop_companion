@@ -49,21 +49,21 @@ void main() {
     () {
       final request = build();
       final xml = XmlDocument.parse(request);
-      final a = xml.findAllElements('Association', namespace: rim).single;
+      final a = xml.findAllElements('Association', namespaceUri: rim).single;
       final pack = xml
-          .findAllElements('RegistryPackage', namespace: rim)
+          .findAllElements('RegistryPackage', namespaceUri: rim)
           .single;
       expect(a.getAttribute('targetObject'), target);
       expect(a.getAttribute('sourceObject'), pack.getAttribute('id'));
       expect(a.getAttribute('associationType'), DmpNativeTd33c.association);
       expect(
-        a.findAllElements('Value', namespace: rim).map((v) => v.innerText),
+        a.findAllElements('Value', namespaceUri: rim).map((v) => v.innerText),
         [DmpNativeTd33c.approved, DmpNativeTd33c.deleted],
       );
-      expect(xml.findAllElements('ExtrinsicObject', namespace: rim), isEmpty);
+      expect(xml.findAllElements('ExtrinsicObject', namespaceUri: rim), isEmpty);
       expect(
         pack
-            .findAllElements('ExternalIdentifier', namespace: rim)
+            .findAllElements('ExternalIdentifier', namespaceUri: rim)
             .single
             .getAttribute('value'),
         isNot('2.25.123'),
@@ -86,7 +86,7 @@ void main() {
     final request = build();
     final id = XmlDocument.parse(
       request,
-    ).findAllElements('MessageID', namespace: wsa).single.innerText;
+    ).findAllElements('MessageID', namespaceUri: wsa).single.innerText;
     final response =
         '<s:Envelope xmlns:s="$soap" xmlns:w="$wsa"><s:Header><w:RelatesTo>$id</w:RelatesTo><w:Action>${DmpNativeTd33c.action}-Response</w:Action></s:Header><s:Body><RegistryResponse xmlns="urn:oasis:names:tc:ebxml-regrep:xsd:rs:3.0" status="urn:oasis:names:tc:ebxml-regrep:ResponseStatusType:Success"/></s:Body></s:Envelope>';
     DmpNativeTd33c.read(request, DmpTd02Reply(200, response));

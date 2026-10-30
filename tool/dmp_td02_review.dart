@@ -1,5 +1,5 @@
 import 'dart:io';
-import '../lib/features/dmp_td02/td02_result.dart';
+import 'package:abak_desktop_companion/features/dmp_td02/td02_result.dart';
 
 // Local-only adapter: the same reader used by the ABAK simulation screen.
 void main(List<String> args) {

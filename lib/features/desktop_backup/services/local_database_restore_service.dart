@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'attachment_path_restore.dart';
 import 'dart:io';
 
 import 'package:path/path.dart' as p;
@@ -102,6 +103,7 @@ class LocalDatabaseRestoreService {
         roots[root] = lease;
       }
       if (!prepared.legacy) await candidate.delete('patient_document_folders');
+      final originalAttachments = await snapshotAttachmentPaths(candidate);
       final reserved = <String>{};
       for (final folder in prepared.folders) {
         final root = roots[folder['sourceRoot']]!.path;
@@ -182,6 +184,20 @@ class LocalDatabaseRestoreService {
           'root_path': root,
           'folder_name': name,
         });
+        await restoreAttachmentPaths(
+          candidate,
+          patientId: patientId,
+          sourceFolder: p.join(
+            folder['sourceRoot'] as String,
+            folder['folderName'] as String,
+          ),
+          destinationFolder: destination,
+          archivedFolder: p.join(
+            prepared.directory.path,
+            folder['archivePath'] as String,
+          ),
+          originalAttachments: originalAttachments,
+        );
       }
       // Stage both private roots with the same rollback plan as patient folders.
       final support = await DocumentBackupContents.support();

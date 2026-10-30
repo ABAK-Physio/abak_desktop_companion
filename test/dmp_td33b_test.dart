@@ -100,7 +100,7 @@ void main() {
       final request = build();
       final xml = XmlDocument.parse(request);
       final entry = xml
-          .findAllElements('ExtrinsicObject', namespace: rim)
+          .findAllElements('ExtrinsicObject', namespaceUri: rim)
           .single;
       expect(request, isNot(contains('INVISIBLE_PATIENT')));
       expect(request, contains('INVISIBLE_REPRESENTANTS_LEGAUX'));
@@ -113,7 +113,7 @@ void main() {
         ..children.add(
           XmlElement(
             XmlName.parts('VersionInfo', prefix: 'rim', namespaceUri: rim),
-            [XmlAttribute(XmlName('versionName'), '4')],
+            [XmlAttribute(XmlName.parts('versionName'), '4')],
           ),
         );
       DmpNativeTd33b.verifyAfter(before, entry, after);

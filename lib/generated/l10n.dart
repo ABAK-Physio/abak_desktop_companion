@@ -10887,6 +10887,106 @@ class S {
       args: [],
     );
   }
+
+  /// `Pièces jointes de la prise en charge`
+  String get episodeAttachments_title {
+    return Intl.message(
+      'Pièces jointes de la prise en charge',
+      name: 'episodeAttachments_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Documents DMP`
+  String get episodeDmpDocuments_title {
+    return Intl.message(
+      'Documents DMP',
+      name: 'episodeDmpDocuments_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Importez un PDF final ou convertissez un DOCX en PDF/A. Les versions, validations et contrôles DMP sont accessibles depuis chaque document.`
+  String get episodeDmpDocuments_help {
+    return Intl.message(
+      'Importez un PDF final ou convertissez un DOCX en PDF/A. Les versions, validations et contrôles DMP sont accessibles depuis chaque document.',
+      name: 'episodeDmpDocuments_help',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choisir le dossier des documents`
+  String get episodeAttachments_configureFolder {
+    return Intl.message(
+      'Choisir le dossier des documents',
+      name: 'episodeAttachments_configureFolder',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Autoriser le dossier`
+  String get episodeAttachments_authorizeFolder {
+    return Intl.message(
+      'Autoriser le dossier',
+      name: 'episodeAttachments_authorizeFolder',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choisissez ou autorisez le dossier des documents avant de réessayer.`
+  String get episodeAttachments_destinationRequired {
+    return Intl.message(
+      'Choisissez ou autorisez le dossier des documents avant de réessayer.',
+      name: 'episodeAttachments_destinationRequired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Le dossier est prêt. Vous pouvez réessayer.`
+  String get episodeAttachments_destinationReady {
+    return Intl.message(
+      'Le dossier est prêt. Vous pouvez réessayer.',
+      name: 'episodeAttachments_destinationReady',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Le dossier des documents est indisponible. Choisissez une destination accessible.`
+  String get episodeAttachments_destinationUnavailable {
+    return Intl.message(
+      'Le dossier des documents est indisponible. Choisissez une destination accessible.',
+      name: 'episodeAttachments_destinationUnavailable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `La prise en charge est indisponible ou a changé.`
+  String get episodeAttachments_episodeUnavailable {
+    return Intl.message(
+      'La prise en charge est indisponible ou a changé.',
+      name: 'episodeAttachments_episodeUnavailable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cette pièce jointe ne correspond pas au dossier du patient.`
+  String get episodeAttachments_invalidAttachment {
+    return Intl.message(
+      'Cette pièce jointe ne correspond pas au dossier du patient.',
+      name: 'episodeAttachments_invalidAttachment',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
