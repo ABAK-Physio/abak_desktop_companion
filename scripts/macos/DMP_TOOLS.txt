@@ -42,3 +42,31 @@ le précontrôle vers les composants fournis ; les nouveaux réglages CDA propos
 ces chemins automatiquement. Les contrôles déjà configurés manuellement ne
 sont pas modifiés silencieusement. La désactivation conserve leurs preuves,
 mais bloque la préparation et les opérations DV1 réelles.
+
+Livraison GitHub Apple Silicon (distincte des tests locaux)
+---------------------------------------------------------
+Point d’entrée : /bin/zsh scripts/macos/build_macos_notarized.sh [VERSION BUILD]
+Sans arguments, la version et le build proviennent de pubspec.yaml.
+Le script Local reste réservé aux tests et n’est pas utilisé pour la diffusion.
+
+Préconditions : build_macos.env local (identités Developer ID Application et
+Installer, équipe et profil notarytool), certificats et accès Apple disponibles,
+SDK Flutter et dépendances en cache, dépôts voisins abak_shared et abak_vitale,
+cache Java/veraPDF préparé et bibliothèques SQLite épinglées en cache.
+La compilation et la résolution des dépendances sont hors réseau ; signature
+horodatée et notarisation nécessitent l’accès aux services Apple.
+
+Chaque exécution crée build/distributions/VERSION_BUILD_arm64_DATE_HEURE/.
+Les sources sont copiées dans ce dossier ; aucun flutter clean, aucune
+installation ni ouverture de Companion. Les anciens builds restent conservés.
+Les sorties diffusables sont les fichiers macOS_arm64.pkg et macOS_arm64.zip,
+avec ticket Apple attaché ; notarization-input.zip n’est pas la livraison.
+Ne publier sur GitHub ni le dossier source, ni debug-info, ni la configuration
+locale. Conserver les symboles debug-info pour le diagnostic des incidents.
+
+Le runtime Java est signé avec horodatage et conservation des autorisations.
+Son manifeste est recalculé après signature, avant de sceller l’application.
+Les statuts Apple doivent être Accepted et les vérifications stapler/Gatekeeper
+réussir. SHA256SUMS.txt contient les empreintes des deux archives finales.
+Cette livraison cible Apple Silicon et macOS 13 minimum. Les références CDA
+et les prérequis des fonctions CPS restent distincts des outils PDF/A embarqués.

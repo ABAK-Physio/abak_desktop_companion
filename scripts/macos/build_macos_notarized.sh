@@ -67,18 +67,21 @@ if [[ "${INSTALLER_SIGN_IDENTITY}" != "Developer ID Installer: "* ]]; then
   exit 1
 fi
 
-DATE=$(date +%F)
+# Every run owns a new directory. Never clean the working tree or old evidence.
+ARTIFACT_DIR="$(pwd)/build/distributions/${BUILD_NAME}_${BUILD_NUMBER}_arm64_$(date +%Y%m%d_%H%M%S)"
+mkdir -p "$(dirname "$ARTIFACT_DIR")"
+mkdir "$ARTIFACT_DIR"
 
 APP_NAME="abak_desktop_companion"
 APP_ARTIFACT_NAME="ABAK_Desktop_Companion"
 
-APP_PATH="build/macos/Build/Products/Release/${APP_NAME}.app"
+APP_PATH="${ARTIFACT_DIR}/source/build/macos/Build/Products/Release/${APP_NAME}.app"
 ENTITLEMENTS_PATH="macos/Runner/Release.entitlements"
 
 # Configuration de l’installateur macOS.
 PKG_COMPONENT_PLIST="scripts/macos/installer/component.plist"
 PKG_IDENTIFIER="fr.abakphysio.abakdesktopcompanion.installer"
-PKG_FINAL="build/${APP_ARTIFACT_NAME}_${BUILD_NAME}_${BUILD_NUMBER}_macOS.pkg"
+PKG_FINAL="${ARTIFACT_DIR}/${APP_ARTIFACT_NAME}_${BUILD_NAME}_${BUILD_NUMBER}_macOS_arm64.pkg"
 
 # Vérifier la configuration avant toute compilation.
 if [[ ! -f "${PKG_COMPONENT_PLIST}" ]]; then
@@ -109,10 +112,10 @@ done
 /bin/sh -n \
   "scripts/macos/installer/desktop-shortcut-scripts/postinstall"
 
-ZIP_UNSIGNED="build/${APP_ARTIFACT_NAME}_${BUILD_NAME}_${BUILD_NUMBER}_macOS_unsigned.zip"
-ZIP_FINAL="build/${APP_ARTIFACT_NAME}_${BUILD_NAME}_${BUILD_NUMBER}_macOS.zip"
+ZIP_UNSIGNED="${ARTIFACT_DIR}/notarization-input.zip"
+ZIP_FINAL="${ARTIFACT_DIR}/${APP_ARTIFACT_NAME}_${BUILD_NAME}_${BUILD_NUMBER}_macOS_arm64.zip"
 
-DEBUG_INFO_DIR="build/debug-info/macos/${DATE}/${BUILD_NAME}_${BUILD_NUMBER}"
+DEBUG_INFO_DIR="${ARTIFACT_DIR}/debug-info"
 
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo "📦 ABAK Desktop Companion"
@@ -124,16 +127,10 @@ mkdir -p "${DEBUG_INFO_DIR}"
 echo ""
 echo "🔨 Build Flutter"
 
-flutter clean
-flutter pub get
-
-flutter build macos --release \
-  --obfuscate \
-  --split-debug-info="${DEBUG_INFO_DIR}" \
-  --tree-shake-icons \
-  --build-name="${BUILD_NAME}" \
-  --build-number="${BUILD_NUMBER}" \
-  --dart-define=ENV=production
+# Isolated source copy; no installation, launch, source mutation or downloads.
+/usr/bin/sandbox-exec -p '(version 1)(allow default)(deny network*)(deny file-write* (subpath "/Applications") (regex #"/Users/[^/]+/Applications(/|$)") (regex #"/Users/[^/]+/Library/(Containers|Group Containers)(/|$)"))' \
+  /usr/bin/python3 scripts/macos/prepare_distribution.py \
+  --output "$ARTIFACT_DIR" --version "$BUILD_NAME" --build "$BUILD_NUMBER"
 
   # Vérifier la version de l’application avant signature.
   APP_INFO_PLIST="${APP_PATH}/Contents/Info.plist"
@@ -158,19 +155,25 @@ flutter build macos --release \
 
 echo ""
 echo "✍️ Signature"
+/usr/bin/python3 scripts/macos/sign_distribution_tools.py "$APP_PATH" "$SIGN_IDENTITY"
 
 codesign \
   --force \
   --deep \
   --preserve-metadata=entitlements \
   --options runtime \
+  --timestamp \
   --sign "${SIGN_IDENTITY}" \
   "${APP_PATH}"
+
+# Signing changes Java bytes: renew the integrity manifest before sealing the app.
+/usr/bin/python3 scripts/macos/sign_distribution_tools.py "$APP_PATH" --refresh
 
 # Apply the release permissions to the main app only, not its frameworks.
 codesign \
   --force \
   --options runtime \
+  --timestamp \
   --entitlements "${ENTITLEMENTS_PATH}" \
   --sign "${SIGN_IDENTITY}" \
   "${APP_PATH}"
@@ -205,6 +208,8 @@ done
 
 echo ""
 echo "📦 Création ZIP"
+# Exercise only bundled Java/veraPDF with synthetic fixtures, never Companion.
+/usr/bin/python3 scripts/macos/verify_distribution.py "$APP_PATH" > "$ARTIFACT_DIR/tools-verification.json"
 
 rm -f "${ZIP_UNSIGNED}"
 
@@ -221,7 +226,8 @@ echo "☁️ Soumission à Apple"
 xcrun notarytool submit \
   "${ZIP_UNSIGNED}" \
   --keychain-profile "${KEYCHAIN_PROFILE}" \
-  --wait
+  --wait --output-format json > "${ARTIFACT_DIR}/app-notary.json"
+/usr/bin/python3 -c 'import json,sys; d=json.load(open(sys.argv[1])); print(d); sys.exit(0 if d.get("status")=="Accepted" else 1)' "${ARTIFACT_DIR}/app-notary.json"
 
 echo ""
 echo "📎 Stapling"
@@ -233,6 +239,9 @@ echo "📦 Création du PKG signé"
 
 # Vérifier le ticket Apple de l’application.
 xcrun stapler validate "${APP_PATH}"
+spctl --assess --type execute --verbose=2 "$APP_PATH"
+# The distributable ZIP contains the stapled app, unlike the submission ZIP.
+ditto -c -k --keepParent "$APP_PATH" "$ZIP_FINAL"
 
 # Préparer uniquement l’application destinée à /Applications.
 # Le nettoyage est limité à ce dossier temporaire.
@@ -312,7 +321,8 @@ echo "☁️ Soumission du PKG à Apple"
 xcrun notarytool submit \
   "${PKG_FINAL}" \
   --keychain-profile "${KEYCHAIN_PROFILE}" \
-  --wait
+  --wait --output-format json > "${ARTIFACT_DIR}/pkg-notary.json"
+/usr/bin/python3 -c 'import json,sys; d=json.load(open(sys.argv[1])); print(d); sys.exit(0 if d.get("status")=="Accepted" else 1)' "${ARTIFACT_DIR}/pkg-notary.json"
 
 echo ""
 echo "📎 Ticket Apple du PKG"
@@ -330,3 +340,10 @@ echo "🎉 FABRICATION TERMINÉE"
 echo ""
 echo "Installateur à tester avant distribution :"
 echo "${PKG_FINAL}"
+
+(
+  cd "$ARTIFACT_DIR"
+  /usr/bin/shasum -a 256 "${ZIP_FINAL:t}" "${PKG_FINAL:t}" > SHA256SUMS.txt
+)
+echo "$ZIP_FINAL"
+echo "Apple Silicon, macOS 13 minimum. Aucune installation effectuée."
