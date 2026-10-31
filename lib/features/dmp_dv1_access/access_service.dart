@@ -1,4 +1,5 @@
 import 'visibility_recipe.dart';
+import '../dmp_td02/patient_person.dart';
 import 'package:xml/xml.dart';
 import '../patients/services/dmp_chain/native/td33b.dart';
 import 'consulted_document.dart';
@@ -80,6 +81,7 @@ class Dv1AccessService {
     required Dv1AccessContext context,
     required Future<String?> Function() requestPin,
     String? authorizationIntent,
+    void Function(DmpPatientPerson?)? onPatientPerson,
     Dv1SearchTarget? searchTarget,
     bool depublication = false,
     Dv1DocumentCriteria? criteria,
@@ -336,6 +338,9 @@ class Dv1AccessService {
         context: DmpChainMessages.context(snapshot, session),
         httpStatus: reply.status,
       );
+      // Transient presentation only: do not copy these traits to patient tables
+      // or add them to the persisted result summary.
+      onPatientPerson?.call(result.patientPerson);
       record['state'] = result.state == DmpState.unknown
           ? 'unconfirmed'
           : 'response_verified';

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 import '../cps/cps_operation_lease.dart';
 
 /// Local work context, never proof of CPS authentication or patient consent.
@@ -8,6 +9,7 @@ class DmpWorkContext {
   bool _enabled = false, _locked = true;
   String? _professional;
   int _revision = 0;
+  final changes = ValueNotifier<int>(0);
 
   String get activeProfessional {
     final id = _professional ?? '';
@@ -17,6 +19,7 @@ class DmpWorkContext {
 
   void _invalidate() {
     _revision++;
+    changes.value = _revision;
     // Access remains blocked if closing fails; no unhandled asynchronous error.
     if (identical(this, current)) {
       unawaited(CpsOperationLease.closeIdle().catchError((Object _) {}));

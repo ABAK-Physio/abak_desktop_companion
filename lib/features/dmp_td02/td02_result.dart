@@ -1,4 +1,5 @@
 import 'package:xml/xml.dart';
+import 'patient_person.dart';
 
 enum DmpState { unknown, absent, closed, active, nia }
 
@@ -25,7 +26,9 @@ class Td02Result {
     this.closedAt = '',
     this.reasonCode = '',
     this.reason = '',
+    this.patientPerson,
   });
+  final DmpPatientPerson? patientPerson;
   final DmpState state;
   final ConsultationRight right;
   final String detail, closedAt, reasonCode, reason;
@@ -219,6 +222,7 @@ class Td02Reader {
         attr(id, 'extension') == context.ins && attr(id, 'root') == context.oid,
         'Patient de la réponse différent',
       );
+      final patientPerson = DmpPatientPerson.read(patient);
       final status = attr(one(patient, 'statusCode', hl7), 'code');
       if (status == 'terminated') {
         final dates = children(reg, 'effectiveTime', hl7);
@@ -238,6 +242,7 @@ class Td02Reader {
         }
         return Td02Result(
           DmpState.closed,
+          patientPerson: patientPerson,
           closedAt: dates.isEmpty
               ? ''
               : dates.single.getAttribute('value') ?? '',
@@ -256,8 +261,9 @@ class Td02Reader {
           )
           .toList();
       if (auth.length != 1) {
-        return const Td02Result(
+        return Td02Result(
           DmpState.active,
+          patientPerson: patientPerson,
           detail: 'Autorisation absente ou dupliquée.',
         );
       }
@@ -269,7 +275,11 @@ class Td02Reader {
         'INTERDIT' => ConsultationRight.blocked,
         _ => ConsultationRight.unknown,
       };
-      return Td02Result(DmpState.active, right: right);
+      return Td02Result(
+        DmpState.active,
+        right: right,
+        patientPerson: patientPerson,
+      );
     } catch (e) {
       return Td02Result(
         DmpState.unknown,

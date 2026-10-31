@@ -1,4 +1,6 @@
 import 'visibility_recipe.dart';
+import '../dmp_td02/patient_person.dart';
+import '../dmp_td02/patient_person_panel.dart';
 import 'consultation_viewer.dart';
 import 'preparation_error.dart';
 import '../patients/services/dmp_chain/native/td31_submission.dart';
@@ -58,6 +60,14 @@ class _Dv1AccessScreenState extends State<Dv1AccessScreen> {
   Dv1Configuration? config;
   bool busy = false, replacement = false;
   String message = '';
+  DmpPatientPerson? patientPerson;
+  int identityGeneration = 0;
+
+  void clearPatientPerson() {
+    identityGeneration++;
+    if (mounted) setState(() => patientPerson = null);
+  }
+
   Map<String, String>? consultationTarget;
   Map<String, String>? visibilityTarget;
   List<Dv1SearchTarget> searchTargets = [];
@@ -73,12 +83,18 @@ class _Dv1AccessScreenState extends State<Dv1AccessScreen> {
   void initState() {
     super.initState();
     fields['typeSystem']!.text = '2.16.840.1.113883.6.1';
+    for (final field in fields.values) {
+      field.addListener(clearPatientPerson);
+    }
+    DmpWorkContext.current.changes.addListener(clearPatientPerson);
     refresh();
   }
 
   @override
   void dispose() {
+    DmpWorkContext.current.changes.removeListener(clearPatientPerson);
     for (final f in fields.values) {
+      f.removeListener(clearPatientPerson);
       f.dispose();
     }
     super.dispose();
@@ -231,6 +247,7 @@ class _Dv1AccessScreenState extends State<Dv1AccessScreen> {
   }
 
   Future<void> configure() async {
+    clearPatientPerson();
     setState(() => busy = true);
     try {
       final previous = await settings.current();
@@ -341,6 +358,7 @@ class _Dv1AccessScreenState extends State<Dv1AccessScreen> {
     bool visibilityIdentifiers = false,
   }) async {
     if (busy || config == null) return;
+    clearPatientPerson();
     visibilitySearch = visibilitySearch || visibilityIdentifiers;
     setState(() {
       busy = true;
@@ -471,9 +489,16 @@ class _Dv1AccessScreenState extends State<Dv1AccessScreen> {
       pin = consent.pin;
       contextData = contextData.withSecretConnection(consent.secret);
       preparationStage = 'démarrage de l’essai après confirmation';
+      final identityTicket = identityGeneration;
       final result = await service.execute(
         configuration: configuration,
         context: contextData,
+        onPatientPerson: (person) {
+          checkWorkContext();
+          if (mounted && identityTicket == identityGeneration) {
+            setState(() => patientPerson = person);
+          }
+        },
         authorizationIntent: authorizationIntent,
         searchTarget: target,
         depublication: depublication,
@@ -1179,6 +1204,7 @@ class _Dv1AccessScreenState extends State<Dv1AccessScreen> {
           ),
           if (busy) const LinearProgressIndicator(),
           if (message.isNotEmpty) SelectableText(message),
+          PatientPersonPanel(person: patientPerson),
           const Divider(),
           const Text(
             'Historique des essais réels — aucune relecture ne relance de connexion',

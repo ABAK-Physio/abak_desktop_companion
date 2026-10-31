@@ -23,6 +23,27 @@ class DmpSetupService {
   static final changes = ValueNotifier<int>(0);
   bool _busy = false;
 
+  static const patientPersonKey = 'dmp_show_patient_person';
+
+  Future<bool> showPatientPerson() async {
+    final rows = await (await database()).query(
+      'application_settings',
+      where: 'setting_key=?',
+      whereArgs: [patientPersonKey],
+    );
+    // Missing, malformed and legacy settings all keep identity hidden.
+    return rows.length == 1 && rows.single['setting_value'] == 'true';
+  }
+
+  Future<void> setShowPatientPerson(bool value) async {
+    await (await database()).insert('application_settings', {
+      'setting_key': patientPersonKey,
+      'setting_value': value.toString(),
+      'updated_at': DateTime.now().millisecondsSinceEpoch,
+    }, conflictAlgorithm: ConflictAlgorithm.replace);
+    changes.value++;
+  }
+
   static const idleKey = 'dmp_idle_lock_minutes';
   static const idleChoices = [5, 15, 30, 60];
 

@@ -15,6 +15,7 @@ class _DmpSetupTileState extends State<DmpSetupTile> {
   bool enabled = false, busy = true;
   String? message;
   int idleMinutes = 15;
+  bool showPatientPerson = false;
   @override
   void initState() {
     super.initState();
@@ -25,6 +26,7 @@ class _DmpSetupTileState extends State<DmpSetupTile> {
     try {
       enabled = await service.enabled();
       idleMinutes = await service.idleMinutes();
+      showPatientPerson = await service.showPatientPerson();
     } catch (_) {
       message = 'Impossible de lire la configuration DMP.';
     }
@@ -73,6 +75,20 @@ class _DmpSetupTileState extends State<DmpSetupTile> {
     }
   }
 
+  Future<void> changePatientPerson(bool value) async {
+    setState(() => busy = true);
+    try {
+      await service.setShowPatientPerson(value);
+      if (mounted) setState(() => showPatientPerson = value);
+    } catch (_) {
+      if (mounted) {
+        setState(() => message = 'Impossible d’enregistrer ce choix.');
+      }
+    } finally {
+      if (mounted) setState(() => busy = false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) => Card(
     child: Column(
@@ -91,6 +107,16 @@ class _DmpSetupTileState extends State<DmpSetupTile> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                SwitchListTile(
+                  title: const Text(
+                    'Afficher les traits d’identité retournés par le DMP',
+                  ),
+                  subtitle: const Text(
+                    'Désactivé par défaut. Seuls les traits de l’INS font foi. Ce choix ne déclenche aucune lecture CPS ni connexion DMP.',
+                  ),
+                  value: showPatientPerson,
+                  onChanged: busy ? null : changePatientPerson,
+                ),
                 DropdownButtonFormField<int>(
                   initialValue: idleMinutes,
                   key: ValueKey(idleMinutes),

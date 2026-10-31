@@ -2,6 +2,19 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:abak_desktop_companion/features/dmp_session/dmp_work_context.dart';
 
 void main() {
+  test('identity listeners are notified on session invalidation', () {
+    final context = DmpWorkContext(); // isolated: never invokes the CPS lease
+    var notifications = 0;
+    context.changes.addListener(() => notifications++);
+    context.setEnabled(true);
+    context.select('michel');
+    context.lock();
+    context.unlock('michel');
+    context.select('marie');
+    context.setEnabled(false);
+    expect(notifications, 6);
+  });
+
   test('selection is required and another practitioner cannot start DMP', () {
     final context = DmpWorkContext();
     expect(() => context.bind('michel'), throwsStateError);

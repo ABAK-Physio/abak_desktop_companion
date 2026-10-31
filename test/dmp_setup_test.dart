@@ -11,6 +11,7 @@ import 'package:abak_desktop_companion/features/dmp_setup/dmp_setup_tile.dart';
 class SettingsDb implements Database {
   String? value;
   String? idle;
+  String? patientPerson;
   int writes = 0;
   bool legacyTools = false;
   @override
@@ -33,7 +34,7 @@ class SettingsDb implements Database {
             ]
           : [];
     }
-    expect(table, 'application_settings');
+    expectSync(table, 'application_settings');
     if (whereArgs?.single == DmpSetupService.idleKey) {
       return idle == null
           ? []
@@ -41,7 +42,14 @@ class SettingsDb implements Database {
               {'setting_value': idle},
             ];
     }
-    expect(whereArgs, [DmpSetupService.key]);
+    if (whereArgs?.single == DmpSetupService.patientPersonKey) {
+      return patientPerson == null
+          ? []
+          : [
+              {'setting_value': patientPerson},
+            ];
+    }
+    expectSync(whereArgs, [DmpSetupService.key]);
     return value == null
         ? []
         : [
@@ -56,12 +64,16 @@ class SettingsDb implements Database {
     String? nullColumnHack,
     ConflictAlgorithm? conflictAlgorithm,
   }) async {
-    expect(table, 'application_settings');
+    expectSync(table, 'application_settings');
     if (values['setting_key'] == DmpSetupService.idleKey) {
       idle = values['setting_value'] as String;
       return ++writes;
     }
-    expect(values['setting_key'], DmpSetupService.key);
+    if (values['setting_key'] == DmpSetupService.patientPersonKey) {
+      patientPerson = values['setting_value'] as String;
+      return ++writes;
+    }
+    expectSync(values['setting_key'], DmpSetupService.key);
     value = values['setting_value'] as String;
     return ++writes;
   }
