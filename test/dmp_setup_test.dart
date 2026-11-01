@@ -7,6 +7,7 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:abak_desktop_companion/features/dmp_setup/bundled_pdf_tools.dart';
 import 'package:abak_desktop_companion/features/dmp_setup/dmp_setup_service.dart';
 import 'package:abak_desktop_companion/features/dmp_setup/dmp_setup_tile.dart';
+import 'package:path/path.dart' as p;
 
 class SettingsDb implements Database {
   String? value;
@@ -167,7 +168,11 @@ void main() {
       final root = Directory(await temp.resolveSymbolicLinks());
       addTearDown(() => root.delete(recursive: true));
       final files = <String, String>{};
-      for (final path in ['java/bin/java', 'vera/cli.jar', 'NOTICE.txt']) {
+      final javaRelativePath = Platform.isWindows
+          ? 'java/bin/java.exe'
+          : 'java/bin/java';
+
+      for (final path in [javaRelativePath, 'vera/cli.jar', 'NOTICE.txt']) {
         final file = File('${root.path}/$path');
         await file.parent.create(recursive: true);
         await file.writeAsString('synthetic');
@@ -177,8 +182,15 @@ void main() {
         jsonEncode({'protocol': 1, 'profile': 'PDF/A-1b', 'files': files}),
       );
       expect(
-        (await BundledPdfTools.verify(root)).java,
-        '${root.path}/java/bin/java',
+        p.normalize((await BundledPdfTools.verify(root)).java),
+        p.normalize(
+          p.join(
+            root.path,
+            'java',
+            'bin',
+            Platform.isWindows ? 'java.exe' : 'java',
+          ),
+        ),
       );
       final jar = File('${root.path}/vera/cli.jar');
       await jar.writeAsString('modified');

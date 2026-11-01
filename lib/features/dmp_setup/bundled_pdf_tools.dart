@@ -10,14 +10,27 @@ class BundledPdfTools {
   const BundledPdfTools(this.java, this.vera, this.fingerprint);
   final String java, vera, fingerprint;
 
-  static String? get root => Platform.isMacOS
-      ? p.join(
-          p.dirname(p.dirname(Platform.resolvedExecutable)),
-          'Resources',
-          'DmpTools',
-          Abi.current() == Abi.macosArm64 ? 'arm64' : 'x86_64',
-        )
-      : null;
+  static String? get root {
+    if (Platform.isMacOS) {
+      return p.join(
+        p.dirname(p.dirname(Platform.resolvedExecutable)),
+        'Resources',
+        'DmpTools',
+        Abi.current() == Abi.macosArm64 ? 'arm64' : 'x86_64',
+      );
+    }
+
+    if (Platform.isWindows) {
+      return p.join(
+        p.dirname(Platform.resolvedExecutable),
+        'data',
+        'DmpTools',
+        'x64',
+      );
+    }
+
+    return null;
+  }
 
   static Future<bool> ownsRoot(String path) async {
     final base = root;
@@ -61,7 +74,11 @@ class BundledPdfTools {
       throw StateError('Version des outils non prise en charge.');
     }
     final files = Map<String, String>.from(data['files'] as Map);
-    for (final required in ['java/bin/java', 'vera/cli.jar', 'NOTICE.txt']) {
+    final javaRelativePath = Platform.isWindows
+        ? 'java/bin/java.exe'
+        : 'java/bin/java';
+
+    for (final required in [javaRelativePath, 'vera/cli.jar', 'NOTICE.txt']) {
       if (!files.containsKey(required)) {
         throw StateError('Composant DMP absent : $required');
       }
@@ -73,7 +90,7 @@ class BundledPdfTools {
     )) {
       if (entry is Link) throw StateError('Lien interdit dans les outils DMP.');
       if (entry is! File) continue;
-      final relative = p.relative(entry.path, from: base);
+      final relative = p.relative(entry.path, from: base).replaceAll(r'\', '/');
       if (relative == 'manifest.json') continue;
       seen.add(relative);
       if (files[relative] !=
@@ -87,7 +104,7 @@ class BundledPdfTools {
       throw StateError('Outils DMP incomplets. Réinstallez Companion.');
     }
     return BundledPdfTools(
-      p.join(base, 'java/bin/java'),
+      p.join(base, 'java', 'bin', Platform.isWindows ? 'java.exe' : 'java'),
       p.join(base, 'vera/cli.jar'),
       sha256.convert(bytes).toString(),
     );
