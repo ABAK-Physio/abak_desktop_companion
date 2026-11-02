@@ -455,6 +455,11 @@ bool FlutterWindow::OnCreate() {
     }
 
     RegisterPlugins(flutter_controller_->engine());
+    // Register the dedicated Windows document-controls channel.
+    // No Java execution is enabled at this stage.
+    document_controls_channel_ =
+            std::make_unique<DocumentControlsChannel>(
+                    flutter_controller_->engine()->messenger());
 
     smart_card_channel_ =
             std::make_unique<flutter::MethodChannel<flutter::EncodableValue>>(
@@ -524,9 +529,10 @@ bool FlutterWindow::OnCreate() {
 }
 
 void FlutterWindow::OnDestroy() {
-    if (flutter_controller_) {
-        flutter_controller_ = nullptr;
-    }
+    // Release channels before destroying the Flutter engine.
+    document_controls_channel_.reset();
+    smart_card_channel_.reset();
+    flutter_controller_.reset();
 
     Win32Window::OnDestroy();
 }

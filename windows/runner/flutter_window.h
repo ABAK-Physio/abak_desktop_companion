@@ -7,6 +7,7 @@
 #include <memory>
 
 #include "win32_window.h"
+#include "document_controls_channel.h"
 #include <flutter/method_channel.h>
 
 // A window that does nothing but host a Flutter view.
@@ -33,6 +34,8 @@ private:
     // Channel used by Flutter to access the Windows smart-card implementation.
     std::unique_ptr<flutter::MethodChannel<flutter::EncodableValue>>
             smart_card_channel_;
+    // Dedicated channel for Windows document controls.
+    std::unique_ptr<DocumentControlsChannel> document_controls_channel_;
 };
 
 #endif  // RUNNER_FLUTTER_WINDOW_H_
