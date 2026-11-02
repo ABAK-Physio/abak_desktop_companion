@@ -1,5 +1,6 @@
 
 #include "document_controls_launcher.h"
+#include "document_controls_executor.h"
 
 namespace document_controls {
 
@@ -30,15 +31,26 @@ namespace document_controls {
 
     LaunchResult Launch(Operation operation) {
         switch (operation) {
+
             case Operation::kPdfa:
             case Operation::kVersion:
-            case Operation::kCda:
+            case Operation::kCda: {
+                const char* name =
+                        operation == Operation::kPdfa ? "pdfa" :
+                        operation == Operation::kVersion ? "version" : "cda";
+
+                ExecutionRequest request{};
+                request.operation = name;
+
+                const ExecutionResult execution = ExecuteSecurely(request);
+
                 return {
                         LaunchStatus::kUnavailable,
-                        "WINDOWS_LAUNCHER_UNAVAILABLE",
-                        "Le lanceur documentaire securise Windows "
-                        "n'est pas encore disponible."
+                        execution.error_code,
+                        execution.message
                 };
+            }
+
         }
 
         return {

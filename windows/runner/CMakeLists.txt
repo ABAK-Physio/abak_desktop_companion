@@ -8,6 +8,8 @@ project(runner LANGUAGES CXX)
 # Any new source files that you add to the application should be added here.
 add_executable(${BINARY_NAME} WIN32
         "document_controls_channel.cpp"
+        "document_controls_executor.cpp"
+        "document_controls_launcher.cpp"
         "flutter_window.cpp"
         "main.cpp"
         "smart_card/vitale_api.cpp"
@@ -16,7 +18,6 @@ add_executable(${BINARY_NAME} WIN32
         "${FLUTTER_MANAGED_DIR}/generated_plugin_registrant.cc"
         "Runner.rc"
         "runner.exe.manifest"
-        "document_controls_launcher.cpp"
 )
 
 # Apply the standard set of build settings. This can be removed for applications
