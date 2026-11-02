@@ -1,4 +1,3 @@
-
 # ABAK Desktop Companion - Windows Release
 # PowerShell 5.1
 # No flutter clean, installation, signing or publication.
@@ -11,7 +10,9 @@ $releaseDir = Join-Path $repo 'build\windows\x64\runner\Release'
 $outputDir = Join-Path $repo 'build\releases\windows'
 $embedScript = Join-Path $PSScriptRoot 'embed_windows_dmp_tools.ps1'
 $validateScript = Join-Path $PSScriptRoot 'validate_windows_dmp_tools.ps1'
+$cdaEmbedScript = Join-Path $PSScriptRoot 'embed_windows_cda_references.ps1'
 $dmpSource = Join-Path $env:USERPROFILE 'ABAK_build_tools\DmpTools\x64'
+$cdaSource = Join-Path $env:USERPROFILE 'ABAK_build_tools\CDA_ANS_b10ff7b0'
 $debugInfoRoot = Join-Path $repo 'build\obfuscation\windows'
 $symbolsArchiveRoot = Join-Path $env:USERPROFILE 'ABAK_build_tools\obfuscation'
 
@@ -55,9 +56,9 @@ foreach ($path in @(
     }
 }
 
-foreach ($script in @($embedScript, $validateScript)) {
+foreach ($script in @($embedScript, $validateScript, $cdaEmbedScript)) {
     if (-not (Test-Path -LiteralPath $script -PathType Leaf)) {
-        throw "Script DMP introuvable : $script"
+        throw "Script de preparation DMP/CDA introuvable : $script"
     }
 }
 
@@ -71,10 +72,20 @@ if (-not (Test-Path -LiteralPath (
     throw 'Manifeste Java/veraPDF absent.'
 }
 
+if (-not (Test-Path -LiteralPath $cdaSource -PathType Container)) {
+    throw "Referentiel CDA absent : $cdaSource"
+}
+
+if (-not (Test-Path -LiteralPath (
+    Join-Path $cdaSource 'manifest.json'
+) -PathType Leaf)) {
+    throw 'Manifeste CDA absent.'
+}
+
 Set-Location $repo
 
 # 1. Validate the private Java/veraPDF bundle before compilation.
-Write-Host '[1/8] Validation Java/veraPDF...'
+Write-Host '[1/10] Validation Java/veraPDF...'
 
 & powershell.exe -NoProfile -NonInteractive `
     -ExecutionPolicy Bypass `
@@ -85,16 +96,43 @@ if ($LASTEXITCODE -ne 0) {
     throw 'Echec validation Java/veraPDF.'
 }
 
-# 2. Resolve Flutter dependencies without cleaning.
-Write-Host '[2/8] Dependencies...'
+# 2. Validate the CDA source by embedding into a disposable test directory.
+# The embed script checks all manifest hashes before and after copying.
+Write-Host '[2/10] Validation du referentiel CDA...'
+
+$cdaValidationRoot = Join-Path $env:TEMP (
+    'abak-cda-preflight-' + [guid]::NewGuid().ToString('N')
+)
+$cdaValidationDestination = Join-Path $cdaValidationRoot 'CdaReferences\x64'
+
+try {
+    & powershell.exe -NoProfile -NonInteractive `
+        -ExecutionPolicy Bypass `
+        -File $cdaEmbedScript `
+        -Source $cdaSource `
+        -Destination $cdaValidationDestination
+
+    if ($LASTEXITCODE -ne 0) {
+        throw 'Echec validation du referentiel CDA.'
+    }
+}
+finally {
+    if (Test-Path -LiteralPath $cdaValidationRoot) {
+        Remove-Item -LiteralPath $cdaValidationRoot `
+            -Recurse -Force -ErrorAction Stop
+    }
+}
+
+# 3. Resolve Flutter dependencies without cleaning.
+Write-Host '[3/10] Dependencies...'
 
 & flutter pub get
 if ($LASTEXITCODE -ne 0) {
     throw 'Echec flutter pub get.'
 }
 
-# 3. Build the obfuscated Windows application.
-Write-Host '[3/8] Flutter Windows Release...'
+# 4. Build the obfuscated Windows application.
+Write-Host '[4/10] Flutter Windows Release...'
 
 & flutter build windows `
     --release `
@@ -120,8 +158,8 @@ if ($symbolFiles.Count -eq 0) {
     throw 'Aucun fichier de symboles d obfuscation genere.'
 }
 
-# 4. Back up obfuscation symbols outside build/.
-Write-Host '[4/8] Sauvegarde des symboles...'
+# 5. Back up obfuscation symbols outside build/.
+Write-Host '[5/10] Sauvegarde des symboles...'
 
 if (-not (Test-Path -LiteralPath $symbolsArchiveRoot)) {
     New-Item -ItemType Directory -Path $symbolsArchiveRoot |
@@ -164,8 +202,8 @@ if ($verifiedSymbols -ne $symbolFiles.Count) {
 
 Write-Host "Symboles sauvegardes : $verifiedSymbols fichier(s)."
 
-# 5. Stage the Flutter distribution.
-Write-Host '[5/8] Preparation de la distribution...'
+# 6. Stage the Flutter distribution.
+Write-Host '[6/10] Preparation de la distribution...'
 
 New-Item -ItemType Directory -Path $stagingDir |
     Out-Null
@@ -174,8 +212,8 @@ Copy-Item -Path (Join-Path $releaseDir '*') `
     -Destination $stagingDir `
     -Recurse -ErrorAction Stop
 
-# 6. Embed the verified private Java/veraPDF tools.
-Write-Host '[6/8] Integration Java/veraPDF...'
+# 7. Embed the verified private Java/veraPDF tools.
+Write-Host '[7/10] Integration Java/veraPDF...'
 
 $dmpDestination = Join-Path $stagingDir 'data\DmpTools\x64'
 
@@ -189,6 +227,21 @@ if ($LASTEXITCODE -ne 0) {
     throw 'Echec integration Java/veraPDF.'
 }
 
+# 8. Embed the CDA references in a separate integrity domain.
+Write-Host '[8/10] Integration des references CDA...'
+
+$cdaDestination = Join-Path $stagingDir 'data\CdaReferences\x64'
+
+& powershell.exe -NoProfile -NonInteractive `
+    -ExecutionPolicy Bypass `
+    -File $cdaEmbedScript `
+    -Source $cdaSource `
+    -Destination $cdaDestination
+
+if ($LASTEXITCODE -ne 0) {
+    throw 'Echec integration des references CDA.'
+}
+
 $requiredFiles = @(
     'abak_desktop_companion.exe',
     'flutter_windows.dll',
@@ -197,7 +250,11 @@ $requiredFiles = @(
     'data\DmpTools\x64\manifest.json',
     'data\DmpTools\x64\java\bin\java.exe',
     'data\DmpTools\x64\vera\cli.jar',
-    'data\DmpTools\x64\NOTICE.txt'
+    'data\DmpTools\x64\NOTICE.txt',
+    'data\CdaReferences\x64\manifest.json',
+    'data\CdaReferences\x64\infrastructure\cda\CDA_extended.xsd',
+    'data\CdaReferences\x64\schematrons\moteur\saxon9he.jar',
+    'data\CdaReferences\x64\schematrons\profils\IHE.sch'
 )
 
 foreach ($relative in $requiredFiles) {
@@ -214,8 +271,8 @@ if (-not (Test-Path -LiteralPath (
     throw 'Ressources Flutter absentes.'
 }
 
-# 7. Create ZIP without overwriting previous archives.
-Write-Host '[7/8] Creation du ZIP...'
+# 9. Create ZIP without overwriting previous archives.
+Write-Host '[9/10] Creation du ZIP...'
 
 if (-not (Test-Path -LiteralPath $outputDir)) {
     New-Item -ItemType Directory -Path $outputDir |
@@ -228,8 +285,8 @@ Compress-Archive `
     -CompressionLevel Optimal `
     -ErrorAction Stop
 
-# 8. Compare every ZIP file against staging using SHA-256.
-Write-Host '[8/8] Verification SHA-256 du ZIP...'
+# 10. Compare every ZIP file against staging using SHA-256.
+Write-Host '[10/10] Verification SHA-256 du ZIP...'
 
 Add-Type -AssemblyName System.IO.Compression.FileSystem
 
