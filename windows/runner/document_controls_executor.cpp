@@ -10,10 +10,13 @@
 #include "document_controls_executor.h"
 
 #include <algorithm>
+#include <map>
+#include <cwchar>
 #include <array>
 #include <string>
 #include <vector>
 #include <utility>
+#include <thread>
 
 #pragma comment(lib, "userenv.lib")
 #pragma comment(lib, "advapi32.lib")
@@ -35,6 +38,56 @@ namespace document_controls {
 
         std::string ErrorText(const char* action, unsigned long code) {
             return std::string(action) + " failed (" + std::to_string(code) + ")";
+        }
+
+        struct CaseInsensitiveLess {
+            bool operator()(const std::wstring& a, const std::wstring& b) const {
+                return _wcsicmp(a.c_str(), b.c_str()) < 0;
+            }
+        };
+
+        // Build a private environment block without inheriting a different JDK.
+        // Other inherited variables are retained for Windows and AppContainer compatibility.
+        std::vector<wchar_t> JavaEnvironment(const std::wstring& javaPath) {
+            std::map<std::wstring, std::wstring, CaseInsensitiveLess> values;
+            LPWCH inherited = GetEnvironmentStringsW();
+            if (!inherited) return {};
+            for (const wchar_t* item = inherited; *item; item += wcslen(item) + 1) {
+                const std::wstring entry(item);
+                // Preserve Windows' special drive-current-directory entries (=C:=...).
+                const size_t equals = entry.find(L'=', entry[0] == L'=' ? 1 : 0);
+                if (equals != std::wstring::npos) {
+                    values[entry.substr(0, equals)] = entry.substr(equals + 1);
+                }
+            }
+            FreeEnvironmentStringsW(inherited);
+
+            const size_t slash = javaPath.find_last_of(L"\\/");
+            if (slash == std::wstring::npos) return {};
+            const std::wstring bin = javaPath.substr(0, slash);
+            const size_t homeSlash = bin.find_last_of(L"\\/");
+            if (homeSlash == std::wstring::npos) return {};
+            const std::wstring home = bin.substr(0, homeSlash);
+
+            // Avoid Java options or classpaths inherited from the developer machine.
+            for (const auto* name : {L"JDK_JAVA_OPTIONS", L"JAVA_TOOL_OPTIONS",
+                                     L"_JAVA_OPTIONS", L"CLASSPATH", L"JRE_HOME"}) {
+                values.erase(name);
+            }
+            values[L"JAVA_HOME"] = home;
+            const auto previousPath = values.find(L"PATH");
+            const std::wstring oldPath = previousPath == values.end() ? L"" : previousPath->second;
+            values[L"PATH"] = bin + (oldPath.empty() ? L"" : L";" + oldPath);
+
+            std::vector<wchar_t> block;
+            for (const auto& [name, value] : values) {
+                const std::wstring entry = name + L"=" + value;
+                block.insert(block.end(), entry.begin(), entry.end());
+                block.push_back(L'\0');
+            }
+            block.push_back(L'\0');
+            if (block.size() == 1) block.push_back(L'\0');
+            return block;
         }
 
 // Prototype-only function. This is not a proof of network or filesystem isolation.
@@ -96,7 +149,7 @@ namespace document_controls {
                     return result;
                 }
 
-                // Anonymous pipe, child receives only the write end. Parent reads after exit.
+                // Anonymous pipe: drain concurrently to prevent Java blocking on a full pipe.
                 SECURITY_ATTRIBUTES pipeSecurity{};
                 pipeSecurity.nLength = sizeof(pipeSecurity);
                 pipeSecurity.bInheritHandle = TRUE;
@@ -137,13 +190,21 @@ namespace document_controls {
                 startup.StartupInfo.hStdOutput = pipeWrite.value;
                 startup.StartupInfo.hStdError = pipeWrite.value;
                 startup.StartupInfo.hStdInput = nullptr;
-                std::wstring command = L"\"" + javaPath + L"\" -version";
+                std::wstring command =
+                        L"\"" + javaPath + L"\" -version";
                 const std::wstring javaDirectory =
                         javaPath.substr(0, javaPath.find_last_of(L"\\/"));
+                const auto environment = JavaEnvironment(javaPath);
+                if (environment.empty()) {
+                    result.message = "Cannot build Java process environment";
+                    return result;
+                }
                 PROCESS_INFORMATION rawProcess{};
                 if (!CreateProcessW(javaPath.c_str(), &command[0], nullptr, nullptr, TRUE,
-                                    EXTENDED_STARTUPINFO_PRESENT | CREATE_SUSPENDED | CREATE_NO_WINDOW,
-                                    nullptr, javaDirectory.c_str(), &startup.StartupInfo, &rawProcess)) {
+                                    EXTENDED_STARTUPINFO_PRESENT | CREATE_SUSPENDED |
+                                    CREATE_NO_WINDOW | CREATE_UNICODE_ENVIRONMENT,
+                                    const_cast<wchar_t*>(environment.data()), javaDirectory.c_str(),
+                                    &startup.StartupInfo, &rawProcess)) {
                     result.message = ErrorText("CreateProcessW", GetLastError());
                     return result;
                 }
@@ -155,41 +216,57 @@ namespace document_controls {
                     TerminateProcess(process.value, 1);
                     return result;
                 }
+                // The parent must not keep the write end open, or EOF will never arrive.
+                CloseHandle(pipeWrite.value);
+                pipeWrite.value = nullptr;
+
+                // Read while the child is running. Keep at most 64 KiB, but
+                // continue draining excess output so the child cannot block.
+                std::thread reader([&]() {
+                    std::array<char, 4096> buffer{};
+                    DWORD count = 0;
+                    while (ReadFile(pipeRead.value, buffer.data(),
+                                    static_cast<DWORD>(buffer.size()),
+                                    &count, nullptr) && count != 0) {
+                        if (result.standard_error.size() < kMaxCapturedBytes) {
+                            const size_t remaining = kMaxCapturedBytes - result.standard_error.size();
+                            result.standard_error.append(buffer.data(),
+                                                         std::min<size_t>(remaining, count));
+                        }
+                    }
+                });
+
                 if (ResumeThread(thread.value) == static_cast<DWORD>(-1)) {
                     result.message = ErrorText("ResumeThread", GetLastError());
                     TerminateProcess(process.value, 1);
-                    return result;
+                } else {
+                    // These flags reflect requested launch mechanisms, not an
+                    // independent security verification.
+                    result.appcontainer_active = true;
+                    result.job_object_active = true;
+                    const DWORD waited = WaitForSingleObject(process.value, kProbeTimeoutMs);
+                    if (waited == WAIT_OBJECT_0) {
+                        DWORD code = 0;
+                        if (GetExitCodeProcess(process.value, &code)) {
+                            result.exit_code = static_cast<int>(code);
+                            result.executed = true;
+                            result.error_code = code == 0 ? "" : "JAVA_PROBE_FAILED";
+                            result.message = code == 0 ? "Java version probe completed"
+                                                       : "Java version probe failed";
+                        } else {
+                            result.message = ErrorText("GetExitCodeProcess", GetLastError());
+                        }
+                    } else {
+                        result.message = waited == WAIT_TIMEOUT ? "Java probe timed out"
+                                                                : ErrorText("WaitForSingleObject", GetLastError());
+                    }
                 }
-                result.appcontainer_active = true; // Creation used security capabilities; not an independent token test.
-                result.job_object_active = true;
-                DWORD waited = WaitForSingleObject(process.value, kProbeTimeoutMs);
-                if (waited != WAIT_OBJECT_0) {
-                    result.message = waited == WAIT_TIMEOUT ? "Java probe timed out" :
-                                     ErrorText("WaitForSingleObject", GetLastError());
-                    return result; // Job close terminates remaining children.
-                }
-                DWORD code = 0;
-                if (!GetExitCodeProcess(process.value, &code)) {
 
-                    result.message = ErrorText("GetExitCodeProcess", GetLastError());
-                    return result;
-                }
-                result.exit_code = static_cast<int>(code);
-                // Close the parent's write handle before draining the pipe.
-                CloseHandle(pipeWrite.value);
-                pipeWrite.value = nullptr;
-                std::array<char, 4096> buffer{};
-                DWORD count = 0;
-                while (result.standard_error.size() < kMaxCapturedBytes &&
-                       ReadFile(pipeRead.value, buffer.data(),
-                                static_cast<DWORD>(std::min(buffer.size(),
-                                                            kMaxCapturedBytes - result.standard_error.size())),
-                                &count, nullptr) && count > 0) {
-                    result.standard_error.append(buffer.data(), count);
-                }
-                result.executed = true;
-                result.error_code = code == 0 ? "" : "JAVA_PROBE_FAILED";
-                result.message = code == 0 ? "Java version probe completed" : "Java version probe failed";
+                // Kill any remaining job processes and close inherited pipe
+                // writers before waiting for the reader to reach EOF.
+                CloseHandle(job.value);
+                job.value = nullptr;
+                reader.join();
                 // No network or filesystem guarantees have been verified by this probe.
                 return result;
             }
