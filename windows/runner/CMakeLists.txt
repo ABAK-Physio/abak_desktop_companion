@@ -10,6 +10,8 @@ add_executable(${BINARY_NAME} WIN32
         "document_controls_channel.cpp"
         "document_controls_executor.cpp"
         "document_controls_launcher.cpp"
+        "document_controls_protocol.cpp"
+        "document_controls_pipe_client.cpp"
         "flutter_window.cpp"
         "main.cpp"
         "smart_card/vitale_api.cpp"

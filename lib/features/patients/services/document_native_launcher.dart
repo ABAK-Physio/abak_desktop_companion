@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:path/path.dart' as p;
+import 'document_windows_contract.dart';
 
 /// Only the embedded, authenticated XPC service can execute validators on macOS.
 /// No shell, generic command, nested sandbox, or unprotected fallback is exposed.
@@ -48,6 +49,15 @@ class NativeDocumentLauncher {
       operation = 'cda';
     } else {
       throw StateError('Commande de contrôle non autorisée.');
+    }
+    // W1: refuse before sending paths or document data to any Windows server.
+    // The macOS request and every existing XPC validation below stay intact.
+    if (Platform.isWindows) {
+      throw PlatformException(
+        code: WindowsDocumentControlsContract.unavailableCode,
+        message: "L'isolation native des contrôles documentaires Windows "
+            "n'est pas encore intégrée et qualifiée.",
+      );
     }
     final response = await channel
         .invokeMapMethod<String, dynamic>('run', {
