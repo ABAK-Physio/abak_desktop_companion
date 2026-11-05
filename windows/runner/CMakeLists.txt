@@ -12,6 +12,8 @@ add_executable(${BINARY_NAME} WIN32
         "document_controls_launcher.cpp"
         "document_controls_protocol.cpp"
         "document_controls_service_core.cpp"
+        "document_controls_refusal_session.cpp"
+        "document_controls_refusal_pipe_session.cpp"
         "document_controls_pipe_client.cpp"
         "document_controls_peer_policy.cpp"
         "document_controls_pipe_transport.cpp"
