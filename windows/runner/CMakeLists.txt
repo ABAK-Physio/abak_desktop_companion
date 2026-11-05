@@ -17,6 +17,8 @@ add_executable(${BINARY_NAME} WIN32
         "document_controls_pipe_transport.cpp"
         "document_controls_peer_identity.cpp"
         "document_controls_installation_security.cpp"
+        "document_controls_installation_manifest.cpp"
+        "document_controls_installation_loader.cpp"
         "flutter_window.cpp"
         "main.cpp"
         "smart_card/vitale_api.cpp"
