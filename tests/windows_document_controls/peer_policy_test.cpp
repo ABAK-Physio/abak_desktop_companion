@@ -20,7 +20,6 @@ ipc::PeerPolicy Companion() {
   policy.session_id = 3;
   policy.image_path = L"C:\\Program Files\\ABAK\\Companion.exe";
   policy.image_sha256 = std::string(64, 'a');
-  policy.signer_certificate_sha256 = std::string(64, 'b');
   return policy;
 }
 ipc::PeerFacts Facts(const ipc::PeerPolicy& policy) {
@@ -30,8 +29,7 @@ ipc::PeerFacts Facts(const ipc::PeerPolicy& policy) {
   facts.session_id = policy.session_id;
   facts.image_path = policy.image_path;
   facts.image_sha256 = policy.image_sha256;
-  facts.signer_certificate_sha256 = policy.signer_certificate_sha256;
-  facts.process_alive = facts.signature_valid = facts.connection_identity_matches = true;
+  facts.process_alive = facts.installation_protected = facts.connection_identity_matches = true;
   return facts;
 }
 }
@@ -41,7 +39,7 @@ int main() {
   auto policy = Companion();
   Check(!ipc::ValidatePeerPolicy(policy), "complete model policy");
   auto facts = Facts(policy);
-  Check(!ipc::AuthorizePeer(policy, facts), "matching synthetic identity");
+  Check(!ipc::AuthorizePeer(policy, facts), "matching installed release, no signature prerequisite (synthetic facts)");
   policy.trusted_installation = false;
   Check(ipc::AuthorizePeer(policy, facts).code == "PEER_POLICY_UNCONFIGURED", "unqualified installation refuses");
   policy = Companion();
@@ -73,11 +71,19 @@ int main() {
   facts = Facts(policy); facts.image_path = L"C:\\Users\\User\\Companion.exe";
   Check(static_cast<bool>(ipc::AuthorizePeer(policy, facts)), "same account different executable refuses");
   facts = Facts(policy); facts.image_sha256[0] = 'f';
-  Check(static_cast<bool>(ipc::AuthorizePeer(policy, facts)), "different release same publisher refuses");
-  facts = Facts(policy); facts.signer_certificate_sha256[0] = 'f';
-  Check(static_cast<bool>(ipc::AuthorizePeer(policy, facts)), "different signer refuses");
-  facts = Facts(policy); facts.signature_valid = false;
-  Check(static_cast<bool>(ipc::AuthorizePeer(policy, facts)), "unsigned executable refuses");
+  Check(static_cast<bool>(ipc::AuthorizePeer(policy, facts)), "modified file at approved path refuses");
+  facts = Facts(policy); facts.installation_protected = false;
+  Check(ipc::AuthorizePeer(policy, facts).code == "PEER_INSTALLATION_REJECTED",
+        "matching hash and account do not authorize writable installation");
+  facts = Facts(policy); facts.image_path = L"C:\\Program Files\\ABAK copy\\Companion.exe";
+  Check(ipc::AuthorizePeer(policy, facts).code == "PEER_IMAGE_REJECTED",
+        "same file hash copied to another directory refuses");
+  facts = Facts(policy); facts.image_path = L"c:\\program files\\abak\\companion.exe";
+  Check(!ipc::AuthorizePeer(policy, facts), "case-only path difference accepts");
+  policy.trusted_installation = false;
+  Check(ipc::AuthorizePeer(policy, facts).code == "PEER_POLICY_UNCONFIGURED",
+        "protected image does not establish manifest provenance");
+  policy = Companion();
   policy.role = ipc::PeerRole::kService;
   policy.account_sid = "S-1-5-19";
   policy.session_id = 0;

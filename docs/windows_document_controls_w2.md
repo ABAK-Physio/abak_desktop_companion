@@ -1,168 +1,171 @@
-# Contrôles documentaires Windows — W2
+# Contrôles documentaires Windows — W2 révisé sans signature
 
-Base : fichiers W1 validés sur le PC Windows et commités sous `277f8a6`.
-W1 : 8 tests Flutter réussis, 2 tests macOS ignorés sur Windows, compilation Debug
-réussie, 20 415 vérifications C++ réussies sans exécuter de validateur.
+Base : W1 `277f8a6`, puis W2 `8aa190f`, validés sur le PC Windows.
+Cette révision incrémentale remplace l'exigence Authenticode de W2. Elle ne
+contient aucun élément du brouillon W3 et n'active aucun contrôle documentaire.
 
-## Périmètre
+## Décision et portée
 
-W2 ajoute les briques natives de transport Named Pipe et de vérification des
-identités. Elles sont compilées dans le runner mais ne sont pas raccordées au
-chemin d'exécution de Companion. Le client `Exchange()`, le garde Dart et les
-canal/lanceur/exécuteur C++ de W1 restent inchangés et refusent toujours avec
-`WINDOWS_ISOLATION_UNAVAILABLE`.
+ABAK Companion doit fonctionner sans signature payante, abonnement, service
+cloud ni certificat à renouveler. Le chemin d'identification Windows ne vérifie
+plus Authenticode et ne dépend plus de WinTrust. La signature n'est ni une
+condition d'autorisation, ni un mode optionnel avec repli silencieux.
+Cette décision remplace les exigences d'identité signée de la section
+« Authentification et autorisations » du document W1. Les validations macOS
+restent inchangées.
 
-Les seuls échanges actifs de ce lot ont lieu dans l'exécutable de test. Celui-ci
-crée des pipes temporaires et utilise ses propres threads : aucun service Windows
-n'est installé ou démarré. Il n'utilise ni Java, ni veraPDF, ni document patient,
-ni prototype expérimental. Aucun fichier métier DMP ou code macOS n'est modifié.
-Il n'existe aucun réglage permettant d'activer les validateurs.
+La confiance porte sur une installation locale approuvée : identité Windows,
+chemin exact, empreinte de version et permissions effectives des fichiers et de
+leurs répertoires parents. Le même compte utilisateur ne suffit jamais.
+L'empreinte n'authentifie pas l'éditeur d'un téléchargement.
 
-Les ACL de fichiers, dossiers et services existants ainsi que WFP ne sont pas
-modifiées. Le test crée uniquement le descripteur de sécurité de son propre pipe
-éphémère, supprimé à la fermeture des handles.
+W2 reste une préparation : ses modules sont compilés dans le runner mais ne sont
+pas raccordés au chemin de production. `Exchange()`, le garde Dart, le canal,
+le lanceur et l'exécuteur W1 refusent toujours avec
+`WINDOWS_ISOLATION_UNAVAILABLE`. Aucun réglage ne permet d'activer les validateurs.
 
-## Transport
+Aucun fichier macOS ou métier DMP n'est modifié. Aucun service n'est installé ou
+démarré ; Java, veraPDF et les prototypes ne sont pas lancés. Aucune règle WFP,
+ACL de fichier, de dossier, de service ou configuration système n'est modifiée.
+Les descripteurs des tests sont construits en mémoire, ou appartiennent à leurs
+propres pipes éphémères. Aucun document patient n'est utilisé.
 
-`document_controls_pipe_transport` fournit ouverture locale, connexion,
-lecture/écriture exacte et échange de trames au format W1.
+## Transport conservé
 
-- Noms locaux `\\.\pipe\ABAK.DocumentControls.*` uniquement ; rejet des chemins
-  UNC distants et des autres familles de pipes avant tout appel d'ouverture.
-- Instance occupée : attente plafonnée à deux secondes, sans retry illimité.
-- E/S overlapped, lecture/écriture fragmentée et gestion des transferts partiels.
-- Vérification des deux longueurs du préfixe avant allocation du corps.
-- Trame incomplète, UTF-8 incorrect, dépassement et déconnexion : aucun résultat
-  partiel exploitable n'est retourné.
-- Budget monotone : délai global fixe et délai plus court sans progression.
-  Recevoir quelques octets supplémentaires ne prolonge pas le délai global.
-- À l'expiration, `CancelIoEx` demande l'annulation et le code attend la fin
-  effective de l'E/S avant de libérer buffer, événement et structure OVERLAPPED.
-  Le test vérifie aussi qu'une lecture annulée ne consomme pas la trame suivante.
-- Les handles sont non héritables et gérés par RAII.
-- Le client demande les droits élémentaires de lecture/écriture, sans demander
-  le droit `FILE_CREATE_PIPE_INSTANCE`. Le test crée son pipe avec
-  `PIPE_REJECT_REMOTE_CLIENTS` et `FILE_FLAG_FIRST_PIPE_INSTANCE`.
+- Named Pipes `\\.\pipe\ABAK.DocumentControls.*` uniquement, sans HTTP ni port réseau.
+- Rejet des noms UNC distants et des autres familles avant ouverture.
+- Attente d'une instance occupée plafonnée à deux secondes.
+- E/S overlapped, lectures/écritures fragmentées et transferts partiels.
+- Contrôle des longueurs W1 avant allocation, UTF-8 strict et aucun résultat partiel.
+- Budget monotone global et délai sans progression : quelques octets ne prolongent
+  jamais le délai global.
+- Annulation par `CancelIoEx`, suivie de l'attente de fin effective de l'E/S avant
+  libération des ressources. Handles non héritables, gérés par RAII.
+- Les tests créent des pipes avec `PIPE_REJECT_REMOTE_CLIENTS` et
+  `FILE_FLAG_FIRST_PIPE_INSTANCE`. Ces flags devront aussi être utilisés par le
+  futur service ; les tests locaux ne valent pas essai depuis un autre poste.
 
-Les fonctions de transport bas niveau ne constituent pas une autorisation.
-Une future intégration ne devra les appeler pour les documents qu'après un
-handshake d'identité réussi et une nouvelle vérification du pair.
+Ces primitives bas niveau ne donnent aucune autorisation d'exécution.
 
-## Politique d'identité
+## Politique d'identité révisée
 
-`document_controls_peer_policy` valide une politique native contenant :
+`PeerPolicy`, alimentée exclusivement par du code natif de confiance, conserve :
 
 | Champ | Origine requise |
 | --- | --- |
-| Rôle service ou Companion | Code natif |
-| Compte et session autorisés | Installation et contexte Windows autorisé |
-| Chemin canonique de l'exécutable | Installation protégée |
-| SHA-256 exact de l'exécutable | Manifeste de version approuvé et protégé |
-| SHA-256 du certificat signataire | Identité de publication approuvée |
-| Nom/SID du service dédié | Installation du futur service |
+| Rôle Companion ou service | Code natif |
+| Compte et session autorisés | Contexte Windows autorisé |
+| Chemin canonique exact de l'image | Installation approuvée |
+| SHA-256 exact de l'image | Manifeste de version protégé |
+| Nom et SID du service dédié | Installation du futur service |
 
-Une politique vide, incomplète ou sans installation réputée protégée est refusée.
-`trusted_installation` est une précondition native, pas une preuve collectée par
-W2 : aucune API de ce lot ne qualifie automatiquement les protections de
-l'installation. Sa valeur par défaut est `false` et elle ne doit jamais venir
-d'un message JSON, de l'environnement ou d'un fichier utilisateur modifiable.
+Les champs du certificat et le fait `signature_valid` sont supprimés.
+`PeerFacts.installation_protected`, faux par défaut, provient de l'inspection
+native du fichier et de ses parents ; il n'est jamais accepté depuis le pair.
+Les faits des tests portables sont synthétiques, sans prétention de preuve native.
 
-Le futur intégrateur devra établir cette précondition par une installation
-protégée et un manifeste authentifié. Aucun tel manifeste n'est distribué ou
-accepté automatiquement dans W2. Une réponse serveur ne peut pas le remplacer.
+Le service attendu reste un processus dédié `ABAKDocumentControls`, sous
+LocalService (`S-1-5-19`), session 0, avec son SID de service activé et un PID
+correspondant au service en cours d'exécution dans le gestionnaire de services.
+LocalSystem et le prototype `ABAKDocumentControlsProbe` restent refusés.
 
-Le service attendu sera un processus dédié `ABAKDocumentControls`, sous
-LocalService (`S-1-5-19`), session 0, avec son propre SID activé dans le jeton.
-`ABAKDocumentControlsProbe` et LocalSystem ne sont pas des substitutions acceptées.
-Le client Companion attendu est lié à un compte et une session interactive
-autorisés, ainsi qu'à la version signée approuvée de son exécutable.
+## Vérification en lecture seule de l'installation
 
-## Vérification native et handshake
+`document_controls_installation_security` inspecte le fichier déjà ouvert et
+chaque répertoire parent jusqu'à la racine du lecteur fixe local :
 
-`document_controls_peer_identity` collecte les informations depuis Windows :
+1. Fichier ordinaire, répertoires ordinaires, aucun reparse point, chemin final
+   identique au chemin inspecté ; lecteurs distants ou amovibles refusés.
+2. Lecture du propriétaire et de la DACL avec `GetSecurityInfo` : propriétaire
+   SYSTEM, groupe Administrateurs ou identité Windows TrustedInstaller seulement.
+3. Refus d'une DACL absente/nulle ou d'une ACE effective non prise en charge.
+   Les permissions d'écriture, suppression, changement de DACL ou propriétaire
+   ne peuvent être accordées qu'à ces trois identités de confiance.
+4. Les ACE inherit-only ne s'appliquent pas à l'objet inspecté. Le contrôle est
+   conservateur : une ACE de refus n'excuse pas une autorisation d'écriture.
+5. À la racine du volume, créer un autre enfant est admis, mais supprimer des
+   enfants ou changer les protections est interdit aux autres identités.
+   Dans les autres répertoires, créer des fichiers ou sous-répertoires est aussi
+   interdit, notamment pour limiter le dépôt de DLL.
+6. Les handles des parents sont conservés sans partage de suppression ; ceux de
+   l'image interdisent le partage d'écriture/suppression pendant l'échange.
+   Les protections sont revérifiées sur les handles conservés.
 
-1. Le PID provient de `GetNamedPipeServerProcessId` ou
-   `GetNamedPipeClientProcessId`, jamais du JSON du pair.
-2. Le handle du processus est conservé. Le compte et la session viennent de son
-   jeton ; son image est ouverte en lecture sans partage écriture/suppression.
-3. L'image doit être un fichier ordinaire, sans reparse point sur le fichier.
-   Son chemin final, son SHA-256 et sa signature Authenticode sont vérifiés.
-4. L'empreinte SHA-256 du certificat signataire est extraite de la chaîne validée
-   et doit correspondre à l'empreinte approuvée. Une signature valide quelconque
-   ou le seul nom de l'éditeur ne suffit pas.
-5. Pour le service, le PID doit aussi correspondre à celui du service dédié en
-   cours d'exécution, d'après le gestionnaire de services. Le SID du service doit
-   être activé et ne pas être présent uniquement comme SID de refus.
+L'inspection est limitée à 64 ancêtres. Une erreur de lecture, un propriétaire
+individuel ou des permissions atypiques provoquent un refus explicite
+`PEER_INSTALLATION_REJECTED`, jamais une réparation automatique des ACL.
+Le futur installateur devra produire les droits attendus sur ses propres objets,
+normalement sous Program Files. Le nom du répertoire seul n'est pas une preuve.
 
-Le client authentifie d'abord le service avant d'envoyer quoi que ce soit.
-Il envoie ensuite le préambule fixe de huit octets `ABAKIPC1`. Le serveur lit ce
-préambule borné, puis vérifie le client, y compris le jeton de la connexion par
-impersonation limitée à l'identification. Ce jeton doit être cohérent avec celui
-du processus. Il revient à son identité initiale sur tous les retours ; un échec
-de restauration provoque un arrêt immédiat du processus au lieu de poursuivre
-sous une identité inattendue.
+## Origine du manifeste : précondition encore fermée
 
-Le serveur n'envoie le même acquittement qu'après cette vérification. Les PID,
-handles et rattachement au service sont revérifiés avant de retourner une
-`PeerLease`. Celle-ci conserve le processus et l'image ouverts jusqu'à la fin de
-l'échange. L'intégration devra également appeler `RecheckPipePeer` avant l'envoi
-d'une requête et avant d'accepter son résultat.
+`trusted_installation` dans la politique reste faux par défaut. Il signifie que
+le futur chargeur natif a obtenu les chemins et empreintes depuis un manifeste
+approuvé et protégé. Ce lot NE fournit ni ce chargeur, ni un manifeste installable,
+ni l'installateur. L'inspection de l'image ne remplace pas cette précondition.
 
-Le préambule et son acquittement ne sont pas de nouvelles opérations documentaires
-et n'accordent aucun droit d'exécution. Il n'existe toujours que `pdfa`, `version`
-et `cda` dans le contrat documentaire. Aucun chemin de document ou d'exécutable,
-argument Java ou commande système n'est échangé pendant le handshake.
+Le futur chargeur devra ouvrir le manifeste en lecture sans partage
+écriture/suppression, vérifier son chemin attendu, son propriétaire et ses
+permissions et ceux de ses parents AVANT de le parser, puis conserver son handle
+pendant la construction de la politique. `VerifyProtectedFile` est réutilisable
+pour cette vérification. L'installateur de confiance devra déposer ensemble le
+manifeste et la version correspondante, puis les actualiser à chaque mise à jour.
+Une préférence, une variable d'environnement, le JSON du pair ou un recalcul des
+empreintes d'un dossier utilisateur ne sont jamais une source de confiance.
 
-La vérification Authenticode est sans interface et avec récupération de chaîne
-limitée au cache. W2 ne prouve pas une fraîcheur de révocation en ligne. Une
-politique de révocation qualifiée et la gestion des rotations de certificats
-devront être définies avant l'installation réelle.
+L'origine du téléchargement et la décision d'exécuter l'installateur restent une
+étape de confiance distincte. Ce lot ne la remplace pas par une certification
+publique de l'éditeur. Aucune configuration n'est demandée au kiné par l'application.
 
-## Limites de la vérification
+## Inspection du processus et handshake conservés
 
-Le SHA-256 est calculé sur l'image ouverte, plafonnée à 64 Mio. Le handle empêche
-son écriture/suppression pendant l'échange, mais ne démontre pas l'intégrité du
-processus en mémoire ni de ses DLL. Les jonctions des répertoires parents, les
-droits de l'installation, la substitution avant inspection, l'injection et la
-duplication de handles doivent rester dans le modèle de menace à qualifier.
-Le seul compte utilisateur ne doit donc jamais être traité comme une frontière
-de confiance entre applications.
+Le PID vient de Windows, pas du JSON. Le processus est conservé ouvert, le compte
+et la session viennent de son jeton. Le chemin final et le SHA-256 de l'image
+ouverte doivent correspondre exactement à la politique. L'image est plafonnée
+à 64 Mio. Le client vérifie le service avant d'envoyer le préambule `ABAKIPC1`.
+Le serveur lit ce préambule fixe puis vérifie le client et l'identité de la
+connexion par impersonation limitée à l'identification. Il restaure toujours son
+jeton ; un échec de restauration provoque un arrêt immédiat.
 
-Les appels synchrones d'inspection Windows, notamment Authenticode, ne sont pas
-préemptés par le budget d'E/S : l'expiration est contrôlée avant les échanges et
-après inspection. W2 ne démontre pas une limite dure sur l'authentification.
-L'exécution de validateurs exige encore les protections et délais propres au
-futur service ; elle n'est pas autorisée par une `PeerLease`.
+L'acquittement n'est envoyé qu'après autorisation. `PeerLease` conserve processus,
+image et parents pendant l'échange. `RecheckPipePeer` revalide PID, processus,
+permissions et rattachement au service. Il doit être appelé avant une requête et
+avant acceptation d'un résultat lors de la future intégration.
+Le contrat conserve uniquement `pdfa`, `version`, `cda` et les limites W1.
 
-## Tests
+## Limites et étapes suivantes
 
-Les tests portables de politique utilisent des **faits synthétiques**. Ils
-vérifient acceptation du modèle complet, refus des comptes/sessions/images/
-signataires différents, refus de LocalService seul, du prototype et d'une
-installation non qualifiée, ainsi que le budget monotone et les débordements.
-Ils ne constituent pas un essai d'authentification positive d'un service signé.
+Ni une empreinte disque ni la signature antérieure ne prouvent l'intégrité du
+processus en mémoire. L'injection, la duplication de handles et l'intégrité des
+DLL ne sont pas qualifiées par ce lot. Un administrateur compromis est hors du
+modèle retenu pour cette installation locale. L'exécution réelle nécessitera
+encore la qualification de l'isolation réseau/fichiers et du cycle de vie du
+validateur. Un service LocalService, à lui seul, n'est pas une sandbox.
 
-Les tests Windows utilisent uniquement un pipe éphémère entre threads du même
-exécutable, avec SID et PID obtenus depuis le noyau. Ils couvrent :
+Les appels synchrones d'inspection Windows ne sont pas préemptés par le budget
+E/S ; le délai est vérifié après inspection. Aucun délai dur d'authentification
+n'est annoncé. L'autorisation positive d'un Companion installé communiquant avec
+le vrai service n'est pas encore qualifiée.
 
-- Aller-retour d'une requête de version et de la réponse de refus W1.
-- Trame avec corps binaire synthétique, fragmentée en petits morceaux.
-- Expiration, annulation puis réutilisation correcte du pipe, et déconnexion.
-- Préfixe annonçant un corps excessif : refus avant allocation.
-- Politique absente : refus avant inspection.
-- Exécutable de test non signé : refus malgré le même utilisateur et une
-  empreinte de fichier exacte ; restauration du jeton du thread après refus.
-- Préambule invalide, noms distants interdits, collision de première instance,
-  instance occupée et libération des handles après vingt connexions.
+## Tests et validation
 
-La signature d'une version installée approuvée et l'authentification positive des
-deux côtés restent à tester avec de véritables binaires de release signés et le
-futur service. L'accès d'un autre utilisateur et les clients réseau ne sont pas
-testés par ces essais locaux. Les flags de rejet ne valent pas qualification.
+- Politique portable : acceptation d'une installation correspondante sans champ
+  de signature ; refus si installation non protégée, manifeste non approuvé,
+  compte/session/processus différents, fichier modifié, copie déplacée ou service
+  incorrect. Vérifications des délais et du verrou W1 conservées.
+- Windows : descripteurs en mémoire pour propriétaires, droits génériques,
+  suppressions, DACL, héritage et identité LocalService. Inspection en lecture
+  seule de `kernel32.dll` existant et de ses parents pour exercer le parcours natif.
+- Pipes Windows : fragmentation, limites, annulation, déconnexion, instances,
+  PID et handles conservés. Un exécutable de test dans TEMP, pourtant épinglé par
+  son empreinte exacte, est refusé pour installation non protégée ; le jeton est
+  restauré. Ce refus n'est plus lié à l'absence de signature.
 
-## Commandes de validation sur Windows
+Préparation sous Linux : les tests portables sont exécutables ici. Les essais
+Win32, MSVC, Flutter et la compilation de l'application doivent être confirmés
+sur le PC Windows ; ils ne sont pas annoncés comme exécutés sous Linux.
 
-Depuis le terminal PowerShell d'Android Studio :
+Depuis la racine du dépôt dans le terminal PowerShell d'Android Studio :
 
 ```powershell
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\scripts\test_document_controls_w2.ps1"
@@ -170,20 +173,15 @@ flutter test test/document_windows_contract_test.dart test/document_native_launc
 flutter build windows --debug
 ```
 
-Le premier script retrouve automatiquement les outils C++ déjà installés, compile
-les tests W2 dans TEMP puis relance le test W1 du véritable exécuteur/lanceur.
-Il ne fait aucun commit/push et ne modifie aucun service ou réglage système.
-
-Les tests portables ont été exécutés pendant la préparation sous Linux. Les
-nouveaux tests Win32 et la compilation MSVC doivent être exécutés sur le PC
-Windows ; ils ne sont pas annoncés comme validés avant leurs résultats.
+Le script localise Visual C++, compile dans TEMP puis relance les tests W1 du
+véritable exécuteur/lanceur. Aucun commit, push ou réglage système n'est effectué.
 
 ## Références Microsoft
 
+- https://learn.microsoft.com/en-us/windows/win32/ipc/named-pipe-security-and-access-rights
 - https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-createnamedpipea
 - https://learn.microsoft.com/en-us/windows/win32/api/ioapiset/nf-ioapiset-cancelioex
 - https://learn.microsoft.com/en-us/windows/win32/api/namedpipeapi/nf-namedpipeapi-impersonatenamedpipeclient
-- https://learn.microsoft.com/en-us/windows/win32/ipc/named-pipe-security-and-access-rights
-- https://learn.microsoft.com/en-us/windows/win32/api/wintrust/ns-wintrust-wintrust_data
-- https://learn.microsoft.com/en-us/windows/win32/api/wintrust/nf-wintrust-wthelperprovdatafromstatedata
-- https://learn.microsoft.com/en-us/windows/win32/api/wintrust/nf-wintrust-wthelpergetprovsignerfromchain
+- https://learn.microsoft.com/en-us/windows/win32/api/aclapi/nf-aclapi-getsecurityinfo
+- https://learn.microsoft.com/en-us/windows/win32/fileio/file-security-and-access-rights
+- https://learn.microsoft.com/en-us/windows/win32/fileio/reparse-points-and-file-operations

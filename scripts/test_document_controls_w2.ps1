@@ -34,10 +34,22 @@ try {
     & $abakW2PolicyExe
     if ($LASTEXITCODE -ne 0) { throw 'Tests de politique W2 en echec.' }
 
+    $abakW2InstallationExe = Join-Path $abakW2Build 'installation_security_test.exe'
+    $abakW2Args = $abakW2Common + @(
+        (Join-Path $abakW2Runner 'document_controls_pipe_transport.cpp'),
+        (Join-Path $abakW2Runner 'document_controls_installation_security.cpp'),
+        (Join-Path $abakW2Tests 'installation_security_test.cpp'), "/Fe$abakW2InstallationExe"
+    )
+    & $abakW2Compiler.Source @abakW2Args
+    if ($LASTEXITCODE -ne 0) { throw 'Compilation des tests de protection W2 en echec.' }
+    & $abakW2InstallationExe
+    if ($LASTEXITCODE -ne 0) { throw 'Tests de protection W2 en echec.' }
+
     $abakW2PipeExe = Join-Path $abakW2Build 'pipe_transport_test.exe'
     $abakW2Args = $abakW2Common + @(
         (Join-Path $abakW2Runner 'document_controls_pipe_transport.cpp'),
         (Join-Path $abakW2Runner 'document_controls_peer_identity.cpp'),
+        (Join-Path $abakW2Runner 'document_controls_installation_security.cpp'),
         (Join-Path $abakW2Tests 'pipe_transport_test.cpp'), "/Fe$abakW2PipeExe"
     )
     & $abakW2Compiler.Source @abakW2Args

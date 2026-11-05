@@ -2,6 +2,7 @@
 #define RUNNER_DOCUMENT_CONTROLS_PEER_IDENTITY_H_
 
 #include "document_controls_pipe_transport.h"
+#include <vector>
 
 namespace document_controls::windows_ipc {
 
@@ -11,6 +12,7 @@ enum class PipePeer { kServer, kClient };
 struct PeerLease {
   OwnedHandle process;
   OwnedHandle image;
+  std::vector<OwnedHandle> directories;
   PeerFacts facts;
 };
 
@@ -22,7 +24,7 @@ Error AuthenticatePipePeer(HANDLE pipe, PipePeer peer, const PeerPolicy& policy,
 Error RecheckPipePeer(HANDLE pipe, PipePeer peer, const PeerPolicy& policy,
                       const PeerLease& lease);
 
-// Read-only helpers, also used to verify unsigned test binaries are rejected.
+// Read-only helpers. No certificate, trust store, or online service is used.
 Error ReadTokenIdentity(HANDLE token, std::string* sid, DWORD* session);
 Error HashOpenImage(HANDLE file, std::string* digest);
 

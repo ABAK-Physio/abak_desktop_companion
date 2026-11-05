@@ -32,7 +32,7 @@ std::uint64_t Add(std::uint64_t now, std::uint32_t delay) {
 
 Error ValidatePeerPolicy(const PeerPolicy& policy) {
   if (!policy.trusted_installation || !Sid(policy.account_sid) ||
-      !Digest(policy.image_sha256) || !Digest(policy.signer_certificate_sha256) ||
+      !Digest(policy.image_sha256) ||
       policy.image_path.size() < 4 || policy.image_path.size() > 32760 ||
       !((policy.image_path[0] >= L'A' && policy.image_path[0] <= L'Z') ||
         (policy.image_path[0] >= L'a' && policy.image_path[0] <= L'z')) ||
@@ -64,10 +64,12 @@ Error AuthorizePeer(const PeerPolicy& policy, const PeerFacts& facts) {
       facts.session_id != policy.session_id) {
     return {"PEER_IDENTITY_REJECTED", "Peer process, account, or session mismatch."};
   }
+  if (!facts.installation_protected) {
+    return {"PEER_INSTALLATION_REJECTED", "Peer installation is not protected."};
+  }
   if (!SamePath(facts.image_path, policy.image_path) ||
-      facts.image_sha256 != policy.image_sha256 || !facts.signature_valid ||
-      facts.signer_certificate_sha256 != policy.signer_certificate_sha256) {
-    return {"PEER_IMAGE_REJECTED", "Peer is not the pinned signed release."};
+      facts.image_sha256 != policy.image_sha256) {
+    return {"PEER_IMAGE_REJECTED", "Peer is not the pinned installed release."};
   }
   if (policy.role == PeerRole::kService &&
       (!facts.service_binding_matches || !facts.service_sid_enabled)) {

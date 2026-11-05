@@ -25,7 +25,7 @@ ipc::PeerPolicy TestClientPolicy() {
   ipc::OwnedHandle token(raw);
   ipc::PeerPolicy policy;
   policy.role = ipc::PeerRole::kCompanion;
-  policy.trusted_installation = true;  // Synthetic policy; unsigned binary must still refuse.
+  policy.trusted_installation = true;  // Synthetic pin only: TEMP is not a trusted installation.
   DWORD session = 0;
   Okay(ipc::ReadTokenIdentity(token.get(), &policy.account_sid, &session), "current token identity");
   policy.session_id = session;
@@ -41,7 +41,6 @@ ipc::PeerPolicy TestClientPolicy() {
   Check(length > 0 && length < 32768, "canonical test executable path");
   policy.image_path.assign(path, length);
   if (policy.image_path.compare(0, 4, L"\\\\?\\") == 0) policy.image_path.erase(0, 4);
-  policy.signer_certificate_sha256 = std::string(64, 'b');
   return policy;
 }
 
@@ -181,9 +180,14 @@ void IdentityRefusals() {
   Okay(ipc::PipeWriteExact(pair.client.get(), hello.data(), hello.size(), &budget), "test hello");
   const auto error = ipc::AuthenticatePipePeer(pair.server.get(), ipc::PipePeer::kClient,
                                              policy, &budget, &lease);
-  if (error.code != "PEER_IMAGE_REJECTED") std::cerr << error.code << ": " << error.message << '\n';
-  Check(error.code == "PEER_IMAGE_REJECTED" && !lease.process && !lease.image,
-        "ordinary unsigned test process never becomes a trusted Companion");
+  if (error.code != "PEER_INSTALLATION_REJECTED") std::cerr << error.code << ": " << error.message << '\n';
+  Check(error.code == "PEER_INSTALLATION_REJECTED" && !lease.process && !lease.image &&
+        lease.directories.empty(),
+        "test binary in TEMP refuses despite an exact hash and matching account");
+  std::array<std::uint8_t, 8> acknowledgement{};
+  ipc::IoBudget no_ack_budget(GetTickCount64(), 1000, 100);
+  Check(ipc::PipeReadExact(pair.client.get(), acknowledgement.data(), acknowledgement.size(),
+      &no_ack_budget).code == "PIPE_TIMEOUT", "rejected peer receives no authorization acknowledgement");
   HANDLE token = nullptr;
   const BOOL impersonated = OpenThreadToken(GetCurrentThread(), TOKEN_QUERY, TRUE, &token);
   const auto last = GetLastError();

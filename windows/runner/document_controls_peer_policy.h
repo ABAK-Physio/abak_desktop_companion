@@ -11,12 +11,13 @@ enum class PeerRole { kService, kCompanion };
 // environment variable, or an ordinary user-writable preference file.
 struct PeerPolicy {
   PeerRole role = PeerRole::kService;
+  // The future native loader must first verify the protected release manifest.
+  // W2 does not provide that loader; never set this from an IPC request.
   bool trusted_installation = false;
   std::uint32_t session_id = 0;
   std::string account_sid;
   std::wstring image_path;
   std::string image_sha256;
-  std::string signer_certificate_sha256;
   std::wstring service_name;
   std::string service_sid;
 };
@@ -28,9 +29,8 @@ struct PeerFacts {
   std::string account_sid;
   std::wstring image_path;
   std::string image_sha256;
-  std::string signer_certificate_sha256;
+  bool installation_protected = false;
   bool process_alive = false;
-  bool signature_valid = false;
   bool connection_identity_matches = false;
   bool service_binding_matches = false;
   bool service_sid_enabled = false;

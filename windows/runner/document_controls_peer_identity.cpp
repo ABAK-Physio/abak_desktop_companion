@@ -1,20 +1,16 @@
 #include "document_controls_peer_identity.h"
+#include "document_controls_installation_security.h"
 
 #include <bcrypt.h>
 #include <sddl.h>
-#include <wincrypt.h>
-#include <wintrust.h>
-#include <softpub.h>
 #include <winsvc.h>
 
 #include <array>
-#include <cstring>
 #include <utility>
 #include <vector>
 
 #pragma comment(lib, "advapi32.lib")
 #pragma comment(lib, "bcrypt.lib")
-#pragma comment(lib, "wintrust.lib")
 
 namespace document_controls::windows_ipc {
 namespace {
@@ -115,52 +111,6 @@ bool PeerPid(HANDLE pipe, PipePeer peer, DWORD* pid) {
   return okay && value != 0;
 }
 
-bool SignedImage(HANDLE image, const std::wstring& path, std::string* signer_digest) {
-  signer_digest->clear();
-  WINTRUST_FILE_INFO file{};
-  file.cbStruct = sizeof(file);
-  file.pcwszFilePath = path.c_str();
-  file.hFile = image;
-  WINTRUST_DATA trust{};
-  trust.cbStruct = sizeof(trust);
-  trust.dwUIChoice = WTD_UI_NONE;
-  trust.fdwRevocationChecks = WTD_REVOKE_NONE;
-  trust.dwUnionChoice = WTD_CHOICE_FILE;
-  trust.pFile = &file;
-  trust.dwStateAction = WTD_STATEACTION_VERIFY;
-  // Offline checks only. This is not a claim of fresh online revocation status.
-  trust.dwProvFlags = WTD_CACHE_ONLY_URL_RETRIEVAL | WTD_REVOCATION_CHECK_NONE;
-  GUID action = WINTRUST_ACTION_GENERIC_VERIFY_V2;
-  const auto verified = WinVerifyTrust(nullptr, &action, &trust);
-  bool accepted = false;
-  if (verified == ERROR_SUCCESS) {
-    // These helpers are resolved dynamically as documented by Microsoft.
-    const HMODULE module = GetModuleHandleW(L"wintrust.dll");
-    using ProviderFn = decltype(&WTHelperProvDataFromStateData);
-    using SignerFn = decltype(&WTHelperGetProvSignerFromChain);
-    ProviderFn provider_fn = nullptr;
-    SignerFn signer_fn = nullptr;
-    const auto provider_address = module ? GetProcAddress(module, "WTHelperProvDataFromStateData") : nullptr;
-    const auto signer_address = module ? GetProcAddress(module, "WTHelperGetProvSignerFromChain") : nullptr;
-    static_assert(sizeof(provider_fn) == sizeof(provider_address));
-    static_assert(sizeof(signer_fn) == sizeof(signer_address));
-    std::memcpy(&provider_fn, &provider_address, sizeof(provider_fn));
-    std::memcpy(&signer_fn, &signer_address, sizeof(signer_fn));
-    auto* provider = provider_fn ? provider_fn(trust.hWVTStateData) : nullptr;
-    auto* signer = provider && signer_fn ? signer_fn(provider, 0, FALSE, 0) : nullptr;
-    if (signer && signer->csCertChain > 0 && signer->pasCertChain &&
-        signer->pasCertChain[0].pCert) {
-      const auto* certificate = signer->pasCertChain[0].pCert;
-      Sha256 hash;
-      accepted = hash.Start() && hash.Add(certificate->pbCertEncoded,
-          certificate->cbCertEncoded) && hash.Finish(signer_digest);
-    }
-  }
-  trust.dwStateAction = WTD_STATEACTION_CLOSE;
-  const auto closed = WinVerifyTrust(nullptr, &action, &trust);
-  return accepted && closed == ERROR_SUCCESS;
-}
-
 Error InspectPeer(HANDLE pipe, PipePeer peer, const PeerPolicy& policy, PeerLease* lease) {
   DWORD pid = 0;
   if (!PeerPid(pipe, peer, &pid)) return Failure("GetNamedPipeProcessId");
@@ -215,8 +165,9 @@ Error InspectPeer(HANDLE pipe, PipePeer peer, const PeerPolicy& policy, PeerLeas
     lease->facts.image_path.erase(0, 4);
   }
   if (auto error = HashOpenImage(lease->image.get(), &lease->facts.image_sha256)) return error;
-  lease->facts.signature_valid = SignedImage(lease->image.get(),
-      lease->facts.image_path, &lease->facts.signer_certificate_sha256);
+  if (auto error = VerifyProtectedFile(lease->image.get(), lease->facts.image_path,
+                                        &lease->directories)) return error;
+  lease->facts.installation_protected = true;
   if (policy.role == PeerRole::kService) {
     lease->facts.service_sid_enabled = EnabledSid(token.get(), policy.service_sid);
     lease->facts.service_binding_matches = ServiceBinding(policy, pid);
@@ -282,6 +233,7 @@ Error RecheckPipePeer(HANDLE pipe, PipePeer peer, const PeerPolicy& policy,
       (policy.role == PeerRole::kService && !ServiceBinding(policy, pid))) {
     return {"PEER_IDENTITY_REJECTED", "Peer identity changed or process exited."};
   }
+  if (auto error = RecheckProtectedFile(lease.image.get(), lease.directories)) return error;
   return AuthorizePeer(policy, lease.facts);
 }
 
