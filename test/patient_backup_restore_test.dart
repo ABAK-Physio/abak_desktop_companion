@@ -38,10 +38,12 @@ class _Access extends BackupDirectoryAccess {
   int acquired = 0;
   int released = 0;
   bool cancel = false;
+  bool failRelease = false;
   BackupDirectoryLease lease(String path) {
     acquired++;
     return BackupDirectoryLease(path, () async {
       released++;
+      if (failRelease) throw StateError("Release failure");
     });
   }
 
@@ -70,6 +72,20 @@ class _AttachmentAccess extends AttachmentDirectoryAccess {
   @override
   Future<AttachmentDirectoryLease> acquire(String root) async =>
       AttachmentDirectoryLease(root);
+}
+
+class _FailingBackupCatalog extends DatabaseBackupRepository {
+  @override
+  Future<void> insertBackup({
+    required String fileName,
+    required String filePath,
+    required int fileSize,
+    String status = 'completed',
+    String retentionPolicy = 'protected',
+    String? notes,
+  }) async {
+    throw StateError('Catalog unavailable');
+  }
 }
 
 void main() {
@@ -734,4 +750,75 @@ void main() {
     await pending;
     expect(returned, isTrue);
   });
+  test(
+    'catalog failure preserves validated archive and reports its path',
+    () async {
+      final result =
+          await LocalDatabaseBackupService(
+            access: access,
+            repository: _FailingBackupCatalog(),
+          ).createBackup(
+            databaseNotFoundMessage: 'Missing',
+            chooseBackupFolderTitle: 'Choose',
+            cancelledMessage: 'Cancelled',
+          );
+      expect(result.success, isFalse);
+      expect(result.backupPath, isNotNull);
+      expect(await File(result.backupPath!).exists(), isTrue);
+      final prepared = await const CompanionBackupArchive().prepare(
+        result.backupPath!,
+      );
+      await prepared.dispose();
+      expect(result.error, contains(result.backupPath!));
+      expect(access.acquired, access.released);
+    },
+  );
+  test(
+    'release failure does not turn an existing backup into failure',
+    () async {
+      access.failRelease = true;
+      final result = await LocalDatabaseBackupService(access: access)
+          .createBackup(
+            databaseNotFoundMessage: 'Missing',
+            chooseBackupFolderTitle: 'Choose',
+            cancelledMessage: 'Cancelled',
+          );
+      expect(result.success, isTrue);
+      expect(await File(result.backupPath!).exists(), isTrue);
+      expect(access.released, access.acquired);
+      final entries = await DatabaseBackupRepository().getBackups();
+      expect(entries.single.retentionPolicy, 'protected');
+    },
+  );
+  test(
+    'version 49 migration protects legacy backups and preserves patient data',
+    () async {
+      final db = await DatabaseService.database;
+      await db.insert('desktop_backups', {
+        'backup_id': 'legacy',
+        'file_name': 'legacy.db',
+        'file_path': '/legacy.db',
+        'created_at': 1,
+        'file_size': 1,
+        'status': 'completed',
+      });
+      await db.execute(
+        'ALTER TABLE desktop_backups DROP COLUMN retention_policy',
+      );
+      await db.setVersion(49);
+      await DatabaseService.closeDatabase();
+      final upgraded = await DatabaseService.database;
+      expect(await upgraded.getVersion(), DatabaseService.schemaVersion);
+      final rows = await upgraded.query('desktop_backups');
+      expect(rows.single['retention_policy'], 'protected');
+      expect(
+        await upgraded.query(
+          'patients',
+          where: 'patient_id = ?',
+          whereArgs: [patientId],
+        ),
+        isNotEmpty,
+      );
+    },
+  );
 }

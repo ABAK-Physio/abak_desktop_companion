@@ -8,6 +8,10 @@ class DatabaseBackup {
   final int fileSize;
 
   final String status;
+  // Unknown and legacy policies must never opt into deletion.
+  final String retentionPolicy;
+  bool get allowsAutomaticDeletion =>
+      retentionPolicy == 'automatic' && status == 'completed';
   final String? notes;
 
   const DatabaseBackup({
@@ -17,6 +21,7 @@ class DatabaseBackup {
     required this.createdAt,
     required this.fileSize,
     required this.status,
+    this.retentionPolicy = 'protected',
     required this.notes,
   });
 
@@ -28,6 +33,7 @@ class DatabaseBackup {
       createdAt: map['created_at'] as int,
       fileSize: map['file_size'] as int,
       status: map['status'] as String,
+      retentionPolicy: map['retention_policy'] as String? ?? 'protected',
       notes: map['notes'] as String?,
     );
   }
@@ -40,6 +46,7 @@ class DatabaseBackup {
       'created_at': createdAt,
       'file_size': fileSize,
       'status': status,
+      'retention_policy': retentionPolicy,
       'notes': notes,
     };
   }

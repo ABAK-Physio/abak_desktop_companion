@@ -19,7 +19,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 class DatabaseService {
-  static const int schemaVersion = 49;
+  static const int schemaVersion = 50;
   static Database? _database;
   static Completer<void>? _restoreGate;
 
@@ -113,6 +113,17 @@ class DatabaseService {
           await _createAllTables(db);
         },
         onUpgrade: (db, oldVersion, newVersion) async {
+          final backupTables = await db.rawQuery(
+            "SELECT name FROM sqlite_master WHERE type='table' AND name='desktop_backups'",
+          );
+          if (oldVersion < 50 && backupTables.isNotEmpty) {
+            await _addColumnIfMissing(
+              db,
+              'desktop_backups',
+              'retention_policy',
+              "TEXT NOT NULL DEFAULT 'protected'",
+            );
+          }
           if (oldVersion < 31) await createKobusTables(db);
           if (oldVersion < 30) {
             await _createPatientDocumentFoldersTable(db);
@@ -1279,6 +1290,7 @@ CREATE TABLE care_episode_notes (
         created_at INTEGER NOT NULL,
         file_size INTEGER NOT NULL,
         status TEXT NOT NULL DEFAULT 'completed',
+        retention_policy TEXT NOT NULL DEFAULT 'protected',
         notes TEXT NULL
       )
     ''');

@@ -16,6 +16,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 import 'dart:io';
+import 'core/maintenance/startup_maintenance.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter/foundation.dart' show kReleaseMode;
@@ -49,6 +50,10 @@ Future<void> main(List<String> arguments) async {
   } catch (error, stackTrace) {
     // Keep any normal-startup lock until exit: a partially started background
     // service must not coexist with a second owner of this database.
+    await stopStartupServices([
+      AirDropImportWatcher.instance.stop,
+      LocalExchangeServer.instance.stop,
+    ]);
     debugPrint('Échec du démarrage : $error');
     debugPrintStack(stackTrace: stackTrace);
     runApp(const _StartupFailureApp());
@@ -205,12 +210,10 @@ Future<void> _startApplication(StartupRequest request) async {
 
   await ImportSessionRepository().recoverInterruptedSessions();
 
-  final purgeResult = await PatientPurgeService().purgeArchivedPatients();
-
-  debugPrint(
-    '🧹 purge patients : '
-    '${purgeResult.deletedPatients} supprimé(s)',
-  );
+  await runOptionalMaintenance('Purge des patients', () async {
+    final result = await PatientPurgeService().purgeArchivedPatients();
+    debugPrint('🧹 purge patients : ${result.deletedPatients} supprimé(s)');
+  });
 
   // Backup retention is optional maintenance and must never block startup.
   try {

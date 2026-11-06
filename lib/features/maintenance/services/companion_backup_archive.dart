@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 
 import 'package:archive/archive_io.dart';
 import 'package:crypto/crypto.dart';
@@ -217,11 +218,27 @@ class CompanionBackupArchive {
       await encoder.close();
       encoder = null;
     } finally {
-      if (encoder != null) await encoder.close();
-      for (final lease in leases.values) {
-        await lease.release();
+      // Finalization failures must not mask the original archive error or
+      // prevent subsequent resources from being released.
+      if (encoder != null) {
+        try {
+          await encoder.close();
+        } catch (error) {
+          debugPrint('Fermeture de l’archive impossible : $error');
+        }
       }
-      await staging.delete(recursive: true);
+      for (final lease in leases.values) {
+        try {
+          await lease.release();
+        } catch (error) {
+          debugPrint('Libération d’un dossier source impossible : $error');
+        }
+      }
+      try {
+        await staging.delete(recursive: true);
+      } catch (error) {
+        debugPrint('Nettoyage temporaire de l’archive impossible : $error');
+      }
     }
   }
 
