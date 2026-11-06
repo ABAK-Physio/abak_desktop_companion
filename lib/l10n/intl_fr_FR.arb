@@ -1092,5 +1092,7 @@
   "episodeAttachments_destinationReady": "Le dossier est prêt. Vous pouvez réessayer.",
   "episodeAttachments_destinationUnavailable": "Le dossier des documents est indisponible. Choisissez une destination accessible.",
   "episodeAttachments_episodeUnavailable": "La prise en charge est indisponible ou a changé.",
-  "episodeAttachments_invalidAttachment": "Cette pièce jointe ne correspond pas au dossier du patient."
+  "episodeAttachments_invalidAttachment": "Cette pièce jointe ne correspond pas au dossier du patient.",
+  "home_backup_cleanup_warning": "Nettoyage des sauvegardes incomplet ou indisponible. Vérifiez les sauvegardes et l’accès à leur dossier avant de relancer Companion.",
+  "application_quit_backup_busy": "Une sauvegarde ou restauration est en cours. Attendez sa fin avant de quitter."
 }

@@ -155,6 +155,8 @@ class MessageLookup extends MessageLookupByLibrary {
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "abakWhisperSpeechProvider_name":
             MessageLookupByLibrary.simpleMessage("ABAK Spraakgestuurd dictee"),
+        "application_quit_backup_busy": MessageLookupByLibrary.simpleMessage(
+            "Er wordt een back-up gemaakt of hersteld. Wacht tot dit klaar is voordat u afsluit."),
         "archivedDocuments_help": MessageLookupByLibrary.simpleMessage(
             "Dit overzicht bevat de gearchiveerde balansen en rapporten van de behandeling. Elke regel geeft het type document, de titel en de archiveringsdatum weer.\n\nMet de actie ‘Terugzetten’ kunt u het document weer toevoegen aan de geschiedenis van de balansen of rapporten.\n\nMet de actie ‘Definitief verwijderen’ wordt het document uit Companion verwijderd. Lees het bevestigingsbericht aandachtig door voordat u bevestigt: het document kan vanuit deze lijst niet meer worden hersteld.\n\nKlik op het kruisje om het vergrote scherm te sluiten en terug te keren naar het gedeelte Balansen/Rapporten."),
         "assessmentChartImageService_insufficientPoints":
@@ -1177,6 +1179,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Er moet worden ingegrepen"),
         "home_archives": MessageLookupByLibrary.simpleMessage("Archief"),
         "home_attention": MessageLookupByLibrary.simpleMessage("Let op"),
+        "home_backup_cleanup_warning": MessageLookupByLibrary.simpleMessage(
+            "Het opschonen van back-ups is onvolledig of niet beschikbaar. Controleer de back-ups en de toegang tot hun map voordat u Companion opnieuw start."),
         "home_backup_successfully_created":
             MessageLookupByLibrary.simpleMessage(
                 "De back-up is succesvol aangemaakt."),

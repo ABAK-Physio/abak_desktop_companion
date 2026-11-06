@@ -1092,5 +1092,7 @@
   "episodeAttachments_destinationReady": "Der Ordner ist bereit. Versuchen Sie es erneut.",
   "episodeAttachments_destinationUnavailable": "Der Dokumentenordner ist nicht verfügbar. Wählen Sie ein erreichbares Ziel.",
   "episodeAttachments_episodeUnavailable": "Die Behandlung ist nicht verfügbar oder wurde geändert.",
-  "episodeAttachments_invalidAttachment": "Dieser Anhang gehört nicht zum Patientenordner."
+  "episodeAttachments_invalidAttachment": "Dieser Anhang gehört nicht zum Patientenordner.",
+  "home_backup_cleanup_warning": "Die Sicherungsbereinigung ist unvollständig oder nicht verfügbar. Prüfen Sie die Sicherungen und den Ordnerzugriff, bevor Sie Companion neu starten.",
+  "application_quit_backup_busy": "Eine Sicherung oder Wiederherstellung läuft. Warten Sie vor dem Beenden, bis sie abgeschlossen ist."
 }

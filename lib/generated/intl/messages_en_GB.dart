@@ -154,6 +154,8 @@ class MessageLookup extends MessageLookupByLibrary {
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "abakWhisperSpeechProvider_name":
             MessageLookupByLibrary.simpleMessage("ABAK Voice Dictation"),
+        "application_quit_backup_busy": MessageLookupByLibrary.simpleMessage(
+            "A backup or restore is in progress. Wait for it to finish before quitting."),
         "archivedDocuments_help": MessageLookupByLibrary.simpleMessage(
             "This view displays archived assessments and reports. Each row shows the document type, title, and archive date.\n\nThe restore action returns the document to the assessment or report history.\n\nThe \"Permanently Delete\" action removes the document from Companion. Read the confirmation message carefully before confirming: the document can no longer be restored from this list.\n\nClick the X to close the expanded view and return to the Reports/Statements area."),
         "assessmentChartImageService_insufficientPoints":
@@ -1135,6 +1137,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Action is needed"),
         "home_archives": MessageLookupByLibrary.simpleMessage("Archives"),
         "home_attention": MessageLookupByLibrary.simpleMessage("Attention"),
+        "home_backup_cleanup_warning": MessageLookupByLibrary.simpleMessage(
+            "Backup cleanup is incomplete or unavailable. Check the backups and access to their folder before restarting Companion."),
         "home_backup_successfully_created":
             MessageLookupByLibrary.simpleMessage(
                 "Backup created successfully."),

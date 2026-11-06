@@ -79,6 +79,7 @@ class BackupDirectoryAccess {
 
 class BackupOperation {
   static bool _active = false;
+  static bool get isActive => _active;
 
   static Future<T> run<T>(Future<T> Function() action) async {
     if (_active) throw StateError(S.current.backupArchive_busy);

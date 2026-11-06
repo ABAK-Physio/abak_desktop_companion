@@ -155,6 +155,8 @@ class MessageLookup extends MessageLookupByLibrary {
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "abakWhisperSpeechProvider_name":
             MessageLookupByLibrary.simpleMessage("ABAK Dictée vocale"),
+        "application_quit_backup_busy": MessageLookupByLibrary.simpleMessage(
+            "Une sauvegarde ou restauration est en cours. Attendez sa fin avant de quitter."),
         "archivedDocuments_help": MessageLookupByLibrary.simpleMessage(
             "Cette vue regroupe les bilans et les rapports archivés de la prise en charge. Chaque ligne indique le type de document, son titre et sa date d’archivage.\n\nL’action de restauration permet de remettre le document dans l’historique des bilans ou des rapports.\n\nL’action de suppression définitive retire le document de Companion. Lisez attentivement le message de confirmation avant de valider : le document ne pourra plus être restauré depuis cette liste.\n\nCliquez sur la croix pour fermer la vue agrandie et revenir à l’espace Bilans/Rapports."),
         "assessmentChartImageService_insufficientPoints":
@@ -1160,6 +1162,8 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Une intervention est nécessaire"),
         "home_archives": MessageLookupByLibrary.simpleMessage("Archives"),
         "home_attention": MessageLookupByLibrary.simpleMessage("Attention"),
+        "home_backup_cleanup_warning": MessageLookupByLibrary.simpleMessage(
+            "Nettoyage des sauvegardes incomplet ou indisponible. Vérifiez les sauvegardes et l’accès à leur dossier avant de relancer Companion."),
         "home_backup_successfully_created":
             MessageLookupByLibrary.simpleMessage(
                 "Sauvegarde créée avec succès."),

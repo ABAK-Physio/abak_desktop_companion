@@ -10987,6 +10987,26 @@ class S {
       args: [],
     );
   }
+
+  /// `Nettoyage des sauvegardes incomplet ou indisponible. Vérifiez les sauvegardes et l’accès à leur dossier avant de relancer Companion.`
+  String get home_backup_cleanup_warning {
+    return Intl.message(
+      'Nettoyage des sauvegardes incomplet ou indisponible. Vérifiez les sauvegardes et l’accès à leur dossier avant de relancer Companion.',
+      name: 'home_backup_cleanup_warning',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Une sauvegarde ou restauration est en cours. Attendez sa fin avant de quitter.`
+  String get application_quit_backup_busy {
+    return Intl.message(
+      'Une sauvegarde ou restauration est en cours. Attendez sa fin avant de quitter.',
+      name: 'application_quit_backup_busy',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

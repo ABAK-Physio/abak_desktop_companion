@@ -158,6 +158,8 @@ class MessageLookup extends MessageLookupByLibrary {
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "abakWhisperSpeechProvider_name":
             MessageLookupByLibrary.simpleMessage("ABAK Sprachdiktat"),
+        "application_quit_backup_busy": MessageLookupByLibrary.simpleMessage(
+            "Eine Sicherung oder Wiederherstellung läuft. Warten Sie vor dem Beenden, bis sie abgeschlossen ist."),
         "archivedDocuments_help": MessageLookupByLibrary.simpleMessage(
             "Diese Ansicht fasst die archivierten Berichte und Zusammenfassungen der Betreuung zusammen. Jede Zeile enthält die Art des Dokuments, dessen Titel und das Archivierungsdatum.\n\nMit der Wiederherstellungsfunktion können Sie das Dokument wieder in den Verlauf der Berichte oder Zusammenfassungen aufnehmen.\n\nMit der Aktion „Endgültig löschen“ wird das Dokument aus Companion entfernt. Lesen Sie die Bestätigungsmeldung sorgfältig durch, bevor Sie bestätigen: Das Dokument kann aus dieser Liste nicht mehr wiederhergestellt werden.\n\nKlicken Sie auf das Kreuz, um die vergrößerte Ansicht zu schließen und zum Bereich „Bilanz/Berichte“ zurückzukehren."),
         "assessmentChartImageService_insufficientPoints":
@@ -1176,6 +1178,8 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Es sind Maßnahmen erforderlich"),
         "home_archives": MessageLookupByLibrary.simpleMessage("Archiv"),
         "home_attention": MessageLookupByLibrary.simpleMessage("Achtung"),
+        "home_backup_cleanup_warning": MessageLookupByLibrary.simpleMessage(
+            "Die Sicherungsbereinigung ist unvollständig oder nicht verfügbar. Prüfen Sie die Sicherungen und den Ordnerzugriff, bevor Sie Companion neu starten."),
         "home_backup_successfully_created":
             MessageLookupByLibrary.simpleMessage(
                 "Sicherung erfolgreich erstellt."),

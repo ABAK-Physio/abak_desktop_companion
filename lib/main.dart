@@ -16,6 +16,9 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 import 'dart:io';
+import 'dart:async';
+import 'core/maintenance/application_shutdown.dart';
+import 'features/maintenance/services/backup_directory_access.dart';
 import 'core/maintenance/startup_maintenance.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -44,6 +47,23 @@ CompanionInstanceLock? _instanceLock;
 
 Future<void> main(List<String> arguments) async {
   WidgetsFlutterBinding.ensureInitialized();
+  final startupComplete = Completer<void>();
+  ApplicationShutdown(
+    ready: startupComplete.future,
+    isBusy: () => BackupOperation.isActive,
+    onBusy: () => rootScaffoldMessengerKey.currentState?.showSnackBar(
+      SnackBar(content: Text(S.current.application_quit_backup_busy)),
+    ),
+    steps: [
+      LocalExchangeServer.instance.stop,
+      AirDropImportWatcher.instance.stop,
+      DatabaseService.closeDatabase,
+      () async {
+        await _instanceLock?.close();
+        _instanceLock = null;
+      },
+    ],
+  ).register();
 
   try {
     await _startApplication(StartupRequest.parse(arguments));
@@ -65,6 +85,8 @@ Future<void> main(List<String> arguments) async {
     } catch (windowError) {
       debugPrint('Impossible d’afficher la fenêtre : $windowError');
     }
+  } finally {
+    startupComplete.complete();
   }
 }
 

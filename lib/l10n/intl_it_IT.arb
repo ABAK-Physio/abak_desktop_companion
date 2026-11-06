@@ -1092,5 +1092,7 @@
   "episodeAttachments_destinationReady": "La cartella è pronta. Puoi riprovare.",
   "episodeAttachments_destinationUnavailable": "La cartella documenti non è disponibile. Scegli una destinazione accessibile.",
   "episodeAttachments_episodeUnavailable": "La presa in carico non è disponibile o è cambiata.",
-  "episodeAttachments_invalidAttachment": "Questo allegato non corrisponde alla cartella del paziente."
+  "episodeAttachments_invalidAttachment": "Questo allegato non corrisponde alla cartella del paziente.",
+  "home_backup_cleanup_warning": "La pulizia dei backup è incompleta o non disponibile. Controllare i backup e l’accesso alla cartella prima di riavviare Companion.",
+  "application_quit_backup_busy": "È in corso un backup o un ripristino. Attendere il completamento prima di uscire."
 }

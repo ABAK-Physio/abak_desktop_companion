@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'backup_cleanup_health.dart';
 import 'package:flutter/foundation.dart';
 import 'package:path/path.dart' as p;
 import '../data/database_backup_repository.dart';
@@ -22,8 +23,11 @@ class LocalBackupCleanupService {
   }) : _deleteFile = deleteFile ?? _deleteBackupFile,
        _validateFile = validateFile ?? _validateBackup;
 
+  Future<BackupCleanupResult> cleanupOldBackups() =>
+      BackupCleanupMonitor.instance.run(_cleanupOldBackups);
+
   Future<BackupCleanupResult>
-  cleanupOldBackups() => BackupOperation.run(() async {
+  _cleanupOldBackups() => BackupOperation.run(() async {
     final backups = await repository.getBackups();
     final eligible = backups.where((b) => b.allowsAutomaticDeletion).toList()
       ..sort((a, b) => b.createdAt.compareTo(a.createdAt));

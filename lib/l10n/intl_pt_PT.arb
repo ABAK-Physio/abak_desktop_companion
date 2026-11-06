@@ -1092,5 +1092,7 @@
   "episodeAttachments_destinationReady": "A pasta está pronta. Pode tentar novamente.",
   "episodeAttachments_destinationUnavailable": "A pasta de documentos está indisponível. Escolha um destino acessível.",
   "episodeAttachments_episodeUnavailable": "O episódio está indisponível ou foi alterado.",
-  "episodeAttachments_invalidAttachment": "Este anexo não corresponde à pasta do paciente."
+  "episodeAttachments_invalidAttachment": "Este anexo não corresponde à pasta do paciente.",
+  "home_backup_cleanup_warning": "A limpeza das cópias de segurança está incompleta ou indisponível. Verifique as cópias e o acesso à pasta antes de reiniciar o Companion.",
+  "application_quit_backup_busy": "Está em curso uma cópia de segurança ou um restauro. Aguarde a conclusão antes de sair."
 }
