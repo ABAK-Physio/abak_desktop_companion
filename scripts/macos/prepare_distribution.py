@@ -14,6 +14,35 @@ import subprocess
 REPO = Path(__file__).resolve().parents[2]
 
 
+# Generated module payloads are built separately and are not Flutter sources.
+# Include the five new B1 files even before their first Git commit.
+VITALE_B1_ADDITIONS = (
+    'macos/abak_vitale/Sources/AbakVitaleNative/ABAKVitaleRuntime.m',
+    'macos/abak_vitale/Sources/AbakVitaleNative/include/ABAKVitaleRuntime.h',
+    'macos/tests/private_runtime_test.m',
+    'installer/macos/prepare_private_runtime.py',
+    'installer/macos/tests/test_private_runtime.py',
+)
+
+
+def dependency_source_names(root, dependency):
+    tracked = subprocess.check_output(['git', 'ls-files', '-z'], cwd=root).decode().split('\0')
+    names = set(filter(None, tracked))
+    if dependency == 'abak_vitale':
+        def generated(name):
+            parts = Path(name).parts
+            return (len(parts) >= 2 and parts[0] == 'runtime' and
+                    (parts[1] == 'macos' or parts[1].startswith('macos_avant_prive_')))
+        names = {name for name in names if not generated(name)}
+        names.update(VITALE_B1_ADDITIONS)
+    # Validate the whole dependency before starting its copy. A missing real
+    # source remains an error; do not hide deletions by filtering is_file().
+    for name in sorted(names):
+        if not (root / name).is_file():
+            raise RuntimeError('Dependency source missing: ' + dependency + '/' + name)
+    return sorted(names)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output', type=Path, required=True)
@@ -24,7 +53,7 @@ def main():
     source = out / 'source'
     source.mkdir()  # Refuse to overwrite a previous candidate.
     files = subprocess.check_output(['git', 'ls-files', '-z'], cwd=REPO).decode().split('\0')
-    files += ['scripts/macos/' + name for name in ['prepare_distribution.py', 'sign_distribution_tools.py', 'verify_distribution.py', 'test_distribution_tools.py']]
+    files += ['scripts/macos/' + name for name in ['prepare_distribution.py', 'sign_distribution_tools.py', 'verify_distribution.py', 'test_distribution_tools.py', 'test_distribution_sources.py']]
     hashes = {}
     for name in sorted(set(files) - {''}):
         original = REPO / name
@@ -39,7 +68,7 @@ def main():
     dependency_hashes = {}
     for dependency in ['abak_shared', 'abak_vitale']:
         original_root = REPO.parent / dependency
-        dependency_files = subprocess.check_output(['git', 'ls-files', '-z'], cwd=original_root).decode().split('\0')
+        dependency_files = dependency_source_names(original_root, dependency)
         dependency_hashes[dependency] = {}
         for name in filter(None, dependency_files):
             original = original_root / name

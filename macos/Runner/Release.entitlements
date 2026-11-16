@@ -10,6 +10,7 @@
     <key>com.apple.security.temporary-exception.files.absolute-path.read-only</key>
     <array>
         <string>/usr/local/lib/libcps3_pkcs11_osx.dylib</string>
+        <string>/Library/Application Support/ABAK/Vitale/</string>
     </array>
     <key>com.apple.security.print</key>
     <true/>
