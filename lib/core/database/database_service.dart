@@ -271,29 +271,37 @@ class DatabaseService {
             );
           }
           if (oldVersion < 23) {
-            await db.execute(
-              'ALTER TABLE care_episode_assessments '
-              'ADD COLUMN docx_file_name TEXT NULL',
+            await _addColumnIfMissing(
+              db,
+              'care_episode_assessments',
+              'docx_file_name',
+              'TEXT NULL',
             );
           }
           if (oldVersion < 24) {
             await _createExternalCorrespondentsTable(db);
 
-            await db.execute(
-              'ALTER TABLE care_episodes '
-              'ADD COLUMN prescribing_correspondent_id TEXT NULL',
+            await _addColumnIfMissing(
+              db,
+              'care_episodes',
+              'prescribing_correspondent_id',
+              'TEXT NULL',
             );
           }
           if (oldVersion < 25) {
-            await db.execute(
-              'ALTER TABLE care_episode_reports '
-              'ADD COLUMN author_practitioner_id TEXT NULL',
+            await _addColumnIfMissing(
+              db,
+              'care_episode_reports',
+              'author_practitioner_id',
+              'TEXT NULL',
             );
           }
           if (oldVersion < 26) {
-            await db.execute(
-              'ALTER TABLE care_episode_reports '
-              'ADD COLUMN docx_file_name TEXT NULL',
+            await _addColumnIfMissing(
+              db,
+              'care_episode_reports',
+              'docx_file_name',
+              'TEXT NULL',
             );
           }
           if (oldVersion < 27) {
@@ -852,7 +860,7 @@ class DatabaseService {
 
   static Future<void> _createExternalCorrespondentsTable(Database db) async {
     await db.execute('''
-    CREATE TABLE external_correspondents (
+    CREATE TABLE IF NOT EXISTS external_correspondents (
       correspondent_id TEXT PRIMARY KEY,
       last_name TEXT NOT NULL,
       first_name TEXT NULL,

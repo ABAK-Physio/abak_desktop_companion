@@ -19,7 +19,7 @@ class _WebPsDv1ScreenState extends State<WebPsDv1Screen> {
   void initState() {
     super.initState();
     c.addListener(refresh);
-    if (Platform.isMacOS || widget.control != null) c.refresh();
+    if ((Platform.isMacOS || Platform.isWindows) || widget.control != null) c.refresh();
   }
 
   void refresh() {
@@ -38,10 +38,10 @@ class _WebPsDv1ScreenState extends State<WebPsDv1Screen> {
     } on PlatformException catch (error) {
       tell(
         error.message ??
-            'Fermeture non confirmée. Quittez Firefox puis réessayez.',
+            'Fermeture non confirmée. Quittez le navigateur du DMP puis réessayez.',
       );
     } catch (_) {
-      tell('Fermeture non confirmée. Quittez Firefox puis réessayez.');
+      tell('Fermeture non confirmée. Quittez le navigateur du DMP puis réessayez.');
     }
   }
 
@@ -71,9 +71,10 @@ class _WebPsDv1ScreenState extends State<WebPsDv1Screen> {
           content: SingleChildScrollView(
             child: Text(
               'Praticien attendu : $professional.\n${patient ? "Patient fictif : ${identity!.name}\nINS : ${identity.ins}" : "Tableau de bord du praticien."}\n\n'
-              'Quittez Firefox et fermez les autres accès DMP avant de continuer. Une instance Firefox réservée au DMP sera ouverte. Sélectionnez le certificat de ce praticien ; saisissez le PIN uniquement dans Firefox.\n\n'
+              '${Platform.isWindows ? 'Une instance du navigateur choisi avec un profil réservé au DMP sera ouverte.' : 'Quittez Firefox et fermez les autres accès DMP avant de continuer. Une instance Firefox réservée au DMP sera ouverte.'} Sélectionnez le certificat de ce praticien ; saisissez le PIN uniquement dans le dialogue sécurisé du navigateur ou de Windows.\n\n'
+              'Adresse qui sera appelée : ${WebPsUrl.build(WebPsUrl.dv1, target, patient: identity)}\n\n'
               'Vérifiez le praticien et le patient affichés avant toute consultation. Cet essai porte sur l’ouverture du Web-PS : aucun dépôt ni changement d’autorisation à effectuer.\n\n'
-              'Le verrouillage de Companion ou un changement de praticien demandera la fermeture de cette instance Firefox. L’activité dans Firefox ne prolonge pas le délai d’inactivité de Companion.',
+              'Le verrouillage de Companion ou un changement de praticien demandera la fermeture de cette instance du navigateur. L’activité dans Firefox ne prolonge pas le délai d’inactivité de Companion.',
             ),
           ),
           actions: [
@@ -114,21 +115,21 @@ class _WebPsDv1ScreenState extends State<WebPsDv1Screen> {
   @override
   Widget build(BuildContext context) {
     final available =
-        (Platform.isMacOS || widget.control != null) && !c.busy && !c.active;
+        ((Platform.isMacOS || Platform.isWindows) || widget.control != null) && !c.busy && !c.active;
     return Scaffold(
       appBar: AppBar(title: const Text('Web-PS — recette DV1')),
       body: ListView(
         padding: const EdgeInsets.all(24),
         children: [
           const Text(
-            '1. Tableau de bord',
+            '0.9-010 — Tableau de bord',
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
-          const Text(
-            'Utilisez Firefox, sélectionné dans les paramètres DMP. L’accès est lié au praticien du bandeau. Aucun navigateur ne s’ouvre sans votre confirmation.',
-          ),
-          if (!Platform.isMacOS)
-            const Text('Le raccordement Windows reste à réaliser.'),
+          Text(Platform.isWindows
+              ? 'Choisissez Microsoft Edge ou Firefox dans les paramètres DMP. L’accès est lié au praticien du bandeau et requiert votre confirmation.'
+              : 'Utilisez Firefox, sélectionné dans les paramètres DMP. L’accès est lié au praticien du bandeau. Aucun navigateur ne s’ouvre sans votre confirmation.'),
+          if (!Platform.isMacOS && !Platform.isWindows)
+            const Text('Ce parcours est disponible sur Mac et Windows uniquement.'),
           OutlinedButton(
             key: const ValueKey('dv1-dashboard'),
             onPressed: available ? () => open(false) : null,
@@ -136,11 +137,19 @@ class _WebPsDv1ScreenState extends State<WebPsDv1Screen> {
           ),
           const SizedBox(height: 24),
           const Text(
-            '2. DMP du patient fictif',
+            '0.9-040 — DMP du patient fictif',
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
           const Text(
             'Recopiez les données du référentiel CNDA. Cette saisie ne modifie aucune fiche patient et ne qualifie aucune INS.',
+          ),
+          OutlinedButton(
+            onPressed: available ? () => setState(() {
+              name.text = 'GIRODET DE ROUSSY-COEUR ANNE-LOUIS';
+              ins.text = '287019143596041';
+              recipeConfirmed = false;
+            }) : null,
+            child: const Text('Préparer le Cas1 — sans connexion'),
           ),
           TextField(
             controller: name,
@@ -180,6 +189,8 @@ class _WebPsDv1ScreenState extends State<WebPsDv1Screen> {
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
           Text(c.message),
+          if (c.lastUrl != null) SelectableText('Dernière adresse demandée : ${c.lastUrl}'),
+          if (c.browserPath != null && c.browserPath!.isNotEmpty) SelectableText('Navigateur : ${c.browserPath}'),
           const Text(
             'Après vérification, fermez l’accès ici avant de changer de patient. Une ouverture réussie ne prouve ni l’authentification ni les droits dans Web-PS.',
           ),

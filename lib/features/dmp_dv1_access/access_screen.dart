@@ -1,3 +1,11 @@
+import 'tls050_screen.dart';
+import 'case1_withdrawal_recipe.dart';
+import 'case1_authorization_recipe.dart';
+import 'nia_injection.dart';
+import '../dmp_td02/access_identity.dart';
+import 'blocked_authorization_recipe.dart';
+import 'expired_authorization_recipe.dart';
+import 'platform_support.dart';
 import 'visibility_recipe.dart';
 import '../dmp_td02/patient_person.dart';
 import '../dmp_td02/patient_person_panel.dart';
@@ -57,11 +65,29 @@ class _Dv1AccessScreenState extends State<Dv1AccessScreen> {
     ])
       k: TextEditingController(),
   };
+  bool _case1InitialReady = false, _case1ConsentRecorded = false;
+  bool _case1WithdrawalReady = false;
+  bool _case1TestWithdrawalReady = false;
+  String? _case1AdditionEvidenceId;
+  bool _niaAction = false;
+  Dv1NiaEvidence? niaEvidence;
   Dv1Configuration? config;
   bool busy = false, replacement = false;
   String message = '';
   DmpPatientPerson? patientPerson;
   int identityGeneration = 0;
+
+  bool get case1WithdrawalSelected => fields['scenario']!.text.trim() == Dv1Case1WithdrawalRecipe.scenario;
+
+  bool get case1Selected => fields['scenario']!.text.trim() == Dv1Case1AuthorizationRecipe.scenario;
+
+  void invalidateInputs() {
+    _case1InitialReady = false;
+    _case1ConsentRecorded = false;
+    _case1WithdrawalReady = false;
+    _case1TestWithdrawalReady = false;
+    clearPatientPerson();
+  }
 
   void clearPatientPerson() {
     identityGeneration++;
@@ -73,6 +99,7 @@ class _Dv1AccessScreenState extends State<Dv1AccessScreen> {
   List<Dv1SearchTarget> searchTargets = [];
   Dv1SearchTarget? searchTarget;
   bool includeArchived = false, includeDeprecated = false;
+  bool _autoSelectScopedDeposit = true;
   String visibilityType = '46241-6';
   String searchStatus = '';
   Map<String, dynamic>? patientConsent;
@@ -84,20 +111,84 @@ class _Dv1AccessScreenState extends State<Dv1AccessScreen> {
     super.initState();
     fields['typeSystem']!.text = '2.16.840.1.113883.6.1';
     for (final field in fields.values) {
-      field.addListener(clearPatientPerson);
+      field.addListener(invalidateInputs);
     }
-    DmpWorkContext.current.changes.addListener(clearPatientPerson);
+    DmpWorkContext.current.changes.addListener(invalidateInputs);
     refresh();
   }
 
   @override
   void dispose() {
-    DmpWorkContext.current.changes.removeListener(clearPatientPerson);
+    DmpWorkContext.current.changes.removeListener(invalidateInputs);
     for (final f in fields.values) {
-      f.removeListener(clearPatientPerson);
+      f.removeListener(invalidateInputs);
       f.dispose();
     }
     super.dispose();
+  }
+
+  Future<void> importNiaResponse() async {
+    if (busy) return;
+    setState(() { busy = true; _niaAction = true; message = ''; });
+    try {
+      final selection = await FilePicker.platform.pickFiles(
+        type: FileType.custom, allowedExtensions: ['xml'],
+        dialogTitle: 'Choisir TEST_NIA.xml du package CNDA',
+      );
+      final path = selection?.files.single.path;
+      if (path == null || !mounted) return;
+      final file = File(path);
+      if (await file.length() > 65536) throw StateError('Fichier d’injection trop volumineux.');
+      final evidence = await service.importNiaResponse(await file.readAsBytes());
+      if (!mounted) return;
+      final injection = evidence.injection;
+      setState(() {
+        niaEvidence = evidence;
+        _autoSelectScopedDeposit = false;
+        searchTarget = null; consultationTarget = null; visibilityTarget = null;
+        replacement = false;
+        fields['until']!.clear();
+        fields['scenario']!.text = Dv1NiaInjection.scenario;
+        fields['patient']!.text = injection.patient;
+        fields['ins']!.text = injection.ins;
+        fields['birth']!.text = injection.result.birthDate!;
+        fields['source']!.text = Dv1NiaInjection.source;
+        message = 'Réponse INSi injectée et conservée : ${injection.patient}, '
+            'né le ${injection.result.birthDate}. Type NIA, OID ${injection.result.insOid}. '
+            'Aucune CPS ni connexion réseau sollicitée.';
+      });
+      await refresh();
+    } catch (e) {
+      if (mounted) {
+        setState(() => message = e is StateError
+          ? e.message.toString() : 'Injection NIA impossible. Choisissez TEST_NIA.xml original.');
+      }
+    } finally {
+      if (mounted) setState(() => busy = false);
+    }
+  }
+
+  Future<void> runNia() async {
+    if (busy || config == null) return;
+    setState(() { busy = true; _niaAction = true; message = ''; });
+    try {
+      clearPatientPerson();
+      final result = await service.execute(
+        configuration: config!,
+        context: selectedContext(config!, allowBlockedNia: true),
+        niaEvidence: niaEvidence,
+        requestPin: () async => throw StateError('Aucun PIN pour un accès NIA interdit.'),
+      );
+      if (mounted) setState(() => message = '${result['message']}');
+      await refresh();
+    } catch (e) {
+      if (mounted) {
+        setState(() => message = e is StateError
+          ? e.message.toString() : 'Blocage NIA non confirmé. Consultez les preuves locales.');
+      }
+    } finally {
+      if (mounted) setState(() => busy = false);
+    }
   }
 
   Future<void> importHistoricalEvidence() async {
@@ -194,7 +285,106 @@ class _Dv1AccessScreenState extends State<Dv1AccessScreen> {
     }
   }
 
+  Future<void> prepareCase1Withdrawal() async {
+    if (busy) return;
+    setState(() => busy = true);
+    try {
+      final addition = await service.latestCase1Addition();
+      if (!mounted) return;
+      setState(() {
+        _niaAction = false; niaEvidence = null;
+        _autoSelectScopedDeposit = false;
+        searchTarget = null; consultationTarget = null; visibilityTarget = null;
+        replacement = false; fields['until']!.clear();
+        fields['scenario']!.text = Dv1Case1WithdrawalRecipe.scenario;
+        fields['patient']!.text = Dv1Case1AuthorizationRecipe.patient;
+        fields['birth']!.text = Dv1Case1AuthorizationRecipe.birth;
+        fields['ins']!.text = Dv1Case1AuthorizationRecipe.ins;
+        fields['source']!.text = Dv1Case1WithdrawalRecipe.source;
+        _case1TestWithdrawalReady = false;
+        _case1AdditionEvidenceId = addition['id'] as String;
+        message = '0.3-080 préparé sans connexion. Ajout 0.3-010 vérifié et relié : ${addition['id']}. Vérifiez la structure puis contrôlez le droit actuel.';
+      });
+      await refreshConsent();
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+        _case1TestWithdrawalReady = false; _case1AdditionEvidenceId = null;
+        message = dv1PreparationError(e, 'preuve de l’ajout 0.3-010');
+      });
+      }
+    } finally {
+      if (mounted) setState(() => busy = false);
+    }
+  }
+
+  void prepareCase1Authorization() {
+    if (busy) return;
+    setState(() {
+      _case1InitialReady = false; _case1ConsentRecorded = false; _case1WithdrawalReady = false;
+      _niaAction = false; niaEvidence = null;
+      _autoSelectScopedDeposit = false;
+      searchTarget = null; consultationTarget = null; visibilityTarget = null;
+      replacement = false; fields['until']!.clear();
+      fields['scenario']!.text = Dv1Case1AuthorizationRecipe.scenario;
+      fields['patient']!.text = Dv1Case1AuthorizationRecipe.patient;
+      fields['birth']!.text = Dv1Case1AuthorizationRecipe.birth;
+      fields['ins']!.text = Dv1Case1AuthorizationRecipe.ins;
+      fields['source']!.text = Dv1Case1AuthorizationRecipe.source;
+      message = 'Cas1 préparé sans connexion. Vérifiez la structure, puis lancez le contrôle initial TD0.2. Aucun droit modifié.';
+    });
+    refreshConsent();
+  }
+
+  void prepareExpiredAuthorizationCase() {
+    if (busy) return;
+    setState(() {
+      _niaAction = false;
+      niaEvidence = null;
+      _autoSelectScopedDeposit = false;
+      searchTarget = null;
+      consultationTarget = null;
+      visibilityTarget = null;
+      replacement = false;
+      fields['until']!.clear();
+      fields['scenario']!.text = Dv1ExpiredAuthorizationRecipe.scenario;
+      fields['patient']!.text = Dv1ExpiredAuthorizationRecipe.patient;
+      fields['birth']!.text = Dv1ExpiredAuthorizationRecipe.birth;
+      fields['ins']!.text = Dv1ExpiredAuthorizationRecipe.ins;
+      fields['source']!.text = Dv1ExpiredAuthorizationRecipe.source;
+      message = 'Cas 7 préparé : Simone SARTRE, née le 01/01/1995. '
+          'Vérifiez la structure d’exercice ci-dessous. '
+          'Aucune lecture CPS ni connexion déclenchée.';
+    });
+    refreshConsent();
+  }
+
+  void prepareBlockedAuthorizationCase() {
+    if (busy) return;
+    setState(() {
+      _niaAction = false;
+      niaEvidence = null;
+      _autoSelectScopedDeposit = false;
+      searchTarget = null;
+      consultationTarget = null;
+      visibilityTarget = null;
+      replacement = false;
+      fields['until']!.clear();
+      fields['scenario']!.text = Dv1BlockedAuthorizationRecipe.scenario;
+      fields['patient']!.text = Dv1BlockedAuthorizationRecipe.patient;
+      fields['birth']!.text = Dv1BlockedAuthorizationRecipe.birth;
+      fields['ins']!.text = Dv1BlockedAuthorizationRecipe.ins;
+      fields['source']!.text = Dv1BlockedAuthorizationRecipe.source;
+      message = 'Cas 6 préparé : Henri HUIT, né le 01/01/1989. '
+          'Vérifiez la structure d’exercice ci-dessous. '
+          'Aucune lecture CPS ni connexion déclenchée.';
+    });
+    refreshConsent();
+  }
+
   void selectSearchTarget(Dv1SearchTarget target) {
+    _niaAction = false;
+    niaEvidence = null;
     searchTarget = target;
     fields['patient']!.text = target.data['patient']!;
     fields['ins']!.text = target.data['ins']!;
@@ -218,6 +408,7 @@ class _Dv1AccessScreenState extends State<Dv1AccessScreen> {
       ).list(versionId: widget.searchVersionId);
       if (mounted) {
         setState(() {
+          if (config?.hash != c?.hash) { _case1InitialReady = false; _case1ConsentRecorded = false; _case1WithdrawalReady = false; _case1TestWithdrawalReady = false; }
           config = c;
           history = h;
           searchTargets = documents.targets;
@@ -227,7 +418,8 @@ class _Dv1AccessScreenState extends State<Dv1AccessScreen> {
           }
           // A scoped document entry may preselect one verified deposit only.
           // Multiple accepted attempts require an explicit choice.
-          if (widget.searchVersionId != null &&
+          if (_autoSelectScopedDeposit &&
+              widget.searchVersionId != null &&
               searchTarget == null &&
               searchTargets.length == 1) {
             selectSearchTarget(searchTargets.single);
@@ -247,7 +439,7 @@ class _Dv1AccessScreenState extends State<Dv1AccessScreen> {
   }
 
   Future<void> configure() async {
-    clearPatientPerson();
+    invalidateInputs();
     setState(() => busy = true);
     try {
       final previous = await settings.current();
@@ -268,7 +460,7 @@ class _Dv1AccessScreenState extends State<Dv1AccessScreen> {
     }
   }
 
-  Dv1AccessContext selectedContext(Dv1Configuration configuration) {
+  Dv1AccessContext selectedContext(Dv1Configuration configuration, {bool allowBlockedNia = false}) {
     final until = replacement
         ? DateTime.tryParse(fields['until']!.text.trim())
         : null;
@@ -287,6 +479,7 @@ class _Dv1AccessScreenState extends State<Dv1AccessScreen> {
       structure: fields['structure']!.text.trim(),
       sector: configuration.fields['situationSector'],
       ins: fields['ins']!.text.trim(),
+      insOid: niaEvidence?.injection.result.insOid ?? DmpAccessIdentity.nirOid,
       patientLabel: fields['patient']!.text.trim(),
       source: fields['source']!.text.trim(),
       scenario: fields['scenario']!.text.trim(),
@@ -296,7 +489,9 @@ class _Dv1AccessScreenState extends State<Dv1AccessScreen> {
       minorsEnabled: parameters.minors,
       majorityAge: parameters.majority,
     );
-    contextData.check(DateTime.now().toUtc());
+    if (!allowBlockedNia || contextData.insOid != DmpAccessIdentity.niaOid) {
+      contextData.check(DateTime.now().toUtc());
+    }
     return contextData;
   }
 
@@ -305,6 +500,7 @@ class _Dv1AccessScreenState extends State<Dv1AccessScreen> {
     setState(() => busy = true);
     bool withdraw = false;
     try {
+      final decisionTicket = identityGeneration;
       final data = selectedContext(config!);
       final previous = await (await service.consents).latest(
         data.professional,
@@ -318,18 +514,27 @@ class _Dv1AccessScreenState extends State<Dv1AccessScreen> {
           patient: data.patientLabel,
           professional: data.professional,
           previous: previous,
+          refusalWithdraws: data.scenario != Dv1Case1AuthorizationRecipe.scenario,
         ),
       );
       if (answer == null) return;
       await service.recordConsent(data, answer);
       await refreshConsent();
-      withdraw = !answer;
+      withdraw = !answer && data.scenario != Dv1Case1AuthorizationRecipe.scenario;
       if (mounted) {
         setState(
           () => message = answer
               ? 'Accord enregistré. Cliquez sur « Demander la consultation du DMP » pour le prendre en compte sur DV1.'
               : 'Refus enregistré. Consultation bloquée. Retrait auprès du DMP à confirmer.',
         );
+      }
+      if (mounted && data.scenario == Dv1Case1AuthorizationRecipe.scenario) {
+        setState(() {
+          _case1ConsentRecorded = answer && decisionTicket == identityGeneration && case1Selected;
+          message = answer
+              ? 'Accord enregistré localement pour 0.3-010. L’ajout sur DV1 nécessite une action et une confirmation distinctes.'
+              : 'Refus de l’ajout enregistré. Aucun ajout ni retrait effectué.';
+        });
       }
     } catch (e) {
       if (mounted) {
@@ -350,6 +555,7 @@ class _Dv1AccessScreenState extends State<Dv1AccessScreen> {
     String? authorizationIntent,
     bool search = false,
     bool depublication = false,
+    bool preparatoryWithdrawal = false,
     bool criteriaSearch = false,
     bool submissionSearch = false,
     bool consult = false,
@@ -358,6 +564,10 @@ class _Dv1AccessScreenState extends State<Dv1AccessScreen> {
     bool visibilityIdentifiers = false,
   }) async {
     if (busy || config == null) return;
+    if (niaEvidence != null || fields['scenario']!.text.trim() == Dv1NiaInjection.scenario) {
+      await runNia();
+      return;
+    }
     clearPatientPerson();
     visibilitySearch = visibilitySearch || visibilityIdentifiers;
     setState(() {
@@ -416,6 +626,37 @@ class _Dv1AccessScreenState extends State<Dv1AccessScreen> {
       criteria?.check();
       preparationStage = 'patient et paramètres DMP';
       var contextData = selectedContext(configuration);
+      if (contextData.scenario == Dv1ExpiredAuthorizationRecipe.scenario) {
+        Dv1ExpiredAuthorizationRecipe.checkInputs(
+          scenario: contextData.scenario,
+          patient: contextData.patientLabel,
+          ins: contextData.ins,
+          birth: contextData.birthDate ?? '',
+          professional: contextData.professional,
+        );
+      }
+      if (contextData.scenario == Dv1BlockedAuthorizationRecipe.scenario) {
+        Dv1BlockedAuthorizationRecipe.checkInputs(
+          scenario: contextData.scenario,
+          patient: contextData.patientLabel,
+          ins: contextData.ins,
+          birth: contextData.birthDate ?? '',
+          professional: contextData.professional,
+        );
+      }
+      if (contextData.scenario == Dv1Case1AuthorizationRecipe.scenario) {
+        Dv1Case1AuthorizationRecipe.checkInputs(
+          scenario: contextData.scenario, patient: contextData.patientLabel, ins: contextData.ins,
+          birth: contextData.birthDate ?? '', professional: contextData.professional,
+        );
+      }
+      if (contextData.scenario == Dv1Case1WithdrawalRecipe.scenario) {
+        Dv1Case1WithdrawalRecipe.checkInputs(
+          scenario: contextData.scenario, patient: contextData.patientLabel, ins: contextData.ins,
+          birth: contextData.birthDate ?? '', professional: contextData.professional,
+        );
+        if (_case1AdditionEvidenceId == null) throw StateError('Préparez 0.3-080 depuis la preuve de l’ajout réussi.');
+      }
       if (visibility || visibilitySearch) {
         Dv1VisibilityRecipe.check(contextData);
       }
@@ -467,6 +708,7 @@ class _Dv1AccessScreenState extends State<Dv1AccessScreen> {
         builder: (_) => _AccessConsent(
           contextData: contextData,
           reuseAuthentication: reuseAuthentication,
+          preparatoryWithdrawal: preparatoryWithdrawal,
           authorizationIntent: authorizationIntent,
           searchTarget: target,
           depublication: depublication,
@@ -477,7 +719,15 @@ class _Dv1AccessScreenState extends State<Dv1AccessScreen> {
         ),
       );
       if (consent == null) {
-        if (mounted && authorizationIntent == 'withdraw') {
+        if (mounted && case1WithdrawalSelected) {
+          setState(() => message = authorizationIntent == 'withdraw'
+              ? 'Retrait 0.3-080 annulé. Aucune demande de retrait envoyée.'
+              : 'Contrôle initial 0.3-080 annulé. Aucun droit modifié.');
+        }
+        if (mounted && preparatoryWithdrawal) {
+          setState(() => message = 'Retrait préparatoire annulé. Aucune demande de retrait envoyée.');
+        }
+        if (mounted && authorizationIntent == 'withdraw' && !preparatoryWithdrawal && !case1WithdrawalSelected) {
           setState(
             () => message =
                 'Refus enregistré — retrait auprès du DMP non confirmé. Consultation bloquée.',
@@ -500,6 +750,8 @@ class _Dv1AccessScreenState extends State<Dv1AccessScreen> {
           }
         },
         authorizationIntent: authorizationIntent,
+        preparatoryWithdrawal: preparatoryWithdrawal,
+        additionEvidenceId: contextData.scenario == Dv1Case1WithdrawalRecipe.scenario ? _case1AdditionEvidenceId : null,
         searchTarget: target,
         depublication: depublication,
         criteria: criteria,
@@ -530,18 +782,32 @@ class _Dv1AccessScreenState extends State<Dv1AccessScreen> {
       );
       if (mounted) {
         setState(
-          () => message = [
-            result['message'],
-            result['detail'],
-            result['archiveError'],
-          ].where((v) => v != null && '$v'.isNotEmpty).join('\n'),
+          () {
+            message = [result['message'], result['detail'], result['archiveError']]
+                .where((v) => v != null && '$v'.isNotEmpty).join('\n');
+            if (contextData.scenario == Dv1Case1WithdrawalRecipe.scenario) {
+              _case1TestWithdrawalReady = authorizationIntent == null &&
+                  identityTicket == identityGeneration && result['state'] == 'response_verified' &&
+                  result['archiveError'] == null && result['testWithdrawalReady'] == true;
+            }
+            if (contextData.scenario == Dv1Case1AuthorizationRecipe.scenario) {
+              final readyResult = authorizationIntent == null && identityTicket == identityGeneration &&
+                  result['state'] == 'response_verified' && result['archiveError'] == null;
+              _case1InitialReady = readyResult && result['testInitialReady'] == true;
+              _case1WithdrawalReady = readyResult && result['preparatoryWithdrawalReady'] == true;
+              if (authorizationIntent != null) _case1ConsentRecorded = false;
+            }
+          },
         );
       }
       preparationStage = 'actualisation de l’écran après l’essai';
       await refresh();
     } catch (e) {
       if (mounted) {
-        setState(() => message = dv1PreparationError(e, preparationStage));
+        setState(() {
+          message = dv1PreparationError(e, preparationStage);
+          if (case1Selected || case1WithdrawalSelected) { _case1InitialReady = false; _case1ConsentRecorded = false; _case1WithdrawalReady = false; _case1TestWithdrawalReady = false; }
+        });
       }
     } finally {
       pin = null;
@@ -623,10 +889,21 @@ class _Dv1AccessScreenState extends State<Dv1AccessScreen> {
             'Vérification des accès et gestion de l’accord de consultation depuis Companion, avec une CPS de test et un patient fictif du CNDA. '
             'Aucun PDF requis, aucune qualification INS, aucun appel INSi, aucune signature de document ni dépôt.',
           ),
-          if (!Platform.isMacOS)
-            const Text(
-              'Le raccordement de la lecture CPS sous Windows reste à réaliser. Essai indisponible sur cette plateforme.',
+          if (Platform.isWindows || Platform.isMacOS)
+            OutlinedButton(
+              onPressed: busy ? null : () => Navigator.of(context).push(
+                MaterialPageRoute<void>(builder: (_) => Tls050Screen(journal: journal)),
+              ),
+              child: const Text('0.1-050 — vérifier les certificats des trois serveurs'),
             ),
+          if (Platform.isWindows)
+            const Text(
+              'Sous Windows, cet écran permet les tests TD0.2 0.2-060 et 0.2-070 '
+              'et la recherche PRE_ALIM_RECH, le refus local NIA 0.2-080 et les autorisations 0.3-010 / 0.3-080. '
+              'Les autres essais de cet écran ne sont pas encore disponibles.',
+            )
+          else if (!Platform.isMacOS)
+            const Text('Ces essais DV1 ne sont pas disponibles sur cette plateforme.'),
           const SizedBox(height: 12),
           Text(
             config == null
@@ -643,6 +920,144 @@ class _Dv1AccessScreenState extends State<Dv1AccessScreen> {
           const Text(
             'Pour changer de carte, choisissez ses deux certificats publics et sa situation dans la configuration. '
             'La lecture réelle vérifiera leur correspondance avant toute connexion.',
+          ),
+          Card(
+            child: Padding(padding: const EdgeInsets.all(16),
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Text('0.3-080 — Cas1 : suppression de mon autorisation',
+                    style: Theme.of(context).textTheme.titleMedium),
+                const Text('Le parcours relie les preuves de l’ajout 0.3-010 réussi sur Windows, '
+                    'vérifie le droit actuel, puis permet le retrait explicite de votre propre autorisation. '
+                    'Aucun document consulté ni déposé.'),
+                OutlinedButton(onPressed: busy ? null : prepareCase1Withdrawal,
+                    child: const Text('Préparer le retrait du Cas1 — 0.3-080 — sans connexion')),
+                if (case1WithdrawalSelected) ...[
+                  Text('Ajout 0.3-010 relié : ${_case1AdditionEvidenceId ?? 'à sélectionner par Préparer le retrait'}'),
+                  OutlinedButton(onPressed: busy || config == null || _case1AdditionEvidenceId == null
+                      ? null : () => run(),
+                      child: const Text('1. Vérifier le droit actuel — TD0.2 sans modification')),
+                  Text(_case1TestWithdrawalReady ? 'Autorisation VALIDE confirmée ; retrait possible après confirmation.'
+                      : 'Autorisation VALIDE à vérifier ; retrait indisponible.'),
+                  FilledButton(onPressed: busy || config == null || !_case1TestWithdrawalReady
+                      ? null : () => run(authorizationIntent: 'withdraw'),
+                      child: const Text('2. Retirer mon autorisation sur DV1 — 0.3-080')),
+                  if (busy) const LinearProgressIndicator(),
+                  if (message.isNotEmpty) Semantics(liveRegion: true,
+                      child: SelectableText('Dernière action : $message')),
+                ],
+              ]),
+            ),
+          ),
+          Card(
+            child: Padding(padding: const EdgeInsets.all(16),
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Text('0.3-010 — Cas1 : ANNE-LOUIS GIRODET DE ROUSSY-COEUR',
+                    style: Theme.of(context).textTheme.titleMedium),
+                const Text('Contrôle initial TD0.2, puis accord et ajout confirmé par TD0.3. '
+                    'L’ajout est permis uniquement si une nouvelle vérification confirme NON_EXISTE. '
+                    'Cette action modifiera réellement l’autorisation du Cas1 sur DV1. Aucun document ne sera consulté ni déposé.'),
+                OutlinedButton(onPressed: busy ? null : prepareCase1Authorization,
+                    child: const Text('Préparer le Cas1 — sans connexion')),
+                if (case1Selected) ...[
+                  OutlinedButton(onPressed: busy || config == null ? null : () => run(),
+                      child: const Text('1. Vérifier l’état initial — TD0.2 sans modification')),
+                  Text(_case1InitialReady ? 'Condition initiale NON_EXISTE confirmée.'
+                      : _case1WithdrawalReady ? 'Autorisation déjà VALIDE. Ajout indisponible ; retrait préparatoire possible après confirmation.'
+                      : 'Condition initiale NON_EXISTE à vérifier ; ajout indisponible.'),
+                  OutlinedButton(onPressed: busy || config == null || !_case1WithdrawalReady
+                      ? null : () => run(authorizationIntent: 'withdraw', preparatoryWithdrawal: true),
+                      child: const Text('Retirer mon autorisation du Cas1 — préparation uniquement')),
+                  const Text('Ce retrait volontaire prépare la condition initiale. Il ne valide ni 0.3-010 ni 0.3-080.'),
+                  OutlinedButton(onPressed: busy || config == null || !_case1InitialReady
+                      ? null : collectConsent,
+                      child: const Text('2. Enregistrer l’accord de consultation — localement')),
+                  Text(consentStatus),
+                  FilledButton(onPressed: busy || config == null || !_case1InitialReady ||
+                      !_case1ConsentRecorded || patientConsent?['granted'] != true ||
+                      patientConsent?['pendingWithdrawal'] == true
+                      ? null : () => run(authorizationIntent: 'consult'),
+                      child: const Text('3. Ajouter mon autorisation sur DV1 — 0.3-010')),
+                  if (busy) const LinearProgressIndicator(),
+                  if (message.isNotEmpty) Semantics(liveRegion: true,
+                      child: SelectableText('Dernière action : $message')),
+                ],
+              ]),
+            ),
+          ),
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '0.2-070 — Cas 6 : Henri HUIT',
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                  const Text(
+                    'Résultat attendu : réponse AA, DMP actif, autorisation bloquée '
+                    'pour 899700870597. Ce test vérifie uniquement TD0.2. '
+                    'Il ne renouvelle aucune autorisation et n’ouvre aucun document. '
+                    'Pour la cinématique par défaut, désactivez l’option '
+                    '« Afficher les traits d’identité retournés par le DMP » dans les paramètres DMP.',
+                  ),
+                  OutlinedButton(
+                    onPressed: busy ? null : prepareBlockedAuthorizationCase,
+                    child: const Text('Préparer Henri HUIT — sans connexion'),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '0.2-060 — Cas 7 : Simone SARTRE',
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                  const Text(
+                    'Résultat attendu : réponse AA, DMP actif, autorisation expirée '
+                    'pour 899700870597. Ce test vérifie uniquement TD0.2. '
+                    'Il ne renouvelle aucune autorisation et n’ouvre aucun document. '
+                    'Pour la cinématique par défaut, désactivez l’option '
+                    '« Afficher les traits d’identité retournés par le DMP » dans les paramètres DMP.',
+                  ),
+                  OutlinedButton(
+                    onPressed: busy ? null : prepareExpiredAuthorizationCase,
+                    child: const Text('Préparer Simone SARTRE — sans connexion'),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Text('0.2-080 — Patient 103 : MATRICULE PROVISOIRE',
+                    style: Theme.of(context).textTheme.titleMedium),
+                const Text('Injectez TEST_NIA.xml du package CNDA comme réponse INSi. '
+                    'Le type NIA et l’OID sont conservés dans les preuves de recette. '
+                    'L’accès DMP doit être refusé avant toute CPS, PIN ou connexion réseau. '
+                    'Cette injection ne qualifie aucune identité réelle.'),
+                OutlinedButton(onPressed: busy ? null : importNiaResponse,
+                    child: const Text('Importer la réponse INSi — TEST_NIA.xml')),
+                if (niaEvidence != null) ...[
+                  SelectableText('Identité importée : ${niaEvidence!.injection.patient} · '
+                      '${niaEvidence!.injection.result.birthDate}\n'
+                      'NIA : ${niaEvidence!.injection.ins} · OID : ${niaEvidence!.injection.result.insOid}'),
+                  FilledButton(onPressed: busy || config == null ? null : runNia,
+                      child: const Text('Vérifier le refus d’accès DMP — 0.2-080')),
+                ],
+                if (_niaAction && busy) const LinearProgressIndicator(),
+                if (_niaAction && message.isNotEmpty) Semantics(liveRegion: true,
+                    child: SelectableText('Dernière action : $message')),
+              ]),
+            ),
           ),
           for (final e in const {
             'scenario':
@@ -687,9 +1102,32 @@ class _Dv1AccessScreenState extends State<Dv1AccessScreen> {
             ),
           ],
           FilledButton(
-            onPressed: busy || config == null || !Platform.isMacOS ? null : run,
-            child: const Text('Préparer la lecture CPS et la vérification DV1'),
+            onPressed: busy ||
+                    config == null ||
+                    !dv1AccessPlatformSupported(
+                      platform: Platform.operatingSystem,
+                      existenceCheck: [
+                        Dv1ExpiredAuthorizationRecipe.scenario,
+                        Dv1BlockedAuthorizationRecipe.scenario,
+                        Dv1Case1AuthorizationRecipe.scenario,
+                        Dv1Case1WithdrawalRecipe.scenario,
+                      ].contains(fields['scenario']!.text.trim()),
+                    )
+                ? null
+                : run,
+            child: const Text('Vérifier l’existence du DMP et les droits — TD0.2'),
           ),
+          if ([
+            Dv1ExpiredAuthorizationRecipe.scenario,
+            Dv1BlockedAuthorizationRecipe.scenario,
+          ].contains(fields['scenario']!.text.trim())) ...[
+            if (busy) const LinearProgressIndicator(),
+            if (message.isNotEmpty)
+              Semantics(
+                liveRegion: true,
+                child: SelectableText('Dernière action DV1 : $message'),
+              ),
+          ],
           const SizedBox(height: 16),
           Card(
             child: Padding(
@@ -712,7 +1150,7 @@ class _Dv1AccessScreenState extends State<Dv1AccessScreen> {
                     runSpacing: 8,
                     children: [
                       OutlinedButton(
-                        onPressed: busy || config == null
+                        onPressed: busy || config == null || case1WithdrawalSelected || (case1Selected && !_case1InitialReady)
                             ? null
                             : collectConsent,
                         child: const Text('Enregistrer la réponse Oui / Non'),
@@ -721,7 +1159,11 @@ class _Dv1AccessScreenState extends State<Dv1AccessScreen> {
                         onPressed:
                             busy ||
                                 config == null ||
-                                !Platform.isMacOS ||
+                                case1WithdrawalSelected ||
+                                !dv1AccessPlatformSupported(
+                                  platform: Platform.operatingSystem, authorizationAdd: case1Selected,
+                                ) ||
+                                (case1Selected && (!_case1InitialReady || !_case1ConsentRecorded)) ||
                                 patientConsent?['granted'] != true ||
                                 patientConsent?['pendingWithdrawal'] == true
                             ? null
@@ -733,6 +1175,7 @@ class _Dv1AccessScreenState extends State<Dv1AccessScreen> {
                             busy ||
                                 config == null ||
                                 !Platform.isMacOS ||
+                                case1WithdrawalSelected ||
                                 patientConsent?['pendingWithdrawal'] != true
                             ? null
                             : () => run(authorizationIntent: 'withdraw'),
@@ -797,6 +1240,14 @@ class _Dv1AccessScreenState extends State<Dv1AccessScreen> {
                     const Text(
                       'Archive technique externe — recherche uniquement. Le dépôt depuis Companion reste à vérifier. Aucune donnée de naissance n’est importée dans la fiche patient.',
                     ),
+                  if (fields['scenario']!.text.trim() == 'PRE_ALIM_RECH') ...[
+                    if (busy) const LinearProgressIndicator(),
+                    if (message.isNotEmpty)
+                      Semantics(
+                        liveRegion: true,
+                        child: SelectableText('Dernière action DV1 : $message'),
+                      ),
+                  ],
                   Wrap(
                     spacing: 8,
                     children: [
@@ -817,7 +1268,10 @@ class _Dv1AccessScreenState extends State<Dv1AccessScreen> {
                             busy ||
                                 config == null ||
                                 searchTarget == null ||
-                                !Platform.isMacOS
+                                !dv1AccessPlatformSupported(
+                                  platform: Platform.operatingSystem,
+                                  documentSearch: true,
+                                )
                             ? null
                             : () => run(search: true),
                         child: const Text('Rechercher ce document dans le DMP'),
@@ -1207,7 +1661,7 @@ class _Dv1AccessScreenState extends State<Dv1AccessScreen> {
           PatientPersonPanel(person: patientPerson),
           const Divider(),
           const Text(
-            'Historique des essais réels — aucune relecture ne relance de connexion',
+            'Historique des essais — DV1 et contrôles locaux NIA ; aucune relecture ne relance de connexion',
           ),
           for (final r in history)
             ExpansionTile(
@@ -1215,11 +1669,22 @@ class _Dv1AccessScreenState extends State<Dv1AccessScreen> {
                 '${r['startedAt'] ?? ''} · ${r['message'] ?? r['state']}',
               ),
               subtitle: Text(
-                'CPS : ${(r['session'] as Map?)?['professional'] ?? 'authentification non confirmée'}',
+                r['testCode'] == Dv1NiaInjection.scenario
+                    ? 'Injection CNDA — aucune lecture CPS ni connexion DMP'
+                    : 'CPS : ${(r['session'] as Map?)?['professional'] ?? 'authentification non confirmée'}',
               ),
               children: [
                 if (r['integrity'] != true)
                   const Text('Intégrité du résultat non confirmée.'),
+                if (r['testCode'] == Dv1NiaInjection.scenario)
+                  SelectableText('${r['operation']}\nÉtat : ${r['state']}\n'
+                      'Type enregistré : NIA · OID : ${(r['injectedIdentity'] as Map?)?['ins_oid']}\n'
+                      'CodeCR de la réponse INSi injectée : ${r['injectedCodeCR']}\n'
+                      'Lecture CPS : aucune · Session native ouverte : non\n'
+                      'Appel TD0.2 : aucun — blocage local avant connexion\n'
+                      'Source : ${r['source']}\nSHA-256 : ${r['sourceSha256']}\n'
+                      'Preuves : ${r['evidenceDirectory']}')
+                else
                 SelectableText(
                   '${r['operation'] ?? ''}\nÉtat : ${r['state']}\nHTTP TD0.2 initial : ${r['httpStatus'] ?? 'aucune réponse'}\n'
                   '${r['td33bHttpStatus'] != null ? 'HTTP TD3.3b : ${r['td33bHttpStatus']}\n' : ''}'
@@ -1234,6 +1699,7 @@ class _Dv1AccessScreenState extends State<Dv1AccessScreen> {
                   '${r['transactionClosed'] == true ? 'Opération et connexions réseau fermées.\n' : ''}'
                   '${r['authenticationRetainedAtEnd'] == true ? 'Authentification CPS conservée à la fin de cet essai (état historique).\n' : 'Session CPS fermée : ${r['sessionClosed'] ?? 'non ouverte'}\n'}'
                   '${r['td03Status'] != null ? 'TD0.3 : ${r['td03Status']} · ${r['td03Detail'] ?? ''}\n' : ''}'
+                  '${r['additionEvidenceId'] != null ? 'Ajout 0.3-010 relié : ${r['additionEvidenceId']}\n' : ''}'
                   'Preuves : ${r['evidenceDirectory']}',
                 ),
               ],
@@ -1251,6 +1717,7 @@ class _AccessConsent extends StatefulWidget {
     this.searchTarget,
     this.reuseAuthentication = false,
     this.depublication = false,
+    this.preparatoryWithdrawal = false,
     this.criteria,
     this.submissionPeriod,
     this.consultationTarget,
@@ -1262,6 +1729,7 @@ class _AccessConsent extends StatefulWidget {
   final Dv1SubmissionPeriod? submissionPeriod;
   final bool reuseAuthentication;
   final bool depublication;
+  final bool preparatoryWithdrawal;
   final String? authorizationIntent;
   final Dv1SearchTarget? searchTarget;
   final Dv1AccessContext contextData;
@@ -1273,6 +1741,7 @@ class _AccessConsentState extends State<_AccessConsent> {
   final pin = TextEditingController();
   bool confirmed = false;
   bool deletionConfirmed = false;
+  bool preparatoryWithdrawalConfirmed = false;
   bool visibilityConfirmed = false;
   bool? secret;
   @override
@@ -1285,7 +1754,16 @@ class _AccessConsentState extends State<_AccessConsent> {
   @override
   Widget build(BuildContext context) => AlertDialog(
     title: Text(
-      widget.visibilityTarget != null
+      widget.contextData.scenario == Dv1Case1WithdrawalRecipe.scenario
+          ? (widget.authorizationIntent == 'withdraw' ? 'Retirer mon autorisation du Cas1 — 0.3-080 ?'
+              : 'Vérifier le droit actuel du Cas1 — 0.3-080 ?')
+          : widget.preparatoryWithdrawal
+          ? 'Retirer mon autorisation du Cas1 pour préparer le test ?'
+          : widget.contextData.scenario == Dv1Case1AuthorizationRecipe.scenario
+          ? (widget.authorizationIntent == 'consult'
+              ? 'Ajouter mon autorisation sur le DMP du Cas1 ?'
+              : 'Vérifier l’état initial du Cas1 sans modification ?')
+          : widget.visibilityTarget != null
           ? 'Rendre ce document visible au patient sur DV1 ?'
           : widget.depublication
           ? 'Dépublier définitivement ce document sur DV1 ?'
@@ -1305,7 +1783,11 @@ class _AccessConsentState extends State<_AccessConsent> {
               'Scénario : ${widget.contextData.scenario}\n'
               'Naissance : ${widget.contextData.birthDate} · Âge : ${widget.contextData.ageAt(DateTime.now())} ans\n'
               '${widget.contextData.replacementUntil != null ? 'Rattachement temporaire jusqu’au ${widget.contextData.replacementUntil!.toLocal()}.' : ''}\n'
-              '${widget.depublication
+              '${widget.contextData.scenario == Dv1Case1WithdrawalRecipe.scenario && widget.authorizationIntent == 'withdraw'
+                  ? '0.3-080 : retrait réel de votre propre autorisation sur DV1. Les preuves de l’ajout antérieur seront vérifiées. Une nouvelle TD0.2 doit confirmer VALIDE avant TD0.3 de suppression ; une relecture doit confirmer NON_EXISTE. Aucun refus du patient n’est ajouté aux accords locaux.'
+                  : widget.preparatoryWithdrawal
+                  ? 'Préparation uniquement : retrait réel de votre propre autorisation sur DV1. Une nouvelle TD0.2 doit confirmer VALIDE avant TD0.3 RETRAIT, puis une relecture doit confirmer NON_EXISTE. Ce geste ne valide ni 0.3-010 ni 0.3-080 et n’enregistre pas de refus du patient. Aucun ajout automatique.'
+                  : widget.depublication
                   ? 'PRE_ALIM_SUPPR : dépublication irréversible de ${widget.searchTarget!.label}, identifiant ${widget.searchTarget!.uniqueId}. La cible sera recherchée à nouveau, puis son statut passera à Deleted. La copie locale reste conservée. Confirmez uniquement si vous êtes l’auteur du document et souhaitez sa dépublication.'
                   : widget.searchTarget != null
                   ? 'Recherche TD3.1b de ${widget.searchTarget!.label} — identifiant ${widget.searchTarget!.uniqueId}. Vérification TD0.2 puis recherche de l’identifiant technique uniquement, sans modification d’autorisation.'
@@ -1317,6 +1799,8 @@ class _AccessConsentState extends State<_AccessConsent> {
                   ? 'PRE_CONS_SUB : ${widget.submissionPeriod!.label}. Recherche des lots déposés dans cette période, puis des métadonnées de leurs documents. TD0.2 et droit de consultation valide requis. Aucun document ouvert, aucun droit modifié.'
                   : widget.criteria != null
                   ? '${widget.contextData.scenario} : ${widget.criteria!.label}. TD0.2 puis recherche des métadonnées si le droit de consultation est valide. Aucun document ouvert, aucun droit modifié.'
+                  : widget.contextData.scenario == Dv1Case1AuthorizationRecipe.scenario && widget.authorizationIntent == 'consult'
+                  ? '0.3-010 : cette confirmation autorise l’ajout réel de votre autorisation sur DV1. Une nouvelle TD0.2 doit confirmer un DMP actif et NON_EXISTE avant TD0.3 AJOUT. L’état VALIDE sera ensuite vérifié par TD0.2. Aucun retrait automatique.'
                   : widget.authorizationIntent == null
                   ? 'Lecture CPS, authentification TLS et une requête TD0.2.'
                   : widget.authorizationIntent == 'consult'
@@ -1324,6 +1808,15 @@ class _AccessConsentState extends State<_AccessConsent> {
                   : 'Refus enregistré : vérification TD0.2 et suppression de l’autorisation par TD0.3 si elle existe, suivie d’une vérification. Si vous annulez, le retrait restera non confirmé.'} Aucun dépôt. '
               'Les connexions TLS aux services patients et repository sont vérifiées ; aucune requête de dépôt n’est envoyée.',
             ),
+            if (widget.preparatoryWithdrawal ||
+                (widget.contextData.scenario == Dv1Case1WithdrawalRecipe.scenario && widget.authorizationIntent == 'withdraw'))
+              CheckboxListTile(
+                value: preparatoryWithdrawalConfirmed,
+                onChanged: (v) => setState(() => preparatoryWithdrawalConfirmed = v == true),
+                title: Text(widget.preparatoryWithdrawal
+                    ? 'Je confirme le retrait réel de ma propre autorisation pour le Cas1 sur DV1, à titre préparatoire.'
+                    : 'Je confirme le retrait réel de ma propre autorisation du Cas1 sur DV1 pour le test 0.3-080.'),
+              ),
             if (widget.visibilityTarget != null)
               CheckboxListTile(
                 value: visibilityConfirmed,
@@ -1415,6 +1908,7 @@ class _AccessConsentState extends State<_AccessConsent> {
       FilledButton(
         onPressed:
             confirmed &&
+                (!(widget.preparatoryWithdrawal || (widget.contextData.scenario == Dv1Case1WithdrawalRecipe.scenario && widget.authorizationIntent == 'withdraw')) || preparatoryWithdrawalConfirmed) &&
                 (!widget.depublication || deletionConfirmed) &&
                 (widget.visibilityTarget == null || visibilityConfirmed) &&
                 (widget.reuseAuthentication || pin.text.isNotEmpty) &&
@@ -1426,7 +1920,11 @@ class _AccessConsentState extends State<_AccessConsent> {
               ))
             : null,
         child: Text(
-          widget.visibilityTarget != null
+          widget.contextData.scenario == Dv1Case1WithdrawalRecipe.scenario && widget.authorizationIntent == 'withdraw'
+              ? 'Confirmer le retrait sur DV1 — 0.3-080'
+              : widget.preparatoryWithdrawal
+              ? 'Confirmer le retrait préparatoire sur DV1'
+              : widget.visibilityTarget != null
               ? 'Confirmer la mise en visibilité sur DV1'
               : widget.depublication
               ? 'Confirmer la dépublication irréversible sur DV1'
@@ -1440,6 +1938,8 @@ class _AccessConsentState extends State<_AccessConsent> {
               ? (widget.reuseAuthentication
                     ? 'Confirmer et vérifier DV1'
                     : 'Lire la CPS et vérifier DV1')
+              : widget.contextData.scenario == Dv1Case1AuthorizationRecipe.scenario && widget.authorizationIntent == 'consult'
+              ? 'Confirmer l’ajout de mon autorisation sur DV1'
               : 'Confirmer et transmettre à DV1',
         ),
       ),
@@ -1453,7 +1953,9 @@ class PatientConsultationConsentDialog extends StatefulWidget {
     required this.patient,
     required this.professional,
     this.previous,
+    this.refusalWithdraws = true,
   });
+  final bool refusalWithdraws;
   final String patient, professional;
   final Map<String, dynamic>? previous;
   @override
@@ -1504,7 +2006,9 @@ class PatientConsultationConsentDialogState
           const SizedBox(height: 12),
           Text(
             answer == false
-                ? 'Le refus bloque la consultation. Companion demandera la CPS pour retirer une autorisation existante auprès du DMP.'
+                ? (widget.refusalWithdraws
+                    ? 'Le refus bloque la consultation. Companion demandera la CPS pour retirer une autorisation existante auprès du DMP.'
+                    : 'Le refus de l’ajout est enregistré localement. Aucun ajout ni retrait ne sera effectué.')
                 : 'L’accord est enregistré sans connexion. L’ajout au DMP attend une demande explicite de consultation.',
           ),
         ],

@@ -64,7 +64,9 @@ Future<void> createDocumentDv1Tables(DatabaseExecutor db) async {
                 AND later.document_id=NEW.document_id AND later.rowid>src.rowid))
         ELSE 0 END IS 1 OR (
         CASE WHEN json_valid(NEW.data_json) THEN
-          (json_extract(NEW.data_json,'$.retry.reason')='SOAP-MustUnderstand-Security' OR
+          ((json_extract(NEW.data_json,'$.retry.reason')='XDS-typeCode-11490-label' AND
+            json_extract(NEW.data_json,'$.retry.correctedTypeLabelProfile')='dv1-11490-type-label-1') OR
+           json_extract(NEW.data_json,'$.retry.reason')='SOAP-MustUnderstand-Security' OR
            (json_extract(NEW.data_json,'$.retry.reason')='XDS-patientId-missing-NH' AND
             json_extract(NEW.data_json,'$.retry.correctedPatientIdProfile')='ins-nh-1') OR
            (json_extract(NEW.data_json,'$.retry.reason')='XDS-labels-signature' AND
@@ -82,7 +84,7 @@ Future<void> createDocumentDv1Tables(DatabaseExecutor db) async {
             JOIN episode_document_versions v ON v.version_id=NEW.version_id
             WHERE s.phase='dv1_reservation' AND
               (s.document_id=NEW.document_id OR (old.patient_id=v.patient_id AND old.sha256=v.sha256)))=
-            CASE json_extract(NEW.data_json,'$.retry.reason') WHEN 'SOAP-MustUnderstand-Security' THEN 1 WHEN 'XDS-patientId-missing-NH' THEN 2 WHEN 'XDS-labels-signature' THEN 3 ELSE 4 END AND
+            CASE json_extract(NEW.data_json,'$.retry.reason') WHEN 'XDS-typeCode-11490-label' THEN 1 WHEN 'SOAP-MustUnderstand-Security' THEN 1 WHEN 'XDS-patientId-missing-NH' THEN 2 WHEN 'XDS-labels-signature' THEN 3 ELSE 4 END AND
           EXISTS(SELECT 1 FROM document_chain_steps original
             WHERE original.phase='dv1_reservation' AND original.state='reserved' AND
               original.chain_id=json_extract(NEW.data_json,'$.retry.previousAttemptId') AND
@@ -92,7 +94,15 @@ Future<void> createDocumentDv1Tables(DatabaseExecutor db) async {
               json_extract(original.data_json,'$.snapshotHash')=json_extract(NEW.data_json,'$.snapshotHash') AND
               json_extract(original.data_json,'$.controlRunId')=json_extract(NEW.data_json,'$.controlRunId') AND
               json_extract(original.data_json,'$.cdaHash')=json_extract(NEW.data_json,'$.cdaHash') AND
-              (json_extract(NEW.data_json,'$.retry.reason')='SOAP-MustUnderstand-Security' OR
+              ((json_extract(NEW.data_json,'$.retry.reason')='XDS-typeCode-11490-label' AND
+                 json_type(original.data_json,'$.retry') IS NULL AND
+                 EXISTS(SELECT 1 FROM document_chain_steps response
+                   WHERE response.phase='dv1_response' AND response.state='result' AND
+                     response.chain_id=original.chain_id AND response.version_id=original.version_id AND
+                     json_extract(response.data_json,'$.outcome')='rejected' AND
+                     json_extract(response.data_json,'$.scope')='dv1' AND
+                     json_extract(response.data_json,'$.packageHash')=json_extract(original.data_json,'$.packageHash'))) OR
+               json_extract(NEW.data_json,'$.retry.reason')='SOAP-MustUnderstand-Security' OR
                 (json_extract(NEW.data_json,'$.retry.reason')='XDS-patientId-missing-NH' AND
                  json_extract(original.data_json,'$.retry.reason')='SOAP-MustUnderstand-Security' AND
                  json_extract(original.data_json,'$.retry.previousAttemptId')=json_extract(NEW.data_json,'$.retry.firstAttemptId') AND

@@ -75,12 +75,18 @@ Error CheckInstallationDescriptor(PSECURITY_DESCRIPTOR descriptor,
       !present || !acl || !IsValidAcl(acl)) {
     return Rejected("Missing or invalid installation DACL.");
   }
-  // Creating siblings at the volume root does not permit replacing an existing
-  // protected child. For installation directories, adding files is also unsafe
-  // (e.g. DLL planting), so all write rights are disallowed to ordinary users.
-  const DWORD forbidden = volume_root ? DELETE | FILE_DELETE_CHILD | WRITE_DAC | WRITE_OWNER :
-      DELETE | FILE_DELETE_CHILD | WRITE_DAC | WRITE_OWNER | FILE_WRITE_DATA |
-      FILE_APPEND_DATA | FILE_WRITE_EA | FILE_WRITE_ATTRIBUTES;
+  // A canonical fixed-volume root is not an ordinary replaceable ancestor.
+  // DELETE addresses that root itself, not its children: the common root Modify
+  // grant includes DELETE but not FILE_DELETE_CHILD. Creating siblings likewise
+  // does not permit replacing an existing protected child. Still reject child
+  // deletion and DACL/owner changes at the root. Every descendant and the file
+  // retain the full no-write/no-delete policy (including DLL planting defenses).
+  // VerifyProtectedFile validates the actual root and holds its directory handle;
+  // RecheckProtectedFile applies this exception only to that first held ancestor.
+  const DWORD forbidden = volume_root
+      ? FILE_DELETE_CHILD | WRITE_DAC | WRITE_OWNER
+      : DELETE | FILE_DELETE_CHILD | WRITE_DAC | WRITE_OWNER | FILE_WRITE_DATA |
+        FILE_APPEND_DATA | FILE_WRITE_EA | FILE_WRITE_ATTRIBUTES;
   GENERIC_MAPPING mapping{FILE_GENERIC_READ, FILE_GENERIC_WRITE,
                           FILE_GENERIC_EXECUTE, FILE_ALL_ACCESS};
   for (DWORD index = 0; index < acl->AceCount; ++index) {

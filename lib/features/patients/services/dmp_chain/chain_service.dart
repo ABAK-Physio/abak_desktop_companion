@@ -1,12 +1,16 @@
+import '../../../../core/database/document_dv1_schema.dart';
 import 'native/td02.dart';
 import 'native/dv1_replacement.dart';
 import 'native/td31b.dart';
 import 'native/ports.dart';
 import '../../../dmp_setup/dmp_setup_service.dart';
+
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:uuid/uuid.dart';
+
 import '../../../dmp_td02/td02_result.dart';
 import '../../../dmp_transfer/archive_deposit_reader.dart';
 import '../../../dmp_transfer/transfer_simulation.dart';
@@ -112,9 +116,8 @@ class DocumentDmpChain {
     required DocumentDmpPorts ports,
   }) async {
     final db = await journal.database;
-    await DocumentLocalSimulation(
-      directory: directory,
-    ).checkScope(db, await journal.medical.pdf.root());
+    await DocumentLocalSimulation(directory: directory)
+        .checkScope(db, await journal.medical.pdf.root());
     return _execute(v, ports: ports);
   }
 
@@ -156,9 +159,9 @@ class DocumentDmpChain {
       final settings = Dv1ConfigurationService(journal);
       await settings.unchanged(configuration);
       await DocumentLotSignatureService(journal).checkBeforeDv1(v);
-      final reviewedSnapshot =
-          jsonDecode(review.prepared.receipt['snapshot_json'] as String)
-              as Map<String, dynamic>;
+      final reviewedSnapshot = jsonDecode(
+        review.prepared.receipt['snapshot_json'] as String,
+      ) as Map<String, dynamic>;
       _policy(
         review.policy(configuration, reviewedSnapshot, now),
         reviewedSnapshot,
@@ -240,9 +243,9 @@ class DocumentDmpChain {
           'Version, validation ou contrôles modifiés depuis votre confirmation.',
         );
       }
-      final snapshot =
-          jsonDecode(captured.receipt['snapshot_json'] as String)
-              as Map<String, dynamic>;
+      final snapshot = jsonDecode(
+        captured.receipt['snapshot_json'] as String,
+      ) as Map<String, dynamic>;
       if (snapshot['cndaRecipe'] != null) {
         _require(
           live,
@@ -554,6 +557,17 @@ class DocumentDmpChain {
               'La reprise exige le titre de signature corrigé.',
             );
           }
+          if (retry?.typeLabel == true) {
+            _require(
+              live &&
+                  package.wire?['replay']['typeLabelProfile'] ==
+                      'dv1-11490-type-label-1',
+              'La reprise exige le libellé XDS 11490-0 corrigé pour DV1.',
+            );
+            // The journal has rechecked the signed rejection in this transaction.
+            // Install the updated duplicate guard atomically with its one reservation.
+            await createDocumentDv1Tables(tx);
+          }
           if (live) {
             final latest = (await tx.query(
               'document_dv1_configurations',
@@ -662,9 +676,7 @@ class DocumentDmpChain {
           'headers': reply.headers,
           'response': base64Encode(reply.bytes),
           'provenance': reply.provenance,
-          'scope': live
-              ? 'dv1'
-              : 'Aucun dépôt réel ; les archives ne prouvent pas un dépôt de ce PDF.',
+          'scope': live ? 'dv1' : 'Aucun dépôt réel ; les archives ne prouvent pas un dépôt de ce PDF.',
         };
         if (!live) await journal.complete(attempt, evidence);
         await _record(

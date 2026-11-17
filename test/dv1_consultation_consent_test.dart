@@ -1,3 +1,4 @@
+import 'support/dmp_stdio_peer.dart' as stdio_peer;
 import 'dart:io';
 import 'package:abak_desktop_companion/features/patients/services/dmp_chain/native/bridge.dart';
 import 'package:abak_desktop_companion/features/patients/services/dmp_chain/native/ports.dart';
@@ -263,12 +264,8 @@ void main() {
   test('la commande de vérification traverse le protocole natif réel', () async {
     // Synthetic stdio peer: no CPS, certificate, network or application data.
     final bridge = DmpProcessBridge(
-      executable: '/usr/bin/python3',
-      arguments: [
-        '-u',
-        '-c',
-        "import sys,base64\nfor line in sys.stdin:\n p=line.rstrip('\\n').split('\\t')\n print(p[0]+'\\tOK\\toperation='+base64.b64encode(p[1].encode()).decode(),flush=True)\n if p[1]=='close': break",
-      ],
+      executable: stdio_peer.dartTestExecutable(),
+      arguments: [File('test/support/dmp_stdio_peer.dart').absolute.path],
     );
     addTearDown(bridge.close);
     final reply = await bridge.call(

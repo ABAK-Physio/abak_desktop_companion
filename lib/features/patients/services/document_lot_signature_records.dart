@@ -1,9 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
+
 import 'package:path/path.dart' as p;
 import 'package:xml/xml.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+
 import 'dmp_chain/wire/crypto.dart';
 import 'dmp_chain/wire/package.dart';
 import 'document_cda_builder.dart';
@@ -45,7 +47,15 @@ class DocumentLotSignatureRecords {
     }
   }
 
-  static String template(Map evidence, Map snapshot, List<int> cda) {
+  static String template(Map evidence, Map snapshot, List<int> cda) =>
+      _template(evidence, snapshot, cda, archive: false);
+
+  static String _template(
+    Map evidence,
+    Map snapshot,
+    List<int> cda, {
+    required bool archive,
+  }) {
     context(snapshot);
     final cert = DmpWireCertificate.parse(evidence['certificate'] as String);
     final time = DateTime.parse(evidence['signedAt'] as String).toUtc();
@@ -71,15 +81,29 @@ class DocumentLotSignatureRecords {
       'text',
     );
     final pdf = base64Decode(body.innerText);
+    bool historical = false;
+    if (archive) {
+      try {
+        historical = DocumentCdaBuilder.matchesLegacyArchive(
+          snapshot,
+          Uint8List.fromList(pdf),
+          evidence['approvedAt'] as int,
+          cda,
+        );
+      } on StateError {
+        // A multi-name CDA can only match the corrected profile below.
+      }
+    }
     if (FinalPdfDocumentService.hash(pdf) != evidence['pdfHash'] ||
-        FinalPdfDocumentService.hash(
-              DocumentCdaBuilder.build(
-                Map<String, dynamic>.from(snapshot),
-                Uint8List.fromList(pdf),
-                evidence['approvedAt'] as int,
-              ),
-            ) !=
-            evidence['cdaHash']) {
+        (!historical &&
+            FinalPdfDocumentService.hash(
+                  DocumentCdaBuilder.build(
+                    Map<String, dynamic>.from(snapshot),
+                    Uint8List.fromList(pdf),
+                    evidence['approvedAt'] as int,
+                  ),
+                ) !=
+                evidence['cdaHash'])) {
       throw StateError('Le CDA ou son PDF diffère de la validation médicale.');
     }
     return DmpWireDraft.lotSignatureTemplate(
@@ -119,12 +143,14 @@ class DocumentLotSignatureRecords {
     String chainId,
     Directory controlsRoot,
   ) async {
-    final rows = await db.query(
+    // sqflite returns fresh row wrappers on each access. Materialize once so
+    // the ordering checks below compare the same rows throughout this read.
+    final rows = (await db.query(
       'document_chain_steps',
       where: 'chain_id=?',
       whereArgs: [chainId],
       orderBy: 'rowid',
-    );
+    )).toList(growable: false);
     final begin = rows.where((r) => r['phase'] == started).single;
     final initial = data(begin);
     if (rows.any(
@@ -195,7 +221,12 @@ class DocumentLotSignatureRecords {
     )) {
       throw const FormatException('Preuve hors stockage géré.');
     }
-    final xml = template(request, snapshot, await file.readAsBytes());
+    final xml = _template(
+      request,
+      snapshot,
+      await file.readAsBytes(),
+      archive: true,
+    );
     if (results.isEmpty) return null;
     final result = data(results.single);
     if (medicalHash(result['request']) != medicalHash(request) ||

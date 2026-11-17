@@ -112,10 +112,12 @@ class DmpProcessBridge implements DmpNativeBridge {
   DmpProcessBridge({
     required this.executable,
     required List<String> arguments,
+    this.workingDirectory,
     this.timeout = const Duration(seconds: 45),
     this.searchTimeout = const Duration(seconds: 90),
   }) : arguments = List.unmodifiable(arguments);
   final String executable;
+  final String? workingDirectory;
   final List<String> arguments;
   final Duration timeout, searchTimeout;
   Duration timeoutFor(String operation) =>
@@ -179,6 +181,7 @@ class DmpProcessBridge implements DmpNativeBridge {
       _process = await Process.start(
         executable,
         arguments,
+        workingDirectory: workingDirectory,
         environment: environment,
         includeParentEnvironment: false,
       );
@@ -197,7 +200,7 @@ class DmpProcessBridge implements DmpNativeBridge {
     if (frame.length > 24 * 1024 * 1024) {
       throw DmpNativeFailure('CONFIGURATION');
     }
-    _process!.stdin.writeln(frame);
+    _process!.stdin.write('$frame\n');
     await _process!.stdin.flush();
     if (!await _lines!.moveNext()) throw DmpNativeFailure('NATIVE_EXIT');
     final parts = _lines!.current.split('\t');
@@ -226,6 +229,10 @@ class DmpProcessBridge implements DmpNativeBridge {
     await for (final chunk in bytes) {
       for (final byte in chunk) {
         if (byte == 10) {
+          // PrintStream.println emits CRLF on Windows. Strip just that CR;
+          // an embedded CR is not valid in the framed/base64 protocol.
+          if (pending.isNotEmpty && pending.last == 13) pending.removeLast();
+          if (pending.contains(13)) throw const FormatException('frame');
           yield utf8.decode(pending);
           pending.clear();
         } else {

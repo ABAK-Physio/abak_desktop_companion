@@ -19,6 +19,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter/foundation.dart' show kReleaseMode;
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:window_manager/window_manager.dart';
 
 import 'generated/l10n.dart';
@@ -146,13 +147,27 @@ Future<void> _startApplication(StartupRequest request) async {
 
   await windowManager.ensureInitialized();
 
+  var windowTitle = launchSnapshot == null
+      ? 'ABAK Desktop Companion'
+      : 'ABAK Companion — ${launchSnapshot.current.label}';
+  if (Platform.isWindows) {
+    try {
+      final package = await PackageInfo.fromPlatform();
+      final version = package.version.trim();
+      final build = package.buildNumber.trim();
+      if (version.isNotEmpty && build.isNotEmpty) {
+        windowTitle = 'ABAK Desktop Companion — $version (build $build)';
+      }
+    } catch (_) {
+      debugPrint('Version indisponible pour le titre de la fenêtre.');
+    }
+  }
+
   final windowOptions = WindowOptions(
     size: const Size(1400, 900),
     minimumSize: const Size(1200, 800),
     center: true,
-    title: launchSnapshot == null
-        ? 'ABAK Desktop Companion'
-        : 'ABAK Companion — ${launchSnapshot.current.label}',
+    title: windowTitle,
   );
 
   // Kernel-backed lock before SQLite opens or migrates, independent of network.

@@ -373,16 +373,35 @@ public class DmpNativeBridge {
     }
   }
 
+  // Quote a normalized local path for the JDK PKCS11 configuration parser.
+  // Backslashes are configuration escapes, so use forward slashes on Windows.
+  static String librarySetting(String library,boolean windows)throws Exception {
+    need(library!=null&&library.length()<=4096&&!library.isEmpty()&&
+      !library.matches("(?s).*[\\x00-\\x1f\\x7f\\\"{}].*"),"CONFIGURATION");
+    if(windows){
+      need(library.matches("^[A-Za-z]:[\\\\/].*"),"CONFIGURATION");
+      library=library.replace('\\','/');
+      need(Arrays.stream(library.split("/",-1)).noneMatch(p->p.equals(".")||p.equals("..")),"CONFIGURATION");
+    }else need(library.startsWith("/"),"CONFIGURATION");
+    return library;
+  }
+  static String pkcs11Configuration(String library,boolean windows)throws Exception {
+    return "name=ABAK_DMP_"+UUID.randomUUID().toString().replace("-","")+"\nlibrary=\""+
+      librarySetting(library,windows)+"\"\nslotListIndex=0\ndisabledMechanisms={ CKM_SHA224_RSA_PKCS CKM_SHA256_RSA_PKCS CKM_SHA384_RSA_PKCS CKM_SHA512_RSA_PKCS }\n";
+  }
+
   static final class CardIdentity implements Identity {
     final Provider provider; final KeyStore store; final X509Certificate auth,sign;
     final PrivateKey authKey,signKey; final String authAlias,signAlias;
     CardIdentity(Map<String,String> cfg,char[] pin)throws Exception {
       Provider p=null;
       try {
-        String library=cfg.get("library");
-        need(library!=null&&library.startsWith("/")&&!library.matches("(?s).*[\\r\\n\\\"{}].*")&&Files.isRegularFile(Path.of(library)),"CONFIGURATION");
-        String config="name=ABAK_DMP_"+UUID.randomUUID().toString().replace("-","")+"\nlibrary=\""+library+"\"\nslotListIndex=0\ndisabledMechanisms={ CKM_SHA224_RSA_PKCS CKM_SHA256_RSA_PKCS CKM_SHA384_RSA_PKCS CKM_SHA512_RSA_PKCS }\n";
-        p=Security.getProvider("SunPKCS11").configure("--"+config);Security.addProvider(p);
+        boolean windows=System.getProperty("os.name","").startsWith("Windows");
+        String library=librarySetting(cfg.get("library"),windows);
+        need(Path.of(library).isAbsolute()&&Files.isRegularFile(Path.of(library)),"CONFIGURATION");
+        String config=pkcs11Configuration(library,windows);
+        Provider base=Security.getProvider("SunPKCS11");need(base!=null,"CONFIGURATION");
+        p=base.configure("--"+config);Security.addProvider(p);
         store=KeyStore.getInstance("PKCS11",p);store.load(null,pin);
         authAlias=alias(store,cfg.get("authHash"));signAlias=alias(store,cfg.get("signHash"));
         need(!authAlias.equals(signAlias),"CPS_CERTIFICATE");
@@ -510,8 +529,108 @@ public class DmpNativeBridge {
     static URI endpoint(String v)throws Exception {
       var u=new URI(v);need("https".equals(u.getScheme())&&u.getHost()!=null&&u.getRawPath()!=null&&!u.getRawPath().isEmpty()&&u.getUserInfo()==null&&u.getQuery()==null&&u.getFragment()==null&&(u.getPort()==-1||u.getPort()>0),"CONFIGURATION");return u;
     }
+    boolean tlsRecipeStarted,tlsRecipeReady;
+    String tlsRecipeEndpoint,tlsRecipeStep;
+    static String tlsRecipeEndpoint(String step)throws Exception {
+      return switch(step){
+        case "1" -> "https://lps.dev1.dmp.gouv.fr/si-dmp-server/v2/services/patients";
+        case "2" -> "https://dv1-dmp-lps.dmp.gouv.fr/si-dmp-server/v1/services/patients";
+        case "3" -> "https://lps.dev1fake.dmp.gouv.fr/si-dmp-server/v2/services/patients";
+        default -> throw new Fault("CONFIGURATION");
+      };
+    }
+    static boolean tlsRecipeCertificateFailure(Throwable error){
+      int count=0;var seen=Collections.newSetFromMap(new IdentityHashMap<Throwable,Boolean>());
+      for(Throwable e=error;e!=null&&count++<8&&seen.add(e);e=e.getCause())
+        if(e instanceof CertificateException||e instanceof CertPathValidatorException||e instanceof CertPathBuilderException)return true;
+      return false;
+    }
+    static String tlsRecipeDiagnostic(String stage,Throwable error){
+      var text=new StringBuilder("stage="+stage+"\ncode="+classify(error)+"\n");
+      int count=0;var seen=Collections.newSetFromMap(new IdentityHashMap<Throwable,Boolean>());
+      for(Throwable e=error;e!=null&&count++<8&&seen.add(e);e=e.getCause()){
+        text.append("causeClass=").append(e.getClass().getSimpleName()).append('\n');
+        if(e instanceof CertPathValidatorException v)text.append("pkixReason=").append(v.getReason()).append('\n');
+      }
+      return text.toString(); // No exception messages, PIN, card contents or stack trace.
+    }
+    Map<String,String> tlsRecipeOpen(Map<String,String> f)throws Exception {
+      need(!closed&&!opened&&!tlsRecipeStarted,"SESSION");tlsRecipeStarted=true;
+      char[] pin=new char[0];String stage="CONFIGURATION";
+      var result=new HashMap<String,String>();
+      result.put("requestState","not_started");result.put("tlsAccepted","false");
+      try {
+        need(f.keySet().equals(Set.of("step","library","trustPath","trustHash","authHash","signHash","professional","pin")),"CONFIGURATION");
+        pin=Objects.requireNonNull(f.remove("pin")).toCharArray();
+        need(new String(pin).matches("[0-9]{1,16}"),"CPS_PIN");
+        tlsRecipeStep=f.get("step");tlsRecipeEndpoint=tlsRecipeEndpoint(tlsRecipeStep);
+        config=Map.copyOf(f);
+        need(f.get("professional").matches("[0-9]{8,16}")&&!f.get("authHash").equals(f.get("signHash")),"CONFIGURATION");
+        result.put("step",tlsRecipeStep);result.put("endpoint",tlsRecipeEndpoint);result.put("trustHash",f.get("trustHash"));
+        stage="TRUST";trust=new Trust(Path.of(f.get("trustPath")),f.get("trustHash"),clock);
+        stage="CARD";identity=identities.open(config,pin);
+        stage="CERTIFICATE";checkIdentity();
+        stage="CHALLENGE";identity.current();
+        stage="TLS";td=channels.open(endpoint(tlsRecipeEndpoint),identity,trust);
+        issued=clock.instant();expires=issued.plusSeconds(120);id=UUID.randomUUID().toString();tlsRecipeReady=true;
+        result.put("outcome","tls_accepted");result.put("tlsAccepted","true");result.put("stage","TLS");
+        result.put("id",id);result.put("issuedAt",issued.toString());result.put("expiresAt",expires.toString());
+        result.put("professional",f.get("professional"));result.put("authHash",f.get("authHash"));result.put("signHash",f.get("signHash"));
+        result.put("authDer",B64.encodeToString(identity.auth().getEncoded()));result.put("signDer",B64.encodeToString(identity.signing().getEncoded()));
+        result.put("mutualTls","true");result.put("protocol","TLSv1.2");result.putAll(td.evidence());
+        result.put("diagnostic","stage=TLS\nPKIX=verified\nrevocation=verified_local_CRL\nendpointIdentification=HTTPS\nSNI="+endpoint(tlsRecipeEndpoint).getHost()+"\nrequestState=not_started\n");
+        return result;
+      }catch(Exception e){
+        String code=classify(e);
+        boolean certificateFailure=tlsRecipeCertificateFailure(e);
+        boolean rejected=stage.equals("TLS")&&certificateFailure&&Set.of("TLS_TRUST","TLS_HOSTNAME","TLS_EXPIRED","TLS_FUTURE","TLS_REVOKED","TLS_CRL").contains(code);
+        if(stage.equals("TLS")&&!certificateFailure&&code.equals("TLS_TRUST"))code="TLS_NEGOTIATION";
+        result.put("outcome",rejected?"tls_rejected":"not_conclusive");result.put("stage",stage);result.put("error",code);
+        result.put("diagnostic",tlsRecipeDiagnostic(stage,e));
+        try{close();result.put("closed","true");}catch(Exception closeError){result.put("closed","false");}
+        return result;
+      }finally{Arrays.fill(pin,'\0');f.remove("pin");}
+    }
+    static void checkTlsRecipeRequest(byte[] bytes,String target)throws Exception {
+      var env=safeXml(bytes);
+      need("Envelope".equals(env.getLocalName())&&SOAP_NS.equals(env.getNamespaceURI())&&elements(env).size()==2,"CONFIGURATION");
+      var h=child(env,SOAP_NS,"Header");
+      need(target.equals(child(h,WSA_NS,"To").getTextContent())&&"urn:hl7-org:v3:PRPA_IN201307UV02".equals(child(h,WSA_NS,"Action").getTextContent()),"CONFIGURATION");
+      var body=child(env,SOAP_NS,"Body");need(elements(body).size()==1,"CONFIGURATION");
+      var q=child(body,"urn:hl7-org:v3","PRPA_IN201307UV02");
+      need("T".equals(child(q,"urn:hl7-org:v3","processingModeCode").getAttribute("code")),"CONFIGURATION");
+      var ca=child(q,"urn:hl7-org:v3","controlActProcess");
+      need("TEST_EXST".equals(child(ca,"urn:hl7-org:v3","reasonCode").getAttribute("code")),"CONFIGURATION");
+      var query=child(ca,"urn:hl7-org:v3","queryByParameter");
+      var params=child(query,"urn:hl7-org:v3","parameterList");
+      var value=child(child(params,"urn:hl7-org:v3","patientIdentifier"),"urn:hl7-org:v3","value");
+      need("287019143596041".equals(value.getAttribute("extension"))&&"1.2.250.1.213.1.4.10".equals(value.getAttribute("root")),"CONFIGURATION");
+    }
+    Map<String,String> tlsRecipeTd(Map<String,String> f)throws Exception {
+      need(tlsRecipeStarted&&tlsRecipeReady&&!closed&&!tdUsed&&id.equals(f.get("id"))&&
+        f.keySet().equals(Set.of("id","body","contentType")),"SESSION");
+      need(!clock.instant().isBefore(issued)&&clock.instant().isBefore(expires)&&td.current(),"SESSION");
+      need(sha(Files.readAllBytes(Path.of(config.get("trustPath")))).equals(trust.hash),"CONFIGURATION");
+      byte[] bytes=UN64.decode(f.get("body"));checkTlsRecipeRequest(bytes,tlsRecipeEndpoint);
+      need("application/soap+xml; charset=UTF-8; action=\"urn:hl7-org:v3:PRPA_IN201307UV02\"".equals(f.get("contentType")),"CONFIGURATION");
+      tdUsed=true;tlsRecipeReady=false;
+      var result=new HashMap<String,String>();result.put("tlsAccepted","true");result.put("stage","EXCHANGE");
+      result.put("endpoint",tlsRecipeEndpoint);result.put("step",tlsRecipeStep);result.put("trustHash",trust.hash);
+      result.put("requestState","started_or_partial");
+      try {
+        checkIdentity();identity.current();
+        var reply=td.exchange(bytes,f.get("contentType"));result.putAll(reply.fields());
+        result.put("outcome","http_received");result.put("requestState","completed");result.put("diagnostic","stage=EXCHANGE\nrequestState=completed\nHTTP="+reply.status()+"\n");
+      }catch(Exception e){result.put("outcome","not_conclusive");result.put("error",classify(e));result.put("diagnostic",tlsRecipeDiagnostic("EXCHANGE",e));}
+      finally{try{close();result.put("closed","true");}catch(Exception e){result.put("closed","false");}}
+      return result;
+    }
+
     Map<String,String> call(String op,Map<String,String> f)throws Exception {
       if(op.equals("close")){close();return Map.of();}
+      if(op.equals("tlsrecipeopen"))return tlsRecipeOpen(f);
+      if(op.equals("tlsrecipetd"))return tlsRecipeTd(f);
+      need(!tlsRecipeStarted,"SESSION");
       if(op.equals("open"))return open(f);
       if(op.equals("resume"))return begin(f,true);
       if(op.equals("authenticationcheck")){

@@ -8,6 +8,8 @@
 
 #include "win32_window.h"
 #include "document_controls_channel.h"
+#include "cps/cps_channel.h"
+#include "webps/webps_channel.h"
 #include <flutter/method_channel.h>
 
 // A window that does nothing but host a Flutter view.
@@ -36,6 +38,8 @@ private:
             smart_card_channel_;
     // Dedicated channel for Windows document controls.
     std::unique_ptr<DocumentControlsChannel> document_controls_channel_;
+    std::unique_ptr<CpsChannel> cps_channel_;
+    std::unique_ptr<WebPsChannel> webps_channel_;
 };
 
 #endif  // RUNNER_FLUTTER_WINDOW_H_

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:file_picker/file_picker.dart';
 import '../../dmp_setup/bundled_pdf_tools.dart';
 
 import 'package:path/path.dart' as p;
@@ -19,24 +20,60 @@ class DocumentToolsAccess {
     'references': 'Références CDA',
   };
 
-  static String _root(String key, String value) {
-    if (!p.isAbsolute(value) || p.normalize(value) != value || value == '/') {
-      throw StateError('${names[key]} : indiquez un chemin local absolu.');
+  static String _root(String key, String value) =>
+      rootForPlatform(key, value, windows: Platform.isWindows);
+
+  /// Path validation only, independent of OS permissions and execution.
+  /// The explicit platform lets the same rules be checked on Mac and Windows.
+  static String rootForPlatform(
+    String key,
+    String value, {
+    required bool windows,
+  }) {
+    final path = windows ? p.windows : p.posix;
+    if (!names.containsKey(key) ||
+        !path.isAbsolute(value) ||
+        path.normalize(value) != value ||
+        value == path.rootPrefix(value)) {
+      throw StateError(
+        '${names[key] ?? key} : indiquez un chemin local absolu.',
+      );
+    }
+    if (windows && !RegExp(r'^[a-zA-Z]:\\').hasMatch(value)) {
+      throw StateError('Sélectionnez une ressource sur un disque local.');
+    }
+    if (key == 'office' && windows) {
+      if (path.basename(value).toLowerCase() != 'soffice.exe' ||
+          path.basename(path.dirname(value)).toLowerCase() != 'program') {
+        throw StateError('LibreOffice : sélectionnez program/soffice.exe.');
+      }
+      return path.dirname(value);
     }
     if (key == 'java') {
-      if (p.basename(value) != 'java' ||
-          p.basename(p.dirname(value)) != 'bin') {
-        throw StateError('Java : sélectionnez le fichier bin/java du JDK.');
+      final file = windows
+          ? path.basename(value).toLowerCase()
+          : path.basename(value);
+      final bin = windows
+          ? path.basename(path.dirname(value)).toLowerCase()
+          : path.basename(path.dirname(value));
+      if (file != (windows ? 'java.exe' : 'java') || bin != 'bin') {
+        throw StateError(
+          'Java : sélectionnez le fichier bin/${windows ? 'java.exe' : 'java'} du JDK.',
+        );
       }
-      final home = p.dirname(p.dirname(value));
-      if (home == '/') throw StateError('Dossier Java invalide.');
+      final home = path.dirname(path.dirname(value));
+      if (home == path.rootPrefix(home)) {
+        throw StateError('Dossier Java invalide.');
+      }
       return home;
     }
     if (key == 'vera') {
-      if (!value.endsWith('.jar') || p.dirname(value) == '/') {
+      final file = windows ? value.toLowerCase() : value;
+      if (!file.endsWith('.jar') ||
+          path.dirname(value) == path.rootPrefix(value)) {
         throw StateError('veraPDF : sélectionnez le fichier CLI .jar.');
       }
-      return p.dirname(value);
+      return path.dirname(value);
     }
     return value;
   }
@@ -51,7 +88,15 @@ class DocumentToolsAccess {
       'office': _root(
         'office',
         (paths['office'] ?? '').isEmpty
-            ? '/Applications/LibreOffice.app'
+            ? (Platform.isWindows
+                  ? p.join(
+                      Platform.environment['ProgramFiles'] ??
+                          r'C:\Program Files',
+                      'LibreOffice',
+                      'program',
+                      'soffice.exe',
+                    )
+                  : '/Applications/LibreOffice.app')
             : paths['office']!,
       ),
   };
@@ -69,9 +114,20 @@ class DocumentToolsAccess {
       paths,
       includeOffice: (paths['office'] ?? '').isNotEmpty,
     );
+    if (Platform.isWindows) {
+      await _checkWindowsFiles(
+        paths,
+        includeOffice: (paths['office'] ?? '').isNotEmpty,
+      );
+    }
     for (final entry in roots.entries) {
       if (await BundledPdfTools.ownsRoot(entry.value)) {
         await BundledPdfTools.load();
+        continue;
+      }
+      if (Platform.isWindows) {
+        onStep('Vérification du dossier : ${names[entry.key]}…');
+        await _checkWindowsDirectory(entry.value);
         continue;
       }
       onStep('Autorisation de lecture : ${names[entry.key]}…');
@@ -101,6 +157,7 @@ class DocumentToolsAccess {
   /// Folder buttons both choose the resource and retain its macOS authorization.
   static Future<String?> choose(String key, String current) async {
     if (!names.containsKey(key)) throw StateError('Outil inconnu.');
+    if (Platform.isWindows) return _chooseWindows(key, current);
     String? initial;
     if (current.isNotEmpty) {
       try {
@@ -147,6 +204,9 @@ class DocumentToolsAccess {
     Map<String, String> paths, {
     bool includeOffice = false,
   }) async {
+    if (Platform.isWindows) {
+      await _checkWindowsFiles(paths, includeOffice: includeOffice);
+    }
     final active = <MacosDirectoryAccess>[];
     try {
       for (final root in _roots(
@@ -155,6 +215,10 @@ class DocumentToolsAccess {
       ).values.toSet()) {
         if (await BundledPdfTools.ownsRoot(root)) {
           await BundledPdfTools.load();
+          continue;
+        }
+        if (Platform.isWindows) {
+          await _checkWindowsDirectory(root);
           continue;
         }
         final access = await _directories.acquireDirectory(
@@ -171,6 +235,101 @@ class DocumentToolsAccess {
       }
       rethrow;
     }
+  }
+
+  static Future<void> _checkWindowsFiles(
+    Map<String, String> paths, {
+    required bool includeOffice,
+  }) async {
+    for (final key in ['java', 'vera', if (includeOffice) 'office']) {
+      final value = key == 'office' && (paths[key] ?? '').isEmpty
+          ? p.join(
+              Platform.environment['ProgramFiles'] ?? r'C:\Program Files',
+              'LibreOffice',
+              'program',
+              'soffice.exe',
+            )
+          : paths[key] ?? '';
+      final root = _root(key, value);
+      await _checkWindowsDirectory(root);
+      if (await FileSystemEntity.type(value, followLinks: false) !=
+          FileSystemEntityType.file) {
+        throw StateError('${names[key]} : fichier local indisponible : $value');
+      }
+      final handle = await File(value).open(mode: FileMode.read);
+      await handle.close();
+    }
+  }
+
+  static Future<void> _checkWindowsDirectory(String root) async {
+    var current = root;
+    while (true) {
+      final type = await FileSystemEntity.type(current, followLinks: false);
+      if (type == FileSystemEntityType.link) {
+        throw StateError('Lien symbolique interdit : $current');
+      }
+      if (type != FileSystemEntityType.directory) {
+        throw StateError('Dossier local indisponible : $current');
+      }
+      final parent = p.dirname(current);
+      if (parent == current) break;
+      current = parent;
+    }
+    // Enumerating one entry also checks read access to an empty directory.
+    await for (final _ in Directory(root).list(followLinks: false)) {
+      break;
+    }
+  }
+
+  static Future<String?> _chooseWindows(String key, String current) async {
+    String? initial;
+    if (current.isNotEmpty) {
+      try {
+        initial = _root(key, current);
+      } on StateError {
+        // Keep the picker available after invalid manual input.
+      }
+    }
+    if (key == 'office') {
+      final picked = await FilePicker.platform.pickFiles(
+        dialogTitle: 'Choisir LibreOffice : program/soffice.exe',
+        type: FileType.custom,
+        allowedExtensions: ['exe'],
+        allowMultiple: false,
+        initialDirectory: initial,
+      );
+      final path = picked?.files.single.path;
+      if (path == null) return null;
+      await _checkWindowsDirectory(_root(key, path));
+      return path;
+    }
+    final directory = await FilePicker.platform.getDirectoryPath(
+      dialogTitle: 'Choisir : ${names[key]}',
+      initialDirectory: initial,
+    );
+    if (directory == null) return null;
+    await _checkWindowsDirectory(directory);
+    if (key == 'java') return p.join(directory, 'bin', 'java.exe');
+    if (key == 'vera') {
+      final candidates = await Directory(directory)
+          .list(followLinks: false)
+          .where(
+            (entry) =>
+                entry is File &&
+                RegExp(
+                  r'^cli(?:-[0-9][\w.-]*)?\.jar$',
+                  caseSensitive: false,
+                ).hasMatch(p.basename(entry.path)),
+          )
+          .toList();
+      if (candidates.length != 1) {
+        throw StateError(
+          'Choisissez un dossier contenant un seul fichier CLI de veraPDF.',
+        );
+      }
+      return candidates.single.path;
+    }
+    return directory;
   }
 
   static void _samePath(String expected, String actual) {

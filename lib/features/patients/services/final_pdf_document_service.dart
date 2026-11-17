@@ -91,6 +91,19 @@ class FinalPdfDocumentService {
   static String hash(List<int> bytes) => sha256.convert(bytes).toString();
   static void fail(String text) => throw FinalPdfException(text);
 
+  /// Persist portable paths, while accepting versions already saved on Windows.
+  /// Only separators change; traversal, absolute and extra components fail.
+  static String normalizedVersionPath(String value) {
+    final relative = value.replaceAll(r'\', '/');
+    final match = RegExp(
+      r'^version-[a-f0-9-]{36}/document\.pdf$',
+    ).firstMatch(relative);
+    if (match == null || match.end != relative.length) {
+      fail('Chemin de version invalide.');
+    }
+    return relative;
+  }
+
   Future<Directory> _root() async {
     final dir = await root();
     await _noLinks(dir.path);
@@ -357,7 +370,7 @@ class FinalPdfDocumentService {
     final versionId = const Uuid().v4();
     final pending = Directory(p.join(dir.path, '.pending-$versionId'));
     final finalDir = Directory(p.join(dir.path, 'version-$versionId'));
-    final relative = p.join('version-$versionId', 'document.pdf');
+    final relative = p.posix.join('version-$versionId', 'document.pdf');
     await pending.create();
     try {
       final conversionHash = await conversion?.write(pending, bytes);
@@ -543,13 +556,9 @@ class FinalPdfDocumentService {
     DatabaseExecutor db,
     EpisodeDocumentVersion version,
   ) async {
-    if (!RegExp(
-      r'^version-[a-f0-9-]{36}/document\.pdf$',
-    ).hasMatch(version.relativePath)) {
-      fail('Chemin de version invalide.');
-    }
+    final relative = normalizedVersionPath(version.relativePath);
     final directory = Directory(
-      p.dirname(p.join((await _root()).path, version.relativePath)),
+      p.dirname(p.joinAll([(await _root()).path, ...relative.split('/')])),
     );
     await _noLinks(directory.path);
     await PdfConversionEvidence.verify(
@@ -564,12 +573,8 @@ class FinalPdfDocumentService {
   /// The caller must verify the stored version and current attachment in that transaction.
   Future<File> verifyStoredBytes(EpisodeDocumentVersion version) async {
     final dir = await _root();
-    if (!RegExp(
-      r'^version-[a-f0-9-]{36}/document\.pdf$',
-    ).hasMatch(p.posix.joinAll(p.split(version.relativePath)))) {
-      fail('Chemin de version invalide.');
-    }
-    final file = File(p.join(dir.path, version.relativePath));
+    final relative = normalizedVersionPath(version.relativePath);
+    final file = File(p.joinAll([dir.path, ...relative.split('/')]));
     final bytes = await _read(file);
     if (bytes.length != version.size || hash(bytes) != version.digest) {
       fail('Copie PDF absente ou modifiée : ouverture bloquée.');

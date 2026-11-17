@@ -45,13 +45,13 @@ class BundledPdfTools {
     final base = root;
     if (base == null) {
       throw StateError(
-        'Préparation automatique disponible sur macOS uniquement.',
+        'Préparation automatique disponible sur macOS et Windows uniquement.',
       );
     }
     final manifest = File(p.join(base, 'manifest.json'));
     if (!await manifest.exists()) {
       throw StateError(
-        'Cette version de Companion ne contient pas les outils DMP pour ce Mac. Installez une version complète de Companion.',
+        'Cette version de Companion ne contient pas les outils DMP pour cet ordinateur. Installez une version complète de Companion.',
       );
     }
     return verify(Directory(base));
@@ -105,7 +105,7 @@ class BundledPdfTools {
     }
     return BundledPdfTools(
       p.join(base, 'java', 'bin', Platform.isWindows ? 'java.exe' : 'java'),
-      p.join(base, 'vera/cli.jar'),
+      p.join(base, 'vera', 'cli.jar'),
       sha256.convert(bytes).toString(),
     );
   }

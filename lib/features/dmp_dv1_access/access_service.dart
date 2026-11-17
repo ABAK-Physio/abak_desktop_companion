@@ -1,3 +1,10 @@
+import 'case1_withdrawal_recipe.dart';
+import 'case1_authorization_recipe.dart';
+import 'nia_injection.dart';
+import '../dmp_td02/access_identity.dart';
+import 'blocked_authorization_recipe.dart';
+import 'expired_authorization_recipe.dart';
+import 'platform_support.dart';
 import 'visibility_recipe.dart';
 import '../dmp_td02/patient_person.dart';
 import 'package:xml/xml.dart';
@@ -59,6 +66,12 @@ class Dv1AccessService {
       await DmpSetupService.requireEnabled(await journal.database);
       DmpWorkContext.current.requireProfessional(context.professional);
       context.check(journal.medical.now().toUtc());
+      if (context.scenario == Dv1Case1AuthorizationRecipe.scenario) {
+        Dv1Case1AuthorizationRecipe.checkInputs(
+          scenario: context.scenario, patient: context.patientLabel, ins: context.ins,
+          birth: context.birthDate ?? '', professional: context.professional,
+        );
+      }
       if (context.scenario == 'PRE_CONS_INV') {
         Dv1VisibilityRecipe.check(context);
       }
@@ -68,7 +81,7 @@ class Dv1AccessService {
         patient: context.patientLabel,
         source: context.source,
         granted: granted,
-        pendingWithdrawal: !granted,
+        pendingWithdrawal: !granted && context.scenario != Dv1Case1AuthorizationRecipe.scenario,
         now: journal.medical.now(),
       );
     } finally {
@@ -83,7 +96,10 @@ class Dv1AccessService {
     String? authorizationIntent,
     void Function(DmpPatientPerson?)? onPatientPerson,
     Dv1SearchTarget? searchTarget,
+    Dv1NiaEvidence? niaEvidence,
     bool depublication = false,
+    bool preparatoryWithdrawal = false,
+    String? additionEvidenceId,
     Dv1DocumentCriteria? criteria,
     Dv1SubmissionPeriod? submissionPeriod,
     Map<String, String>? consultationTarget,
@@ -92,10 +108,91 @@ class Dv1AccessService {
     Future<bool> Function(ConsultedDocument)? displayDocument,
   }) async {
     if (_busy) throw StateError('Une vérification DV1 est déjà en cours.');
-    // The CPS business-object bridge is currently implemented on macOS only.
-    if (!Platform.isMacOS) {
+    final otherAction = depublication ||
+        authorizationIntent != null ||
+        criteria != null ||
+        submissionPeriod != null ||
+        consultationTarget != null ||
+        visibilityTarget != null ||
+        visibilityConfirmed;
+    if (niaEvidence != null || context.insOid == DmpAccessIdentity.niaOid ||
+        context.scenario == Dv1NiaInjection.scenario) {
+      if (otherAction || searchTarget != null || niaEvidence == null ||
+          context.scenario != Dv1NiaInjection.scenario) {
+        throw StateError('0.2-080 requiert la réponse TEST_NIA.xml injectée, sans autre opération.');
+      }
+      _busy = true;
+      try {
+        await DmpSetupService.requireEnabled(await journal.database);
+        DmpWorkContext.current.requireProfessional(context.professional);
+        return await Dv1NiaArchive(await root, hash: medicalHash)
+            .blockAccess(niaEvidence, context.snapshot);
+      } finally {
+        _busy = false;
+      }
+    }
+    final case1WithdrawalTest = context.scenario == Dv1Case1WithdrawalRecipe.scenario;
+    final case1Withdrawal = case1WithdrawalTest && authorizationIntent == 'withdraw';
+    if (case1WithdrawalTest) {
+      Dv1Case1WithdrawalRecipe.checkOperation(
+        authorizationIntent: authorizationIntent, preparatoryWithdrawal: preparatoryWithdrawal,
+        otherOperation: depublication || searchTarget != null || criteria != null ||
+            submissionPeriod != null || consultationTarget != null || visibilityTarget != null || visibilityConfirmed,
+      );
+      Dv1Case1WithdrawalRecipe.checkInputs(
+        scenario: context.scenario, patient: context.patientLabel, ins: context.ins,
+        birth: context.birthDate ?? '', professional: context.professional,
+      );
+      if (additionEvidenceId == null) throw StateError('Préparez 0.3-080 depuis une preuve d’ajout 0.3-010 vérifiée.');
+    }
+    final case1AuthorizationTest = context.scenario == Dv1Case1AuthorizationRecipe.scenario;
+    final case1Add = case1AuthorizationTest && authorizationIntent == 'consult';
+    Dv1Case1AuthorizationRecipe.checkOperation(
+      scenario: context.scenario, authorizationIntent: authorizationIntent,
+      preparatoryWithdrawal: preparatoryWithdrawal,
+      otherOperation: depublication || searchTarget != null || criteria != null ||
+          submissionPeriod != null || consultationTarget != null ||
+          visibilityTarget != null || visibilityConfirmed,
+    );
+    if (case1AuthorizationTest) {
+      Dv1Case1AuthorizationRecipe.checkInputs(
+        scenario: context.scenario, patient: context.patientLabel, ins: context.ins,
+        birth: context.birthDate ?? '', professional: context.professional,
+      );
+    }
+    final expiredAuthorizationTest =
+        context.scenario == Dv1ExpiredAuthorizationRecipe.scenario;
+    final blockedAuthorizationTest =
+        context.scenario == Dv1BlockedAuthorizationRecipe.scenario;
+    if (expiredAuthorizationTest || blockedAuthorizationTest) {
+      if (searchTarget != null || otherAction) {
+        throw StateError(
+          '${context.scenario} vérifie uniquement TD0.2. Aucune autorisation ne doit être modifiée.',
+        );
+      }
+      final checkInputs = expiredAuthorizationTest
+          ? Dv1ExpiredAuthorizationRecipe.checkInputs
+          : Dv1BlockedAuthorizationRecipe.checkInputs;
+      checkInputs(
+        scenario: context.scenario,
+        patient: context.patientLabel,
+        ins: context.ins,
+        birth: context.birthDate ?? '',
+        professional: context.professional,
+      );
+    }
+    if (!dv1AccessPlatformSupported(
+      platform: Platform.operatingSystem,
+      documentSearch: searchTarget != null,
+      existenceCheck: expiredAuthorizationTest || blockedAuthorizationTest ||
+          ((case1AuthorizationTest || case1WithdrawalTest) && authorizationIntent == null),
+      authorizationAdd: case1Add,
+      authorizationWithdrawal: preparatoryWithdrawal || case1Withdrawal,
+      otherAction: (case1Add || preparatoryWithdrawal || case1Withdrawal) ? false : otherAction,
+    )) {
       throw StateError(
-        'Lecture CPS de ce parcours disponible sur macOS. Le raccordement Windows reste à réaliser.',
+        'Ce parcours DV1 n’est pas disponible sur cette plateforme. '
+        'Ce scénario doit être préparé dans son bloc de recette Windows.',
       );
     }
     _busy = true;
@@ -105,7 +202,19 @@ class Dv1AccessService {
       'schema': 1,
       'id': const Uuid().v4(),
       'environment': 'DV1',
-      'operation': visibilityTarget != null
+      if (preparatoryWithdrawal) ...{
+        'preparationOnly': true, 'preparationFor': Dv1Case1AuthorizationRecipe.scenario,
+        'preparationExpectedMatched': false, 'testExpectedMatched': false,
+      },
+      if (case1WithdrawalTest) ...{
+        'testCode': Dv1Case1WithdrawalRecipe.scenario, 'testExpectedMatched': false,
+        'testPhase': authorizationIntent == null ? 'initial_check' : 'authorization_withdrawal',
+      },
+      'operation': case1WithdrawalTest
+          ? (case1Withdrawal ? 'TD0.3 — suppression de son autorisation 0.3-080' : 'TD0.2 — contrôle initial 0.3-080')
+          : preparatoryWithdrawal
+          ? 'Préparation Cas1 — retrait volontaire avant 0.3-010 (hors validation de test)'
+          : visibilityTarget != null
           ? 'TD3.3b — visibilité patient PRE_CONS_INV'
           : consultationTarget != null
           ? 'TD3.2 — consultation PRE_CONS_CONS'
@@ -145,6 +254,12 @@ class Dv1AccessService {
       await DmpSetupService.requireEnabled(await journal.database);
       DmpWorkContext.current.requireProfessional(context.professional);
       context.check(journal.medical.now().toUtc());
+      if (case1WithdrawalTest) {
+        final addition = await verifyCase1Addition(additionEvidenceId!);
+        record['additionEvidenceId'] = addition['id'];
+        record['additionEvidenceHash'] = addition['additionEvidenceHash'];
+        record['additionStartedAt'] = addition['startedAt'];
+      }
       if (searchTarget != null) {
         if (authorizationIntent != null) {
           throw StateError('Actions incompatibles.');
@@ -245,7 +360,7 @@ class Dv1AccessService {
         record['depublicationConfirmed'] = true;
       }
       Map<String, dynamic>? consent;
-      if (authorizationIntent != null) {
+      if (authorizationIntent != null && !preparatoryWithdrawal && !case1Withdrawal) {
         if (!['consult', 'withdraw'].contains(authorizationIntent)) {
           throw StateError('Action inconnue.');
         }
@@ -260,6 +375,9 @@ class Dv1AccessService {
           throw StateError(
             'Enregistrez la réponse du patient avant cette action.',
           );
+        }
+        if (case1Add && consent['source'] != context.source) {
+          throw StateError('Enregistrez l’accord du patient pour ce contexte 0.3-010.');
         }
         record['patientDecision'] = consent;
       }
@@ -349,6 +467,43 @@ class Dv1AccessService {
       record['message'] = result.message;
       record['detail'] = result.detail;
       record['closureDetails'] = result.closureDetails;
+      if (case1AuthorizationTest && !preparatoryWithdrawal) {
+        record['preparatoryWithdrawalReady'] = Dv1Case1AuthorizationRecipe.withdrawalReady(result);
+        record['testCode'] = Dv1Case1AuthorizationRecipe.scenario;
+        record['testPhase'] = authorizationIntent == null ? 'initial_check' : 'authorization_add';
+        record['testInitialReady'] = Dv1Case1AuthorizationRecipe.initialReady(result);
+        record['testExpectedMatched'] = false;
+        if (authorizationIntent == null) {
+          record['message'] = '0.3-010 — Contrôle initial : ${result.message} Aucun droit modifié. '
+              '${record['testInitialReady'] == true ? 'Condition initiale NON_EXISTE confirmée ; ajout non encore effectué.' : 'Condition initiale NON_EXISTE non confirmée ; ajout indisponible.'}';
+        }
+      }
+      if (case1WithdrawalTest) {
+        final ready = Dv1Case1WithdrawalRecipe.initialReady(result);
+        record['testWithdrawalReady'] = ready;
+        if (authorizationIntent == null) {
+          record['message'] = '0.3-080 — Contrôle initial : ${result.message} Aucun droit modifié. '
+              '${ready ? 'Autorisation VALIDE confirmée ; retrait non encore effectué.' : 'Autorisation VALIDE non confirmée ; retrait indisponible.'}';
+        }
+      }
+      if (expiredAuthorizationTest) {
+        final expectedMatched = Dv1ExpiredAuthorizationRecipe.matches(result);
+        record['testCode'] = Dv1ExpiredAuthorizationRecipe.scenario;
+        record['testExpectedMatched'] = expectedMatched;
+        record['message'] = expectedMatched
+            ? '0.2-060 — Réponse TD0.2 vérifiée (AA) : DMP actif, '
+                  'autorisation de consultation expirée. Aucun droit modifié.'
+            : '0.2-060 — Résultat attendu non confirmé. ${result.message}';
+      }
+      if (blockedAuthorizationTest) {
+        final expectedMatched = Dv1BlockedAuthorizationRecipe.matches(result);
+        record['testCode'] = Dv1BlockedAuthorizationRecipe.scenario;
+        record['testExpectedMatched'] = expectedMatched;
+        record['message'] = expectedMatched
+            ? '0.2-070 — Réponse TD0.2 vérifiée (AA) : DMP actif, '
+                  'autorisation de consultation bloquée pour ce professionnel. Aucun droit modifié.'
+            : '0.2-070 — Résultat attendu non confirmé. ${result.message}';
+      }
       if (consultationTarget != null) {
         requireSearchRight(result);
         requireSearchConsent(
@@ -804,6 +959,10 @@ class Dv1AccessService {
         }
       }
       if (authorizationIntent != null) {
+        if (case1Add) Dv1Case1AuthorizationRecipe.requireInitial(result);
+        if (preparatoryWithdrawal) Dv1Case1AuthorizationRecipe.requireWithdrawalInitial(result);
+        if (case1Withdrawal) Dv1Case1WithdrawalRecipe.requireInitial(result);
+        Td02Result? verifiedAfter;
         final granted = authorizationIntent == 'consult';
         final change = authorizationChange(
           result,
@@ -870,6 +1029,7 @@ class Dv1AccessService {
             context: DmpChainMessages.context(snapshot, session),
             httpStatus: after.reply.status,
           );
+          verifiedAfter = verified;
           record['afterConsultationRight'] = verified.right.name;
           record['afterDmpState'] = verified.state.name;
           await save();
@@ -885,7 +1045,7 @@ class Dv1AccessService {
             );
           }
         }
-        if (!granted) {
+        if (!granted && !preparatoryWithdrawal && !case1Withdrawal) {
           await (await consents).save(
             context.professional,
             context.ins,
@@ -897,10 +1057,42 @@ class Dv1AccessService {
             evidenceId: record['id'],
           );
         }
+        if (case1Add) {
+          final completed = verifiedAfter != null && Dv1Case1AuthorizationRecipe.completed(
+            result, record['td03Status'] as String? ?? '', verifiedAfter,
+          );
+          record['testExpectedMatched'] = completed;
+          if (!completed) throw StateError('0.3-010 : ajout et état final non confirmés. Consultez les preuves.');
+        }
+        if (preparatoryWithdrawal) {
+          final completed = verifiedAfter != null && Dv1Case1AuthorizationRecipe.withdrawalCompleted(
+            result, record['td03Status'] as String? ?? '', verifiedAfter,
+          );
+          record['preparationExpectedMatched'] = completed;
+          if (!completed) throw StateError('Retrait préparatoire : résultat NON_EXISTE non confirmé. Consultez les preuves.');
+        }
+        if (case1Withdrawal) {
+          final completed = verifiedAfter != null && Dv1Case1WithdrawalRecipe.completed(
+            result, record['td03Status'] as String? ?? '', verifiedAfter,
+          );
+          record['testExpectedMatched'] = completed;
+          if (!completed) throw StateError('0.3-080 : retrait et état final NON_EXISTE non confirmés. Consultez les preuves.');
+        }
         record['state'] = 'authorization_verified';
         record['message'] = granted
             ? 'Autorisation de consultation confirmée par le DMP. Aucun document consulté dans cet essai.'
             : 'Refus enregistré — absence d’autorisation confirmée par le DMP.';
+        if (case1Add) {
+          record['message'] = '0.3-010 — Ajout accepté (DMPOk) et autorisation VALIDE confirmée par TD0.2. Aucun document consulté ni déposé.';
+        }
+        if (case1Withdrawal) {
+          record['state'] = 'withdrawal_verified';
+          record['message'] = '0.3-080 — Retrait accepté (DMPOk) et autorisation NON_EXISTE confirmée par TD0.2. Ajout 0.3-010 antérieur relié aux preuves. Aucun document consulté ni déposé.';
+        }
+        if (preparatoryWithdrawal) {
+          record['state'] = 'preparation_withdrawal_verified';
+          record['message'] = 'Préparation Cas1 — Retrait accepté (DMPOk), autorisation NON_EXISTE confirmée par TD0.2. Aucun document consulté ni déposé. Les tests 0.3-010 et 0.3-080 ne sont pas validés par cette opération.';
+        }
       }
     } catch (e) {
       record['state'] = 'interrupted';
@@ -929,7 +1121,7 @@ class Dv1AccessService {
             'La vérification finale reste à effectuer.\n${record['message']}';
       }
 
-      if (authorizationIntent == 'withdraw') {
+      if (authorizationIntent == 'withdraw' && !preparatoryWithdrawal && !case1Withdrawal) {
         record['message'] =
             'Refus enregistré — retrait auprès du DMP non confirmé. Consultation bloquée.\n${record['message']}';
       }
@@ -971,6 +1163,29 @@ class Dv1AccessService {
       ...record,
       if (directory != null) 'evidenceDirectory': directory.path,
     };
+  }
+
+  Future<Map<String, dynamic>> verifyCase1Addition(String id) async =>
+      Dv1Case1AdditionArchive(await root, hash: medicalHash).verify(id);
+
+  Future<Map<String, dynamic>> latestCase1Addition() async {
+    final rows = await history();
+    final additions = rows.where(Dv1Case1WithdrawalRecipe.isAddition);
+    if (additions.isEmpty) {
+      throw StateError('Aucun ajout 0.3-010 du Cas1 confirmé sur Windows. Conservez les preuves de l’ajout avant 0.3-080.');
+    }
+    return verifyCase1Addition(additions.first['id'] as String);
+  }
+
+  Future<Dv1NiaEvidence> importNiaResponse(List<int> bytes) async {
+    if (_busy) throw StateError('Une opération DMP est déjà en cours.');
+    _busy = true;
+    try {
+      await DmpSetupService.requireEnabled(await journal.database);
+      return await Dv1NiaArchive(await root, hash: medicalHash).importResponse(bytes);
+    } finally {
+      _busy = false;
+    }
   }
 
   static void requireSearchConsent(Map<String, dynamic>? decision) {

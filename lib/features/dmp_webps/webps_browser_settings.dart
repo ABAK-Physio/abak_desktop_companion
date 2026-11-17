@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import '../../core/settings/application_settings_service.dart';
@@ -11,11 +12,14 @@ class WebPsBrowserSettings extends StatefulWidget {
 }
 
 class _WebPsBrowserSettingsState extends State<WebPsBrowserSettings> {
-  static const preferenceKey = 'dmp_webps_browser_macos';
+  static String get preferenceKey => Platform.isWindows
+      ? 'dmp_webps_browser_windows' : 'dmp_webps_browser_macos';
+  static const channel = MethodChannel('abak/webps_browser');
   static const names = {
     'com.apple.Safari': 'Safari',
     'com.google.Chrome': 'Google Chrome',
     'org.mozilla.firefox': 'Firefox',
+    'com.microsoft.edge': 'Microsoft Edge',
   };
   static const bundles = {
     'com.apple.Safari': 'Safari.app',
@@ -38,9 +42,17 @@ class _WebPsBrowserSettingsState extends State<WebPsBrowserSettings> {
     try {
       final saved = await settings.getString(preferenceKey);
       final found = <String>[];
+      if (Platform.isWindows) {
+        final answer = await channel.invokeMapMethod<String, dynamic>('discover');
+        for (final item in answer?['browsers'] as List? ?? const []) {
+          if (item is Map && ['com.microsoft.edge', 'org.mozilla.firefox'].contains(item['browser']) && item['path'] is String) {
+            found.add(item['browser'] as String);
+          }
+        }
+      }
       if (Platform.isMacOS) {
         // Standard locations plus indexed bundles; no browser is launched.
-        for (final id in names.keys) {
+        for (final id in bundles.keys) {
           final result = await Process.run('/usr/bin/mdfind', [
             'kMDItemCFBundleIdentifier == "$id"',
           ]).timeout(const Duration(seconds: 5));
@@ -103,7 +115,7 @@ class _WebPsBrowserSettingsState extends State<WebPsBrowserSettings> {
 
   @override
   Widget build(BuildContext context) {
-    if (!Platform.isMacOS) return const SizedBox.shrink();
+    if (!Platform.isMacOS && !Platform.isWindows) return const SizedBox.shrink();
     final ids = {...installed, ?selected};
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16),
@@ -131,9 +143,9 @@ class _WebPsBrowserSettingsState extends State<WebPsBrowserSettings> {
             onChanged: busy ? null : choose,
           ),
           const SizedBox(height: 8),
-          const Text(
-            'Firefox utilise la Cryptolib CPS. Safari et Chrome nécessitent CPS-Gestion. La présence du navigateur ne garantit pas son fonctionnement avec la CPS.',
-          ),
+          Text(Platform.isWindows
+              ? 'Microsoft Edge et Firefox utiliseront les certificats proposés par Windows et la Cryptolib CPS. La reconnaissance de la carte reste à vérifier lors de l’essai.'
+              : 'Firefox utilise la Cryptolib CPS. Safari et Chrome nécessitent CPS-Gestion. La présence du navigateur ne garantit pas son fonctionnement avec la CPS.'),
           if (busy) const LinearProgressIndicator(),
           if (message != null) Text(message!),
           if (!busy && installed.isEmpty)

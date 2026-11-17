@@ -145,6 +145,14 @@ Error InstalledControls::ServicePolicy(PeerPolicy* policy) const {
   return {};
 }
 
+Error InstalledControls::InspectionUsers(std::vector<std::string>* users) const {
+  if (!users) return Failure("INVALID_ARGUMENTS", "Missing inspection users output.");
+  users->clear();
+  if (auto error = Recheck()) return error;
+  *users = manifest_.allowed_users;
+  return {};
+}
+
 Error InstalledControls::CompanionPolicyForPipe(HANDLE server_pipe, PeerPolicy* policy) const {
   if (!policy) return Failure("INVALID_ARGUMENTS", "Missing Companion policy output.");
   *policy = {};

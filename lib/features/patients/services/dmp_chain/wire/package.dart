@@ -1,15 +1,20 @@
 import '../native/dv1_replacement.dart';
+
 import 'dart:convert';
 import 'dart:typed_data';
+
 import 'package:crypto/crypto.dart';
 import 'package:uuid/uuid.dart';
 import 'package:xml/xml.dart';
+
 import '../../document_cda_builder.dart';
 import '../../document_medical_service.dart';
 import '../contracts.dart';
 import '../messages.dart';
 import 'crypto.dart';
 import '../../cnda_patient_recipe.dart';
+import '../../document_patient_names.dart';
+import 'dv1_type_label.dart';
 
 /// Configuration is explicit, versioned and sealed with the packet. No real
 /// endpoint, installation OID or homologation identifier is supplied by default.
@@ -170,6 +175,28 @@ class DmpWirePacket {
 class DmpWireDraft {
   DmpWireDraft(
     Map<String, dynamic> snapshot,
+    DmpSession session,
+    List<int> cda,
+    DmpWireMaterial material,
+    DateTime time, {
+    required int approvedAt,
+    String? replacementEntryUuid,
+    Map<String, String>? identifiers,
+  }) : this._(
+         snapshot,
+         session,
+         cda,
+         material,
+         time,
+         approvedAt: approvedAt,
+         replacementEntryUuid: replacementEntryUuid,
+         identifiers: identifiers,
+         legacyPatientNames: false,
+         legacyTypeLabel: false,
+       );
+
+  DmpWireDraft._(
+    Map<String, dynamic> snapshot,
     this.session,
     List<int> cda,
     this.material,
@@ -177,7 +204,11 @@ class DmpWireDraft {
     required this.approvedAt,
     this.replacementEntryUuid,
     Map<String, String>? identifiers,
-  }) : _snapshot = medicalCanonical(snapshot),
+    required bool legacyPatientNames,
+    required bool legacyTypeLabel,
+  }) : _legacyTypeLabel = legacyTypeLabel,
+       _legacyPatientNames = legacyPatientNames,
+       _snapshot = medicalCanonical(snapshot),
        cda = List.unmodifiable(cda),
        messageId = identifiers?['messageId'] ?? DmpChainMessages.id,
        lotOid = identifiers?['lotOid'] ?? _oid(),
@@ -214,9 +245,9 @@ class DmpWireDraft {
     final ids = [cdaEntry, signatureEntry, submissionEntry];
     if (ids.toSet().length != 3 ||
         !ids.every(
-          (v) => RegExp(
-            r'^(Document|Signature|Submission)_[0-9a-f-]{36}$',
-          ).hasMatch(v),
+          (v) =>
+              RegExp(r'^(Document|Signature|Submission)_[0-9a-f-]{36}$')
+                  .hasMatch(v),
         ) ||
         !RegExp(r'^urn:uuid:[0-9a-f-]{36}$').hasMatch(messageId) ||
         !RegExp(r'^[0-9a-f-]{36}$').hasMatch(nonce)) {
@@ -297,13 +328,23 @@ class DmpWireDraft {
         'Patient ou PDF encapsulé différent du contenu validé.',
       );
     }
-    final expectedCda = DocumentCdaBuilder.build(
-      this.snapshot,
-      Uint8List.fromList(base64Decode(body.innerText)),
-      approvedAt,
-    );
-    if (sha256.convert(expectedCda).toString() !=
-        sha256.convert(this.cda).toString()) {
+    final encapsulated = Uint8List.fromList(base64Decode(body.innerText));
+    final matchesCda = _legacyPatientNames
+        ? DocumentCdaBuilder.matchesLegacyArchive(
+            this.snapshot,
+            encapsulated,
+            approvedAt,
+            this.cda,
+          )
+        : base64Encode(
+                DocumentCdaBuilder.build(
+                  this.snapshot,
+                  encapsulated,
+                  approvedAt,
+                ),
+              ) ==
+              base64Encode(this.cda);
+    if (!matchesCda) {
       throw const DmpChainBlock(
         'CDA différent du contexte approuvé : relancer les contrôles locaux.',
       );
@@ -312,6 +353,7 @@ class DmpWireDraft {
   }
   // Legacy headers are reconstructed only when verifying an existing archive.
   final String? replacementEntryUuid;
+  final bool _legacyPatientNames, _legacyTypeLabel;
   bool _legacySoapHeaders = false;
   bool _legacyXdsPatientId = false;
   bool _legacyXdsMetadata = false;
@@ -319,6 +361,8 @@ class DmpWireDraft {
   Map<String, Object?> get replay => {
     if (replacementEntryUuid != null)
       'replacementEntryUuid': replacementEntryUuid,
+    if (correctsTypeLabel) 'typeLabelProfile': Dv1TypeLabel.profile,
+    if (!_legacyPatientNames) 'patientNameProfile': 'rniv-explicit-1',
     if (!_legacySoapHeaders) 'soapHeaderProfile': 'dv1-20261028',
     if (!_legacyXdsPatientId) 'xdsPatientIdProfile': 'ins-nh-1',
     if (!_legacyXdsMetadata) 'xdsMetadataProfile': 'dv1-labels-signature-1',
@@ -399,7 +443,15 @@ class DmpWireDraft {
         saved['signatureTitleProfile'] != 'event-source-1') {
       throw const FormatException('Profil du titre de signature inconnu');
     }
-    final draft = DmpWireDraft(
+    if (saved.containsKey('patientNameProfile') &&
+        saved['patientNameProfile'] != 'rniv-explicit-1') {
+      throw const FormatException('Profil des noms patient inconnu');
+    }
+    if (saved.containsKey('typeLabelProfile') &&
+        saved['typeLabelProfile'] != Dv1TypeLabel.profile) {
+      throw const FormatException('Profil du libellé de type inconnu');
+    }
+    final draft = DmpWireDraft._(
       snapshot,
       session,
       base64Decode(saved['cda']),
@@ -408,6 +460,8 @@ class DmpWireDraft {
       identifiers: Map<String, String>.from(saved['identifiers']),
       approvedAt: saved['approvedAt'] as int,
       replacementEntryUuid: saved['replacementEntryUuid'] as String?,
+      legacyPatientNames: !saved.containsKey('patientNameProfile'),
+      legacyTypeLabel: !saved.containsKey('typeLabelProfile'),
     );
     draft._legacySoapHeaders = !saved.containsKey('soapHeaderProfile');
     draft._legacyXdsPatientId = !saved.containsKey('xdsPatientIdProfile');
@@ -464,6 +518,13 @@ class DmpWireDraft {
   Map get preparation => jsonDecode(snapshot['preparation']['data_json']);
   Map get practice => jsonDecode(snapshot['practice']['data_json']);
   Map get identity => snapshot['identity'];
+  bool get correctsTypeLabel =>
+      !_legacyTypeLabel &&
+      Dv1TypeLabel.applies(preparation, material.configuration.endpoint);
+  String get documentTypeLabel => correctsTypeLabel
+      ? Dv1TypeLabel.corrected
+      : preparation['typeLabel'] as String;
+
   String get ins => '${identity['ins_number']}${identity['ins_key']}';
   String get cx => '$ins^^^&${identity['ins_oid']}&ISO';
   // CI-SIS patientId requires CX.5=NH. Legacy form is archive-only.
@@ -831,9 +892,16 @@ class DmpWireDraft {
           (sig && !_legacyXdsMetadata
               ? ''
               : slot('sourcePatientInfo', [
-                  'PID-5|${i['birth_last_name']}^${i['birth_first_names']}^^^^^L',
+                  if (_legacyPatientNames)
+                    'PID-5|${i['birth_last_name']}^${i['birth_first_names']}^^^^^L'
+                  else
+                    ...DocumentPatientNames.fromIdentity(i).pid5,
                   'PID-7|${i['birth_date'].replaceAll('-', '')}',
                   'PID-8|${i['sex_code']}',
+                  if (!_legacyPatientNames &&
+                      RegExp(r'^\d{5}$')
+                          .hasMatch('${i['birth_place_code'] ?? ''}'))
+                    'PID-11|^^^^^^BDL^^${i['birth_place_code']}',
                 ])) +
           name(
             sig
@@ -853,7 +921,7 @@ class DmpWireDraft {
             'f0306f51-975f-434e-a61c-c59651d33983',
             sig ? 'E1762' : d['typeCode'],
             sig ? 'ASTM' : d['typeSystem'],
-            sig ? 'Full Document' : d['typeLabel'],
+            sig ? 'Full Document' : documentTypeLabel,
           ) +
           classification(
             obj,
@@ -1066,8 +1134,7 @@ class DmpWireDraft {
         'xmlns:w': DmpChainMessages.wsa,
         'xmlns:xds': xds,
         'xmlns:lcm': 'urn:oasis:names:tc:ebxml-regrep:xsd:lcm:3.0',
-        'xmlns:wsse':
-            'http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd',
+        'xmlns:wsse': 'http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd',
         'xmlns:xop': 'http://www.w3.org/2004/08/xop/include',
       },
     );

@@ -29,6 +29,7 @@ import '../services/docx_pdf_service.dart';
 import 'document_journal_panel.dart';
 import '../services/document_reconciliation_service.dart';
 import '../services/episode_document_storage_service.dart';
+import '../../documents/services/initial_report_document_service.dart';
 
 class EpisodeDocumentsScreen extends StatefulWidget {
   final String caseId;
@@ -169,7 +170,7 @@ class _EpisodeDocumentsScreenState extends State<EpisodeDocumentsScreen>
       if (Platform.isMacOS) {
         await Process.run('open', [path]);
       } else if (Platform.isWindows) {
-        await Process.run('cmd', ['/c', 'start', '', path], runInShell: true);
+        await const InitialReportDocumentService().open(path);
       } else {
         throw Exception(s.episodeDocuments_platformNotSupported);
       }
@@ -371,10 +372,7 @@ class _EpisodeDocumentsScreenState extends State<EpisodeDocumentsScreen>
           SizedBox(height: 12),
           Text(s.episodeDocuments_noDocument, textAlign: TextAlign.center),
           SizedBox(height: 8),
-          Text(
-            s.episodeDmpDocuments_help,
-            textAlign: TextAlign.center,
-          ),
+          Text(s.episodeDmpDocuments_help, textAlign: TextAlign.center),
         ],
       ),
     );
@@ -630,6 +628,10 @@ class _EpisodeDocumentsScreenState extends State<EpisodeDocumentsScreen>
                           await widget.openFile!(file.path);
                         } else if (Platform.isMacOS) {
                           await Process.run('open', [file.path]);
+                        } else if (Platform.isWindows) {
+                          await const InitialReportDocumentService().open(
+                            file.path,
+                          );
                         } else {
                           throw const FinalPdfException(
                             'Ouverture de version non prise en charge sur cette plateforme.',

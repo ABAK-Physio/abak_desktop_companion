@@ -1,12 +1,15 @@
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:xml/xml.dart';
+
 import '../../../../dmp_transfer/archive_deposit_reader.dart';
 import '../../../models/episode_document_version.dart';
 import '../../document_medical_service.dart';
 import 'dv1_records.dart';
 import 'dv1_configuration.dart';
+import '../wire/dv1_type_label.dart';
 
 /// A review is bound to immutable evidence, never a general journal unlock.
 class Dv1RetryReview {
@@ -17,19 +20,25 @@ class Dv1RetryReview {
     this.firstAttemptId,
     this.secondAttemptId,
     this.thirdAttemptId,
+    this.typeLabel = false,
   });
   final String? firstAttemptId, secondAttemptId, thirdAttemptId;
+  final bool typeLabel;
   bool get signatureTitle => thirdAttemptId != null;
   bool get metadata => secondAttemptId != null;
   bool get patientId => firstAttemptId != null;
-  String get label => signatureTitle
+  String get label => typeLabel
+      ? 'Reprendre après le rejet du libellé 11490-0'
+      : signatureTitle
       ? 'Reprendre après le rejet du titre de signature'
       : metadata
       ? 'Reprendre après le rejet des métadonnées'
       : patientId
       ? 'Reprendre après le rejet patientId'
       : 'Reprendre après le rejet SOAP';
-  String get correction => signatureTitle
+  String get correction => typeLabel
+      ? 'le libellé XDS 11490-0 corrigé (Lettre de sortie)'
+      : signatureTitle
       ? 'le titre de signature corrigé (Source)'
       : metadata
       ? 'les libellés et métadonnées de signature corrigés'
@@ -41,13 +50,16 @@ class Dv1RetryReview {
   Map<String, Object?> get evidence => {
     'previousAttemptId': attemptId,
     'evidenceHash': bindingHash,
-    'reason': signatureTitle
+    'reason': typeLabel
+        ? 'XDS-typeCode-11490-label'
+        : signatureTitle
         ? 'XDS-signature-title'
         : metadata
         ? 'XDS-labels-signature'
         : patientId
         ? 'XDS-patientId-missing-NH'
         : 'SOAP-MustUnderstand-Security',
+    if (typeLabel) 'correctedTypeLabelProfile': Dv1TypeLabel.profile,
     if (patientId) 'firstAttemptId': firstAttemptId,
     if (metadata) 'secondAttemptId': secondAttemptId,
     if (signatureTitle) 'thirdAttemptId': thirdAttemptId,
@@ -80,6 +92,103 @@ class Dv1RetryReview {
 }
 
 class Dv1Retry {
+  /// Only the complete, single-error 11490-0 label rejection observed on DV1.
+  /// The rejected label must be present on the clinical entry of the request.
+  static bool isTypeLabelRejection({
+    required String request,
+    required String headers,
+    required List<int> bytes,
+    required String documentEntry,
+  }) {
+    try {
+      if (!_complete(headers, bytes, 200)) return false;
+      const s = ArchiveDepositReader.soap,
+          w = ArchiveDepositReader.wsa,
+          rs = ArchiveDepositReader.rs,
+          rim = 'urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0';
+      final one = ArchiveDepositReader.one;
+      final q = one(ArchiveDepositReader.parse(request), 'Envelope', s);
+      final hq = one(q, 'Header', s);
+      if (one(hq, 'To', w).innerText != Dv1Configuration.repository ||
+          one(hq, 'Action', w).innerText !=
+              'urn:ihe:iti:2007:ProvideAndRegisterDocumentSet-b')
+        return false;
+      final message = one(hq, 'MessageID', w).innerText;
+      if (!RegExp(r'^urn:uuid:[0-9a-f-]{36}$').hasMatch(message) ||
+          !RegExp(r'^Document_[0-9a-f-]{36}$').hasMatch(documentEntry))
+        return false;
+      final entries = q
+          .findAllElements('ExtrinsicObject', namespaceUri: rim)
+          .where((e) => e.getAttribute('id') == documentEntry)
+          .toList();
+      if (entries.length != 1) return false;
+      final types = entries.single
+          .findElements('Classification', namespaceUri: rim)
+          .where(
+            (e) =>
+                e.getAttribute('classificationScheme') ==
+                'urn:uuid:f0306f51-975f-434e-a61c-c59651d33983',
+          )
+          .toList();
+      if (types.length != 1 ||
+          types.single.getAttribute('nodeRepresentation') != '11490-0')
+        return false;
+      final type = types.single;
+      final coding = type
+          .findElements('Slot', namespaceUri: rim)
+          .where((e) => e.getAttribute('name') == 'codingScheme')
+          .single;
+      if (one(one(coding, 'ValueList', rim), 'Value', rim).innerText !=
+          '2.16.840.1.113883.6.1')
+        return false;
+      final oldLabel = one(
+        one(type, 'Name', rim),
+        'LocalizedString',
+        rim,
+      ).getAttribute('value');
+      if (![
+        Dv1TypeLabel.longLabel,
+        Dv1TypeLabel.curlyLongLabel,
+      ].contains(oldLabel))
+        return false;
+      final envelope = one(
+        ArchiveDepositReader.parse(
+          ArchiveDepositReader.extract(headers, bytes),
+        ),
+        'Envelope',
+        s,
+      );
+      if (envelope.childElements.length != 2) return false;
+      final h = one(envelope, 'Header', s), b = one(envelope, 'Body', s);
+      if (one(h, 'RelatesTo', w).innerText != message ||
+          one(h, 'Action', w).innerText != ArchiveDepositReader.action ||
+          b.childElements.length != 1)
+        return false;
+      final response = one(b, 'RegistryResponse', rs);
+      if (response.getAttribute('status') !=
+              '${ArchiveDepositReader.statusPrefix}Failure' ||
+          response.childElements.length != 1)
+        return false;
+      final errors = one(response, 'RegistryErrorList', rs);
+      const severity =
+          'urn:oasis:names:tc:ebxml-regrep:ErrorSeverityType:Error';
+      if (errors.getAttribute('highestSeverity') != severity ||
+          errors.childElements.length != 1)
+        return false;
+      final error = one(errors, 'RegistryError', rs);
+      return error.childElements.isEmpty &&
+          error.innerText.trim().isEmpty &&
+          error.getAttribute('errorCode') == 'XDSRegistryMetadataError' &&
+          error.getAttribute('severity') == severity &&
+          error.getAttribute('location') ==
+              'AffinityDomainBean.validateXDSDocumentEntry 3' &&
+          error.getAttribute('codeContext') ==
+              "entryUUID=$documentEntry;Le libellé '$oldLabel' ne fait pas partie du domaine d'affinité pour le code : 11490-0 (TYPECODE). La valeur correcte est : 'Lettre de sortie'.";
+    } catch (_) {
+      return false;
+    }
+  }
+
   static const wsse =
       'http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd';
   static const faultAction =
@@ -218,9 +327,8 @@ class Dv1Retry {
           .toList();
       if (patientIds.length != 3 ||
           patientIds.toSet().length != 1 ||
-          !RegExp(
-            r'^\d{15}\^\^\^&1\.2\.250\.1\.213\.1\.4\.10&ISO$',
-          ).hasMatch(patientIds.first ?? '')) {
+          !RegExp(r'^\d{15}\^\^\^&1\.2\.250\.1\.213\.1\.4\.10&ISO$')
+              .hasMatch(patientIds.first ?? '')) {
         return false;
       }
       final envelope = one(
@@ -495,6 +603,32 @@ class Dv1Retry {
         )) {
       throw StateError('Reprise déjà réservée ou tentative différente.');
     }
+    if (reservations.length == 1) {
+      final reservation = reservations.single;
+      final rows = await db.query(
+        'document_chain_steps',
+        where: 'chain_id=?',
+        whereArgs: [reservation['chain_id']],
+      );
+      final responses = rows
+          .where((r) => r['phase'] == 'dv1_response')
+          .toList();
+      final packages = rows.where((r) => r['phase'] == 'dv1_package').toList();
+      if (responses.length == 1 && packages.length == 1) {
+        final response = Dv1Records.data(responses.single);
+        final package = Dv1Records.data(packages.single);
+        final replay = package['wire']['replay'] as Map;
+        if (response['response'] is String &&
+            isTypeLabelRejection(
+              request: response['request'],
+              headers: response['headers'],
+              bytes: base64Decode(response['response']),
+              documentEntry: replay['identifiers']['cdaEntry'],
+            )) {
+          return _typeLabelReview(db, reservation, controlsRoot);
+        }
+      }
+    }
     final first = await _soapReview(db, reservations.last, controlsRoot);
     if (reservations.length == 1) return first;
     final second = await _patientReview(
@@ -705,6 +839,61 @@ class Dv1Retry {
       firstAttemptId: previous.firstAttemptId,
       secondAttemptId: previous.secondAttemptId,
       thirdAttemptId: previous.attemptId,
+    );
+  }
+
+  static Future<Dv1RetryReview> _typeLabelReview(
+    DatabaseExecutor db,
+    MedicalRow reservation,
+    Directory controlsRoot,
+  ) async {
+    final verified = await Dv1Records.verify(
+      db,
+      reservation,
+      controlsRoot: controlsRoot,
+    );
+    final saved = Dv1Records.data(reservation);
+    final rows = await db.query(
+      'document_chain_steps',
+      where: 'chain_id=?',
+      whereArgs: [reservation['chain_id']],
+    );
+    Map<String, dynamic> phase(String name) =>
+        Dv1Records.data(rows.where((r) => r['phase'] == 'dv1_$name').single);
+    final response = phase('response'),
+        package = phase('package'),
+        preparation = phase('preparation');
+    final replay = package['wire']['replay'] as Map;
+    if (verified['outcome'] != 'rejected' ||
+        saved.containsKey('retry') ||
+        preparation.containsKey('retry') ||
+        preparation['accessOnly'] != false ||
+        preparation['conditions']['scenario'] != 'PRE_ALIM_N1' ||
+        replay['soapHeaderProfile'] != 'dv1-20261028' ||
+        replay['xdsPatientIdProfile'] != 'ins-nh-1' ||
+        replay['xdsMetadataProfile'] != 'dv1-labels-signature-1' ||
+        replay['signatureTitleProfile'] != 'event-source-1' ||
+        replay.containsKey('typeLabelProfile') ||
+        !isTypeLabelRejection(
+          request: response['request'],
+          headers: response['headers'],
+          bytes: base64Decode(response['response']),
+          documentEntry: replay['identifiers']['cdaEntry'],
+        )) {
+      throw StateError(
+        'Aucune preuve du rejet du libellé 11490-0 autorisant cette reprise.',
+      );
+    }
+    return Dv1RetryReview._(
+      reservation['chain_id'] as String,
+      medicalHash({
+        'reservation': reservation,
+        'preparation': preparation,
+        'response': response,
+        'package': package,
+      }),
+      Map.unmodifiable(saved),
+      typeLabel: true,
     );
   }
 

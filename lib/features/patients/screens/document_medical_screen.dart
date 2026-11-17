@@ -5,6 +5,7 @@ import '../services/document_medical_service.dart';
 import '../services/document_controls_service.dart';
 import 'document_controls_panel.dart';
 import 'document_journal_panel.dart';
+import 'document_medical_progress.dart';
 import '../services/document_journal_service.dart';
 import '../services/document_reconciliation_service.dart';
 import '../../practitioners/data/practitioner_cps_service.dart';
@@ -608,6 +609,13 @@ class _DocumentMedicalScreenState extends State<DocumentMedicalScreen>
     final p = information?['patient'] as Map?;
     final i = information?['identity'] as Map?;
     final isRecipe = i?['cnda_recipe_json'] != null;
+    final progress = DocumentMedicalProgress(
+      status: status?.state,
+      dirty: dirty,
+      renderError: renderError,
+      pageCount: review?.pages.length,
+      reviewedPageCount: reviewed.length,
+    );
     final classified = ReportPrefillSettings.classificationFields.every(
       (key) => (draft[key] ?? '').trim().isNotEmpty,
     );
@@ -964,9 +972,7 @@ class _DocumentMedicalScreenState extends State<DocumentMedicalScreen>
                       _validationStep(
                         1,
                         'Relire toutes les pages du PDF',
-                        review == null
-                            ? 'Revue à commencer'
-                            : '${reviewed.length} / ${review!.pages.length} page(s) examinée(s)',
+                        progress.reviewSubtitle,
                         [
                           OutlinedButton.icon(
                             key: const Key('consult-medical-pdf'),
@@ -1071,30 +1077,21 @@ class _DocumentMedicalScreenState extends State<DocumentMedicalScreen>
                             ),
                           ),
                         ],
-                        done:
-                            !dirty &&
-                            !renderError &&
-                            review != null &&
-                            reviewed.length == review!.pages.length,
+                        done: progress.reviewComplete,
                       ),
                       _validationStep(
                         2,
                         isRecipe
                             ? 'Confirmer la validation de test'
                             : 'Confirmer la validation médicale',
-                        !dirty &&
-                                (status?.valid == true ||
-                                    status?.state == 'test_approved')
+                        progress.validationRecorded
                             ? 'Validation enregistrée'
                             : 'Confirmation explicite requise',
                         [
                           const Text(
                             'La validation porte sur cette version du PDF. Elle ne signe pas le document et ne l’envoie pas.',
                           ),
-                          if (review == null ||
-                              dirty ||
-                              renderError ||
-                              reviewed.length != review!.pages.length)
+                          if (!progress.reviewComplete)
                             const Text(
                               'Terminez d’abord la revue des pages à l’étape 2.',
                             ),
@@ -1140,10 +1137,7 @@ class _DocumentMedicalScreenState extends State<DocumentMedicalScreen>
                             ),
                           ),
                         ],
-                        done:
-                            !dirty &&
-                            (status?.valid == true ||
-                                status?.state == 'test_approved'),
+                        done: progress.validationRecorded,
                       ),
                     ],
                   ),

@@ -7,6 +7,7 @@ import 'package:xml/xml.dart';
 import 'document_medical_service.dart';
 import 'document_native_launcher.dart';
 import 'document_tools_access.dart';
+import 'document_windows_execution.dart';
 import 'final_pdf_document_service.dart';
 
 const cdaProfiles = [
@@ -36,7 +37,10 @@ String pdfaVerdict(String report, int code, File pdf) {
       throw StateError('Nombre de tâches');
     }
     final item = one(job, 'item');
-    if (one(item, 'name').innerText != pdf.path ||
+    final reportedPath = Platform.isWindows
+        ? WindowsDocumentExecution.reportedInputPath(pdf)
+        : pdf.path;
+    if (one(item, 'name').innerText != reportedPath ||
         count(item, 'size') != pdf.lengthSync()) {
       throw StateError('Réponse non corrélée');
     }
@@ -150,7 +154,7 @@ class LocalDocumentControlRunner implements DocumentControlRunner {
     ).list(recursive: true, followLinks: false)) {
       if (e is Link) throw StateError('Lien dans les ressources');
       if (e is! File) continue;
-      final name = p.relative(e.path, from: root);
+      final name = p.relative(e.path, from: root).replaceAll(r'\', '/');
       // Prior bench products are never references.
       if (name.contains('.bench-') ||
           p.basename(name).startsWith('abak-') ||
@@ -169,8 +173,10 @@ class LocalDocumentControlRunner implements DocumentControlRunner {
 
   @override
   Future<Map<String, Object?>> inspect(Map<String, String> paths) async {
-    if (!Platform.isMacOS) {
-      throw StateError('Contrôles locaux disponibles sur macOS uniquement.');
+    if (!Platform.isMacOS && !Platform.isWindows) {
+      throw StateError(
+        'Configuration locale disponible sur macOS et Windows uniquement.',
+      );
     }
     final access = await DocumentToolsAccess.acquire(paths);
     try {
@@ -294,33 +300,41 @@ class LocalDocumentControlRunner implements DocumentControlRunner {
       if (!File(p.join(job.path, 'document.xml')).existsSync()) {
         throw StateError('Contexte CDA non représentable');
       }
-      final refs = Map<String, String>.from(configuration['references'] as Map);
-      final scratch = Directory(p.join(job.path, 'references'));
-      if (await FileSystemEntity.type(scratch.path, followLinks: false) !=
-          FileSystemEntityType.notFound) {
-        throw StateError('Un espace de contrôle neuf est requis');
-      }
-      await scratch.create();
-      privateReferencesCreated = true;
-
-      for (final item in refs.entries) {
-        final src = File(p.join(paths['references']!, item.key));
-        final bytes = await src.readAsBytes();
-        if (FinalPdfDocumentService.hash(bytes) != item.value) {
-          throw StateError('Référentiel modifié');
+      ProcessResult cp;
+      if (Platform.isWindows) {
+        await write('CdaCheck.java', await helper());
+        cp = await WindowsDocumentExecution.runCda(job, configuration);
+      } else {
+        final refs = Map<String, String>.from(
+          configuration['references'] as Map,
+        );
+        final scratch = Directory(p.join(job.path, 'references'));
+        if (await FileSystemEntity.type(scratch.path, followLinks: false) !=
+            FileSystemEntityType.notFound) {
+          throw StateError('Un espace de contrôle neuf est requis');
         }
-        final dst = File(p.join(job.path, 'references', item.key));
-        await dst.parent.create(recursive: true);
-        await dst.writeAsBytes(bytes, flush: true);
+        await scratch.create();
+        privateReferencesCreated = true;
+
+        for (final item in refs.entries) {
+          final src = File(p.join(paths['references']!, item.key));
+          final bytes = await src.readAsBytes();
+          if (FinalPdfDocumentService.hash(bytes) != item.value) {
+            throw StateError('Référentiel modifié');
+          }
+          final dst = File(p.join(job.path, 'references', item.key));
+          await dst.parent.create(recursive: true);
+          await dst.writeAsBytes(bytes, flush: true);
+        }
+        await write('CdaCheck.java', await helper());
+        cp = await process(paths['java']!, [
+          '--class-path',
+          p.join(job.path, 'references/schematrons/moteur/saxon9he.jar'),
+          p.join(job.path, 'CdaCheck.java'),
+          p.join(job.path, 'references'),
+          job.path,
+        ], job);
       }
-      await write('CdaCheck.java', await helper());
-      final cp = await process(paths['java']!, [
-        '--class-path',
-        p.join(job.path, 'references/schematrons/moteur/saxon9he.jar'),
-        p.join(job.path, 'CdaCheck.java'),
-        p.join(job.path, 'references'),
-        job.path,
-      ], job);
       await write(
         'cda-execution.txt',
         'exit=${cp.exitCode}\n${cp.stdout}\n${cp.stderr}',

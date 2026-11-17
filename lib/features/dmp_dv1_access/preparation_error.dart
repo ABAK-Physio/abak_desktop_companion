@@ -12,7 +12,7 @@ String dv1PreparationError(Object error, String stage) {
       : error is FormatException
       ? 'format de données locales'
       : error is PlatformException
-      ? 'service macOS'
+      ? 'service de plateforme'
       : error is FlutterError
       ? 'ressource ou interface Companion'
       : error is TypeError || error is NoSuchMethodError

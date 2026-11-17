@@ -1,3 +1,4 @@
+import '../../../../dmp_td02/access_identity.dart';
 import '../../../../cps/cps_profile.dart';
 import '../../document_medical_service.dart';
 
@@ -13,6 +14,7 @@ class Dv1AccessContext {
     required this.scenario,
     required this.confirmedAt,
     this.replacementUntil,
+    this.insOid = DmpAccessIdentity.nirOid,
     this.birthDate,
     this.minorsEnabled = false,
     this.majorityAge = 18,
@@ -25,6 +27,7 @@ class Dv1AccessContext {
       patientLabel,
       source,
       scenario;
+  final String insOid;
   final DateTime confirmedAt;
   final DateTime? replacementUntil;
   final String? birthDate;
@@ -57,6 +60,7 @@ class Dv1AccessContext {
     structure: structure,
     sector: sector,
     ins: ins,
+    insOid: insOid,
     patientLabel: patientLabel,
     source: source,
     scenario: scenario,
@@ -70,6 +74,7 @@ class Dv1AccessContext {
   static const endpoint =
       'https://lps.dev1.dmp.gouv.fr/si-dmp-server/v2/services/patients';
   void check(DateTime now) {
+    DmpAccessIdentity.requireNirOid(insOid);
     if (majorityAge < 1 ||
         majorityAge > 120 ||
         (secretConnection && !offersSecret(now.toLocal()))) {
@@ -119,7 +124,7 @@ class Dv1AccessContext {
     'identity': {
       'ins_number': ins.substring(0, 13),
       'ins_key': ins.substring(13),
-      'ins_oid': '1.2.250.1.213.1.4.10',
+      'ins_oid': insOid,
       'origin': 'CNDA — saisie de recette, non qualifiée par Companion',
     },
     'practice': {

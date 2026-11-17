@@ -455,11 +455,15 @@ bool FlutterWindow::OnCreate() {
     }
 
     RegisterPlugins(flutter_controller_->engine());
+    webps_channel_ = std::make_unique<WebPsChannel>(
+            flutter_controller_->engine()->messenger(), GetHandle());
+    cps_channel_ = std::make_unique<CpsChannel>(
+            flutter_controller_->engine()->messenger(), GetHandle());
     // Register the dedicated Windows document-controls channel.
-    // No Java execution is enabled at this stage.
+    // The installed native service handles DOCX/PDF-A away from the UI thread.
     document_controls_channel_ =
             std::make_unique<DocumentControlsChannel>(
-                    flutter_controller_->engine()->messenger());
+                    flutter_controller_->engine()->messenger(), GetHandle());
 
     smart_card_channel_ =
             std::make_unique<flutter::MethodChannel<flutter::EncodableValue>>(
@@ -531,6 +535,8 @@ bool FlutterWindow::OnCreate() {
 void FlutterWindow::OnDestroy() {
     // Release channels before destroying the Flutter engine.
     document_controls_channel_.reset();
+    webps_channel_.reset();
+    cps_channel_.reset();
     smart_card_channel_.reset();
     flutter_controller_.reset();
 
@@ -542,6 +548,18 @@ LRESULT FlutterWindow::MessageHandler(
         UINT const message,
         WPARAM const wparam,
         LPARAM const lparam) noexcept {
+if (message == WebPsChannel::CompletionMessage && webps_channel_) {
+    webps_channel_->Complete();
+    return 0;
+}
+if (message == CpsChannel::CompletionMessage && cps_channel_) {
+    cps_channel_->Complete();
+    return 0;
+}
+if (message == DocumentControlsChannel::CompletionMessage && document_controls_channel_) {
+    document_controls_channel_->Complete();
+    return 0;
+}
 // Give Flutter, including plugins, an opportunity to handle window messages.
 if (flutter_controller_) {
 std::optional<LRESULT> result =

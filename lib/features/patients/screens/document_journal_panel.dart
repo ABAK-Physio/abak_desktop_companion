@@ -112,6 +112,17 @@ class _DocumentJournalPanelState extends State<DocumentJournalPanel>
       if (pin == null || !mounted || widget.version.id != selected.id) return;
       await signatures.sign(selected, review, pin);
       await refresh();
+      if (mounted &&
+          widget.version.id == selected.id &&
+          signatureStatus?.currentSignatureVerified == true) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'Lot signé par la CPS et vérifié localement. Aucun envoi.',
+            ),
+          ),
+        );
+      }
     } catch (e) {
       await refresh();
       if (mounted) {
@@ -240,10 +251,24 @@ class _DocumentJournalPanelState extends State<DocumentJournalPanel>
             'Signature CPS du lot',
             style: Theme.of(context).textTheme.titleMedium,
           ),
-          Text(
-            signatureStatus?.message ??
-                'Lecture de la préparation de signature…',
-            key: const Key('document-lot-signature-status'),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (signatureStatus?.currentSignatureVerified == true) ...[
+                const Icon(
+                  Icons.check_circle_outline,
+                  key: Key('document-lot-signature-verified'),
+                ),
+                const SizedBox(width: 8),
+              ],
+              Expanded(
+                child: Text(
+                  signatureStatus?.message ??
+                      'Lecture de la préparation de signature…',
+                  key: const Key('document-lot-signature-status'),
+                ),
+              ),
+            ],
           ),
           OutlinedButton.icon(
             key: const Key('sign-document-lot-cps'),

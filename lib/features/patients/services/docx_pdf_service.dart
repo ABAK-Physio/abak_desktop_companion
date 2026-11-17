@@ -9,6 +9,7 @@ import 'document_medical_service.dart';
 import 'document_native_controls.dart';
 import 'document_native_launcher.dart';
 import 'document_tools_access.dart';
+import 'document_windows_execution.dart';
 import 'final_pdf_document_service.dart';
 import 'pdf_conversion_evidence.dart';
 import '../models/episode_document_version.dart';
@@ -112,9 +113,9 @@ class DocxPdfService {
     String? expectedSourceRevision,
     void Function(String)? onProgress,
   }) async {
-    if (!Platform.isMacOS) {
+    if (!Platform.isMacOS && !Platform.isWindows) {
       throw FinalPdfException(
-        'Conversion DOCX disponible sur macOS uniquement.',
+        'Conversion DOCX disponible sur macOS et Windows uniquement.',
       );
     }
     if (p.extension(sourcePath).toLowerCase() != '.docx') {
@@ -157,17 +158,30 @@ class DocxPdfService {
           p.join(job.path, 'source.docx'),
         ).writeAsBytes(bytes, flush: true);
         onProgress?.call('Conversion du DOCX enregistré en PDF…');
-        final answer = await NativeDocumentLauncher.channel
-            .invokeMapMethod<String, dynamic>('run', {
-              'protocol': 1,
-              'operation': 'docx',
-              'job': job.path,
-              'sourceHash': sourceHash,
-              'office': (paths['office'] ?? '').isEmpty
-                  ? '/Applications/LibreOffice.app'
-                  : paths['office']!,
-            })
-            .timeout(const Duration(minutes: 5));
+        final answer = Platform.isWindows
+            ? await WindowsDocumentExecution.convert(
+                bytes,
+                (paths['office'] ?? '').isEmpty
+                    ? p.join(
+                        Platform.environment['ProgramFiles'] ??
+                            r'C:\Program Files',
+                        'LibreOffice',
+                        'program',
+                        'soffice.exe',
+                      )
+                    : paths['office']!,
+              )
+            : await NativeDocumentLauncher.channel
+                  .invokeMapMethod<String, dynamic>('run', {
+                    'protocol': 1,
+                    'operation': 'docx',
+                    'job': job.path,
+                    'sourceHash': sourceHash,
+                    'office': (paths['office'] ?? '').isEmpty
+                        ? '/Applications/LibreOffice.app'
+                        : paths['office']!,
+                  })
+                  .timeout(const Duration(minutes: 5));
         if (answer == null || answer['error'] != null) {
           throw FinalPdfException(
             answer?['error'] ?? 'Conversion indisponible.',

@@ -85,22 +85,31 @@ bool EnabledSid(HANDLE token, const std::string& expected) {
   return found;
 }
 
-bool ServiceBinding(const PeerPolicy& policy, DWORD pid) {
+Error ServiceBinding(const PeerPolicy& policy, DWORD pid) {
   SC_HANDLE manager = OpenSCManagerW(nullptr, nullptr, SC_MANAGER_CONNECT);
-  if (!manager) return false;
+  if (!manager) return Failure("OpenSCManagerW(peer service)");
   SC_HANDLE service = OpenServiceW(manager, policy.service_name.c_str(), SERVICE_QUERY_STATUS);
-  bool matches = false;
-  if (service) {
-    SERVICE_STATUS_PROCESS status{};
-    DWORD received = 0;
-    matches = QueryServiceStatusEx(service, SC_STATUS_PROCESS_INFO,
-        reinterpret_cast<LPBYTE>(&status), sizeof(status), &received) &&
-        status.dwCurrentState == SERVICE_RUNNING && status.dwProcessId == pid &&
-        status.dwServiceType == SERVICE_WIN32_OWN_PROCESS;
-    CloseServiceHandle(service);
+  if (!service) {
+    const auto error = Failure("OpenServiceW(peer service)");
+    CloseServiceHandle(manager);
+    return error;
   }
+  SERVICE_STATUS_PROCESS status{};
+  DWORD received = 0;
+  const BOOL queried = QueryServiceStatusEx(service, SC_STATUS_PROCESS_INFO,
+      reinterpret_cast<LPBYTE>(&status), sizeof(status), &received);
+  const auto query_error = queried ? Error{} : Failure("QueryServiceStatusEx(peer service)");
+  CloseServiceHandle(service);
   CloseServiceHandle(manager);
-  return matches;
+  if (query_error) return query_error;
+  if (status.dwCurrentState != SERVICE_RUNNING || status.dwProcessId != pid ||
+      status.dwServiceType != SERVICE_WIN32_OWN_PROCESS) {
+    return {"PEER_SERVICE_REJECTED", "SCM binding mismatch: pipePid=" + std::to_string(pid) +
+        " servicePid=" + std::to_string(status.dwProcessId) +
+        " state=" + std::to_string(status.dwCurrentState) +
+        " type=" + std::to_string(status.dwServiceType)};
+  }
+  return {};
 }
 
 bool PeerPid(HANDLE pipe, PipePeer peer, DWORD* pid) {
@@ -170,7 +179,8 @@ Error InspectPeer(HANDLE pipe, PipePeer peer, const PeerPolicy& policy, PeerLeas
   lease->facts.installation_protected = true;
   if (policy.role == PeerRole::kService) {
     lease->facts.service_sid_enabled = EnabledSid(token.get(), policy.service_sid);
-    lease->facts.service_binding_matches = ServiceBinding(policy, pid);
+    if (auto error = ServiceBinding(policy, pid)) return error;
+    lease->facts.service_binding_matches = true;
   }
   return {};
 }
@@ -228,10 +238,22 @@ Error HashOpenImage(HANDLE file, std::string* digest) {
 Error RecheckPipePeer(HANDLE pipe, PipePeer peer, const PeerPolicy& policy,
                       const PeerLease& lease) {
   DWORD pid = 0;
-  if (!lease.process || !lease.image || !PeerPid(pipe, peer, &pid) ||
-      pid != lease.facts.pid || WaitForSingleObject(lease.process.get(), 0) != WAIT_TIMEOUT ||
-      (policy.role == PeerRole::kService && !ServiceBinding(policy, pid))) {
-    return {"PEER_IDENTITY_REJECTED", "Peer identity changed or process exited."};
+  if (!lease.process || !lease.image) {
+    return {"PEER_IDENTITY_REJECTED", "Peer process or image handle missing."};
+  }
+  if (!PeerPid(pipe, peer, &pid)) return Failure("Recheck GetNamedPipeProcessId");
+  if (pid != lease.facts.pid) {
+    return {"PEER_IDENTITY_REJECTED", "Pipe process changed: expectedPid=" +
+        std::to_string(lease.facts.pid) + " currentPid=" + std::to_string(pid)};
+  }
+  const DWORD waited = WaitForSingleObject(lease.process.get(), 0);
+  if (waited == WAIT_FAILED) return Failure("WaitForSingleObject(peer process)");
+  if (waited != WAIT_TIMEOUT) {
+    return {"PEER_IDENTITY_REJECTED", "Peer process ended: pid=" + std::to_string(pid) +
+        " wait=" + std::to_string(waited)};
+  }
+  if (policy.role == PeerRole::kService) {
+    if (auto error = ServiceBinding(policy, pid)) return error;
   }
   if (auto error = RecheckProtectedFile(lease.image.get(), lease.directories)) return error;
   return AuthorizePeer(policy, lease.facts);

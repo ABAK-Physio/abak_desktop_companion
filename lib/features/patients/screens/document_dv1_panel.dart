@@ -1,14 +1,22 @@
 import '../services/dmp_chain/native/dv1_replacement.dart';
+
 import 'dart:convert';
+import 'dart:io';
+
+import 'package:uuid/uuid.dart';
+
 import '../../dmp_dv1_access/access_screen.dart';
+import '../../dmp_dv1_access/preparation_error.dart';
+import '../../dmp_session/dmp_work_context.dart';
+
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
 import '../models/episode_document_version.dart';
 import '../services/document_journal_service.dart';
 import '../services/document_lot_signature_service.dart';
 import '../services/dmp_chain/chain_service.dart';
-import '../services/dmp_chain/contracts.dart';
 import '../services/dmp_chain/native/dv1_configuration.dart';
 import '../services/dmp_chain/native/dv1_review.dart';
 import '../services/dmp_chain/native/dv1_retry.dart';
@@ -23,12 +31,14 @@ class DocumentDv1Panel extends StatefulWidget {
     required this.enabled,
     required this.onBusy,
     required this.onCompleted,
+    this.workContext,
   });
   final DocumentJournalService journal;
   final EpisodeDocumentVersion version;
   final bool enabled;
   final ValueChanged<bool> onBusy;
   final Future<void> Function() onCompleted;
+  final DmpWorkContext? workContext;
   @override
   State<DocumentDv1Panel> createState() => _DocumentDv1PanelState();
 }
@@ -40,17 +50,74 @@ class _DocumentDv1PanelState extends State<DocumentDv1Panel> {
   String retryLabel = 'Reprendre après le rejet SOAP';
   Dv1Configuration? config;
   String message = 'Lecture de la configuration…';
+  String? actionMessage, actionVersionId;
+  bool actionFailed = false, contextBlocked = false;
+  bool _contextRefreshPending = false;
+  int _refreshSequence = 0;
+  DmpWorkContext get workContext =>
+      widget.workContext ?? DmpWorkContext.current;
   Dv1ConfigurationService get settings =>
       Dv1ConfigurationService(widget.journal);
   @override
   void initState() {
     super.initState();
+    workContext.changes.addListener(_workContextChanged);
     refresh();
+  }
+
+  @override
+  void dispose() {
+    workContext.changes.removeListener(_workContextChanged);
+    super.dispose();
+  }
+
+  void _workContextChanged() {
+    if (busy) {
+      ++_refreshSequence;
+      _contextRefreshPending = true;
+    } else {
+      refresh();
+    }
+  }
+
+  void _finishBusy() {
+    widget.onBusy(false);
+    if (!mounted) return;
+    setState(() => busy = false);
+    if (_contextRefreshPending) {
+      _contextRefreshPending = false;
+      refresh();
+    }
+  }
+
+  void _showActionResult(
+    EpisodeDocumentVersion version,
+    String text, {
+    required bool failed,
+  }) {
+    if (!mounted || widget.version.id != version.id) return;
+    setState(() {
+      actionVersionId = version.id;
+      actionMessage = text;
+      actionFailed = failed;
+    });
   }
 
   @override
   void didUpdateWidget(DocumentDv1Panel old) {
     super.didUpdateWidget(old);
+    final previousContext = old.workContext ?? DmpWorkContext.current;
+    if (!identical(previousContext, workContext)) {
+      previousContext.changes.removeListener(_workContextChanged);
+      workContext.changes.addListener(_workContextChanged);
+      _workContextChanged();
+    }
+    if (old.version.id != widget.version.id) {
+      actionMessage = null;
+      actionVersionId = null;
+      ++_refreshSequence;
+      if (busy) _contextRefreshPending = true;
+    }
     if (!busy &&
         (old.version.id != widget.version.id ||
             old.enabled != widget.enabled)) {
@@ -59,6 +126,8 @@ class _DocumentDv1PanelState extends State<DocumentDv1Panel> {
   }
 
   Future<void> refresh() async {
+    final sequence = ++_refreshSequence;
+    final contextRevision = workContext.changes.value;
     final selected = widget.version;
     var canPrepare = false, retained = true, canRetry = false;
     Dv1Configuration? configuration;
@@ -66,6 +135,8 @@ class _DocumentDv1PanelState extends State<DocumentDv1Panel> {
     String? acceptedVersion;
     var replacementCandidate = false, replacementConfigured = false;
     String text;
+    var diagnosticStage = 'lecture de la configuration DV1';
+    var missingContext = false;
     try {
       final db = await widget.journal.database;
       try {
@@ -78,10 +149,19 @@ class _DocumentDv1PanelState extends State<DocumentDv1Panel> {
       } catch (_) {}
       configuration = await settings.current();
       if (configuration == null) {
-        text =
-            'Configurez la recette DV1 avec les paramètres et fichiers officiels.';
+        text = 'Configurez la recette DV1 avec les paramètres et fichiers officiels.';
       } else {
+        diagnosticStage = 'sélection et déverrouillage du praticien';
+        try {
+          workContext.requireProfessional(configuration.professional);
+        } on StateError {
+          missingContext = true;
+          rethrow;
+        }
+        diagnosticStage =
+            'vérification de la configuration DV1 et des fichiers CPS';
         await settings.unchanged(configuration);
+        diagnosticStage = 'lecture de l’état du journal';
         final status = await widget.journal.status(selected);
         retained = status.held;
         if (status.attempt != null || status.state == 'restored') {
@@ -110,13 +190,13 @@ class _DocumentDv1PanelState extends State<DocumentDv1Panel> {
               text +=
                   ' Rejet vérifié : une reprise avec ${review.correction} est possible sur confirmation. Les tentatives précédentes restent conservées.';
             } catch (e) {
-              text += e is StateError
-                  ? ' Reprise indisponible : ${e.message}'
-                  : ' Reprise indisponible : les preuves ne sont pas vérifiables.';
+              text += e is StateError ? ' Reprise indisponible : ${e.message}' : ' Reprise indisponible : les preuves ne sont pas vérifiables.';
             }
           }
         } else {
+          diagnosticStage = 'préparation du PDF et du CDA';
           final prepared = await widget.journal.prepare(selected);
+          diagnosticStage = 'lecture du contexte professionnel';
           final snapshot = jsonDecode(
             prepared.receipt['snapshot_json'] as String,
           );
@@ -126,14 +206,15 @@ class _DocumentDv1PanelState extends State<DocumentDv1Panel> {
               'Le professionnel validé diffère de la configuration CPS.',
             );
           }
+          diagnosticStage = 'concordance des nomenclatures';
           if (!configuration.codes(snapshot)) {
             throw StateError(
               'Les codes du document ne concordent pas avec les nomenclatures importées.',
             );
           }
-          await DocumentLotSignatureService(
-            widget.journal,
-          ).checkBeforeDv1(selected);
+          diagnosticStage = 'vérification des preuves de signature CPS';
+          await DocumentLotSignatureService(widget.journal)
+              .checkBeforeDv1(selected);
           canPrepare = true;
           text =
               'Configuration DV1 n°${configuration.revision}. PDF validé et contrôles locaux conformes. '
@@ -141,11 +222,12 @@ class _DocumentDv1PanelState extends State<DocumentDv1Panel> {
         }
       }
     } catch (e) {
-      text = e is StateError
-          ? e.message.toString()
-          : 'Configuration ou préparation locale non vérifiable. Vérifiez les fichiers et les contrôles du document.';
+      text = dv1PreparationError(e, diagnosticStage);
     }
-    if (mounted && selected.id == widget.version.id) {
+    if (mounted &&
+        selected.id == widget.version.id &&
+        sequence == _refreshSequence &&
+        contextRevision == workContext.changes.value) {
       setState(() {
         config = configuration;
         canReplace = replacementCandidate;
@@ -156,6 +238,7 @@ class _DocumentDv1PanelState extends State<DocumentDv1Panel> {
         retryLabel = label;
         held = retained;
         message = text;
+        contextBlocked = missingContext;
       });
     }
   }
@@ -193,8 +276,7 @@ class _DocumentDv1PanelState extends State<DocumentDv1Panel> {
       await widget.onCompleted();
       if (mounted) {
         setState(
-          () => message =
-              'Remplacement préparé. Relisez et validez cette nouvelle version PDF, puis lancez les contrôles avant de lever la retenue et confirmer le remplacement.',
+          () => message = 'Remplacement préparé. Relisez et validez cette nouvelle version PDF, puis lancez les contrôles avant de lever la retenue et confirmer le remplacement.',
         );
       }
     } catch (e) {
@@ -202,8 +284,7 @@ class _DocumentDv1PanelState extends State<DocumentDv1Panel> {
         setState(() => message = 'Préparation du remplacement impossible : $e');
       }
     } finally {
-      widget.onBusy(false);
-      if (mounted) setState(() => busy = false);
+      _finishBusy();
     }
   }
 
@@ -219,13 +300,16 @@ class _DocumentDv1PanelState extends State<DocumentDv1Panel> {
         barrierDismissible: false,
         builder: (_) => Dv1SettingsDialog(service: settings, previous: old),
       );
-      if (saved == true) {
+      if (saved == true && mounted) {
+        setState(() {
+          actionMessage = null;
+          actionVersionId = null;
+        });
         await refresh();
         await widget.onCompleted();
       }
     } finally {
-      widget.onBusy(false);
-      if (mounted) setState(() => busy = false);
+      _finishBusy();
     }
   }
 
@@ -233,11 +317,15 @@ class _DocumentDv1PanelState extends State<DocumentDv1Panel> {
     if (busy || !widget.enabled) return;
     final version = widget.version;
     String? pin;
+    var actionStage = 'préparation locale avant confirmation';
     setState(() => busy = true);
     widget.onBusy(true);
     try {
       final configuration = await settings.current();
       if (configuration == null) throw StateError('Configuration DV1 absente.');
+      actionStage = 'sélection et déverrouillage du praticien';
+      final checkContext = workContext.bind(configuration.professional);
+      actionStage = 'vérification de la préparation avant confirmation';
       await settings.unchanged(configuration);
       final status = await widget.journal.status(version);
       final retry = retrying && !accessOnly
@@ -275,6 +363,12 @@ class _DocumentDv1PanelState extends State<DocumentDv1Panel> {
       }
       pin = confirmed.pin;
       confirmed.pin = ''; // The secret is neither journalled nor saved.
+      actionStage = 'contexte du praticien après confirmation';
+      checkContext();
+      setState(() {
+        actionMessage = null;
+        actionVersionId = null;
+      });
       final review = Dv1Review(
         prepared: prepared,
         configurationHash: configuration.hash,
@@ -286,6 +380,7 @@ class _DocumentDv1PanelState extends State<DocumentDv1Panel> {
         testIdentity: true,
         actor: true,
       );
+      actionStage = accessOnly ? 'vérification d’accès DV1' : 'dépôt DV1';
       final result = await DocumentDmpChain(journal: widget.journal).executeDv1(
         version,
         configuration: configuration,
@@ -300,22 +395,27 @@ class _DocumentDv1PanelState extends State<DocumentDv1Panel> {
       );
       await refresh();
       await widget.onCompleted();
-      if (mounted) setState(() => message = result.message);
+      _showActionResult(
+        version,
+        result.message,
+        failed: const {
+          'chain_blocked',
+          'rejected',
+          'indeterminate',
+          'conflict',
+          'restored',
+        }.contains(result.state),
+      );
     } catch (e) {
+      _showActionResult(
+        version,
+        dv1PreparationError(e, actionStage),
+        failed: true,
+      );
       await widget.onCompleted();
-      if (mounted) {
-        setState(
-          () => message = e is DmpChainBlock
-              ? e.message
-              : e is StateError
-              ? e.message.toString()
-              : 'Préparation DV1 interrompue. Consultez le journal ; aucun nouvel essai automatique.',
-        );
-      }
     } finally {
       pin = null;
-      widget.onBusy(false);
-      if (mounted) setState(() => busy = false);
+      _finishBusy();
     }
   }
 
@@ -333,7 +433,35 @@ class _DocumentDv1PanelState extends State<DocumentDv1Panel> {
         'Profil pris en charge : kiné auteur et validateur, en ambulatoire, patient majeur, document visible. '
         'La vérification d’accès ne dépose rien. Le dépôt crée une tentative conservée dans ce journal.',
       ),
-      Text(message, key: const Key('dv1-status')),
+      Text(
+        message,
+        key: const Key('dv1-status'),
+        style: contextBlocked
+            ? TextStyle(color: Theme.of(context).colorScheme.error)
+            : null,
+      ),
+      if (actionVersionId == widget.version.id && actionMessage != null)
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(
+                actionFailed ? Icons.error_outline : Icons.info_outline,
+                color: actionFailed
+                    ? Theme.of(context).colorScheme.error
+                    : Theme.of(context).colorScheme.primary,
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  'Dernière action DV1 : $actionMessage',
+                  key: const Key('dv1-action-result'),
+                ),
+              ),
+            ],
+          ),
+        ),
       OutlinedButton(
         onPressed: busy || !widget.enabled ? null : configure,
         child: const Text('Configurer la recette DV1'),
@@ -419,6 +547,28 @@ class Dv1SettingsDialogState extends State<Dv1SettingsDialog> {
     };
     final bundled = Dv1ConfigurationService.bundledCpsJava;
     if (bundled != null) fields['java']!.text = bundled;
+    if (Platform.isWindows) {
+      if (widget.previous == null) {
+        final id = const Uuid().v4();
+        fields['lpsId']!.text = 'ABAK-DV1-WINDOWS-$id';
+        fields['sourceId']!.text =
+            '2.25.${BigInt.parse(id.replaceAll('-', ''), radix: 16)}';
+      }
+      loadWindowsLibrary();
+    }
+  }
+
+  Future<void> loadWindowsLibrary() async {
+    try {
+      final path = await Dv1ConfigurationService.windowsCpsLibraryPath();
+      if (mounted) setState(() => fields['library']!.text = path);
+    } catch (_) {
+      if (mounted) {
+        setState(
+          () => error = 'Chemin de la Cryptolib Windows indisponible. Vérifiez l’installation de Companion.',
+        );
+      }
+    }
   }
 
   @override
@@ -459,9 +609,7 @@ class Dv1SettingsDialogState extends State<Dv1SettingsDialog> {
     } catch (e) {
       if (mounted) {
         setState(
-          () => error = e is StateError
-              ? e.message.toString()
-              : 'Fichier ou paramètre invalide. Vérifiez le format et les ressources sélectionnées.',
+          () => error = e is StateError ? e.message.toString() : 'Fichier ou paramètre invalide. Vérifiez le format et les ressources sélectionnées.',
         );
       }
     } finally {
@@ -489,8 +637,9 @@ class Dv1SettingsDialogState extends State<Dv1SettingsDialog> {
                   controller: fields[e.key],
                   enabled: !saving,
                   readOnly:
-                      e.key == 'java' &&
-                      Dv1ConfigurationService.bundledCpsJava != null,
+                      (e.key == 'java' &&
+                          Dv1ConfigurationService.bundledCpsJava != null) ||
+                      (Platform.isWindows && e.key == 'library'),
                   decoration: InputDecoration(
                     labelText:
                         e.key == 'java' &&
@@ -639,7 +788,9 @@ class _Dv1ConfirmState extends State<_Dv1Confirm> {
                     'Je confirme une nouvelle tentative avec ${widget.retry!.correction}.',
                   ),
                   subtitle: Text(
-                    'Tentative précédente conservée : ${widget.retry?.attemptId}. ${widget.retry!.signatureTitle
+                    'Tentative précédente conservée : ${widget.retry?.attemptId}. ${widget.retry!.typeLabel
+                        ? 'Le serveur a rejeté uniquement le libellé XDS du type 11490-0. Le PDF, le CDA et la validation sont conservés.'
+                        : widget.retry!.signatureTitle
                         ? 'Le serveur a rejeté la cohérence du titre de signature.'
                         : widget.retry!.metadata
                         ? 'Le serveur a rejeté les libellés et métadonnées de signature du dépôt.'
@@ -666,8 +817,7 @@ class _Dv1ConfirmState extends State<_Dv1Confirm> {
                 maxLines: 2,
                 onChanged: (_) => setState(() {}),
                 decoration: const InputDecoration(
-                  labelText:
-                      'Source du contrôle des conditions et des droits (PDT, constat Web-PS…)',
+                  labelText: 'Source du contrôle des conditions et des droits (PDT, constat Web-PS…)',
                 ),
               ),
               for (final e in <String>[

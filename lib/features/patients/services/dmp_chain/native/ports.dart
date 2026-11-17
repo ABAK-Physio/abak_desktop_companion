@@ -1,3 +1,4 @@
+import '../../../../dmp_td02/access_identity.dart';
 import 'td33c.dart';
 import 'dv1_replacement.dart';
 import 'package:xml/xml.dart';
@@ -16,6 +17,7 @@ import '../contracts.dart';
 import '../wire/package.dart';
 import '../wire/crypto.dart';
 import 'bridge.dart';
+import 'dmp_runtime_paths.dart';
 import 'access_context.dart';
 import 'td02.dart';
 import 'td03.dart';
@@ -58,8 +60,8 @@ class DmpNativeConfiguration {
         u.hasFragment ||
         u.userInfo.isNotEmpty ||
         !['T', 'P'].contains(processingMode) ||
-        !libraryPath.startsWith('/') ||
-        !trustPath.startsWith('/') ||
+        !DmpRuntimePaths.absoluteLocal(libraryPath) ||
+        !DmpRuntimePaths.absoluteLocal(trustPath) ||
         [
           trustHash,
           authenticationHash,
@@ -157,6 +159,12 @@ class DocumentDmpNativePorts
   Future<DmpSession> authenticate(Map<String, dynamic> snapshot) async {
     if (_opening || _session != null || _closed) {
       throw DmpNativeFailure('CPS_BUSY');
+    }
+    // Refuse NIA before configuration, PIN, lease, CPS profile or worker launch.
+    try {
+      DmpAccessIdentity.requireNirOid((snapshot['identity'] as Map?)?['ins_oid'] as String?);
+    } on StateError catch (e) {
+      throw DmpChainBlock(e.message.toString());
     }
     _opening = true;
     var stage = 'CONFIGURATION';

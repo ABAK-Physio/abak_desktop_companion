@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/services.dart';
 import 'package:path/path.dart' as p;
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../generated/l10n.dart';
 
@@ -35,14 +36,24 @@ class InitialReportDocumentService {
 
   Future<void> open(String path) async {
     if (Platform.isWindows) {
-      await Process.run('cmd', ['/c', 'start', '', path]);
+      final file = File(path);
+      if (!await file.exists()) {
+        throw FileSystemException('Fichier introuvable.', path);
+      }
+      final opened = await launchUrl(
+        Uri.file(file.absolute.path, windows: true),
+        mode: LaunchMode.externalApplication,
+      );
+      if (!opened) {
+        throw StateError(
+          'Windows n’a pas pu ouvrir le document. Vérifiez l’application associée à ce type de fichier.',
+        );
+      }
       return;
     }
 
     if (Platform.isMacOS) {
-      await const MethodChannel(
-        'abak/directory_access',
-      ).invokeMethod<void>(
+      await const MethodChannel('abak/directory_access').invokeMethod<void>(
         p.extension(path).toLowerCase() == '.pdf' ? 'openPdf' : 'openDocx',
         {'path': path},
       );

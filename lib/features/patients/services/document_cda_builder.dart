@@ -1,10 +1,14 @@
 import 'dmp_chain/native/dv1_replacement.dart';
+
 import 'dart:convert';
 import 'dart:typed_data';
+
 import 'package:uuid/uuid.dart';
 import 'package:xml/xml.dart';
+
 import 'document_medical_service.dart';
 import 'cnda_patient_recipe.dart';
+import 'document_patient_names.dart';
 
 /// A local preparation profile, never an XDS submission or a CPS signature.
 /// No template patient, default author or inferred authority is used.
@@ -25,7 +29,25 @@ class DocumentCdaBuilder {
       .toUpperCase();
   static String documentId(Map snapshot) =>
       '2.25.${BigInt.parse(stableId('${snapshot['version']['version_id']}:${medicalHash(snapshot)}').replaceAll('-', ''), radix: 16)}';
-  static Uint8List build(Map snapshot, Uint8List pdf, int approvedAt) {
+  static Uint8List build(Map snapshot, Uint8List pdf, int approvedAt) =>
+      _build(snapshot, pdf, approvedAt, legacyNames: false);
+
+  /// Read-only comparison of pre-RNIV archived bytes; never returns a legacy CDA.
+  static bool matchesLegacyArchive(
+    Map snapshot,
+    Uint8List pdf,
+    int approvedAt,
+    List<int> archived,
+  ) =>
+      base64Encode(_build(snapshot, pdf, approvedAt, legacyNames: true)) ==
+      base64Encode(archived);
+
+  static Uint8List _build(
+    Map snapshot,
+    Uint8List pdf,
+    int approvedAt, {
+    required bool legacyNames,
+  }) {
     CndaPatientRecipe.checkDocument(snapshot);
     final d = jsonDecode(snapshot['preparation']['data_json']) as Map;
     final c = jsonDecode(snapshot['practice']['data_json']) as Map;
@@ -48,12 +70,11 @@ class DocumentCdaBuilder {
         'CDA non vérifié : cadre ambulatoire explicite requis ; remplacement non pris en charge.',
       );
     }
-    // The existing identity source has a list of given names, not a separate first given name.
+    // The historical single-name encoding is archive-only.
     final given = (i['birth_first_names'] as String).trim();
-    if (RegExp(r'\s|,|;').hasMatch(given)) {
-      throw StateError(
-        'CDA non vérifié : premier prénom de naissance distinct indisponible dans la source qualifiée.',
-      );
+    final names = legacyNames ? null : DocumentPatientNames.fromIdentity(i);
+    if (legacyNames && RegExp(r'\s|,|;').hasMatch(given)) {
+      throw StateError('Ancien profil CDA limité à un prénom non ambigu.');
     }
     final born = DateTime.tryParse(i['birth_date'] as String);
     final clinical = DateTime.parse(d['clinicalDate']);
@@ -179,13 +200,31 @@ class DocumentCdaBuilder {
                   e(
                     'name',
                     children: () {
-                      e('given', a: {'qualifier': 'BR'}, text: given);
-                      e('given', text: given);
+                      e(
+                        'given',
+                        a: {'qualifier': 'BR'},
+                        text: names?.firstBirth ?? given,
+                      );
+                      e('given', text: names?.birthGiven ?? given);
+                      if (names?.usedGiven != null) {
+                        e(
+                          'given',
+                          a: {'qualifier': 'CL'},
+                          text: names!.usedGiven,
+                        );
+                      }
                       e(
                         'family',
                         a: {'qualifier': 'BR'},
                         text: i['birth_last_name'],
                       );
+                      if (names?.usedFamily != null) {
+                        e(
+                          'family',
+                          a: {'qualifier': 'CL'},
+                          text: names!.usedFamily,
+                        );
+                      }
                     },
                   );
                   e(

@@ -34,9 +34,14 @@ class DocumentLotSignatureReview {
 }
 
 class DocumentLotSignatureStatus {
-  const DocumentLotSignatureStatus(this.message, {this.review});
+  const DocumentLotSignatureStatus(
+    this.message, {
+    this.review,
+    this.currentSignatureVerified = false,
+  });
   final String message;
   final DocumentLotSignatureReview? review;
+  final bool currentSignatureVerified;
 }
 
 /// An explicit local capability. No transport port, TLS worker, DMP URL, PIN
@@ -240,6 +245,7 @@ class DocumentLotSignatureService {
             }
             return const DocumentLotSignatureStatus(
               'Lot signé par la CPS : signature cryptographique vérifiée localement et conservée. Confiance et révocation du certificat non vérifiées. Aucun envoi ; aucune autorisation de dépôt établie.',
+              currentSignatureVerified: true,
             );
           }
         } catch (_) {

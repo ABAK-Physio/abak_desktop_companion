@@ -11,6 +11,8 @@ $outputDir = Join-Path $repo 'build\releases\windows'
 $embedScript = Join-Path $PSScriptRoot 'embed_windows_dmp_tools.ps1'
 $validateScript = Join-Path $PSScriptRoot 'validate_windows_dmp_tools.ps1'
 $cdaEmbedScript = Join-Path $PSScriptRoot 'embed_windows_cda_references.ps1'
+$cdaJavaTestScript = Join-Path $PSScriptRoot 'test_windows_cda_java.ps1'
+$dv1JavaTestScript = Join-Path $PSScriptRoot 'test_windows_dv1_java.ps1'
 $dmpSource = Join-Path $env:USERPROFILE 'ABAK_build_tools\DmpTools\x64'
 $cdaSource = Join-Path $env:USERPROFILE 'ABAK_build_tools\CDA_ANS_b10ff7b0'
 $debugInfoRoot = Join-Path $repo 'build\obfuscation\windows'
@@ -38,25 +40,18 @@ $buildNumber = $versionMatch.Groups[2].Value
 $artifactName = "ABAK_Desktop_Companion_${appVersion}_${buildNumber}_Windows"
 $stagingDir = Join-Path $repo "build\staging\$artifactName"
 $zipPath = Join-Path $outputDir "$artifactName.zip"
-$debugInfoDir = Join-Path $debugInfoRoot $artifactName
-$symbolsArchive = Join-Path $symbolsArchiveRoot $artifactName
+# A new split-debug-info path invalidates the AOT build inputs each run.
+# Keep previous symbol directories intact; never reuse symbols for another binary.
+$runId = (Get-Date -Format 'yyyyMMdd-HHmmssfff') + '-' +
+    [guid]::NewGuid().ToString('N').Substring(0, 8)
+$symbolSetName = "$artifactName-$runId"
+$debugInfoDir = Join-Path $debugInfoRoot $symbolSetName
+$symbolsArchive = Join-Path $symbolsArchiveRoot $symbolSetName
 
 Write-Host "Version : $appVersion"
 Write-Host "Build   : $buildNumber"
 
-# Never overwrite an existing artifact or symbol archive.
-foreach ($path in @(
-    $stagingDir,
-    $zipPath,
-    $debugInfoDir,
-    $symbolsArchive
-)) {
-    if (Test-Path -LiteralPath $path) {
-        throw "Distribution ou symboles deja presents : $path"
-    }
-}
-
-foreach ($script in @($embedScript, $validateScript, $cdaEmbedScript)) {
+foreach ($script in @($embedScript, $validateScript, $cdaEmbedScript, $cdaJavaTestScript, $dv1JavaTestScript)) {
     if (-not (Test-Path -LiteralPath $script -PathType Leaf)) {
         throw "Script de preparation DMP/CDA introuvable : $script"
     }
@@ -80,6 +75,30 @@ if (-not (Test-Path -LiteralPath (
     Join-Path $cdaSource 'manifest.json'
 ) -PathType Leaf)) {
     throw 'Manifeste CDA absent.'
+}
+
+# Preserve previous outputs when rebuilding the same version/build.
+# Preserve old distributions and installers; symbol sets already have unique names.
+$installerPath = Join-Path $repo (
+    "build\installer\ABAK_Desktop_Companion_${appVersion}_${buildNumber}_Windows_Setup.exe"
+)
+$previousOutputs = @(
+    $stagingDir,
+    $zipPath,
+    $installerPath
+)
+$archiveSuffix = '.previous-' + (Get-Date -Format 'yyyyMMdd-HHmmssfff') +
+    '-' + [guid]::NewGuid().ToString('N').Substring(0, 8)
+
+foreach ($path in $previousOutputs) {
+    if (Test-Path -LiteralPath $path) {
+        $savedPath = $path + $archiveSuffix
+        if (Test-Path -LiteralPath $savedPath) {
+            throw "Archive deja presente : $savedPath"
+        }
+        Move-Item -LiteralPath $path -Destination $savedPath -ErrorAction Stop
+        Write-Host "Sortie precedente conservee : $savedPath"
+    }
 }
 
 Set-Location $repo
@@ -115,6 +134,12 @@ try {
     if ($LASTEXITCODE -ne 0) {
         throw 'Echec validation du referentiel CDA.'
     }
+    & powershell.exe -NoProfile -NonInteractive `
+        -ExecutionPolicy Bypass -File $cdaJavaTestScript `
+        -Bundle $dmpSource -References $cdaValidationDestination
+    if ($LASTEXITCODE -ne 0) {
+        throw 'Echec des tests synthetiques Java CDA.'
+    }
 }
 finally {
     if (Test-Path -LiteralPath $cdaValidationRoot) {
@@ -122,6 +147,12 @@ finally {
             -Recurse -Force -ErrorAction Stop
     }
 }
+
+# Validate the CPS Java modules and Windows protocol without opening a card.
+Write-Host '[2b/10] Tests Java CPS DV1 hors connexion...'
+& powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass `
+    -File $dv1JavaTestScript -Bundle $dmpSource
+if ($LASTEXITCODE -ne 0) { throw 'Echec des tests Java CPS DV1 hors connexion.' }
 
 # 3. Resolve Flutter dependencies without cleaning.
 Write-Host '[3/10] Dependencies...'
@@ -147,6 +178,10 @@ $exePath = Join-Path $releaseDir 'abak_desktop_companion.exe'
 
 if (-not (Test-Path -LiteralPath $exePath -PathType Leaf)) {
     throw 'Executable Windows absent apres compilation.'
+}
+
+if (-not (Test-Path -LiteralPath $debugInfoDir -PathType Container)) {
+    throw "Symboles non generes par Flutter : $debugInfoDir. Distribution interrompue."
 }
 
 $symbolFiles = @(
@@ -212,6 +247,18 @@ Copy-Item -Path (Join-Path $releaseDir '*') `
     -Destination $stagingDir `
     -Recurse -ErrorAction Stop
 
+# Record the exact symbol set for this distribution, including the Dart payload hash.
+@{
+    version = "$appVersion+$buildNumber"
+    runId = $runId
+    symbolsDirectory = $symbolsArchive
+    appSoSha256 = (Get-FileHash -LiteralPath (
+        Join-Path $stagingDir 'data\app.so'
+    ) -Algorithm SHA256).Hash
+} | ConvertTo-Json | Set-Content -LiteralPath (
+    Join-Path $stagingDir 'build-symbols.json'
+) -Encoding UTF8
+
 # 7. Embed the verified private Java/veraPDF tools.
 Write-Host '[7/10] Integration Java/veraPDF...'
 
@@ -242,7 +289,18 @@ if ($LASTEXITCODE -ne 0) {
     throw 'Echec integration des references CDA.'
 }
 
+$controlSetup = Join-Path $stagingDir 'data\DocumentControls'
+New-Item -ItemType Directory -Path $controlSetup -Force | Out-Null
+Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'install_windows_document_controls.ps1') `
+    -Destination (Join-Path $controlSetup 'setup.ps1') -ErrorAction Stop
+Copy-Item -LiteralPath (Join-Path $repo 'assets\document_controls\CdaCheck.java') `
+    -Destination (Join-Path $controlSetup 'CdaCheck.java') -ErrorAction Stop
+
 $requiredFiles = @(
+    'ABAKDocumentControls.exe',
+    'ABAKDocumentControlsPolicy.exe',
+    'data\DocumentControls\setup.ps1',
+    'data\DocumentControls\CdaCheck.java',
     'abak_desktop_companion.exe',
     'flutter_windows.dll',
     'data\icudtl.dat',

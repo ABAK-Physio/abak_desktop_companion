@@ -1,0 +1,12 @@
+cmake_minimum_required(VERSION 3.14)
+project(ABAKDocxPlanTests LANGUAGES CXX)
+enable_testing()
+add_executable(abak_docx_plan_tests
+        test.cpp ../runner/document_controls_docx_plan.cpp)
+target_compile_features(abak_docx_plan_tests PRIVATE cxx_std_17)
+if(MSVC)
+  target_compile_options(abak_docx_plan_tests PRIVATE /W4 /WX /EHsc)
+else()
+  target_compile_options(abak_docx_plan_tests PRIVATE -Wall -Wextra -Werror)
+endif()
+add_test(NAME docx_windows_arguments COMMAND abak_docx_plan_tests)

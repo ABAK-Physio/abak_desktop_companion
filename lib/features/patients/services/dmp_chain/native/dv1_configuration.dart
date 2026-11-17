@@ -19,6 +19,7 @@ import '../wire/package.dart';
 import 'bridge.dart';
 import 'access_context.dart';
 import 'ports.dart';
+import 'dmp_runtime_paths.dart';
 
 class Dv1Configuration {
   Dv1Configuration(this.row);
@@ -125,7 +126,15 @@ class Dv1Configuration {
     ]) {
       NosImport.jdvTabs(text(key));
     }
-    native('/configuration-non-activee/trust.pem').check();
+    native(
+      Platform.isWindows
+          ? p.join(
+              Directory.systemTemp.path,
+              'configuration-non-activee',
+              'trust.pem',
+            )
+          : '/configuration-non-activee/trust.pem',
+    ).check();
   }
 
   String text(String key) => utf8.decode(base64Decode(resources[key]['body']));
@@ -229,6 +238,16 @@ class Dv1ConfigurationService {
     Map fields, {
     bool authorize = false,
   }) async {
+    if (Platform.isWindows) {
+      final bundled = await BundledPdfTools.load();
+      if (fields['java'] != bundled.java ||
+          fields['library'] != await windowsCpsLibraryPath()) {
+        throw StateError(
+          'Le moteur CPS Windows a changé. Rouvrez et enregistrez la configuration DV1 sans connexion.',
+        );
+      }
+      return null;
+    }
     if (!Platform.isMacOS) return null;
     final bundled = await BundledPdfTools.load();
     final executable = p.join(p.dirname(bundled.java), 'java-cps');
@@ -252,7 +271,23 @@ class Dv1ConfigurationService {
 
   static String? get bundledCpsJava => BundledPdfTools.root == null
       ? null
-      : p.join(BundledPdfTools.root!, 'java', 'bin', 'java-cps');
+      : DmpRuntimePaths.cpsJava(
+          BundledPdfTools.root!,
+          windows: Platform.isWindows,
+        );
+
+  /// OS metadata only. Does not load the Cryptolib or access a card.
+  static Future<String> windowsCpsLibraryPath() async {
+    final path = await const MethodChannel(
+      'abak_dmp_fr',
+    ).invokeMethod<String>('windowsCpsLibraryPath');
+    if (path == null ||
+        !DmpRuntimePaths.absoluteLocal(path, windows: true) ||
+        p.windows.basename(path) != 'cps3_pkcs11_w64.dll') {
+      throw StateError('Chemin de la Cryptolib Windows indisponible.');
+    }
+    return path;
+  }
 
   Future<Dv1Configuration?> current() async {
     final db = await journal.database;
@@ -286,7 +321,10 @@ class Dv1ConfigurationService {
     }
     await CpsOperationLease.closeIdle();
     fields = Map<String, String>.from(fields);
-    if (Platform.isMacOS) fields['java'] = bundledCpsJava!;
+    if (Platform.isMacOS || Platform.isWindows) {
+      fields['java'] = bundledCpsJava!;
+    }
+    if (Platform.isWindows) fields['library'] = await windowsCpsLibraryPath();
     if (labels.keys.any((k) => fields[k]?.trim().isNotEmpty != true)) {
       throw StateError('Complétez tous les paramètres de recette.');
     }
@@ -384,6 +422,10 @@ class Dv1ConfigurationService {
     }
   }
 
+  Future<String> workerHash() async => FinalPdfDocumentService.hash(
+    utf8.encode(await rootBundle.loadString('assets/dmp_native/DmpNativeBridge.java')),
+  );
+
   Future<bool> canReuseAuthentication(Dv1Configuration c) async {
     final source = await rootBundle.loadString(
       'assets/dmp_native/DmpNativeBridge.java',
@@ -408,11 +450,11 @@ class Dv1ConfigurationService {
     );
     final workerHash = FinalPdfDocumentService.hash(utf8.encode(source));
     final root = Directory(
-      p.join(
+      DmpRuntimePaths.workerDirectory(
         (await journal.controls.root).path,
-        'dv1-runtime',
         c.hash,
         workerHash,
+        windows: Platform.isWindows,
       ),
     );
     await root.create(recursive: true);
@@ -453,6 +495,7 @@ class Dv1ConfigurationService {
         bridge: DmpProcessBridge(
           executable: c.fields['java'],
           arguments: [worker.path, '--serve'],
+          workingDirectory: Platform.isWindows ? root.path : null,
         ),
         requestPin: requestPin,
         readPolicy: readPolicy,

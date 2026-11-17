@@ -132,8 +132,9 @@ class CpsAccessService {
         0x30 || 0x32 =>
           'La communication avec la carte ou le lecteur a été interrompue.',
         _ => switch (step) {
-          'dlopen' => 'ABAK ne peut pas charger la Cryptolib CPS.',
-          'dlsym' =>
+          'dlopen' ||
+          'LoadLibrary' => 'ABAK ne peut pas charger la Cryptolib CPS.',
+          'dlsym' || 'GetProcAddress' =>
             'La Cryptolib CPS ne fournit pas toutes les fonctions nécessaires.',
           'C_Initialize' => 'La Cryptolib CPS ne peut pas démarrer.',
           'C_GetSlotList' || 'C_GetSlotList(ids)' =>
@@ -141,6 +142,8 @@ class CpsAccessService {
                 ? 'La Cryptolib ne détecte aucune CPS. Vérifiez son insertion et le lecteur.'
                 : 'La sélection de la CPS a échoué. Ne laissez qu’une CPS insérée.',
           'C_OpenSession' => 'La CPS est détectée mais son ouverture a échoué.',
+          'C_Logout' || 'C_CloseSession' || 'C_Finalize' || 'FreeLibrary' =>
+            'La fermeture de la lecture CPS a échoué. Fermez les autres outils CPS avant de réessayer.',
           'C_Login' =>
             'L’authentification CPS a échoué. Le code reçu ne permet pas de conclure que le PIN est incorrect.',
           'C_ReadObject' ||
@@ -172,6 +175,9 @@ class CpsAccessService {
           'macOS : ${result!['error']}',
         if (code is int)
           'code : 0x${code.toRadixString(16).padLeft(8, '0').toUpperCase()}',
+        if (result?['windowsError'] case final int windowsError
+            when windowsError != 0)
+          'Windows : 0x${windowsError.toRadixString(16).padLeft(8, '0').toUpperCase()}',
         if (result?['objectLabel'] is String)
           'objet : ${result!['objectLabel']}',
       ];

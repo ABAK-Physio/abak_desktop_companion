@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'dart:io';
+import 'package:path/path.dart' as p;
 import '../../dmp_setup/bundled_pdf_tools.dart';
 import '../../dmp_setup/dmp_setup_service.dart';
 import 'package:flutter/material.dart';
@@ -19,12 +21,38 @@ Future<bool> configureDocumentControls(
       : Map<String, String>.from(
           jsonDecode(cfg['data_json'] as String)['paths'],
         );
-  if (await DmpSetupService(
-    database: service.medical.pdf.database,
-  ).managedEnabled()) {
+  if (Platform.isWindows ||
+      await DmpSetupService(
+        database: service.medical.pdf.database,
+      ).managedEnabled()) {
     final tools = await BundledPdfTools.load();
     old['java'] = tools.java;
     old['vera'] = tools.vera;
+  }
+  if (Platform.isWindows) {
+    final root = p.dirname(Platform.resolvedExecutable);
+    final references = p.join(root, 'data', 'CdaReferences', 'x64');
+    if ((old['references'] ?? '').isEmpty &&
+        await Directory(references).exists()) {
+      old['references'] = references;
+      final manifest =
+          jsonDecode(
+                await File(p.join(references, 'manifest.json')).readAsString(),
+              )
+              as Map;
+      if ((old['label'] ?? '').isEmpty) {
+        old['label'] = '${manifest['source']} — ${manifest['revision']}';
+      }
+    }
+    if ((old['office'] ?? '').isEmpty) {
+      final office = p.join(
+        Platform.environment['ProgramFiles'] ?? r'C:\Program Files',
+        'LibreOffice',
+        'program',
+        'soffice.exe',
+      );
+      if (await File(office).exists()) old['office'] = office;
+    }
   }
   if (!context.mounted) return false;
   return await showDialog<bool>(
@@ -264,10 +292,16 @@ class _ControlConfigState extends State<_ControlConfig> {
   late Map<String, TextEditingController> fields;
   bool busy = false;
   String error = '', progress = '';
-  static const labels = {
-    'office': 'LibreOffice.app — conversion DOCX (facultatif)',
-    'java': 'Exécutable Java 17 ou supérieur',
-    'vera': 'Fichier CLI .jar de veraPDF',
+  static Map<String, String> get labels => {
+    'office': Platform.isWindows
+        ? 'LibreOffice — fichier program/soffice.exe (facultatif)'
+        : 'LibreOffice.app — conversion DOCX (facultatif)',
+    'java': Platform.isWindows
+        ? 'Java fourni avec Companion'
+        : 'Exécutable Java 17 ou supérieur',
+    'vera': Platform.isWindows
+        ? 'veraPDF fourni avec Companion'
+        : 'Fichier CLI .jar de veraPDF',
     'references': 'Dossier des références CDA locales',
     'label': 'Nom et version des références locales',
   };
@@ -293,7 +327,9 @@ class _ControlConfigState extends State<_ControlConfig> {
     setState(() {
       busy = true;
       error = '';
-      progress = 'Choix et autorisation de lecture…';
+      progress = Platform.isWindows
+          ? 'Choix du fichier ou du dossier…'
+          : 'Choix et autorisation de lecture…';
     });
     try {
       final path = await DocumentToolsAccess.choose(
@@ -323,7 +359,9 @@ class _ControlConfigState extends State<_ControlConfig> {
     setState(() {
       busy = true;
       error = '';
-      progress = 'Préparation des autorisations de lecture…';
+      progress = Platform.isWindows
+          ? 'Vérification des ressources locales…'
+          : 'Préparation des autorisations de lecture…';
     });
     try {
       final authorized = await DocumentToolsAccess.authorize(
@@ -378,25 +416,37 @@ class _ControlConfigState extends State<_ControlConfig> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text(
-                'Indiquez les outils installés et les références archivées. Lors de l’enregistrement, macOS vous demandera d’autoriser la lecture des dossiers nécessaires. Aucun téléchargement. Un changement impose de nouveaux contrôles. Aucun résultat ne valide à lui seul l’envoi au DMP.',
+              Text(
+                Platform.isWindows
+                    ? 'Java et veraPDF sont fournis avec Companion. Choisissez LibreOffice pour convertir les DOCX puis vérifier le PDF/A-1b. Les contrôles CDA Windows ne sont pas encore disponibles. Aucun téléchargement ni envoi au DMP.'
+                    : 'Indiquez les outils installés et les références archivées. Lors de l’enregistrement, macOS vous demandera d’autoriser la lecture des dossiers nécessaires. Aucun téléchargement. Un changement impose de nouveaux contrôles. Aucun résultat ne valide à lui seul l’envoi au DMP.',
               ),
               for (final item in labels.entries)
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8),
                   child: TextField(
                     controller: fields[item.key],
-                    readOnly: busy,
+                    readOnly:
+                        busy ||
+                        (Platform.isWindows &&
+                            ['java', 'vera'].contains(item.key)),
                     decoration: InputDecoration(
                       labelText: item.value,
                       helperText: switch (item.key) {
+                        'java' when Platform.isWindows =>
+                          'Outil installé automatiquement avec Companion.',
+                        'vera' when Platform.isWindows =>
+                          'Outil installé automatiquement avec Companion.',
                         'java' =>
                           'Le bouton dossier permet de choisir le dossier Home du JDK.',
                         'vera' =>
                           'Le bouton dossier permet de choisir le dossier contenant le CLI de veraPDF.',
                         _ => null,
                       },
-                      suffixIcon: item.key == 'label'
+                      suffixIcon:
+                          item.key == 'label' ||
+                              (Platform.isWindows &&
+                                  ['java', 'vera'].contains(item.key))
                           ? null
                           : IconButton(
                               onPressed: busy ? null : () => pick(item.key),

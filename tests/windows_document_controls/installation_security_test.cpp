@@ -43,6 +43,25 @@ int main() {
              "user deletion refuses");
   Descriptor(L"O:BAG:BAD:(A;;0x00000040;;;BU)", true, false,
              "delete-child on volume ancestor refuses");
+  // Reproduce the ASUS C:\ DACL: SYSTEM/Administrators full control, Users
+  // read/execute, Authenticated Users Modify (0x1301bf), with OI/CI inheritance.
+  // Only in-memory descriptors are used; no real ACL is changed.
+  Descriptor(L"O:BAG:BAD:(A;OICI;FA;;;BA)(A;OICI;FA;;;SY)"
+             L"(A;OICI;GRGX;;;BU)(A;OICI;0x001301bf;;;AU)", true, true,
+             "ASUS root Modify grant accepts without delete-child or ACL changes");
+  Descriptor(L"O:BAG:BAD:(A;OICI;FA;;;BA)(A;OICI;FA;;;SY)"
+             L"(A;OICI;GRGX;;;BU)(A;OICI;0x001301bf;;;AU)", false, false,
+             "the same Modify grant on an installation object still refuses");
+  Descriptor(L"O:BAG:BAD:(A;;SD;;;AU)", true, true,
+             "DELETE on the volume root itself is distinct from delete-child");
+  Descriptor(L"O:BAG:BAD:(A;;0x001301ff;;;AU)", true, false,
+             "root Modify plus delete-child still refuses");
+  Descriptor(L"O:BAG:BAD:(A;;0x001701bf;;;AU)", true, false,
+             "root Modify plus DACL modification still refuses");
+  Descriptor(L"O:BAG:BAD:(A;;0x001b01bf;;;AU)", true, false,
+             "root Modify plus ownership modification still refuses");
+  Descriptor(L"O:BAG:BAD:(A;;GA;;;AU)", true, false,
+             "generic full control at the root still refuses");
   Descriptor(L"O:BAG:BAD:(A;;0x00000002;;;BU)", false, false,
              "file creation in installation directory refuses");
   Descriptor(L"O:BAG:BAD:(A;;0x00000004;;;BU)", false, false,

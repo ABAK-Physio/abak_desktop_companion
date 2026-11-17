@@ -25,6 +25,8 @@ class InstalledControls {
 
   Error Recheck() const;
   Error ServicePolicy(PeerPolicy* policy) const;
+  // Exact accounts from the protected manifest, for process/token QUERY grants.
+  Error InspectionUsers(std::vector<std::string>* users) const;
   // Server side only: SID and session are collected from the connected client
   // process via Windows. W2 must still authenticate the actual connection token.
   Error CompanionPolicyForPipe(HANDLE server_pipe, PeerPolicy* policy) const;
