@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 
 import 'package:path/path.dart' as p;
 import 'package:uuid/uuid.dart';
@@ -22,8 +23,10 @@ class LocalDatabaseBackupResult {
 class LocalDatabaseBackupService {
   const LocalDatabaseBackupService({
     this.access = const BackupDirectoryAccess(),
+    this.repository,
   });
   final BackupDirectoryAccess access;
+  final DatabaseBackupRepository? repository;
 
   Future<LocalDatabaseBackupResult> createBackup({
     required String databaseNotFoundMessage,
@@ -63,17 +66,39 @@ class LocalDatabaseBackupService {
           await checked.dispose();
           await File(partial).rename(path);
           partial = null;
-          await DatabaseBackupRepository().insertBackup(
-            fileName: name,
-            filePath: path,
-            fileSize: await File(path).length(),
-          );
+          try {
+            await (repository ?? DatabaseBackupRepository()).insertBackup(
+              fileName: name,
+              filePath: path,
+              fileSize: await File(path).length(),
+            );
+          } catch (error) {
+            return LocalDatabaseBackupResult(
+              success: false,
+              backupPath: path,
+              error:
+                  'Sauvegarde créée dans $path, mais son enregistrement a échoué : $error',
+            );
+          }
           return LocalDatabaseBackupResult(success: true, backupPath: path);
         } finally {
-          if (partial != null && await File(partial).exists()) {
-            await File(partial).delete();
+          try {
+            if (partial != null && await File(partial).exists()) {
+              await File(partial).delete();
+            }
+          } catch (error) {
+            debugPrint(
+              'Nettoyage temporaire de sauvegarde impossible : $error',
+            );
+          } finally {
+            try {
+              await destination.release();
+            } catch (error) {
+              debugPrint(
+                'Libération du dossier de sauvegarde impossible : $error',
+              );
+            }
           }
-          await destination.release();
         }
       });
     } catch (error) {

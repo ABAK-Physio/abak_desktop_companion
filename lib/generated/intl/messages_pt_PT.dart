@@ -152,6 +152,8 @@ class MessageLookup extends MessageLookupByLibrary {
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "abakWhisperSpeechProvider_name":
             MessageLookupByLibrary.simpleMessage("ABAK Dictado por voz"),
+        "application_quit_backup_busy": MessageLookupByLibrary.simpleMessage(
+            "Está em curso uma cópia de segurança ou um restauro. Aguarde a conclusão antes de sair."),
         "archivedDocuments_help": MessageLookupByLibrary.simpleMessage(
             "Esta vista reúne os balanços e os relatórios arquivados do processo de acompanhamento. Cada linha indica o tipo de documento, o seu título e a data de arquivo.\n\nA ação de restauração permite reposicionar o documento no histórico dos balanços ou dos relatórios.\n\nA ação de eliminação definitiva remove o documento do Companion. Leia atentamente a mensagem de confirmação antes de confirmar: o documento já não poderá ser restaurado a partir desta lista.\n\nClique na cruz para fechar a vista ampliada e regressar à área de Balanços/Relatórios."),
         "assessmentChartImageService_insufficientPoints":
@@ -1166,6 +1168,8 @@ class MessageLookup extends MessageLookupByLibrary {
                 "É necessária uma intervenção"),
         "home_archives": MessageLookupByLibrary.simpleMessage("Arquivos"),
         "home_attention": MessageLookupByLibrary.simpleMessage("Atenção"),
+        "home_backup_cleanup_warning": MessageLookupByLibrary.simpleMessage(
+            "A limpeza das cópias de segurança está incompleta ou indisponível. Verifique as cópias e o acesso à pasta antes de reiniciar o Companion."),
         "home_backup_successfully_created":
             MessageLookupByLibrary.simpleMessage(
                 "A cópia de segurança foi criada com sucesso."),

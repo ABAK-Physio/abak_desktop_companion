@@ -1092,5 +1092,7 @@
   "episodeAttachments_destinationReady": "La carpeta está lista. Puede intentarlo de nuevo.",
   "episodeAttachments_destinationUnavailable": "La carpeta de documentos no está disponible. Elija un destino accesible.",
   "episodeAttachments_episodeUnavailable": "El episodio no está disponible o ha cambiado.",
-  "episodeAttachments_invalidAttachment": "Este archivo adjunto no corresponde a la carpeta del paciente."
+  "episodeAttachments_invalidAttachment": "Este archivo adjunto no corresponde a la carpeta del paciente.",
+  "home_backup_cleanup_warning": "La limpieza de copias de seguridad está incompleta o no está disponible. Compruebe las copias y el acceso a su carpeta antes de reiniciar Companion.",
+  "application_quit_backup_busy": "Hay una copia de seguridad o restauración en curso. Espere a que termine antes de salir."
 }

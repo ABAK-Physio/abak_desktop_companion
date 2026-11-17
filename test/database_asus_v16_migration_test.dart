@@ -102,9 +102,34 @@ void main() {
       active = upgraded;
       expect(await upgraded.getVersion(), DatabaseService.schemaVersion);
       expect(await snapshot(upgraded), before);
-      expect(await upgraded.rawQuery(
-        'SELECT type,name,tbl_name,sql FROM sqlite_master ORDER BY type,name',
-      ), schema);
+      // Seule évolution attendue : la politique de rétention des sauvegardes.
+      final expectedSchema = schema.map((entry) {
+        final expected = Map<String, Object?>.from(entry);
+        if (entry['type'] == 'table' &&
+            entry['name'] == 'desktop_backups') {
+          expected['sql'] = (entry['sql'] as String).replaceFirst(
+            RegExp(r'\)\s*$'),
+            ", retention_policy TEXT NOT NULL DEFAULT 'protected')",
+          );
+        }
+        return expected;
+      }).toList();
+
+      expect(
+        await upgraded.rawQuery(
+          'SELECT type,name,tbl_name,sql FROM sqlite_master ORDER BY type,name',
+        ),
+        expectedSchema,
+      );
+
+      final backupColumns =
+      await upgraded.rawQuery('PRAGMA table_info(desktop_backups)');
+      final retentionColumn = backupColumns.singleWhere(
+            (column) => column['name'] == 'retention_policy',
+      );
+      expect(retentionColumn['type'], 'TEXT');
+      expect(retentionColumn['notnull'], 1);
+      expect(retentionColumn['dflt_value'], "'protected'");
       expect(await upgraded.rawQuery('PRAGMA integrity_check'), [
         {'integrity_check': 'ok'},
       ]);

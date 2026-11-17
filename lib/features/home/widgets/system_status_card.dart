@@ -1,4 +1,5 @@
 import 'dart:async';
+import '../../maintenance/services/backup_cleanup_health.dart';
 
 import 'package:flutter/material.dart';
 import '../../../core/utils/date_format_utils.dart';
@@ -12,7 +13,9 @@ import '../../maintenance/data/database_backup_repository.dart';
 import '../../maintenance/models/database_backup.dart';
 
 class SystemStatusCard extends StatefulWidget {
-  const SystemStatusCard({super.key});
+  const SystemStatusCard({super.key, this.loadStatus, this.cleanupMonitor});
+  final Future<List<dynamic>> Function()? loadStatus;
+  final BackupCleanupMonitor? cleanupMonitor;
 
   @override
   State<SystemStatusCard> createState() => _SystemStatusCardState();
@@ -30,11 +33,12 @@ class _SystemStatusCardState extends State<SystemStatusCard> {
 
     _timer = Timer.periodic(
       const Duration(seconds: 3),
-          (_) => _refreshStatus(),
+      (_) => _refreshStatus(),
     );
   }
 
   Future<List<dynamic>> _loadStatus() {
+    if (widget.loadStatus != null) return widget.loadStatus!();
     final importRepository = ImportSessionRepository();
     final backupRepository = DatabaseBackupRepository();
 
@@ -60,111 +64,114 @@ class _SystemStatusCardState extends State<SystemStatusCard> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: FutureBuilder<List<dynamic>>(
-          future: _statusFuture,
-          builder: (context, snapshot) {
-            final data = snapshot.data;
+    return ValueListenableBuilder<BackupCleanupHealth>(
+      valueListenable: widget.cleanupMonitor ?? BackupCleanupMonitor.instance,
+      builder: (context, cleanupHealth, _) => Card(
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: FutureBuilder<List<dynamic>>(
+            future: _statusFuture,
+            builder: (context, snapshot) {
+              final data = snapshot.data;
 
-            final sessions = data == null
-                ? <ImportSession>[]
-                : data[0] as List<ImportSession>;
+              final sessions = data == null
+                  ? <ImportSession>[]
+                  : data[0] as List<ImportSession>;
 
-            final lastBackup = data == null
-                ? null
-                : data[1] as DatabaseBackup?;
+              final lastBackup = data == null
+                  ? null
+                  : data[1] as DatabaseBackup?;
 
-            final failedImports = sessions.where((session) {
-              return session.status == 'failed' ||
-                  session.failedFilesCount > 0;
-            }).length;
+              final failedImports = sessions.where((session) {
+                return session.status == 'failed' ||
+                    session.failedFilesCount > 0;
+              }).length;
 
-            final importsWithWarnings = sessions.where((session) {
-              return session.status == 'completed_with_errors' ||
-                  session.conflictResultsCount > 0 ||
-                  session.skippedResultsCount > 0;
-            }).length;
+              final importsWithWarnings = sessions.where((session) {
+                return session.status == 'completed_with_errors' ||
+                    session.conflictResultsCount > 0 ||
+                    session.skippedResultsCount > 0;
+              }).length;
 
-            final hasImportProblem =
-                failedImports > 0 || importsWithWarnings > 0;
+              final hasImportProblem =
+                  failedImports > 0 || importsWithWarnings > 0;
 
-            final hasWarning =
-                hasImportProblem ||
-                    lastBackup == null;
+              final cleanupWarning =
+                  cleanupHealth != BackupCleanupHealth.healthy;
+              final hasWarning =
+                  hasImportProblem ||
+                  lastBackup == null ||
+                  snapshot.hasError ||
+                  cleanupWarning;
 
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    const Icon(Icons.monitor_heart_outlined),
-                    const SizedBox(width: 8),
-                    Text(S.of(context).home_system_status,
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                  ],
-                ),
-                const Divider(height: 28),
-                if (snapshot.connectionState == ConnectionState.waiting &&
-                    !snapshot.hasData)
-                  const Padding(
-                    padding: EdgeInsets.all(16),
-                    child: Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                  )
-                else ...[
-                  _GeneralStatusLine(hasWarning: hasWarning),
-                  if (hasImportProblem) ...[
-                    const Divider(height: 28),
-                    _ImportStatusSection(
-                      failedImports: failedImports,
-                      importsWithWarnings: importsWithWarnings,
-                      onResolutionCompleted: _refreshStatus,
-                    ),
-                  ],
-                  const Divider(height: 28),
-                  _StatusLine(
-                    label: S.of(context).home_last_backup,
-                    value: _formatLastBackup(
-                      context,
-                      lastBackup,
-                    ),
-                    icon: Icons.save_outlined,
-                    isWarning: lastBackup == null,
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      const Icon(Icons.monitor_heart_outlined),
+                      const SizedBox(width: 8),
+                      Text(
+                        S.of(context).home_system_status,
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                    ],
                   ),
+                  const Divider(height: 28),
+                  if (snapshot.connectionState == ConnectionState.waiting &&
+                      !snapshot.hasData)
+                    const Padding(
+                      padding: EdgeInsets.all(16),
+                      child: Center(child: CircularProgressIndicator()),
+                    )
+                  else ...[
+                    _GeneralStatusLine(hasWarning: hasWarning),
+                    if (cleanupWarning)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 12),
+                        child: Text(
+                          S.of(context).home_backup_cleanup_warning,
+                          key: const ValueKey('backup-cleanup-warning'),
+                        ),
+                      ),
+                    if (hasImportProblem) ...[
+                      const Divider(height: 28),
+                      _ImportStatusSection(
+                        failedImports: failedImports,
+                        importsWithWarnings: importsWithWarnings,
+                        onResolutionCompleted: _refreshStatus,
+                      ),
+                    ],
+                    const Divider(height: 28),
+                    _StatusLine(
+                      label: S.of(context).home_last_backup,
+                      value: _formatLastBackup(context, lastBackup),
+                      icon: Icons.save_outlined,
+                      isWarning: lastBackup == null,
+                    ),
+                  ],
                 ],
-              ],
-            );
-          },
+              );
+            },
+          ),
         ),
       ),
     );
   }
 
-  String _formatLastBackup(
-      BuildContext context,
-      DatabaseBackup? lastBackup,
-      ) {
+  String _formatLastBackup(BuildContext context, DatabaseBackup? lastBackup) {
     if (lastBackup == null) {
       return S.of(context).systemStatusCard_nome;
     }
 
-    return DateFormatUtils.formatTimestamp(
-      context,
-      lastBackup.createdAt,
-    );
+    return DateFormatUtils.formatTimestamp(context, lastBackup.createdAt);
   }
 }
 
 class _GeneralStatusLine extends StatelessWidget {
   final bool hasWarning;
 
-  const _GeneralStatusLine({
-    required this.hasWarning,
-  });
+  const _GeneralStatusLine({required this.hasWarning});
 
   @override
   Widget build(BuildContext context) {
@@ -187,10 +194,7 @@ class _GeneralStatusLine extends StatelessWidget {
             hasWarning
                 ? S.of(context).home_an_intervention_is_necessary
                 : S.of(context).home_everything_is_working_normally,
-            style: TextStyle(
-              fontWeight: FontWeight.w600,
-              color: color,
-            ),
+            style: TextStyle(fontWeight: FontWeight.w600, color: color),
           ),
         ),
       ],
@@ -227,7 +231,7 @@ class _ImportStatusSection extends StatelessWidget {
           _ImportStatusLine(
             icon: Icons.error_outline,
             label:
-            '$failedImports import'
+                '$failedImports import'
                 '${failedImports > 1 ? 's' : ''} ${S.of(context).home_unsuccessful}',
             color: Theme.of(context).colorScheme.error,
             buttonLabel: S.of(context).home_solve,
@@ -237,7 +241,7 @@ class _ImportStatusSection extends StatelessWidget {
           _ImportStatusLine(
             icon: Icons.warning_amber_outlined,
             label:
-            '$importsWithWarnings import'
+                '$importsWithWarnings import'
                 '${importsWithWarnings > 1 ? 's' : ''} ${S.of(context).home_to_be_verified}',
             color: Colors.orange,
             buttonLabel: S.of(context).home_verify,
@@ -269,25 +273,15 @@ class _ImportStatusLine extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 12),
       child: Row(
         children: [
-          Icon(
-            icon,
-            size: 22,
-            color: color,
-          ),
+          Icon(icon, size: 22, color: color),
           const SizedBox(width: 10),
           Expanded(
             child: Text(
               label,
-              style: TextStyle(
-                fontWeight: FontWeight.w600,
-                color: color,
-              ),
+              style: TextStyle(fontWeight: FontWeight.w600, color: color),
             ),
           ),
-          OutlinedButton(
-            onPressed: onPressed,
-            child: Text(buttonLabel),
-          ),
+          OutlinedButton(onPressed: onPressed, child: Text(buttonLabel)),
         ],
       ),
     );
@@ -317,23 +311,14 @@ class _StatusLine extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 12),
       child: Row(
         children: [
-          Icon(
-            icon,
-            size: 18,
-            color: color,
-          ),
+          Icon(icon, size: 18, color: color),
           const SizedBox(width: 8),
-          Expanded(
-            child: Text(label),
-          ),
+          Expanded(child: Text(label)),
           Flexible(
             child: Text(
               value,
               textAlign: TextAlign.right,
-              style: TextStyle(
-                fontWeight: FontWeight.w600,
-                color: color,
-              ),
+              style: TextStyle(fontWeight: FontWeight.w600, color: color),
             ),
           ),
         ],

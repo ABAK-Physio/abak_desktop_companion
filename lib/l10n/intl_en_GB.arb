@@ -1092,5 +1092,7 @@
   "episodeAttachments_destinationReady": "The folder is ready. You can try again.",
   "episodeAttachments_destinationUnavailable": "The documents folder is unavailable. Choose an accessible destination.",
   "episodeAttachments_episodeUnavailable": "The care episode is unavailable or has changed.",
-  "episodeAttachments_invalidAttachment": "This attachment does not match the patient folder."
+  "episodeAttachments_invalidAttachment": "This attachment does not match the patient folder.",
+  "home_backup_cleanup_warning": "Backup cleanup is incomplete or unavailable. Check the backups and access to their folder before restarting Companion.",
+  "application_quit_backup_busy": "A backup or restore is in progress. Wait for it to finish before quitting."
 }

@@ -1092,5 +1092,7 @@
   "episodeAttachments_destinationReady": "De map is gereed. U kunt het opnieuw proberen.",
   "episodeAttachments_destinationUnavailable": "De documentenmap is niet beschikbaar. Kies een toegankelijke bestemming.",
   "episodeAttachments_episodeUnavailable": "De behandeling is niet beschikbaar of is gewijzigd.",
-  "episodeAttachments_invalidAttachment": "Deze bijlage hoort niet bij de patiëntenmap."
+  "episodeAttachments_invalidAttachment": "Deze bijlage hoort niet bij de patiëntenmap.",
+  "home_backup_cleanup_warning": "Het opschonen van back-ups is onvolledig of niet beschikbaar. Controleer de back-ups en de toegang tot hun map voordat u Companion opnieuw start.",
+  "application_quit_backup_busy": "Er wordt een back-up gemaakt of hersteld. Wacht tot dit klaar is voordat u afsluit."
 }

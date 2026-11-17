@@ -157,6 +157,8 @@ class MessageLookup extends MessageLookupByLibrary {
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "abakWhisperSpeechProvider_name":
             MessageLookupByLibrary.simpleMessage("ABAK Dettatura vocale"),
+        "application_quit_backup_busy": MessageLookupByLibrary.simpleMessage(
+            "È in corso un backup o un ripristino. Attendere il completamento prima di uscire."),
         "archivedDocuments_help": MessageLookupByLibrary.simpleMessage(
             "Questa schermata raggruppa i bilanci e i rapporti archiviati relativi alla presa in carico. Ogni riga indica il tipo di documento, il titolo e la data di archiviazione.\n\nL’azione di ripristino consente di reinserire il documento nella cronologia dei bilanci o dei rapporti.\n\nL\'azione di eliminazione definitiva rimuove il documento da Companion. Leggere attentamente il messaggio di conferma prima di confermare: il documento non potrà più essere ripristinato da questo elenco.\n\nFare clic sulla croce per chiudere la vista ingrandita e tornare all\'area Bilanci/Rapporti."),
         "assessmentChartImageService_insufficientPoints":
@@ -1172,6 +1174,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("È necessario un intervento"),
         "home_archives": MessageLookupByLibrary.simpleMessage("Archivi"),
         "home_attention": MessageLookupByLibrary.simpleMessage("Attenzione"),
+        "home_backup_cleanup_warning": MessageLookupByLibrary.simpleMessage(
+            "La pulizia dei backup è incompleta o non disponibile. Controllare i backup e l’accesso alla cartella prima di riavviare Companion."),
         "home_backup_successfully_created":
             MessageLookupByLibrary.simpleMessage(
                 "Il backup è stato creato con successo."),

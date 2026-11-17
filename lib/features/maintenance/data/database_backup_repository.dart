@@ -9,6 +9,7 @@ class DatabaseBackupRepository {
     required String filePath,
     required int fileSize,
     String status = 'completed',
+    String retentionPolicy = 'protected',
     String? notes,
   }) async {
     final db = await DatabaseService.database;
@@ -20,6 +21,7 @@ class DatabaseBackupRepository {
       'created_at': DateTime.now().millisecondsSinceEpoch,
       'file_size': fileSize,
       'status': status,
+      'retention_policy': retentionPolicy,
       'notes': notes,
     });
   }

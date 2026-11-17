@@ -16,6 +16,10 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 import 'dart:io';
+import 'dart:async';
+import 'core/maintenance/application_shutdown.dart';
+import 'features/maintenance/services/backup_directory_access.dart';
+import 'core/maintenance/startup_maintenance.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter/foundation.dart' show kReleaseMode;
@@ -44,12 +48,33 @@ CompanionInstanceLock? _instanceLock;
 
 Future<void> main(List<String> arguments) async {
   WidgetsFlutterBinding.ensureInitialized();
+  final startupComplete = Completer<void>();
+  ApplicationShutdown(
+    ready: startupComplete.future,
+    isBusy: () => BackupOperation.isActive,
+    onBusy: () => rootScaffoldMessengerKey.currentState?.showSnackBar(
+      SnackBar(content: Text(S.current.application_quit_backup_busy)),
+    ),
+    steps: [
+      LocalExchangeServer.instance.stop,
+      AirDropImportWatcher.instance.stop,
+      DatabaseService.closeDatabase,
+      () async {
+        await _instanceLock?.close();
+        _instanceLock = null;
+      },
+    ],
+  ).register();
 
   try {
     await _startApplication(StartupRequest.parse(arguments));
   } catch (error, stackTrace) {
     // Keep any normal-startup lock until exit: a partially started background
     // service must not coexist with a second owner of this database.
+    await stopStartupServices([
+      AirDropImportWatcher.instance.stop,
+      LocalExchangeServer.instance.stop,
+    ]);
     debugPrint('Échec du démarrage : $error');
     debugPrintStack(stackTrace: stackTrace);
     runApp(const _StartupFailureApp());
@@ -61,6 +86,8 @@ Future<void> main(List<String> arguments) async {
     } catch (windowError) {
       debugPrint('Impossible d’afficher la fenêtre : $windowError');
     }
+  } finally {
+    startupComplete.complete();
   }
 }
 
@@ -220,12 +247,10 @@ Future<void> _startApplication(StartupRequest request) async {
 
   await ImportSessionRepository().recoverInterruptedSessions();
 
-  final purgeResult = await PatientPurgeService().purgeArchivedPatients();
-
-  debugPrint(
-    '🧹 purge patients : '
-    '${purgeResult.deletedPatients} supprimé(s)',
-  );
+  await runOptionalMaintenance('Purge des patients', () async {
+    final result = await PatientPurgeService().purgeArchivedPatients();
+    debugPrint('🧹 purge patients : ${result.deletedPatients} supprimé(s)');
+  });
 
   // Backup retention is optional maintenance and must never block startup.
   try {
