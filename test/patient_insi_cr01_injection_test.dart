@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:abak_desktop_companion/features/patients/services/patient_insi_exchange.dart';
 import 'package:abak_desktop_companion/features/patients/services/patient_insi_cr01_injection.dart';
 
 void main() {
@@ -27,4 +28,34 @@ void main() {
     expect(() => PatientInsiCr01Injection.decode('<RESULTAT/>'.codeUnits), throwsStateError);
     expect(() => PatientInsiCr01Injection.decode(List.filled(65537, 0)), throwsStateError);
   });
+
+  test('exports injected response exactly and marks simulation without request', () async {
+    final directory = await Directory.systemTemp.createTemp('insi_cr01_export_');
+    try {
+      final bytes = await originalBytes();
+      final evidence = <String, dynamic>{
+        'simulation': true,
+        'networkCall': false,
+        'sourceHash': PatientInsiCr01Injection.fileHash,
+        'responseXml': utf8.decode(bytes),
+        'eventId': 'test-event',
+        'recordedAt': '2026-11-20T14:00:00Z',
+      };
+      await InsiExchange.exportCndaCr01(evidence, directory.path, 'Test_1.07_cas_1');
+      final response = File('${directory.path}/Test_1.07_cas_1_REPONSE.xml');
+      expect(await response.readAsBytes(), bytes);
+      expect(await File('${directory.path}/Test_1.07_cas_1_REQUETE.xml').exists(), isFalse);
+      final diagnostic = await File('${directory.path}/Test_1.07_cas_1_DIAGNOSTIC.txt').readAsString();
+      expect(diagnostic, contains('SIMULATION CNDA'));
+      expect(diagnostic, contains('Aucune requête émise'));
+      await expectLater(InsiExchange.exportCndaCr01(evidence, directory.path, 'Test_1.07_cas_1'), throwsStateError);
+      expect(await response.readAsBytes(), bytes);
+      evidence['responseXml'] = '<modified/>';
+      await expectLater(InsiExchange.exportCndaCr01(evidence, directory.path, 'Test_1.07_cas_2'), throwsStateError);
+      expect(await File('${directory.path}/Test_1.07_cas_2_REPONSE.xml').exists(), isFalse);
+    } finally {
+      await directory.delete(recursive: true);
+    }
+  });
+
 }

@@ -803,7 +803,17 @@ class _PatientQualificationScreenState
       final evidence = Map<String, dynamic>.from(
         jsonDecode(event['after_json'] as String) as Map,
       );
-      await InsiExchange.export(evidence, directory, label);
+      if (event['event_kind'] == 'cnda_insi_cr01_injection') {
+        await InsiExchange.exportCndaCr01({
+          ...evidence,
+          'eventId': event['event_id'],
+          'recordedAt': DateTime.fromMillisecondsSinceEpoch(
+            event['occurred_at'] as int, isUtc: true,
+          ).toIso8601String(),
+        }, directory, label);
+      } else {
+        await InsiExchange.export(evidence, directory, label);
+      }
       if (mounted) setState(() => _message = 'Échange exporté dans $directory.');
     } catch (e) {
       if (mounted) {
@@ -1252,7 +1262,8 @@ class _PatientQualificationScreenState
                           'Traits d’identité modifiés ; preuves antérieures conservées dans l’historique',
                         _ => 'Informations enregistrées',
                       }),
-                      trailing: event['event_kind'] == 'insi_exchange'
+                      trailing: (event['event_kind'] == 'insi_exchange' ||
+                          event['event_kind'] == 'cnda_insi_cr01_injection')
                           ? IconButton(
                               tooltip: 'Exporter les échanges XML INSi',
                               icon: const Icon(Icons.download),

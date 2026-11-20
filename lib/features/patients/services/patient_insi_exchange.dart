@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:crypto/crypto.dart';
+import 'patient_insi_cr01_injection.dart';
 
 /// Technical evidence only. Never stores the CPS PIN or private key.
 class InsiExchange {
@@ -56,6 +57,43 @@ class InsiExchange {
           'Réponse : ${response == null ? 'aucune réponse complète conservée' : 'conservée'}\n'
           'Diagnostic : ${evidence['failure'] ?? 'traitement terminé'}\n',
     };
+    await _writeFiles(directory, files);
+  }
+
+  static Future<void> exportCndaCr01(
+    Map<String, dynamic> evidence,
+    String directory,
+    String prefix,
+  ) async {
+    if (!RegExp(r'^Test_[1-4]\.[0-9]{2}(_cas_[1-9][0-9]*)?$').hasMatch(prefix)) {
+      throw StateError('Numéro de test ou de cas invalide.');
+    }
+    if (evidence['simulation'] != true || evidence['networkCall'] != false ||
+        evidence['sourceHash'] != PatientInsiCr01Injection.fileHash ||
+        evidence['responseXml'] is! String) {
+      throw StateError('La preuve de simulation CNDA est incohérente.');
+    }
+    final injection = PatientInsiCr01Injection.decode(
+      utf8.encode(evidence['responseXml'] as String),
+    );
+    await _writeFiles(directory, {
+      '${prefix}_REPONSE.xml': injection.xml,
+      '${prefix}_DIAGNOSTIC.txt':
+          'SIMULATION CNDA — REP_CR01.xml — package INSi 05.00.00\n'
+          'Événement : ${evidence['eventId']}\n'
+          'Date UTC : ${evidence['recordedAt']}\n'
+          'CodeCR : 01 — aucune identité trouvée.\n'
+          'Aucun appel réseau. Aucune requête émise.\n'
+          'Identité du patient inchangée.\n'
+          'Cette simulation seule ne valide pas un scénario CNDA complet.\n'
+          'SHA-256 du XML officiel : ${PatientInsiCr01Injection.fileHash}\n',
+    });
+  }
+
+  static Future<void> _writeFiles(
+    String directory,
+    Map<String, String> files,
+  ) async {
     final root = Directory(directory);
     final created = <File>[];
     try {
