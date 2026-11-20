@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../services/patient_insi_retrieval_service.dart';
+import '../services/patient_fr_insi_ws_ins2_request_builder.dart';
 
 class PatientInsiConfigurationDialog extends StatefulWidget {
   const PatientInsiConfigurationDialog({
@@ -138,8 +139,10 @@ class _ConfigurationState extends State<PatientInsiConfigurationDialog> {
 }
 
 class PatientInsiPinDialog extends StatefulWidget {
-  const PatientInsiPinDialog({super.key, required this.patient});
+  const PatientInsiPinDialog({super.key, required this.patient, this.withVitale = true, this.isFictitiousTest = false});
   final String patient;
+  final bool withVitale;
+  final bool isFictitiousTest;
   @override
   State<PatientInsiPinDialog> createState() => _PinState();
 }
@@ -163,9 +166,13 @@ class _PinState extends State<PatientInsiPinDialog> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text('Patient : ${widget.patient}'),
+          if (widget.isFictitiousTest)
+            const Text('Patient fictif CNDA — appel au serveur INSi de test. La réponse sera conservée sans rattachement ni qualification.'),
           const SizedBox(height: 12),
-          const Text(
-            'Utilisez une carte Vitale de test et la CPS de test du kiné configuré. '
+          Text(
+            '${widget.withVitale
+                ? 'Utilisez une carte Vitale de test et la CPS de test du kiné configuré. '
+                : 'Recherche par traits saisis, sans lecture de carte Vitale. Utilisez la CPS de test du kiné configuré. '}'
             'Cette action authentifie le kiné et transmet les données du bénéficiaire à INSi. '
             'Aucun dépôt DMP. Le PIN n’est pas enregistré.',
           ),
@@ -193,6 +200,88 @@ class _PinState extends State<PatientInsiPinDialog> {
             : null,
         child: const Text('Interroger INSi'),
       ),
+    ],
+  );
+}
+
+
+/// A single explicitly reviewed WS_INS2 attempt. Compound given names stay intact.
+class PatientInsiTraitsDialog extends StatefulWidget {
+  const PatientInsiTraitsDialog({super.key, required this.initial, this.isFictitiousTest = false});
+  final Map<String, String> initial;
+  final bool isFictitiousTest;
+
+  @override
+  State<PatientInsiTraitsDialog> createState() => _TraitsState();
+}
+
+class _TraitsState extends State<PatientInsiTraitsDialog> {
+  static const labels = {
+    'name': 'Nom de naissance',
+    'first': 'Un prénom pour cette recherche (peut être composé)',
+    'sex': 'Sexe : M ou F',
+    'date': 'Date de naissance : AAAA-MM-JJ',
+    'place': 'Code INSEE du lieu de naissance (facultatif)',
+  };
+  late final fields = {
+    for (final key in labels.keys)
+      key: TextEditingController(text: widget.initial[key] ?? ''),
+  };
+  String? error;
+
+  @override
+  void dispose() {
+    for (final field in fields.values) {
+      field.dispose();
+    }
+    super.dispose();
+  }
+
+  void confirm() {
+    final values = {for (final entry in fields.entries) entry.key: entry.value.text.trim()};
+    try {
+      const PatientFrInsiWsIns2RequestBuilder().buildBody(
+        birthLastName: values['name'], firstNames: [values['first']!],
+        sexCode: values['sex'], birthDate: values['date'], birthPlaceCode: values['place'],
+      );
+      Navigator.pop(context, values);
+    } on ArgumentError catch (e) {
+      setState(() => error = e.message.toString());
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) => AlertDialog(
+    title: const Text('Rechercher l’INS par traits — serveur de test'),
+    content: SizedBox(
+      width: 600,
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (widget.isFictitiousTest)
+              const Text('Patient fictif CNDA — recherche sur le serveur INSi de test, sans rattachement de l’INS ni qualification.'),
+            const Text(
+              'Vérifiez les traits avant de continuer. Un seul prénom est transmis '
+              'pour cette recherche ; conservez les espaces et tirets d’un prénom composé. '
+              'Le code INSEE est laissé vide en première intention. '
+              'Aucun appel lors de la validation de ce formulaire.',
+            ),
+            for (final entry in labels.entries)
+              Padding(
+                padding: const EdgeInsets.only(top: 12),
+                child: TextField(controller: fields[entry.key],
+                  decoration: InputDecoration(labelText: entry.value)),
+              ),
+            if (error != null) Text(error!, style: TextStyle(color: Theme.of(context).colorScheme.error)),
+          ],
+        ),
+      ),
+    ),
+    actions: [
+      TextButton(onPressed: () => Navigator.pop(context), child: const Text('Annuler')),
+      FilledButton(onPressed: confirm, child: const Text('Continuer vers la CPS')),
     ],
   );
 }

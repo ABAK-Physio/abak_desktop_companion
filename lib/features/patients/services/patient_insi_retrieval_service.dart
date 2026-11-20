@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'patient_insi_exchange.dart';
+import 'patient_fr_insi_ws_ins2_request_builder.dart';
 import 'package:abak_vitale/abak_vitale.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/services.dart';
@@ -167,8 +168,39 @@ class PatientInsiRetrievalService {
     required VitaleIdentity card,
     required String pin,
     required Future<void> Function(InsiExchange) retainExchange,
-  }) async {
+  }) {
     checkCard(card);
+    return _retrieve(card: card, pin: pin, retainExchange: retainExchange);
+  }
+
+  Future<InsiRetrievalResponse> retrieveWithTraits({
+    required String birthLastName,
+    required String firstName,
+    required String sexCode,
+    required String birthDate,
+    String? birthPlaceCode,
+    required String pin,
+    required Future<void> Function(InsiExchange) retainExchange,
+  }) {
+    // Validate before reading the CPS or opening a network connection.
+    final body = const PatientFrInsiWsIns2RequestBuilder().buildBody(
+      birthLastName: birthLastName,
+      firstNames: [firstName],
+      sexCode: sexCode,
+      birthDate: birthDate,
+      birthPlaceCode: birthPlaceCode,
+    );
+    return _retrieve(traitsBody: body, pin: pin, retainExchange: retainExchange);
+  }
+
+  Future<InsiRetrievalResponse> _retrieve({
+    VitaleIdentity? card,
+    String? traitsBody,
+    required String pin,
+    required Future<void> Function(InsiExchange) retainExchange,
+  }) async {
+    final requestAction = card == null
+        ? PatientFrInsiWsIns2EnvelopeBuilder.action : action;
     final cfg = await configuration();
     checkConfiguration(cfg);
     cfg['version'] = (await PackageInfo.fromPlatform()).version;
@@ -216,27 +248,31 @@ class PatientInsiRetrievalService {
             ),
             x509Certificate: certificate.base64,
           );
-      List<VitaleIdentity> current;
-      try {
-        current = await VitaleIdentityService().readVitaleIdentities();
-      } catch (_) {
-        throw StateError(
-          'Impossible de contrôler la carte Vitale présente dans le lecteur. '
-          'Vérifiez la carte et le lecteur. Aucune requête INSi envoyée.',
-        );
+      if (card != null) {
+        List<VitaleIdentity> current;
+        try {
+          current = await VitaleIdentityService().readVitaleIdentities();
+        } catch (_) {
+          throw StateError(
+            'Impossible de contrôler la carte Vitale présente dans le lecteur. '
+            'Vérifiez la carte et le lecteur. Aucune requête INSi envoyée.',
+          );
+        }
+        checkCurrentCard(card, current);
       }
-      checkCurrentCard(card, current);
       final id = const Uuid().v4();
       if (DateTime.now().toUtc().difference(now) > const Duration(minutes: 2)) {
         throw StateError(
           'Préparation de la demande expirée. Relancez la récupération.',
         );
       }
-      final request = buildRequest(card, cfg, ps, now, id);
+      final request = card != null
+          ? buildRequest(card, cfg, ps, now, id)
+          : buildTraitsRequest(traitsBody!, cfg, ps, now, id);
       final message = http.Request('POST', Uri.parse(endpoint))
         ..followRedirects = false
         ..headers['Content-Type'] =
-            'application/soap+xml; charset=UTF-8; action="$action"'
+            'application/soap+xml; charset=UTF-8; action="$requestAction"'
         ..body = request;
       // One explicit attempt, no retry and no redirect carrying patient data.
       String? responseXml;
@@ -314,6 +350,27 @@ class PatientInsiRetrievalService {
       lease.release();
     }
   }
+
+  static String buildTraitsRequest(
+    String body,
+    Map<String, String> cfg,
+    String ps,
+    DateTime now,
+    String id,
+  ) => const PatientFrInsiWsIns2EnvelopeBuilder().build(
+    contexteLpsXml: const PatientFrInsiContexteLpsBuilder().build(
+      id: const Uuid().v4(), time: now, emitter: cfg['professional'],
+      idam: cfg['authorization'], idamReference: '4',
+      lpsVersion: cfg['version'], instance: cfg['instance'], name: 'ABAK Companion',
+    ),
+    messageIdXml: const PatientFrInsiMessageIdBuilder().build(id),
+    contexteBamXml: const PatientFrInsiContexteBamBuilder().build(
+      id: const Uuid().v4(), time: now, emitter: cfg['professional'],
+    ),
+    bodyXml: body,
+    psAssertionXml: ps,
+    // Default WS_INS2 action. No Vitale assertion or coverage beneficiary.
+  );
 
   static String buildRequest(
     VitaleIdentity card,

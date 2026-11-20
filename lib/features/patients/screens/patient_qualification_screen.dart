@@ -518,28 +518,49 @@ class _PatientQualificationScreenState
     }
   }
 
-  Future<void> _retrieveInsi() async {
+  Future<void> _retrieveInsi({bool withVitale = true}) async {
     final record = _record;
-    if (_busy || _dirty || record == null || record.vitale == null) return;
+    if (_busy || _dirty || record == null ||
+        (withVitale && record.vitale == null)) {
+      return;
+    }
     setState(() {
       _busy = true;
       _error = null;
       _message = null;
     });
+    final fictitiousTest = !withVitale && _flags['identity_fictitious'] == true;
     String? pin;
     try {
       if (_flags['identity_doubtful'] == true ||
-          _flags['identity_fictitious'] == true) {
+          (withVitale && _flags['identity_fictitious'] == true)) {
         throw StateError(
           'Une identité signalée douteuse ou fictive ne permet pas cet appel.',
         );
       }
-      final card = VitaleIdentity.fromMap(
-        Map<String, dynamic>.from(
-          jsonDecode(record.vitale!['identity_json'] as String),
-        ),
-      );
-      PatientInsiRetrievalService.checkCard(card);
+      VitaleIdentity? card;
+      Map<String, String>? traits;
+      if (withVitale) {
+        card = VitaleIdentity.fromMap(
+          Map<String, dynamic>.from(jsonDecode(record.vitale!['identity_json'] as String)),
+        );
+        PatientInsiRetrievalService.checkCard(card);
+      } else {
+        traits = await showDialog<Map<String, String>>(
+          context: context,
+          builder: (_) => PatientInsiTraitsDialog(
+            isFictitiousTest: fictitiousTest, initial: {
+            'name': _value('birth_last_name'),
+            'first': _value('first_birth_name'),
+            'sex': _value('sex_code'),
+            'date': _value('birth_date'),
+            'place': '',
+          }),
+        );
+        if (!mounted || traits == null) {
+          return;
+        }
+      }
       final service = PatientInsiRetrievalService();
       PatientInsiRetrievalService.checkConfiguration(
         await service.configuration(),
@@ -548,17 +569,24 @@ class _PatientQualificationScreenState
       pin = await showDialog<String>(
         context: context,
         builder: (_) => PatientInsiPinDialog(
+          withVitale: withVitale,
+          isFictitiousTest: fictitiousTest,
           patient:
               '${record.patient['last_name']} ${record.patient['first_name']}',
         ),
       );
       if (!mounted || pin == null) return;
-      final response = await service.retrieve(
-        card: card,
-        pin: pin,
-        retainExchange: (exchange) =>
-            _service.retainInsiExchange(widget.patientId, exchange),
-      );
+      final response = withVitale
+          ? await service.retrieve(
+              card: card!, pin: pin,
+              retainExchange: (exchange) => _service.retainInsiExchange(widget.patientId, exchange),
+            )
+          : await service.retrieveWithTraits(
+              birthLastName: traits!['name']!, firstName: traits['first']!,
+              sexCode: traits['sex']!, birthDate: traits['date']!,
+              birthPlaceCode: traits['place'], pin: pin,
+              retainExchange: (exchange) => _service.retainInsiExchange(widget.patientId, exchange),
+            );
       pin = null;
       final eventId = await _service.retainInsiResponse(
         widget.patientId,
@@ -581,7 +609,9 @@ class _PatientQualificationScreenState
       final accepted = await showDialog<bool>(
         context: context,
         builder: (context) => AlertDialog(
-          title: const Text('Identité retournée par INSi'),
+          title: Text(fictitiousTest
+              ? 'Résultat INSi — patient fictif CNDA'
+              : 'Identité retournée par INSi'),
           content: SizedBox(
             width: 650,
             child: SingleChildScrollView(
@@ -636,6 +666,8 @@ class _PatientQualificationScreenState
                   ].contains(result.insOid))
                     const Text('Matricule NIA : identifiant non définitif.'),
                   const SizedBox(height: 12),
+                  if (fictitiousTest)
+                    const Text('Patient fictif CNDA : réponse conservée pour les essais, sans rattachement de l’INS ni qualification de l’identité.'),
                   const Text(
                     'Vérifiez que cette identité correspond au patient. Les différences sont en gras. '
                     'Les noms d’usage sont conservés. Un changement des traits nécessite un nouveau contrôle du justificatif.',
@@ -647,17 +679,18 @@ class _PatientQualificationScreenState
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context, false),
-              child: const Text('Ne pas appliquer'),
+              child: Text(fictitiousTest ? 'Fermer' : 'Ne pas appliquer'),
             ),
-            FilledButton(
-              onPressed: () => Navigator.pop(context, true),
-              child: const Text('Rattacher cette INS au patient'),
-            ),
+            if (!fictitiousTest)
+              FilledButton(
+                onPressed: () => Navigator.pop(context, true),
+                child: const Text('Rattacher cette INS au patient'),
+              ),
           ],
         ),
       );
       if (!mounted) return;
-      final updated = accepted == true
+      final updated = accepted == true && !fictitiousTest
           ? await _service.applyInsiResponse(widget.patientId, eventId)
           : await _service.load(widget.patientId);
       if (!mounted) return;
@@ -1010,6 +1043,12 @@ class _PatientQualificationScreenState
                 : _retrieveInsi,
             child: const Text('Récupérer l’INS avec la lecture Vitale'),
           ),
+          FilledButton(
+            onPressed: _busy || _dirty ||
+                    _flags['identity_doubtful'] == true
+                ? null : () => _retrieveInsi(withVitale: false),
+            child: const Text('Rechercher l’INS par traits d’identité'),
+          ),
           OutlinedButton(
             onPressed: _busy ? null : _configureInsi,
             child: const Text('Configurer INSi — test'),
@@ -1025,6 +1064,8 @@ class _PatientQualificationScreenState
         const Text(
           'Enregistrez les informations de la fiche avant de récupérer l’INS.',
         ),
+      if (_flags['identity_fictitious'] == true)
+        const Text('Recherche par traits autorisée pour les patients fictifs CNDA sur le serveur de test uniquement. Aucun rattachement de l’INS ni qualification.'),
       const Text(
         'Serveur INSi de test uniquement. La récupération demande votre CPS et son PIN. '
         'Le résultat est présenté avant rattachement à cette fiche. '
