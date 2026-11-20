@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'patient_insi_cr01_injection.dart';
 import 'patient_insi_exchange.dart';
 import 'package:abak_vitale/abak_vitale.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
@@ -203,6 +204,28 @@ class PatientQualificationService {
           'ins_key',
           'ins_oid',
         ].every((key) => _text(row[key]) != null);
+  }
+
+  Future<void> retainCndaCr01Injection(
+    String patientId,
+    PatientInsiCr01Injection injection,
+  ) async {
+    final db = await _database();
+    await db.insert('patient_identity_events', {
+      'event_id': const Uuid().v4(),
+      'patient_id': patientId,
+      'occurred_at': DateTime.now().toUtc().millisecondsSinceEpoch,
+      'event_kind': 'cnda_insi_cr01_injection',
+      'before_json': '{}',
+      'after_json': jsonEncode({
+        'source': 'CNDA INSi 05.00.00 — REP_CR01.xml',
+        'simulation': true,
+        'networkCall': false,
+        'codeCR': '01',
+        'responseXml': injection.xml,
+        'sourceHash': PatientInsiCr01Injection.fileHash,
+      }),
+    });
   }
 
   Future<void> retainInsiExchange(String patientId, InsiExchange exchange) async {

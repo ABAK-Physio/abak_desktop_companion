@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'dart:io';
+import '../services/patient_insi_cr01_injection.dart';
 import 'package:file_picker/file_picker.dart';
 import '../services/patient_insi_exchange.dart';
 import 'package:abak_vitale/abak_vitale.dart';
@@ -687,6 +689,76 @@ class _PatientQualificationScreenState
     }
   }
 
+  Future<void> _injectCndaCr01() async {
+    if (_busy || _dirty) {
+      return;
+    }
+    setState(() => _busy = true);
+    try {
+      final picked = await FilePicker.platform.pickFiles(
+        dialogTitle: 'Simulation CNDA — sélectionner REP_CR01.xml',
+        type: FileType.custom,
+        allowedExtensions: ['xml'],
+        allowMultiple: false,
+      );
+      if (picked == null || !mounted) {
+        return;
+      }
+      final path = picked.files.single.path;
+      if (path == null) {
+        throw StateError('Fichier local inaccessible.');
+      }
+      final file = File(path);
+      if (await file.length() > 65536) {
+        throw StateError('Le fichier choisi ne correspond pas au fichier CNDA attendu.');
+      }
+      final injection = PatientInsiCr01Injection.decode(await file.readAsBytes());
+      if (!mounted) {
+        return;
+      }
+      final accepted = await showDialog<bool>(
+        context: context,
+        builder: (dialogContext) => AlertDialog(
+          title: const Text('Simulation CNDA — CR 01'),
+          content: const Text(
+            'Résultat simulé : aucune identité trouvée. '
+            'Conserver cette preuve de test dans l’historique ? '
+            'Aucun appel réseau ni utilisation de CPS. '
+            'Les données et le statut de l’identité ne seront pas modifiés.',
+          ),
+          actions: [
+            TextButton(onPressed: () => Navigator.pop(dialogContext, false),
+              child: const Text('Annuler')),
+            FilledButton(onPressed: () => Navigator.pop(dialogContext, true),
+              child: const Text('Conserver la preuve simulée')),
+          ],
+        ),
+      );
+      if (accepted != true || !mounted) {
+        return;
+      }
+      await _service.retainCndaCr01Injection(widget.patientId, injection);
+      final refreshed = await _service.load(widget.patientId);
+      if (mounted) {
+        setState(() {
+          _record = refreshed;
+          _error = null;
+          _message = 'Simulation CNDA CR 01 : aucune identité trouvée. '
+              'Preuve conservée ; identité inchangée. Aucun appel réseau.';
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() => _error = e is StateError ? e.message.toString()
+            : 'Injection CNDA non terminée.');
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _busy = false);
+      }
+    }
+  }
+
   Future<void> _exportInsiExchange(Map<String, Object?> event) async {
     final test = TextEditingController();
     final testCase = TextEditingController();
@@ -932,6 +1004,10 @@ class _PatientQualificationScreenState
             onPressed: _busy ? null : _configureInsi,
             child: const Text('Configurer INSi — test'),
           ),
+          OutlinedButton(
+            onPressed: _busy || _dirty ? null : _injectCndaCr01,
+            child: const Text('Simulation CNDA — injecter CR 01'),
+          ),
         ],
       ),
       const SizedBox(height: 8),
@@ -1164,6 +1240,8 @@ class _PatientQualificationScreenState
                       contentPadding: EdgeInsets.zero,
                       title: Text(switch (event['event_kind']) {
                         'vitale_read' => 'Lecture Vitale rattachée au patient',
+                        'cnda_insi_cr01_injection' =>
+                            'Simulation CNDA — CR 01 : aucune identité trouvée',
                         'insi_exchange' => 'Échange XML INSi conservé',
                         'insi_response' => 'Réponse INSi reçue et conservée',
                         'insi_applied' =>
