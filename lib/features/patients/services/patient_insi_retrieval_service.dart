@@ -133,6 +133,36 @@ class PatientInsiRetrievalService {
     cardDate(card);
   }
 
+  /// Must use a fresh hardware read, never the list cached in the patient file.
+  static void checkCurrentCard(
+    VitaleIdentity selected,
+    List<VitaleIdentity> current,
+  ) {
+    checkCard(selected);
+    final matches = current.where((candidate) {
+      try {
+        checkCard(candidate);
+        return candidate.cardSerial == selected.cardSerial &&
+            matricule(candidate.nir) == matricule(selected.nir) &&
+            matricule(candidate.certifiedNir) == matricule(selected.certifiedNir) &&
+            cardDate(candidate) == cardDate(selected) &&
+            candidate.birthOrder == selected.birthOrder &&
+            candidate.insuredBirthLastName == selected.insuredBirthLastName &&
+            candidate.lastName == selected.lastName &&
+            candidate.firstName == selected.firstName;
+      } on StateError {
+        return false;
+      }
+    }).length;
+    if (matches != 1) {
+      throw StateError(
+        'La carte Vitale ou le bénéficiaire ne correspond plus à la lecture enregistrée. '
+        'Relisez la carte, sélectionnez le bénéficiaire et enregistrez la fiche avant de réessayer. '
+        'Aucune requête INSi envoyée.',
+      );
+    }
+  }
+
   Future<InsiRetrievalResponse> retrieve({
     required VitaleIdentity card,
     required String pin,
@@ -186,6 +216,16 @@ class PatientInsiRetrievalService {
             ),
             x509Certificate: certificate.base64,
           );
+      List<VitaleIdentity> current;
+      try {
+        current = await VitaleIdentityService().readVitaleIdentities();
+      } catch (_) {
+        throw StateError(
+          'Impossible de contrôler la carte Vitale présente dans le lecteur. '
+          'Vérifiez la carte et le lecteur. Aucune requête INSi envoyée.',
+        );
+      }
+      checkCurrentCard(card, current);
       final id = const Uuid().v4();
       if (DateTime.now().toUtc().difference(now) > const Duration(minutes: 2)) {
         throw StateError(
