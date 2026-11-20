@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'patient_insi_exchange.dart';
+import 'patient_insi_given_names_search.dart';
 import 'patient_fr_insi_ws_ins2_request_builder.dart';
 import 'package:abak_vitale/abak_vitale.dart';
 import 'package:crypto/crypto.dart';
@@ -191,6 +192,33 @@ class PatientInsiRetrievalService {
       birthPlaceCode: birthPlaceCode,
     );
     return _retrieve(traitsBody: body, pin: pin, retainExchange: retainExchange);
+  }
+
+  Future<InsiRetrievalResponse> retrieveWithGivenNames({
+    required String birthLastName,
+    required List<String> firstNames,
+    required String sexCode,
+    required String birthDate,
+    String? birthPlaceCode,
+    required String pin,
+    required Future<void> Function(InsiExchange) retainExchange,
+  }) {
+    // Validate the complete plan before the first CPS or network operation.
+    for (final firstName in PatientInsiGivenNamesSearch.plan(firstNames)) {
+      const PatientFrInsiWsIns2RequestBuilder().buildBody(
+        birthLastName: birthLastName, firstNames: [firstName],
+        sexCode: sexCode, birthDate: birthDate, birthPlaceCode: birthPlaceCode,
+      );
+    }
+    return PatientInsiGivenNamesSearch.run<InsiRetrievalResponse>(
+      firstNames: firstNames,
+      attempt: (firstName) => retrieveWithTraits(
+        birthLastName: birthLastName, firstName: firstName,
+        sexCode: sexCode, birthDate: birthDate, birthPlaceCode: birthPlaceCode,
+        pin: pin, retainExchange: retainExchange,
+      ),
+      isSuccess: (response) => response.result.isSuccess,
+    );
   }
 
   Future<InsiRetrievalResponse> _retrieve({

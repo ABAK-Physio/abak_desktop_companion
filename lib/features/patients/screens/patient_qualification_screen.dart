@@ -3,6 +3,7 @@ import 'dart:io';
 import '../services/patient_insi_cr01_injection.dart';
 import 'package:file_picker/file_picker.dart';
 import '../services/patient_insi_exchange.dart';
+import '../services/patient_insi_given_names_search.dart';
 import 'package:abak_vitale/abak_vitale.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -570,6 +571,9 @@ class _PatientQualificationScreenState
         context: context,
         builder: (_) => PatientInsiPinDialog(
           withVitale: withVitale,
+          maxTraitAttempts: withVitale ? null : PatientInsiGivenNamesSearch.plan(
+            traits!['first']!.split(RegExp(r'\r?\n')),
+          ).length,
           isFictitiousTest: fictitiousTest,
           patient:
               '${record.patient['last_name']} ${record.patient['first_name']}',
@@ -581,8 +585,8 @@ class _PatientQualificationScreenState
               card: card!, pin: pin,
               retainExchange: (exchange) => _service.retainInsiExchange(widget.patientId, exchange),
             )
-          : await service.retrieveWithTraits(
-              birthLastName: traits!['name']!, firstName: traits['first']!,
+          : await service.retrieveWithGivenNames(
+              birthLastName: traits!['name']!, firstNames: traits['first']!.split(RegExp(r'\r?\n')),
               sexCode: traits['sex']!, birthDate: traits['date']!,
               birthPlaceCode: traits['place'], pin: pin,
               retainExchange: (exchange) => _service.retainInsiExchange(widget.patientId, exchange),

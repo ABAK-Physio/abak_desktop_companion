@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../services/patient_insi_retrieval_service.dart';
 import '../services/patient_fr_insi_ws_ins2_request_builder.dart';
+import '../services/patient_insi_given_names_search.dart';
 
 class PatientInsiConfigurationDialog extends StatefulWidget {
   const PatientInsiConfigurationDialog({
@@ -139,8 +140,9 @@ class _ConfigurationState extends State<PatientInsiConfigurationDialog> {
 }
 
 class PatientInsiPinDialog extends StatefulWidget {
-  const PatientInsiPinDialog({super.key, required this.patient, this.withVitale = true, this.isFictitiousTest = false});
+  const PatientInsiPinDialog({super.key, required this.patient, this.withVitale = true, this.isFictitiousTest = false, this.maxTraitAttempts});
   final String patient;
+  final int? maxTraitAttempts;
   final bool withVitale;
   final bool isFictitiousTest;
   @override
@@ -166,6 +168,8 @@ class _PinState extends State<PatientInsiPinDialog> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text('Patient : ${widget.patient}'),
+          if (widget.maxTraitAttempts != null)
+            Text('Jusqu’à ${widget.maxTraitAttempts} appel(s) INSi : chaque prénom dans l’ordre, puis tous ensemble si nécessaire. Arrêt dès qu’un résultat unique est trouvé.'),
           if (widget.isFictitiousTest)
             const Text('Patient fictif CNDA — appel au serveur INSi de test. La réponse sera conservée sans rattachement ni qualification.'),
           const SizedBox(height: 12),
@@ -218,7 +222,7 @@ class PatientInsiTraitsDialog extends StatefulWidget {
 class _TraitsState extends State<PatientInsiTraitsDialog> {
   static const labels = {
     'name': 'Nom de naissance',
-    'first': 'Un prénom pour cette recherche (peut être composé)',
+    'first': 'Prénoms : un prénom par ligne (composés conservés)',
     'sex': 'Sexe : M ou F',
     'date': 'Date de naissance : AAAA-MM-JJ',
     'place': 'Code INSEE du lieu de naissance (facultatif)',
@@ -240,10 +244,18 @@ class _TraitsState extends State<PatientInsiTraitsDialog> {
   void confirm() {
     final values = {for (final entry in fields.entries) entry.key: entry.value.text.trim()};
     try {
+      final names = values['first']!.split(RegExp(r'\r?\n'));
+      // Keep field validation order consistent with the single-name form.
       const PatientFrInsiWsIns2RequestBuilder().buildBody(
-        birthLastName: values['name'], firstNames: [values['first']!],
+        birthLastName: values['name'], firstNames: [names.first],
         sexCode: values['sex'], birthDate: values['date'], birthPlaceCode: values['place'],
       );
+      for (final firstName in PatientInsiGivenNamesSearch.plan(names)) {
+        const PatientFrInsiWsIns2RequestBuilder().buildBody(
+          birthLastName: values['name'], firstNames: [firstName],
+          sexCode: values['sex'], birthDate: values['date'], birthPlaceCode: values['place'],
+        );
+      }
       Navigator.pop(context, values);
     } on ArgumentError catch (e) {
       setState(() => error = e.message.toString());
@@ -263,8 +275,10 @@ class _TraitsState extends State<PatientInsiTraitsDialog> {
             if (widget.isFictitiousTest)
               const Text('Patient fictif CNDA — recherche sur le serveur INSi de test, sans rattachement de l’INS ni qualification.'),
             const Text(
-              'Vérifiez les traits avant de continuer. Un seul prénom est transmis '
-              'pour cette recherche ; conservez les espaces et tirets d’un prénom composé. '
+              'Vérifiez les traits avant de continuer. Saisissez un prénom par ligne, '
+              'dans l’ordre souhaité ; conservez les espaces et tirets d’un prénom composé. '
+              'La recherche essaie chaque prénom puis tous ensemble si nécessaire, '
+              'et s’arrête dès qu’un résultat unique est trouvé. '
               'Le code INSEE est laissé vide en première intention. '
               'Aucun appel lors de la validation de ce formulaire.',
             ),
@@ -272,6 +286,9 @@ class _TraitsState extends State<PatientInsiTraitsDialog> {
               Padding(
                 padding: const EdgeInsets.only(top: 12),
                 child: TextField(controller: fields[entry.key],
+                  minLines: entry.key == 'first' ? 2 : 1,
+                  maxLines: entry.key == 'first' ? 5 : 1,
+                  keyboardType: entry.key == 'first' ? TextInputType.multiline : TextInputType.text,
                   decoration: InputDecoration(labelText: entry.value)),
               ),
             if (error != null) Text(error!, style: TextStyle(color: Theme.of(context).colorScheme.error)),
