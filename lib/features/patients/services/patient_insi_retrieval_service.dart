@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'patient_insi_exchange.dart';
 import 'package:abak_vitale/abak_vitale.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/services.dart';
@@ -135,6 +136,7 @@ class PatientInsiRetrievalService {
   Future<InsiRetrievalResponse> retrieve({
     required VitaleIdentity card,
     required String pin,
+    required Future<void> Function(InsiExchange) retainExchange,
   }) async {
     checkCard(card);
     final cfg = await configuration();
@@ -197,43 +199,76 @@ class PatientInsiRetrievalService {
             'application/soap+xml; charset=UTF-8; action="$action"'
         ..body = request;
       // One explicit attempt, no retry and no redirect carrying patient data.
-      final response = await (() async {
-        final stream = await client.send(message);
-        final bytes = <int>[];
-        await for (final chunk in stream.stream) {
-          if (bytes.length + chunk.length > 2 * 1024 * 1024) {
-            throw StateError('Réponse INSi trop volumineuse.');
+      String? responseXml;
+      int? statusCode;
+      String? failure;
+      try {
+        final response = await (() async {
+          final stream = await client.send(message);
+          statusCode = stream.statusCode;
+          final bytes = <int>[];
+          await for (final chunk in stream.stream) {
+            if (bytes.length + chunk.length > 2 * 1024 * 1024) {
+              throw StateError('Réponse INSi trop volumineuse.');
+            }
+            bytes.addAll(chunk);
           }
-          bytes.addAll(chunk);
-        }
-        if (stream.statusCode != 200 && stream.statusCode != 500) {
+          final xml = utf8.decode(bytes);
+          responseXml = xml;
+          if (stream.statusCode != 200 && stream.statusCode != 500) {
+            throw StateError(
+              'INSi a répondu HTTP ${stream.statusCode}. La fiche reste inchangée.',
+            );
+          }
+          if (xml.contains('<!DOCTYPE') || xml.contains('<!ENTITY')) {
+            throw StateError('Réponse INSi non prise en charge.');
+          }
+          final parsed = const PatientFrInsiResponseParser().parseXml(xml);
+          if (parsed.isFault) {
+            throw StateError(
+              'Le serveur INSi a refusé la demande. La fiche reste inchangée.',
+            );
+          }
+          if (stream.statusCode != 200) {
+            throw StateError('Réponse INSi HTTP incohérente.');
+          }
+          return InsiRetrievalResponse(
+            id: id,
+            xml: xml,
+            requestHash: sha256.convert(utf8.encode(request)).toString(),
+            professional: profile.nationalId,
+            receivedAt: DateTime.now().toUtc(),
+            result: parsed.result!,
+          );
+        })().timeout(const Duration(seconds: 45));
+        return response;
+      } catch (e) {
+        // Never persist arbitrary exception text: it may contain credentials.
+        failure = e is StateError
+            ? e.message.toString()
+            : e is FormatException
+                ? 'Réponse INSi illisible.'
+                : 'Échange INSi interrompu (réseau ou délai dépassé).';
+        rethrow;
+      } finally {
+        try {
+          await retainExchange(
+            InsiExchange(
+              id: id,
+              requestXml: request,
+              responseXml: responseXml,
+              httpStatus: statusCode,
+              failure: failure,
+              recordedAt: DateTime.now().toUtc(),
+            ),
+          );
+        } catch (_) {
           throw StateError(
-            'INSi a répondu HTTP ${stream.statusCode}. La fiche reste inchangée.',
+            'Échange INSi effectué ou tenté, mais ses preuves n’ont pas pu être conservées. '
+            'Ne relancez pas automatiquement la demande.',
           );
         }
-        final xml = utf8.decode(bytes);
-        if (xml.contains('<!DOCTYPE') || xml.contains('<!ENTITY')) {
-          throw StateError('Réponse INSi non prise en charge.');
-        }
-        final parsed = const PatientFrInsiResponseParser().parseXml(xml);
-        if (parsed.isFault) {
-          throw StateError(
-            'Le serveur INSi a refusé la demande. La fiche reste inchangée.',
-          );
-        }
-        if (stream.statusCode != 200) {
-          throw StateError('Réponse INSi HTTP incohérente.');
-        }
-        return InsiRetrievalResponse(
-          id: id,
-          xml: xml,
-          requestHash: sha256.convert(utf8.encode(request)).toString(),
-          professional: profile.nationalId,
-          receivedAt: DateTime.now().toUtc(),
-          result: parsed.result!,
-        );
-      })().timeout(const Duration(seconds: 45));
-      return response;
+      }
     } finally {
       client.close();
       lease.release();

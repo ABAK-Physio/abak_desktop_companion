@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'package:file_picker/file_picker.dart';
+import '../services/patient_insi_exchange.dart';
 import 'package:abak_vitale/abak_vitale.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -549,7 +551,12 @@ class _PatientQualificationScreenState
         ),
       );
       if (!mounted || pin == null) return;
-      final response = await service.retrieve(card: card, pin: pin);
+      final response = await service.retrieve(
+        card: card,
+        pin: pin,
+        retainExchange: (exchange) =>
+            _service.retainInsiExchange(widget.patientId, exchange),
+      );
       pin = null;
       final eventId = await _service.retainInsiResponse(
         widget.patientId,
@@ -670,7 +677,71 @@ class _PatientQualificationScreenState
       }
     } finally {
       pin = null;
+      try {
+        final refreshed = await _service.load(widget.patientId);
+        if (mounted) setState(() => _record = refreshed);
+      } catch (_) {
+        // Keep the original error and current form when refreshing fails.
+      }
       if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  Future<void> _exportInsiExchange(Map<String, Object?> event) async {
+    final test = TextEditingController();
+    final testCase = TextEditingController();
+    try {
+      final label = await showDialog<String>(
+        context: context,
+        builder: (dialogContext) => AlertDialog(
+          title: const Text('Exporter les échanges XML INSi'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(controller: test, decoration: const InputDecoration(
+                labelText: 'Numéro du test (ex. 1.03)',
+              )),
+              TextField(controller: testCase, decoration: const InputDecoration(
+                labelText: 'Numéro du cas (facultatif)',
+              )),
+            ],
+          ),
+          actions: [
+            TextButton(onPressed: () => Navigator.pop(dialogContext),
+              child: const Text('Annuler')),
+            FilledButton(onPressed: () {
+              final number = test.text.trim();
+              final c = testCase.text.trim();
+              if (!RegExp(r'^[1-4]\.[0-9]{2}$').hasMatch(number) ||
+                  (c.isNotEmpty && !RegExp(r'^[1-9][0-9]*$').hasMatch(c))) {
+                return;
+              }
+              Navigator.pop(dialogContext, 'Test_$number${c.isEmpty ? '' : '_cas_$c'}');
+            }, child: const Text('Choisir le dossier')),
+          ],
+        ),
+      );
+      if (label == null || !mounted) {
+        return;
+      }
+      final directory = await FilePicker.platform.getDirectoryPath(
+        dialogTitle: 'Dossier XML des preuves INSi',
+      );
+      if (directory == null || !mounted) return;
+      final evidence = Map<String, dynamic>.from(
+        jsonDecode(event['after_json'] as String) as Map,
+      );
+      await InsiExchange.export(evidence, directory, label);
+      if (mounted) setState(() => _message = 'Échange exporté dans $directory.');
+    } catch (e) {
+      if (mounted) {
+        setState(() => _error = e is StateError
+            ? e.message.toString()
+            : 'Export non terminé. Vérifiez le dossier choisi.');
+      }
+    } finally {
+      test.dispose();
+      testCase.dispose();
     }
   }
 
@@ -1093,6 +1164,7 @@ class _PatientQualificationScreenState
                       contentPadding: EdgeInsets.zero,
                       title: Text(switch (event['event_kind']) {
                         'vitale_read' => 'Lecture Vitale rattachée au patient',
+                        'insi_exchange' => 'Échange XML INSi conservé',
                         'insi_response' => 'Réponse INSi reçue et conservée',
                         'insi_applied' =>
                           'INS et traits rattachés après comparaison',
@@ -1102,6 +1174,13 @@ class _PatientQualificationScreenState
                           'Traits d’identité modifiés ; preuves antérieures conservées dans l’historique',
                         _ => 'Informations enregistrées',
                       }),
+                      trailing: event['event_kind'] == 'insi_exchange'
+                          ? IconButton(
+                              tooltip: 'Exporter les échanges XML INSi',
+                              icon: const Icon(Icons.download),
+                              onPressed: _busy ? null : () => _exportInsiExchange(event),
+                            )
+                          : null,
                       subtitle: Text(
                         '${_date(event['occurred_at'])}${event['actor_name'] == null ? '' : ' · ${event['actor_name']}'}',
                       ),

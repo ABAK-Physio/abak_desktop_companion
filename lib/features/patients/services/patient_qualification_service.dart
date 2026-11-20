@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'patient_insi_exchange.dart';
 import 'package:abak_vitale/abak_vitale.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:uuid/uuid.dart';
@@ -202,6 +203,18 @@ class PatientQualificationService {
           'ins_key',
           'ins_oid',
         ].every((key) => _text(row[key]) != null);
+  }
+
+  Future<void> retainInsiExchange(String patientId, InsiExchange exchange) async {
+    final db = await _database();
+    await db.insert('patient_identity_events', {
+      'event_id': exchange.id,
+      'patient_id': patientId,
+      'occurred_at': exchange.recordedAt.millisecondsSinceEpoch,
+      'event_kind': 'insi_exchange',
+      'before_json': '{}',
+      'after_json': jsonEncode(exchange.toMap()),
+    });
   }
 
   /// Archive the response even when the user declines to apply it.
