@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'patient_insi_exchange.dart';
+import 'patient_insi_exchange_transport.dart';
 import 'patient_insi_given_names_search.dart';
 import 'patient_fr_insi_ws_ins2_request_builder.dart';
 import 'patient_fr_insi_ws_ins3_request_builder.dart';
@@ -383,67 +384,11 @@ class PatientInsiRetrievalService {
         ..headers['Content-Type'] =
             'application/soap+xml; charset=UTF-8; action="$requestAction"'
         ..body = request;
-      // One explicit attempt, no retry and no redirect carrying patient data.
-      String? responseXml;
-      int? statusCode;
-      String? failure;
-      try {
-        final response = await (() async {
-          final stream = await client.send(message);
-          statusCode = stream.statusCode;
-          final bytes = <int>[];
-          await for (final chunk in stream.stream) {
-            if (bytes.length + chunk.length > 2 * 1024 * 1024) {
-              throw StateError('Réponse INSi trop volumineuse.');
-            }
-            bytes.addAll(chunk);
-          }
-          final xml = utf8.decode(bytes);
-          responseXml = xml;
-          if (stream.statusCode != 200 && stream.statusCode != 500) {
-            throw StateError(
-              'INSi a répondu HTTP ${stream.statusCode}. La fiche reste inchangée.',
-            );
-          }
-          if (xml.contains('<!DOCTYPE') || xml.contains('<!ENTITY')) {
-            throw StateError('Réponse INSi non prise en charge.');
-          }
-          return readResponse(
-            InsiExchange(
-              id: id, requestXml: request, responseXml: xml,
-              httpStatus: stream.statusCode, recordedAt: DateTime.now().toUtc(),
-            ),
-            profile.nationalId,
-          );
-        })().timeout(const Duration(seconds: 45));
-        return response;
-      } catch (e) {
-        // Never persist arbitrary exception text: it may contain credentials.
-        failure = e is StateError
-            ? e.message.toString()
-            : e is FormatException
-                ? 'Réponse INSi illisible.'
-                : 'Échange INSi interrompu (réseau ou délai dépassé).';
-        rethrow;
-      } finally {
-        try {
-          await retainExchange(
-            InsiExchange(
-              id: id,
-              requestXml: request,
-              responseXml: responseXml,
-              httpStatus: statusCode,
-              failure: failure,
-              recordedAt: DateTime.now().toUtc(),
-            ),
-          );
-        } catch (_) {
-          throw StateError(
-            'Échange INSi effectué ou tenté, mais ses preuves n’ont pas pu être conservées. '
-            'Ne relancez pas automatiquement la demande.',
-          );
-        }
-      }
+      return await PatientInsiExchangeTransport(client: client).send<T>(
+        id: id, message: message,
+        interpret: (exchange) => readResponse(exchange, profile.nationalId),
+        retainExchange: retainExchange,
+      );
     } finally {
       client.close();
       lease.release();
