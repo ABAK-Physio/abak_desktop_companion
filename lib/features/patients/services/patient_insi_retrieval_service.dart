@@ -2,8 +2,9 @@ import 'dart:convert';
 import 'patient_insi_exchange.dart';
 import 'patient_insi_given_names_search.dart';
 import 'patient_fr_insi_ws_ins2_request_builder.dart';
+import 'patient_fr_insi_ws_ins3_request_builder.dart';
+import 'patient_fr_insi_verification_response_parser.dart';
 import 'package:abak_vitale/abak_vitale.dart';
-import 'package:crypto/crypto.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:package_info_plus/package_info_plus.dart';
@@ -27,7 +28,7 @@ import 'patient_fr_insi_ps_signer.dart';
 import 'patient_fr_insi_response_parser.dart';
 import 'patient_fr_insi_ws_ins2_envelope_builder.dart';
 
-/// CNDA package 05.00.01, WS_INS1, CPx level-2 assertion.
+/// INSi qualification server, WS_INS1/2/3, CPx level-2 assertion.
 /// Constructing this service never reads a card or opens a connection.
 class PatientInsiRetrievalService {
   static const endpoint = 'https://qualiflps.services-ps.ameli.fr/lps';
@@ -221,14 +222,92 @@ class PatientInsiRetrievalService {
     );
   }
 
+  Future<InsiVerificationResponse> verify({
+    required String insNumber,
+    required String insKey,
+    required String insOid,
+    required String birthLastName,
+    required String givenNames,
+    required String sexCode,
+    required String birthDate,
+    String? birthPlaceCode,
+    required String pin,
+    required Future<void> Function(InsiExchange) retainExchange,
+  }) {
+    // Validate all inputs before configuration, CPS access or network activity.
+    final body = const PatientFrInsiWsIns3RequestBuilder().buildBody(
+      insNumber: insNumber, insKey: insKey, insOid: insOid,
+      birthLastName: birthLastName, givenNames: givenNames,
+      sexCode: sexCode, birthDate: birthDate, birthPlaceCode: birthPlaceCode,
+    );
+    return _execute<InsiVerificationResponse>(
+      traitsBody: body, pin: pin, retainExchange: retainExchange,
+      requestAction: PatientFrInsiWsIns3RequestBuilder.action,
+      readResponse: readVerificationResponse,
+    );
+  }
+
   Future<InsiRetrievalResponse> _retrieve({
     VitaleIdentity? card,
     String? traitsBody,
     required String pin,
     required Future<void> Function(InsiExchange) retainExchange,
+  }) => _execute<InsiRetrievalResponse>(
+    card: card, traitsBody: traitsBody, pin: pin, retainExchange: retainExchange,
+    requestAction: card == null ? PatientFrInsiWsIns2EnvelopeBuilder.action : action,
+    readResponse: (exchange, professional) {
+      final parsed = const PatientFrInsiResponseParser().parseXml(exchange.responseXml!);
+      if (parsed.isFault) {
+        throw StateError(
+          'Le serveur INSi a refusé la demande. La fiche reste inchangée.',
+        );
+      }
+      if (exchange.httpStatus != 200) {
+        throw StateError('Réponse INSi HTTP incohérente.');
+      }
+      return InsiRetrievalResponse(
+        id: exchange.id, xml: exchange.responseXml!,
+        requestHash: InsiExchange.digest(exchange.requestXml),
+        professional: professional, receivedAt: exchange.recordedAt,
+        result: parsed.result!,
+      );
+    },
+  );
+
+  /// Pure interpretation of a completed WS_INS3 exchange, also usable offline.
+  /// No patient data is updated here. A SOAP fault remains a technical error.
+  static InsiVerificationResponse readVerificationResponse(
+    InsiExchange exchange,
+    String professional,
+  ) {
+    final xml = exchange.responseXml;
+    if (xml == null || exchange.failure != null) {
+      throw StateError('Échange de vérification INSi incomplet ou en échec.');
+    }
+    final parsed = const PatientFrInsiVerificationResponseParser().parseXml(xml);
+    if (parsed.isFault) {
+      throw StateError(
+        'La vérification INSi a rencontré une faute SOAP. La fiche reste inchangée.',
+      );
+    }
+    if (exchange.httpStatus != 200) {
+      throw StateError('Réponse de vérification INSi HTTP incohérente.');
+    }
+    return InsiVerificationResponse(
+      id: exchange.id, xml: xml,
+      requestHash: InsiExchange.digest(exchange.requestXml),
+      professional: professional, receivedAt: exchange.recordedAt, result: parsed,
+    );
+  }
+
+  Future<T> _execute<T>({
+    VitaleIdentity? card,
+    String? traitsBody,
+    required String pin,
+    required String requestAction,
+    required T Function(InsiExchange, String) readResponse,
+    required Future<void> Function(InsiExchange) retainExchange,
   }) async {
-    final requestAction = card == null
-        ? PatientFrInsiWsIns2EnvelopeBuilder.action : action;
     final cfg = await configuration();
     checkConfiguration(cfg);
     cfg['version'] = (await PackageInfo.fromPlatform()).version;
@@ -296,7 +375,9 @@ class PatientInsiRetrievalService {
       }
       final request = card != null
           ? buildRequest(card, cfg, ps, now, id)
-          : buildTraitsRequest(traitsBody!, cfg, ps, now, id);
+          : requestAction == PatientFrInsiWsIns3RequestBuilder.action
+              ? buildVerificationRequest(traitsBody!, cfg, ps, now, id)
+              : buildTraitsRequest(traitsBody!, cfg, ps, now, id);
       final message = http.Request('POST', Uri.parse(endpoint))
         ..followRedirects = false
         ..headers['Content-Type'] =
@@ -327,22 +408,12 @@ class PatientInsiRetrievalService {
           if (xml.contains('<!DOCTYPE') || xml.contains('<!ENTITY')) {
             throw StateError('Réponse INSi non prise en charge.');
           }
-          final parsed = const PatientFrInsiResponseParser().parseXml(xml);
-          if (parsed.isFault) {
-            throw StateError(
-              'Le serveur INSi a refusé la demande. La fiche reste inchangée.',
-            );
-          }
-          if (stream.statusCode != 200) {
-            throw StateError('Réponse INSi HTTP incohérente.');
-          }
-          return InsiRetrievalResponse(
-            id: id,
-            xml: xml,
-            requestHash: sha256.convert(utf8.encode(request)).toString(),
-            professional: profile.nationalId,
-            receivedAt: DateTime.now().toUtc(),
-            result: parsed.result!,
+          return readResponse(
+            InsiExchange(
+              id: id, requestXml: request, responseXml: xml,
+              httpStatus: stream.statusCode, recordedAt: DateTime.now().toUtc(),
+            ),
+            profile.nationalId,
           );
         })().timeout(const Duration(seconds: 45));
         return response;
@@ -385,6 +456,25 @@ class PatientInsiRetrievalService {
     String ps,
     DateTime now,
     String id,
+  ) => _buildNoVitaleRequest(body, cfg, ps, now, id,
+    PatientFrInsiWsIns2EnvelopeBuilder.action);
+
+  static String buildVerificationRequest(
+    String body,
+    Map<String, String> cfg,
+    String ps,
+    DateTime now,
+    String id,
+  ) => _buildNoVitaleRequest(body, cfg, ps, now, id,
+    PatientFrInsiWsIns3RequestBuilder.action);
+
+  static String _buildNoVitaleRequest(
+    String body,
+    Map<String, String> cfg,
+    String ps,
+    DateTime now,
+    String id,
+    String operationAction,
   ) => const PatientFrInsiWsIns2EnvelopeBuilder().build(
     contexteLpsXml: const PatientFrInsiContexteLpsBuilder().build(
       id: const Uuid().v4(), time: now, emitter: cfg['professional'],
@@ -397,7 +487,8 @@ class PatientInsiRetrievalService {
     ),
     bodyXml: body,
     psAssertionXml: ps,
-    // Default WS_INS2 action. No Vitale assertion or coverage beneficiary.
+    operationAction: operationAction,
+    // Neither WS_INS2 nor WS_INS3 uses a Vitale assertion or coverage beneficiary.
   );
 
   static String buildRequest(
@@ -516,6 +607,20 @@ class InsiRetrievalResponse {
   final String id, xml, requestHash, professional;
   final DateTime receivedAt;
   final PatientFrInsiResult result;
+}
+
+class InsiVerificationResponse {
+  const InsiVerificationResponse({
+    required this.id,
+    required this.xml,
+    required this.requestHash,
+    required this.professional,
+    required this.receivedAt,
+    required this.result,
+  });
+  final String id, xml, requestHash, professional;
+  final DateTime receivedAt;
+  final PatientFrInsiVerificationResponse result;
 }
 
 class _InsiSigner implements PatientFrInsiPsSigner {
