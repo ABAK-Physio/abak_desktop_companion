@@ -12,6 +12,7 @@ import '../../smart_card/widgets/vitale_beneficiary_selector.dart';
 import '../services/patient_qualification_service.dart';
 import '../services/patient_insi_retrieval_service.dart';
 import 'patient_insi_dialogs.dart';
+import 'patient_insi_verification_dialog.dart';
 import '../services/cnda_patient_recipe.dart';
 
 class PatientQualificationScreen extends StatefulWidget {
@@ -726,6 +727,55 @@ class _PatientQualificationScreenState
     }
   }
 
+  Future<void> _verifyInsi() async {
+    final record = _record;
+    if (_busy || _dirty || record == null ||
+        _flags['identity_fictitious'] != true || _flags['identity_doubtful'] == true) {
+      return;
+    }
+    setState(() { _busy = true; _error = null; _message = null; });
+    try {
+      await showDialog<void>(
+        context: context,
+        barrierDismissible: false,
+        builder: (_) => PatientInsiVerificationDialog(
+          initial: {
+            'number': record.identity['ins_number']?.toString() ?? '',
+            'key': record.identity['ins_key']?.toString() ?? '',
+            'oid': record.identity['ins_oid']?.toString() ?? '',
+            'name': _value('birth_last_name'),
+            'names': _value('birth_first_names'),
+            'sex': _value('sex_code'), 'date': _value('birth_date'),
+            'place': _value('birth_place_code'),
+          },
+          onVerify: (values, pin) => PatientInsiRetrievalService().verify(
+            insNumber: values['number']!, insKey: values['key']!, insOid: values['oid']!,
+            birthLastName: values['name']!, givenNames: values['names']!,
+            sexCode: values['sex']!, birthDate: values['date']!, birthPlaceCode: values['place'],
+            pin: pin,
+            retainExchange: (exchange) => _service.retainInsiExchange(widget.patientId, exchange),
+          ),
+        ),
+      );
+    } catch (_) {
+      if (mounted) {
+        setState(() => _error = 'Impossible d’ouvrir la vérification INSi de test.');
+      }
+    } finally {
+      try {
+        final refreshed = await _service.load(widget.patientId);
+        if (mounted) {
+          setState(() => _record = refreshed);
+        }
+      } catch (_) {
+        // Keep the current form and any original error if reloading fails.
+      }
+      if (mounted) {
+        setState(() => _busy = false);
+      }
+    }
+  }
+
   Future<void> _injectCndaCr01() async {
     if (_busy || _dirty) {
       return;
@@ -1054,6 +1104,12 @@ class _PatientQualificationScreenState
             child: const Text('Rechercher l’INS par traits d’identité'),
           ),
           OutlinedButton(
+            onPressed: _busy || _dirty || _flags['identity_fictitious'] != true ||
+                    _flags['identity_doubtful'] == true
+                ? null : _verifyInsi,
+            child: const Text('Vérifier une INS — essai CNDA'),
+          ),
+          OutlinedButton(
             onPressed: _busy ? null : _configureInsi,
             child: const Text('Configurer INSi — test'),
           ),
@@ -1070,6 +1126,8 @@ class _PatientQualificationScreenState
         ),
       if (_flags['identity_fictitious'] == true)
         const Text('Recherche par traits autorisée pour les patients fictifs CNDA sur le serveur de test uniquement. Aucun rattachement de l’INS ni qualification.'),
+      const Text('La vérification unitaire d’essai est réservée aux fiches fictives CNDA. '
+        'L’INS à vérifier est saisie dans un formulaire distinct ; l’identité et son statut restent inchangés.'),
       const Text(
         'Serveur INSi de test uniquement. La récupération demande votre CPS et son PIN. '
         'Le résultat est présenté avant rattachement à cette fiche. '
