@@ -45,6 +45,14 @@ class PatientFrInsiWsIns3RequestBuilder {
     if (name.isEmpty || names.isEmpty) {
       throw ArgumentError('Le nom de naissance et la liste des prénoms sont requis.');
     }
+    if (!_validName(name, givenNames: false)) {
+      throw ArgumentError('Nom de naissance incompatible avec le format INSi : '
+          'majuscules A à Z, espaces, apostrophes droites et tirets uniquement.');
+    }
+    if (!_validName(names, givenNames: true)) {
+      throw ArgumentError('Liste des prénoms incompatible avec le format INSi : '
+          'majuscules A à Z, espaces simples, apostrophes droites et tirets simples uniquement.');
+    }
     if (sex != 'M' && sex != 'F') {
       throw ArgumentError('Le sexe doit être M ou F.');
     }
@@ -85,5 +93,20 @@ class PatientFrInsiWsIns3RequestBuilder {
       });
     });
     return builder.buildDocument().rootElement.toXmlString();
+  }
+
+  // CNDA 3.03 / guide SEL-GCONFORM-INSi 1.14, page 32.
+  // Validate reference values without silently replacing accents or punctuation.
+  static bool _validName(String value, {required bool givenNames}) {
+    if (!RegExp(r"^[A-Z'][A-Z' -]*$").hasMatch(value) ||
+        value.contains('  ') || value.contains("''") ||
+        value.contains(" '") || value.contains("' ") || value.contains('---')) {
+      return false;
+    }
+    if (givenNames) {
+      return !value.contains('--') && !value.contains('- ') &&
+          !value.contains(' -') && !value.endsWith('-') && !value.endsWith("'");
+    }
+    return true;
   }
 }

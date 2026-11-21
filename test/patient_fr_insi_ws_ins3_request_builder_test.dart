@@ -124,24 +124,48 @@ void main() {
     }
   });
 
-  test('does not repair a wrong key or replace reference identity traits', () {
+  test('does not repair a wrong key or normalize reference dates', () {
     final values = sample()
       ..['insKey'] = '82'
       ..['birthDate'] = '1990-00-00'
-      ..['givenNames'] = 'PIERRE-ALAIN  BRUCE';
+      ..['givenNames'] = 'PIERRE-ALAIN BRUCE';
     final doc = XmlDocument.parse(build(values));
     expect(doc.findAllElements('Cle', namespaceUri: ins).single.innerText, '82');
     expect(doc.findAllElements('DateNaissance', namespaceUri: ins).single.innerText,
       '1990-00-00');
     expect(doc.findAllElements('ListePrenom', namespaceUri: ins).single.innerText,
-      'PIERRE-ALAIN  BRUCE');
+      'PIERRE-ALAIN BRUCE');
   });
 
-  test('escapes XML characters instead of interpreting identity data as markup', () {
+  test('rejects XML markup in identity data before building', () {
     final values = sample()..['birthLastName'] = 'TEST & <INS>';
+    expect(() => build(values), throwsArgumentError);
+  });
+
+  test('rejects invalid name formats required by CNDA 3.03', () {
+    for (final field in ['birthLastName', 'givenNames']) {
+      for (final value in [
+        'Dupont', 'DUPRÉ', 'D’ARTAGNAN', 'DUPONT/TEST', '-DUPONT',
+        'JEAN  PAUL', "D''ARTAGNAN", "D' ARTAGNAN", "JEAN 'PAUL", 'MARTIN---DURAND',
+      ]) {
+        final values = sample()..[field] = value;
+        expect(() => build(values), throwsArgumentError, reason: '$field: $value');
+      }
+    }
+    for (final value in ['JEAN--PAUL', 'JEAN-', "JEAN'", 'JEAN- PAUL', 'JEAN -PAUL']) {
+      final values = sample()..['givenNames'] = value;
+      expect(() => build(values), throwsArgumentError, reason: value);
+    }
+  });
+
+  test('preserves valid compound names, leading apostrophe and surname double hyphen', () {
+    final values = sample()
+      ..['birthLastName'] = 'MARTIN--DURAND'
+      ..['givenNames'] = "'ALAIN JEAN-PAUL MARIE CLAUDE";
     final doc = XmlDocument.parse(build(values));
     expect(doc.findAllElements('NomNaissance', namespaceUri: ins).single.innerText,
-      'TEST & <INS>');
-    expect(doc.findAllElements('INS', namespaceUri: ins), isEmpty);
+      'MARTIN--DURAND');
+    expect(doc.findAllElements('ListePrenom', namespaceUri: ins).single.innerText,
+      "'ALAIN JEAN-PAUL MARIE CLAUDE");
   });
 }
