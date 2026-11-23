@@ -4,8 +4,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import '../lib/features/dmp_dv1_access/preparation_error.dart';
-import '../lib/features/patients/services/dmp_chain/contracts.dart';
+import 'package:abak_desktop_companion/features/dmp_dv1_access/preparation_error.dart';
+import 'package:abak_desktop_companion/features/patients/services/dmp_chain/contracts.dart';
 
 void main() {
   const stage = 'vérification des preuves de signature CPS';

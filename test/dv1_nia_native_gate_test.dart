@@ -45,7 +45,7 @@ void main() {
           pins++;
           return '0000';
         },
-        readProfile: (_, __) async {
+        readProfile: (_, _) async {
           profiles++;
           throw StateError('No CPS');
         },

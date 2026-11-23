@@ -1,8 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
-
-import '../lib/features/dmp_dv1_access/tls050_recipe.dart';
+import 'package:abak_desktop_companion/features/dmp_dv1_access/tls050_recipe.dart';
 
 Map<String, dynamic> campaign() => {
   'schema': 1,
@@ -69,8 +68,9 @@ void main() {
       Tls050Recipe.endpoint(3),
       'https://lps.dev1fake.dmp.gouv.fr/si-dmp-server/v2/services/patients',
     );
-    for (final n in [-1, 0, 4, 999])
+    for (final n in [-1, 0, 4, 999]) {
       expect(() => Tls050Recipe.endpoint(n), throwsStateError);
+    }
   });
   test('one sequential pass without skipped or repeated steps', () {
     final c = campaign();

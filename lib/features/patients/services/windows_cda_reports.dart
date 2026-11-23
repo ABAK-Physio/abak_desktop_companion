@@ -47,16 +47,18 @@ class WindowsCdaReports {
       // Same exclusions as LocalDocumentControlRunner.tree and the service.
       if (key.contains('.bench-') ||
           key.split('/').last.startsWith('abak-') ||
-          key == 'unified-configuration.json')
+          key == 'unified-configuration.json') {
         continue;
+      }
       text
         ..write(key)
         ..write('\u0000')
         ..write(files[key])
         ..write('\n');
     }
-    if (text.isEmpty)
+    if (text.isEmpty) {
       throw StateError('Référentiel CDA sans références utilisables.');
+    }
     return sha256.convert(utf8.encode(text.toString())).toString();
   }
 
@@ -85,8 +87,9 @@ class WindowsCdaReports {
     final view = ByteData.sublistView(packet);
     var position = 8;
     int take() {
-      if (position + 4 > packet.length)
+      if (position + 4 > packet.length) {
         throw StateError('Rapport CDA tronqué.');
+      }
       final value = view.getUint32(position, Endian.little);
       position += 4;
       return value;

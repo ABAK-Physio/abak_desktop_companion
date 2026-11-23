@@ -111,12 +111,14 @@ class Dv1Retry {
       final hq = one(q, 'Header', s);
       if (one(hq, 'To', w).innerText != Dv1Configuration.repository ||
           one(hq, 'Action', w).innerText !=
-              'urn:ihe:iti:2007:ProvideAndRegisterDocumentSet-b')
+              'urn:ihe:iti:2007:ProvideAndRegisterDocumentSet-b') {
         return false;
+      }
       final message = one(hq, 'MessageID', w).innerText;
       if (!RegExp(r'^urn:uuid:[0-9a-f-]{36}$').hasMatch(message) ||
-          !RegExp(r'^Document_[0-9a-f-]{36}$').hasMatch(documentEntry))
+          !RegExp(r'^Document_[0-9a-f-]{36}$').hasMatch(documentEntry)) {
         return false;
+      }
       final entries = q
           .findAllElements('ExtrinsicObject', namespaceUri: rim)
           .where((e) => e.getAttribute('id') == documentEntry)
@@ -131,16 +133,18 @@ class Dv1Retry {
           )
           .toList();
       if (types.length != 1 ||
-          types.single.getAttribute('nodeRepresentation') != '11490-0')
+          types.single.getAttribute('nodeRepresentation') != '11490-0') {
         return false;
+      }
       final type = types.single;
       final coding = type
           .findElements('Slot', namespaceUri: rim)
           .where((e) => e.getAttribute('name') == 'codingScheme')
           .single;
       if (one(one(coding, 'ValueList', rim), 'Value', rim).innerText !=
-          '2.16.840.1.113883.6.1')
+          '2.16.840.1.113883.6.1') {
         return false;
+      }
       final oldLabel = one(
         one(type, 'Name', rim),
         'LocalizedString',
@@ -149,8 +153,9 @@ class Dv1Retry {
       if (![
         Dv1TypeLabel.longLabel,
         Dv1TypeLabel.curlyLongLabel,
-      ].contains(oldLabel))
+      ].contains(oldLabel)) {
         return false;
+      }
       final envelope = one(
         ArchiveDepositReader.parse(
           ArchiveDepositReader.extract(headers, bytes),
@@ -162,19 +167,22 @@ class Dv1Retry {
       final h = one(envelope, 'Header', s), b = one(envelope, 'Body', s);
       if (one(h, 'RelatesTo', w).innerText != message ||
           one(h, 'Action', w).innerText != ArchiveDepositReader.action ||
-          b.childElements.length != 1)
+          b.childElements.length != 1) {
         return false;
+      }
       final response = one(b, 'RegistryResponse', rs);
       if (response.getAttribute('status') !=
               '${ArchiveDepositReader.statusPrefix}Failure' ||
-          response.childElements.length != 1)
+          response.childElements.length != 1) {
         return false;
+      }
       final errors = one(response, 'RegistryErrorList', rs);
       const severity =
           'urn:oasis:names:tc:ebxml-regrep:ErrorSeverityType:Error';
       if (errors.getAttribute('highestSeverity') != severity ||
-          errors.childElements.length != 1)
+          errors.childElements.length != 1) {
         return false;
+      }
       final error = one(errors, 'RegistryError', rs);
       return error.childElements.isEmpty &&
           error.innerText.trim().isEmpty &&

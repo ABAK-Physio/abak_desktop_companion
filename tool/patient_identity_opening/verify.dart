@@ -8,6 +8,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:abak_desktop_companion/core/database/database_service.dart';
+import 'package:abak_desktop_companion/features/companion_access/patient_access_boundary.dart';
 import 'package:abak_desktop_companion/features/patients/data/patient_repository.dart';
 import 'package:abak_desktop_companion/features/patients/patient_detail_screen.dart';
 import 'package:abak_desktop_companion/features/patients/screens/patient_qualification_screen.dart';
@@ -49,10 +50,19 @@ Future<void> main() async {
   }
   var success = false;
   try {
+    const referrerId = 'synthetic-identity-opening-practitioner';
+    final db = await DatabaseService.database;
+    await db.insert('practitioners', {
+      'practitioner_id': referrerId,
+      'display_name': 'Kiné synthétique — ouverture identité',
+      'created_at': DateTime.now().millisecondsSinceEpoch,
+    });
     final patient = await PatientRepository().createPatient(
+      referringPractitionerId: referrerId,
       lastName: 'SYNTHETIQUE', firstName: 'Ouverture', birthDate: '1995-11-15', sexCode: 'M');
     await S.load(const Locale('fr', 'FR'));
     runApp(MaterialApp(locale: const Locale('fr', 'FR'),
+      builder: (context, child) => PatientAccessBoundary(child: child!),
       localizationsDelegates: const [S.delegate, GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate, GlobalCupertinoLocalizations.delegate],
       supportedLocales: S.delegate.supportedLocales,

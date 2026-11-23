@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
-import '../lib/features/patients/services/document_lot_signature_records.dart';
-import '../lib/features/patients/services/document_medical_service.dart';
+import 'package:abak_desktop_companion/features/patients/services/document_lot_signature_records.dart';
+import 'package:abak_desktop_companion/features/patients/services/document_medical_service.dart';
 
 // sqflite QueryResultSet/Rows return a new map wrapper for each indexed access.
 // Reproduce that behaviour without a database, native calls, a card or a PIN.

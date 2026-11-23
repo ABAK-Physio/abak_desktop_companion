@@ -5,11 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
-import '../lib/features/dmp_session/dmp_work_context.dart';
-import '../lib/features/patients/models/episode_document_version.dart';
-import '../lib/features/patients/screens/document_dv1_panel.dart';
-import '../lib/features/patients/services/document_journal_service.dart';
-import '../lib/features/patients/services/document_medical_service.dart';
+import 'package:abak_desktop_companion/features/dmp_session/dmp_work_context.dart';
+import 'package:abak_desktop_companion/features/patients/models/episode_document_version.dart';
+import 'package:abak_desktop_companion/features/patients/screens/document_dv1_panel.dart';
+import 'package:abak_desktop_companion/features/patients/services/document_journal_service.dart';
+import 'package:abak_desktop_companion/features/patients/services/document_medical_service.dart';
 
 // In-memory query double: no database file, native service, card or network.
 // A configuration with only a professional ID is enough to exercise the early

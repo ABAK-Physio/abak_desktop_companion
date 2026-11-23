@@ -1,8 +1,8 @@
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart' as p;
 
-import '../lib/features/patients/services/dmp_chain/native/dmp_runtime_paths.dart';
-
+import 'package:abak_desktop_companion/features/patients/services/dmp_chain/native/dmp_runtime_paths.dart';
 void main() {
   const configuration =
       '82bf25a3917b44fe44157b2603656d0eba5c835260cc3fd6493642d70a33f7de';

@@ -257,8 +257,9 @@ class TypeLabelFixture {
     };
     for (final group in groups.entries) {
       final columns = group.value.expand((r) => r.keys).toSet();
-      if (columns.any((c) => !RegExp(r'^[a-z_][a-z0-9_]*$').hasMatch(c)))
+      if (columns.any((c) => !RegExp(r'^[a-z_][a-z0-9_]*$').hasMatch(c))) {
         throw StateError('Unexpected fixture column');
+      }
       await db.execute(
         'CREATE TABLE ${group.key} (${columns.map((c) => '"$c"').join(',')})',
       );

@@ -1,8 +1,8 @@
 import 'dart:convert';
+import 'package:abak_desktop_companion/features/cps/cps_access_service.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import '../lib/features/cps/cps_access_service.dart';
-import '../lib/features/cps/cps_operation_lease.dart';
+import 'package:abak_desktop_companion/features/cps/cps_operation_lease.dart';
 
 List<int> tlv(int tag, List<int> bytes) => [tag, bytes.length, ...bytes];
 Map<String, List<int>> profile() => {

@@ -1,8 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-
-import '../lib/features/dmp_dv1_access/tls050_preparation_diagnostic.dart';
+import 'package:abak_desktop_companion/features/dmp_dv1_access/tls050_preparation_diagnostic.dart';
 
 void main() {
   test('file failure shows the stage and OS code without the payload', () {

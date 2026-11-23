@@ -1,8 +1,8 @@
 import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart' as p;
-import '../lib/features/patients/services/dmp_chain/native/bridge.dart';
-import '../lib/features/patients/services/dmp_chain/native/dmp_runtime_paths.dart';
+import 'package:abak_desktop_companion/features/patients/services/dmp_chain/native/bridge.dart';
+import 'package:abak_desktop_companion/features/patients/services/dmp_chain/native/dmp_runtime_paths.dart';
 
 String testDart() {
   final exe = Platform.resolvedExecutable;
@@ -14,8 +14,9 @@ String testDart() {
     'bin',
     Platform.isWindows ? 'dart.exe' : 'dart',
   );
-  if (!File(dart).existsSync())
+  if (!File(dart).existsSync()) {
     throw StateError('SDK Dart de test introuvable.');
+  }
   return dart;
 }
 

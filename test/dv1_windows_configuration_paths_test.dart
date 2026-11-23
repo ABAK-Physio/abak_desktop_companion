@@ -1,6 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import '../lib/features/patients/services/dmp_chain/native/dv1_configuration.dart';
+import 'package:abak_desktop_companion/features/patients/services/dmp_chain/native/dv1_configuration.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();

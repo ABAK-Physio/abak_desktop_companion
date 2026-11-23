@@ -1,7 +1,9 @@
+
+
 import 'package:flutter_test/flutter_test.dart';
 
-import '../lib/features/cps/cps_profile.dart';
-import '../lib/features/dmp_dv1_access/tls050_cps_practice.dart';
+import 'package:abak_desktop_companion/features/cps/cps_profile.dart';
+import 'package:abak_desktop_companion/features/dmp_dv1_access/tls050_cps_practice.dart';
 
 const selected = CpsSituation(
   number: 1,
