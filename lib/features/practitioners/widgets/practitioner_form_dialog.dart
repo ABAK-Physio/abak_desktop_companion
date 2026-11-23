@@ -12,6 +12,7 @@ import '../../../core/expert/expert_context_info.dart';
 import '../../../core/expert/expert_info_button.dart';
 import '../../../core/settings/application_settings_service.dart';
 import '../practitioner_report_settings_screen.dart';
+import '../../companion_access/companion_access_screen.dart';
 
 class PractitionerFormDialog extends StatefulWidget {
   final Practitioner? initialPractitioner;
@@ -331,6 +332,16 @@ class _PractitionerFormDialogState extends State<PractitionerFormDialog> {
                 ),
                 if (_isEditing) ...[
                   const SizedBox(height: 16),
+                  OutlinedButton.icon(
+                    icon: const Icon(Icons.admin_panel_settings_outlined),
+                    label: const Text('Code personnel et statut administrateur'),
+                    onPressed: () => Navigator.of(context).push(MaterialPageRoute(
+                      builder: (_) => CompanionAccessScreen(
+                        practitionerId: widget.initialPractitioner!.practitionerId,
+                      ),
+                    )),
+                  ),
+                  const SizedBox(height: 8),
                   OutlinedButton.icon(
                     icon: const Icon(Icons.description_outlined),
                     label: const Text(

@@ -1,3 +1,5 @@
+import '../companion_access/patient_referrer_card.dart';
+import '../companion_access/patient_access_boundary.dart';
 import 'widgets/patient_documents_card.dart';
 import '../care_episodes/widgets/care_episodes_panel.dart';
 import 'package:flutter/material.dart';
@@ -21,16 +23,25 @@ import 'models/patient_fr_health_identity.dart';
 import 'data/patient_repository.dart';
 import 'screens/patient_qualification_screen.dart';
 
-class PatientDetailScreen extends StatefulWidget {
-  final Patient patient;
-
+class PatientDetailScreen extends StatelessWidget {
   const PatientDetailScreen({super.key, required this.patient});
-
+  final Patient patient;
   @override
-  State<PatientDetailScreen> createState() => _PatientDetailScreenState();
+  Widget build(BuildContext context) => PatientAccessScope(
+    key: ValueKey(patient.patientId), patientId: patient.patientId,
+    builder: (_) => _PatientDetailContent(patient: patient));
 }
 
-class _PatientDetailScreenState extends State<PatientDetailScreen> {
+class _PatientDetailContent extends StatefulWidget {
+  final Patient patient;
+
+  const _PatientDetailContent({required this.patient});
+
+  @override
+  State<_PatientDetailContent> createState() => _PatientDetailScreenState();
+}
+
+class _PatientDetailScreenState extends State<_PatientDetailContent> {
   int _refreshToken = 0;
   Patient? _updatedPatient;
   Patient get _patient => _updatedPatient ?? widget.patient;
@@ -167,6 +178,7 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
       body: ListView(
         padding: const EdgeInsets.all(24),
         children: [
+          PatientReferrerCard(patientId: _patient.patientId),
           _SectionCard(
             title:
                 s.patientDetail_patientInformation,

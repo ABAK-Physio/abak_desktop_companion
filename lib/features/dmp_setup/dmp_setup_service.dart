@@ -1,5 +1,5 @@
 import 'dart:io';
-import '../dmp_session/dmp_work_context.dart';
+import '../companion_access/companion_session.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:path/path.dart' as p;
@@ -109,7 +109,7 @@ class DmpSetupService {
         'setting_value': value.toString(),
         'updated_at': DateTime.now().millisecondsSinceEpoch,
       }, conflictAlgorithm: ConflictAlgorithm.replace);
-      DmpWorkContext.current.setEnabled(value);
+      CompanionSession.current.setEnabled(value);
       changes.value++;
     } finally {
       _busy = false;

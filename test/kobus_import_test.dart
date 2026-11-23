@@ -1,3 +1,4 @@
+import 'support/companion_access_test_support.dart';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
@@ -90,6 +91,7 @@ void main() {
   setUp(() async {
     temp = await Directory.systemTemp.createTemp('kobus_test_');
     db = await DatabaseService.openDatabaseFile(p.join(temp.path, 'test.db'));
+    await seedPatientReferrer(db);
     service = KobusImportService(
       database: db,
       storageRoot: p.join(temp.path, 'archives'),
@@ -181,7 +183,7 @@ void main() {
         folder.identity!.warnings.join(),
         contains('3 occurrences vérifiées'),
       );
-      final run = await service.import(prepared, includeShared: false);
+      final run = await service.import(prepared, referringPractitionerId: 'test-referrer', includeShared: false);
       final row = (await service.items(run)).single;
       expect(row['status'], 'imported');
       expect(row['warnings'], contains('Entrée ZIP répétée'));
@@ -210,7 +212,7 @@ void main() {
         ArchiveFile.bytes('Mes patients/B/b.xlsx', workbook(name: 'Durand')),
       ]);
       expect(prepared.folders.first.rejection, contains('contenus différents'));
-      final run = await service.import(prepared, includeShared: false);
+      final run = await service.import(prepared, referringPractitionerId: 'test-referrer', includeShared: false);
       expect((await service.items(run)).map((r) => r['status']), [
         'rejected',
         'imported',
@@ -234,7 +236,7 @@ void main() {
         ArchiveFile.bytes('Mes patients/D/d.xlsx', workbook(name: 'Durand')),
       ]);
       expect(prepared.folders.where((f) => f.rejection != null), hasLength(3));
-      final run = await service.import(prepared, includeShared: false);
+      final run = await service.import(prepared, referringPractitionerId: 'test-referrer', includeShared: false);
       expect(
         (await service.items(run)).where((r) => r['status'] == 'imported'),
         hasLength(1),
@@ -300,7 +302,7 @@ void main() {
         'Mes patients/C/c.xlsx': workbook(name: 'Petit', date: '19810229'),
       });
       expect(prepared.folders.every((f) => f.rejection == null), isTrue);
-      final run = await service.import(prepared, includeShared: false);
+      final run = await service.import(prepared, referringPractitionerId: 'test-referrer', includeShared: false);
       expect(
         (await service.items(run)).every((r) => r['status'] == 'imported'),
         isTrue,
@@ -325,7 +327,7 @@ void main() {
       });
       expect(prepared.folders.single.rejection, contains('Nom et prénom'));
       prepared.folders.single.decision = KobusDecision.create;
-      final run = await service.import(prepared, includeShared: false);
+      final run = await service.import(prepared, referringPractitionerId: 'test-referrer', includeShared: false);
       expect((await service.items(run)).single['status'], 'rejected');
       expect((await db.query('patients')).single, original);
       expect(await db.query('kobus_archives'), isEmpty);
@@ -412,7 +414,7 @@ void main() {
         prepared.folders.where((f) => f.shared).single.practitioner,
         'Kiné',
       );
-      final run = await service.import(prepared, includeShared: true);
+      final run = await service.import(prepared, referringPractitionerId: 'test-referrer', includeShared: true);
       final items = await service.items(run);
       expect(items.every((row) => row['status'] == 'imported'), isTrue);
       expect(
@@ -469,7 +471,7 @@ void main() {
       }, shared: true);
       expect(prepared.folders, hasLength(2));
       expect(prepared.folders.where((f) => f.rejection != null), hasLength(1));
-      final run = await service.import(prepared, includeShared: true);
+      final run = await service.import(prepared, referringPractitionerId: 'test-referrer', includeShared: true);
       expect(
         (await service.items(run)).map((r) => r['status']),
         containsAll(['imported', 'rejected']),
@@ -503,7 +505,7 @@ void main() {
     });
     expect(prepared.folders, hasLength(2));
     expect(prepared.hasShared, isTrue);
-    final run = await service.import(prepared, includeShared: false);
+    final run = await service.import(prepared, referringPractitionerId: 'test-referrer', includeShared: false);
     expect(
       (await service.items(run)).map((r) => r['status']),
       containsAll(['imported', 'skipped']),
@@ -519,7 +521,7 @@ void main() {
         'Mes patients/B/b.xlsx': workbook(),
         'Mes patients/C/c.xlsx': workbook(name: ''),
       });
-      final run = await service.import(prepared, includeShared: false);
+      final run = await service.import(prepared, referringPractitionerId: 'test-referrer', includeShared: false);
       expect(
         (await service.items(run)).every((r) => r['status'] == 'rejected'),
         isTrue,
@@ -538,7 +540,7 @@ void main() {
         'Mes patients/Source/Vide/': null,
       });
       expect(await db.query('patients'), isEmpty);
-      final run = await service.import(prepared, includeShared: false);
+      final run = await service.import(prepared, referringPractitionerId: 'test-referrer', includeShared: false);
       final item = (await service.items(run)).single;
       expect(item['status'], 'imported');
       final path = item['storage_path'] as String;
@@ -573,7 +575,7 @@ void main() {
       expect(last.candidates.single.sourceItemId, first.id);
       last.decision = KobusDecision.attach;
       last.target = last.candidates.single;
-      final run = await service.import(prepared, includeShared: true);
+      final run = await service.import(prepared, referringPractitionerId: 'test-referrer', includeShared: true);
       expect(await db.query('patients'), hasLength(1));
       expect(await db.query('kobus_archives'), hasLength(2));
       expect(
@@ -594,7 +596,7 @@ void main() {
         'Mes patients/B/b.xlsx': workbook(),
       });
       prepared.folders.last.decision = KobusDecision.create;
-      final run = await service.import(prepared, includeShared: false);
+      final run = await service.import(prepared, referringPractitionerId: 'test-referrer', includeShared: false);
       expect(await db.query('patients'), hasLength(1));
       expect(
         (await service.items(run)).map((r) => r['status']),
@@ -609,7 +611,7 @@ void main() {
       'Mes patients/C/c.xlsx': workbook(name: 'Durand'),
     });
     prepared.folders.last.decision = KobusDecision.skip;
-    final run = await service.import(prepared, includeShared: false);
+    final run = await service.import(prepared, referringPractitionerId: 'test-referrer', includeShared: false);
     expect(
       (await service.items(run)).where((r) => r['status'] == 'skipped'),
       hasLength(2),
@@ -635,12 +637,12 @@ void main() {
       final folder = prepared.folders.single;
       folder.decision = KobusDecision.attach;
       folder.target = folder.candidates.single;
-      await service.import(prepared, includeShared: false);
+      await service.import(prepared, referringPractitionerId: 'test-referrer', includeShared: false);
       expect((await db.query('patients')).single, original);
       final again = await prepare({'Mes patients/A/a.xlsx': workbook()});
       again.folders.single.decision = KobusDecision.attach;
       again.folders.single.target = again.folders.single.candidates.single;
-      final run = await service.import(again, includeShared: false);
+      final run = await service.import(again, referringPractitionerId: 'test-referrer', includeShared: false);
       expect((await service.items(run)).single['status'], 'rejected');
       expect(await db.query('kobus_archives'), isEmpty);
     },
@@ -663,7 +665,7 @@ void main() {
           }
         },
       );
-      final run = await importer.import(prepared, includeShared: false);
+      final run = await importer.import(prepared, referringPractitionerId: 'test-referrer', includeShared: false);
       expect((await service.items(run)).map((r) => r['status']), [
         'imported',
         'failed',
@@ -677,7 +679,7 @@ void main() {
     await db.execute(
       "CREATE TRIGGER fail_kobus BEFORE INSERT ON kobus_archives BEGIN SELECT RAISE(ABORT, 'synthetic failure'); END",
     );
-    final run = await service.import(prepared, includeShared: false);
+    final run = await service.import(prepared, referringPractitionerId: 'test-referrer', includeShared: false);
     expect((await service.items(run)).single['status'], 'failed');
     expect(await db.query('patients'), isEmpty);
   });
@@ -690,6 +692,7 @@ void main() {
       });
       final run = await service.import(
         prepared,
+        referringPractitionerId: 'test-referrer',
         includeShared: false,
         progress: (done, total) {
           if (done == 1) service.stopRequested = true;
@@ -701,6 +704,7 @@ void main() {
       ]);
       await db.close();
       db = await DatabaseService.openDatabaseFile(p.join(temp.path, 'test.db'));
+    await seedPatientReferrer(db);
       service = KobusImportService(
         database: db,
         storageRoot: p.join(temp.path, 'archives'),
@@ -747,7 +751,7 @@ void main() {
         windowsPaths: false,
       );
       expect(prepared.folders.every((f) => f.rejection == null), isTrue);
-      final run = await service.import(prepared, includeShared: true);
+      final run = await service.import(prepared, referringPractitionerId: 'test-referrer', includeShared: true);
       final items = await service.items(run);
       expect(items.every((r) => r['status'] == 'imported'), isTrue);
       final own = items.singleWhere((r) => r['shared'] == 0);
@@ -784,7 +788,7 @@ void main() {
             .every((f) => f.rejection!.contains('Windows')),
         isTrue,
       );
-      final run = await service.import(prepared, includeShared: false);
+      final run = await service.import(prepared, referringPractitionerId: 'test-referrer', includeShared: false);
       expect(
         (await service.items(run)).where((r) => r['status'] == 'imported'),
         hasLength(1),
@@ -800,7 +804,7 @@ void main() {
     final prepared = await prepare({
       'Patients partagés/Kiné/B/b.xlsx': workbook(first: ''),
     }, shared: true);
-    final run = await service.import(prepared, includeShared: true);
+    final run = await service.import(prepared, referringPractitionerId: 'test-referrer', includeShared: true);
     final text = kobusReportText(
       (await service.history()).single,
       await service.items(run),
@@ -822,7 +826,7 @@ void main() {
     'recovery removes incomplete copy and temporary data, keeps committed archive',
     () async {
       final prepared = await prepare({'Mes patients/A/a.xlsx': workbook()});
-      final run = await service.import(prepared, includeShared: false);
+      final run = await service.import(prepared, referringPractitionerId: 'test-referrer', includeShared: false);
       final original = (await service.items(run)).single;
       final incomplete = p.join(
         temp.path,
@@ -877,7 +881,7 @@ void main() {
           '1980-02-29',
         ).patient('new-concurrent').toMap(),
       );
-      final run = await service.import(prepared, includeShared: false);
+      final run = await service.import(prepared, referringPractitionerId: 'test-referrer', includeShared: false);
       expect((await service.items(run)).single['status'], 'skipped');
       expect(await db.query('patients'), hasLength(1));
       expect(await db.query('kobus_archives'), isEmpty);
@@ -892,7 +896,7 @@ void main() {
     prepared.folders.first.decision = KobusDecision.skip;
     prepared.folders.last.decision = KobusDecision.attach;
     prepared.folders.last.target = prepared.folders.last.candidates.single;
-    final run = await service.import(prepared, includeShared: false);
+    final run = await service.import(prepared, referringPractitionerId: 'test-referrer', includeShared: false);
     expect(
       (await service.items(run)).every((r) => r['status'] == 'skipped'),
       isTrue,
@@ -954,7 +958,8 @@ void main() {
     await db.setVersion(30);
     await db.close();
     db = await DatabaseService.openDatabaseFile(p.join(temp.path, 'test.db'));
-    expect(await db.getVersion(), 31);
+    await seedPatientReferrer(db);
+    expect(await db.getVersion(), DatabaseService.schemaVersion);
     expect((await db.query('patients')).single['patient_id'], 'preserved');
     expect(await db.query('kobus_runs'), isEmpty);
   });

@@ -1,3 +1,4 @@
+import 'features/companion_access/patient_access_boundary.dart';
 import 'features/dmp_session/practitioner_session_banner.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -24,6 +25,13 @@ class _AbakDesktopAppState extends State<AbakDesktopApp> {
       const LanguagePreferenceService();
 
   Locale? _locale;
+  GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
+
+  void _resetPractitionerNavigation() {
+    // Rebuild without exposing the former person's routes during a pop animation.
+    // Same-person unlock does not call this: its routes and drafts are preserved.
+    if (mounted) setState(() => _navigatorKey = GlobalKey<NavigatorState>());
+  }
 
   @override
   void initState() {
@@ -44,7 +52,10 @@ class _AbakDesktopAppState extends State<AbakDesktopApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      builder: (context, child) => PractitionerSessionBanner(child: child!),
+      navigatorKey: _navigatorKey,
+      builder: (context, child) => PractitionerSessionBanner(
+        onIdentityChanged: _resetPractitionerNavigation,
+        child: PatientAccessBoundary(child: child!)),
       scaffoldMessengerKey: rootScaffoldMessengerKey,
       title: 'ABAK Desktop Companion',
       debugShowCheckedModeBanner: false,

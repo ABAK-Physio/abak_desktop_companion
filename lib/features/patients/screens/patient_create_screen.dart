@@ -1,3 +1,4 @@
+import '../../companion_access/patient_referrer_picker.dart';
 // Gestion du flux métier patient - épisode
 import 'package:abak_vitale/abak_vitale.dart';
 import 'package:flutter/material.dart';
@@ -814,6 +815,8 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
     );
   }
 
+  String? _referrerId;
+
   Future<void> _save() async {
     final s=S.of(context);
     if (_saving) return;
@@ -829,6 +832,7 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
 
     try {
       await _patientRepository.createPatient(
+        referringPractitionerId: _referrerId,
         lastName: _lastNameController.text.trim(),
         firstName: _firstNameController.text.trim(),
         birthDate: _birthDateToIsoOrNull(),
@@ -971,6 +975,7 @@ class _PatientCreateScreenState extends State<PatientCreateScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        PatientReferrerPicker(enabled: !_saving, onChanged: (id) => _referrerId = id),
                         Row(
                           children: [
                             Expanded(

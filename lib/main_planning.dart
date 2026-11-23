@@ -1,3 +1,4 @@
+import 'features/companion_access/patient_access_boundary.dart';
 import 'dart:io';
 import 'generated/l10n.dart';
 
@@ -47,6 +48,7 @@ class PlanningPrototypeApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      builder: (context, child) => PatientAccessBoundary(child: child!),
       title: 'ABAK — Prototype planning',
       debugShowCheckedModeBanner: false,
       locale: const Locale('fr', 'FR'),

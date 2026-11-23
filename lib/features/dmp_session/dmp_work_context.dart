@@ -47,7 +47,7 @@ class DmpWorkContext {
 
   void unlock(String professional) {
     if (!_enabled || professional != _professional) {
-      throw StateError('Présentez la CPS du praticien sélectionné.');
+      throw StateError('Identifiez-vous comme le praticien sélectionné.');
     }
     _locked = false;
     _invalidate();
@@ -64,7 +64,7 @@ class DmpWorkContext {
     }
     if (_locked) {
       throw StateError(
-        'Déverrouillez Companion avec la CPS du praticien sélectionné.',
+        'Déverrouillez Companion avec le code personnel du praticien sélectionné.',
       );
     }
     if (professional != _professional) {

@@ -1,3 +1,4 @@
+import 'support/companion_access_test_support.dart';
 import 'dart:io';
 
 import 'package:abak_desktop_companion/core/database/database_service.dart';
@@ -40,6 +41,7 @@ void main() {
     'Vitale spacing matches a manually entered compound first name',
     () async {
       final patient = await repository.createPatient(
+      referringPractitionerId: await seedPatientReferrer(),
         lastName: 'Exemple',
         firstName: 'Jean-Claude',
         birthDate: '1980-01-02',
@@ -58,16 +60,19 @@ void main() {
 
   test('distinct names and birth dates remain distinct', () async {
     await repository.createPatient(
+      referringPractitionerId: await seedPatientReferrer(),
       lastName: 'Exemple',
       firstName: 'Jean',
       birthDate: '1980-01-02',
     );
     await repository.createPatient(
+      referringPractitionerId: await seedPatientReferrer(),
       lastName: 'Autre',
       firstName: 'Jean-Claude',
       birthDate: '1980-01-02',
     );
     await repository.createPatient(
+      referringPractitionerId: await seedPatientReferrer(),
       lastName: 'Exemple',
       firstName: 'Jean-Claude',
       birthDate: '1980-01-03',
@@ -82,6 +87,7 @@ void main() {
 
   test('archived identities also match typographic hyphens', () async {
     final patient = await repository.createPatient(
+      referringPractitionerId: await seedPatientReferrer(),
       lastName: 'Exemple',
       firstName: 'Jean‑Claude',
       birthDate: '1980-01-02',

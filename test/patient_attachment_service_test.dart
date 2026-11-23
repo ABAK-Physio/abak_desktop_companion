@@ -1,3 +1,4 @@
+import 'support/companion_access_test_support.dart';
 import 'dart:io';
 import 'dart:convert';
 import 'package:flutter/services.dart';
@@ -72,6 +73,7 @@ void main() {
     previous = PathProviderPlatform.instance;
     PathProviderPlatform.instance = Paths(support.path);
     patient = (await PatientRepository().createPatient(
+      referringPractitionerId: await seedPatientReferrer(),
       lastName: 'Dupont',
       firstName: 'Jean',
     )).patientId;
@@ -231,6 +233,7 @@ void main() {
     () async {
       final db = await DatabaseService.database;
       final other = (await PatientRepository().createPatient(
+      referringPractitionerId: await seedPatientReferrer(),
         lastName: 'Dupont',
         firstName: 'Jean',
       )).patientId;

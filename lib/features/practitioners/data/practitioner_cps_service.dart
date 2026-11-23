@@ -5,6 +5,7 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../core/database/database_service.dart';
+import '../../../core/database/companion_access_schema.dart';
 import '../../cps/cps_access_service.dart';
 import '../../cps/cps_profile.dart';
 import '../models/practitioner_cps_dates.dart';
@@ -446,6 +447,9 @@ class PractitionerCpsService {
         dates ?? PractitionerCpsDates(),
         proposal.previousDates,
       );
+      if (proposal.existing == null) {
+        await completeInitialCompanionAssignments(tx);
+      }
       return proposal.practitionerId;
     });
   }

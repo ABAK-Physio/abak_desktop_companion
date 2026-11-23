@@ -1,3 +1,4 @@
+import 'support/companion_access_test_support.dart';
 import 'dart:convert';
 import 'dart:io';
 
@@ -46,6 +47,7 @@ void main() {
     String lastName = 'Dupont',
     String? birth = '1980-03-12',
   }) async => (await patients.createPatient(
+      referringPractitionerId: await seedPatientReferrer(),
     lastName: lastName,
     firstName: 'Élodie',
     birthDate: birth,
@@ -168,6 +170,7 @@ void main() {
     'Accents, ligatures and punctuation produce uppercase ASCII names',
     () async {
       final patient = await patients.createPatient(
+      referringPractitionerId: await seedPatientReferrer(),
         lastName: "D’Œuf / Müller",
         firstName: 'E\u0301lodie-Æna ß',
         birthDate: '1980-03-12',

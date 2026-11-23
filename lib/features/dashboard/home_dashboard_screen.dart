@@ -368,12 +368,13 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
       case 5:
         return const DeviceListScreen();
       case 6:
-        return PreferencesScreen(onLanguageChanged: widget.onLocaleChanged);
+        return PreferencesScreen(onLanguageChanged: widget.onLocaleChanged,
+          onAccessCancelled: () => setState(() => selectedIndex = 0));
       case 7:
-        return const Scrollbar(
+        return Scrollbar(
           child: SingleChildScrollView(
             padding: EdgeInsets.all(16),
-            child: SettingsScreen(),
+            child: SettingsScreen(onAccessCancelled: () => setState(() => selectedIndex = 0)),
           ),
         );
       case 8:

@@ -1,7 +1,8 @@
+import '../../companion_access/patient_access_boundary.dart';
+import '../../../core/database/database_service.dart';
 import '../../patients/services/patient_documents_service.dart';
 import '../../bodymap/episode_bodymap_screen.dart';
 import 'dart:async';
-import '../../practitioners/practitioner_list_screen.dart';
 import '../../external_correspondents/screens/external_correspondents_screen.dart';
 import '../../dashboard/home_dashboard_screen.dart';
 import '../../../generated/l10n.dart';
@@ -64,25 +65,37 @@ import '../../external_correspondents/data/external_correspondent_repository.dar
 import '../../external_correspondents/models/external_correspondent.dart';
 import '../../documents/services/initial_report_document_service.dart';
 
-class CareEpisodeReportsWorkspaceScreen extends StatefulWidget {
+class CareEpisodeReportsWorkspaceScreen extends StatelessWidget {
+  const CareEpisodeReportsWorkspaceScreen({super.key, required this.episode,
+    required this.patientName, required this.resultRepository});
+  final CareEpisode episode;
+  final String patientName;
+  final DesktopResultRepository resultRepository;
+  @override
+  Widget build(BuildContext context) => PatientAccessScope(
+    key: ValueKey(episode.patientId), patientId: episode.patientId,
+    builder: (_) => _CareEpisodeReportsContent(episode: episode,
+      patientName: patientName, resultRepository: resultRepository));
+}
+
+class _CareEpisodeReportsContent extends StatefulWidget {
   final CareEpisode episode;
   final String patientName;
   final DesktopResultRepository resultRepository;
 
-  const CareEpisodeReportsWorkspaceScreen({
-    super.key,
+  const _CareEpisodeReportsContent({
     required this.episode,
     required this.patientName,
     required this.resultRepository,
   });
 
   @override
-  State<CareEpisodeReportsWorkspaceScreen> createState() =>
+  State<_CareEpisodeReportsContent> createState() =>
       _CareEpisodeReportsWorkspaceScreenState();
 }
 
 class _CareEpisodeReportsWorkspaceScreenState
-    extends State<CareEpisodeReportsWorkspaceScreen> {
+    extends State<_CareEpisodeReportsContent> {
   final CareEpisodeRepository _careEpisodeRepository = CareEpisodeRepository();
   final CareEpisodeAssessmentRepository _assessmentRepository =
   CareEpisodeAssessmentRepository();
@@ -3055,6 +3068,14 @@ class _CareEpisodeReportsWorkspaceScreenState
   }
 
   Future<Practitioner?> _loadCurrentReferringPractitioner() async {
+    final db = await DatabaseService.database;
+    final rows = await db.query('companion_patient_access',
+      where: 'patient_id = ?', whereArgs: [widget.episode.patientId]);
+    final id = rows.isEmpty ? null : rows.single['referring_practitioner_id'] as String?;
+    return id == null ? null : _practitionerRepository.getPractitionerById(id);
+  }
+
+  Future<Practitioner?> _loadLegacyEpisodeReferrer() async {
     final assignment = await _referringPractitionerRepository
         .getCurrentReferringPractitioner(widget.episode.careEpisodeId);
 
@@ -3087,7 +3108,7 @@ class _CareEpisodeReportsWorkspaceScreenState
       return _practitionerRepository.getPractitionerById(authorPractitionerId);
     }
 
-    return _loadCurrentReferringPractitioner();
+    return _loadLegacyEpisodeReferrer();
   }
 
   Future<Practitioner?> _loadReportAuthor(
@@ -3106,13 +3127,8 @@ class _CareEpisodeReportsWorkspaceScreenState
   }
 
   Future<void> _editReferringPractitioner() async {
-    final currentAssignment = await _referringPractitionerRepository
-        .getCurrentReferringPractitioner(widget.episode.careEpisodeId);
-
+    final referrer = await _loadCurrentReferringPractitioner();
     if (!mounted) return;
-
-    final previousPractitionerId = currentAssignment?.practitionerId;
-    String? selectedPractitionerId = previousPractitionerId;
     final previousCorrespondentId =
         widget.episode.prescribingCorrespondentId;
 
@@ -3140,34 +3156,8 @@ class _CareEpisodeReportsWorkspaceScreenState
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: PractitionerSelector(
-                  label: S.of(context).careEpisodeReportsWorkspaceScreen_referringPractitioner,
-                  selectedPractitionerId: selectedPractitionerId,
-                  allowEmpty: true,
-                  onChanged: (practitionerId) {
-                    selectedPractitionerId = practitionerId;
-                  },
-                ),
-                    ),
-                    const SizedBox(width: 8),
-                    IconButton(
-                      tooltip: S.of(context).careEpisodeReportsWorkspaceScreen_managePractitioners,
-                      icon: const Icon(Icons.manage_accounts_outlined),
-                      onPressed: () async {
-                        await Navigator.of(dialogContext).push<void>(
-                          MaterialPageRoute(
-                            builder: (_) => const PractitionerListScreen(),
-                          ),
-                        );
-                        if (!dialogContext.mounted) return;
-                        setDialogState(() {});
-                      },
-                    ),
-                  ],
-                ),
+                Text('Kiné référent : ${referrer?.displayName ?? "Non affecté"}'),
+                const Text('Le référent se modifie dans la fiche patient.'),
                 const SizedBox(height: 16),
                 Row(
                   children: [
@@ -3223,19 +3213,6 @@ class _CareEpisodeReportsWorkspaceScreenState
     );
 
     if (confirmed != true) return;
-
-// Mise à jour du kiné référent.
-    if (selectedPractitionerId == null) {
-      if (previousPractitionerId != null) {
-        await _referringPractitionerRepository
-            .clearCurrentReferringPractitioner(widget.episode.careEpisodeId);
-      }
-    } else if (selectedPractitionerId != previousPractitionerId) {
-      await _referringPractitionerRepository.changeReferringPractitioner(
-        careEpisodeId: widget.episode.careEpisodeId,
-        practitionerId: selectedPractitionerId!,
-      );
-    }
 
 // Mise à jour du médecin prescripteur.
     if (selectedCorrespondentId != previousCorrespondentId) {

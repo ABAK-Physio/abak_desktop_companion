@@ -46,6 +46,7 @@ dependencies:
   pdf: ^3.13.1
   printing: 5.15.1
   crypto: any
+  pointycastle: ^4.0.0
   asn1lib: ^1.6.5
   calendar_view: 2.0.0
   sqlite3: 3.3.4

@@ -1,3 +1,5 @@
+import '../companion_access/patient_access_service.dart';
+import '../companion_access/companion_access_service.dart';
 import 'dart:convert';
 import 'dart:io';
 import 'package:crypto/crypto.dart';
@@ -127,6 +129,7 @@ class KobusImportService {
   Future<String> import(
     KobusPreparation preparation, {
     required bool includeShared,
+    String? referringPractitionerId,
     void Function(int done, int total)? progress,
   }) async {
     if (running) throw StateError('Un import KOBUS est déjà en cours.');
@@ -267,6 +270,10 @@ class KobusImportService {
                     'patients',
                     identity.patient(patientId).toMap(),
                   );
+                  if (referringPractitionerId == null) {
+                    throw const CompanionAccessException('Sélectionnez un kiné référent pour les nouveaux patients.');
+                  }
+                  await PatientAccessService.assignNewPatient(txn, patientId, referringPractitionerId);
                   if (identity.profession != null) {
                     await txn.insert('patient_attributes', {
                       'attribute_id': const Uuid().v4(),

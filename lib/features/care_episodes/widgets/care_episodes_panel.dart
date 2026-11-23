@@ -1,3 +1,5 @@
+import '../../../core/database/database_service.dart';
+import '../../companion_access/patient_access_boundary.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 import 'package:abak_shared/abak_shared.dart';
@@ -8,7 +10,6 @@ import '../data/care_episode_referring_practitioner_repository.dart';
 import '../models/care_episode.dart';
 import '../models/care_episode_summary.dart';
 import '../screens/care_episode_reports_workspace_screen.dart';
-import '../../practitioners/widgets/practitioner_selector.dart';
 import '../../external_correspondents/widgets/external_correspondent_selector.dart';
 import '../../results/data/desktop_result_repository.dart';
 
@@ -42,13 +43,6 @@ class _CareEpisodesPanelState extends State<CareEpisodesPanel> {
 
   Future<void> _editCareEpisode(CareEpisode episode) async {
     final s = S.of(context);
-    final currentAssignment = await _referringPractitionerRepository
-        .getCurrentReferringPractitioner(episode.careEpisodeId);
-
-    if (!mounted) return;
-
-    String? selectedPractitionerId = currentAssignment?.practitionerId;
-
     String? selectedPrescribingCorrespondentId =
         episode.prescribingCorrespondentId;
 
@@ -62,7 +56,7 @@ class _CareEpisodesPanelState extends State<CareEpisodesPanel> {
     final dialog = DialogRoute<bool>(
       context: context,
       builder: (context) {
-        return AlertDialog(
+        return PatientAccessScope(patientId: widget.patientId, builder: (context) => AlertDialog(
           title: Row(
             children: [
               Expanded(
@@ -99,14 +93,7 @@ class _CareEpisodesPanelState extends State<CareEpisodesPanel> {
                   maxLines: 10,
                 ),
                 const SizedBox(height: 16),
-                PractitionerSelector(
-                  label: s.patientDetail_referringPractitioner,
-                  selectedPractitionerId: selectedPractitionerId,
-                  allowEmpty: true,
-                  onChanged: (practitionerId) {
-                    selectedPractitionerId = practitionerId;
-                  },
-                ),
+                const Text('Le kiné référent est défini dans la fiche patient.'),
                 const SizedBox(height: 16),
                 ExternalCorrespondentSelector(
                   label: s.careEpisodePanel_prescribingDoctor,
@@ -129,7 +116,7 @@ class _CareEpisodesPanelState extends State<CareEpisodesPanel> {
               child: Text(s.patientDetail_save),
             ),
           ],
-        );
+        ));
       },
     );
 
@@ -167,20 +154,6 @@ class _CareEpisodesPanelState extends State<CareEpisodesPanel> {
 
     await _careEpisodeRepository.updateCareEpisode(updatedEpisode);
 
-    final previousPractitionerId = currentAssignment?.practitionerId;
-
-    if (selectedPractitionerId == null) {
-      if (previousPractitionerId != null) {
-        await _referringPractitionerRepository
-            .clearCurrentReferringPractitioner(episode.careEpisodeId);
-      }
-    } else if (selectedPractitionerId != previousPractitionerId) {
-      await _referringPractitionerRepository.changeReferringPractitioner(
-        careEpisodeId: episode.careEpisodeId,
-        practitionerId: selectedPractitionerId!,
-      );
-    }
-
     if (!mounted) return;
 
     setState(() {
@@ -196,7 +169,7 @@ class _CareEpisodesPanelState extends State<CareEpisodesPanel> {
       final s = S.of(context);
       final confirmed = await showDialog<bool>(
         context: context,
-        builder: (dialogContext) => AlertDialog(
+        builder: (dialogContext) => PatientAccessScope(patientId: widget.patientId, builder: (dialogContext) => AlertDialog(
           title: Text(s.careEpisodePanel_archiveCareEpisodeTitle),
           content: Text(
             '${episode.title}\n'
@@ -217,7 +190,7 @@ class _CareEpisodesPanelState extends State<CareEpisodesPanel> {
               child: Text(s.careEpisodePanel_archive),
             ),
           ],
-        ),
+        )),
       );
 
       if (confirmed != true || !mounted) return;
@@ -252,6 +225,16 @@ class _CareEpisodesPanelState extends State<CareEpisodesPanel> {
 
     try {
       final s = S.of(context);
+      final confirmed = await showDialog<bool>(context: context,
+        builder: (_) => PatientAccessScope(patientId: widget.patientId, builder: (context) => AlertDialog(
+          title: const Text('Restaurer cet épisode de soins'),
+          content: Text(episode.pathologyLabel),
+          actions: [
+            TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Annuler')),
+            FilledButton(onPressed: () => Navigator.pop(context, true), child: const Text('Restaurer')),
+          ],
+        )));
+      if (confirmed != true || !mounted) return;
       await _careEpisodeRepository.restoreCareEpisode(episode.careEpisodeId);
       if (!mounted) return;
 
@@ -291,8 +274,6 @@ class _CareEpisodesPanelState extends State<CareEpisodesPanel> {
     );
     final initialReportController = TextEditingController();
 
-    String? selectedPractitionerId;
-
     final dialog = DialogRoute<bool>(
       context: context,
       builder: (context) {
@@ -331,14 +312,7 @@ class _CareEpisodesPanelState extends State<CareEpisodesPanel> {
                   maxLines: 10,
                 ),
                 const SizedBox(height: 16),
-                PractitionerSelector(
-                  label: s.patientDetail_referringPractitioner,
-                  selectedPractitionerId: selectedPractitionerId,
-                  allowEmpty: true,
-                  onChanged: (practitionerId) {
-                    selectedPractitionerId = practitionerId;
-                  },
-                ),
+                const Text('Le kiné référent est défini dans la fiche patient.'),
               ],
             ),
           ),
@@ -384,10 +358,17 @@ class _CareEpisodesPanelState extends State<CareEpisodesPanel> {
 
     await _careEpisodeRepository.insertCareEpisode(episode);
 
+    // Preserve a creation-time legacy assignment for documents without an
+    // explicit author; later patient referrer changes must not rewrite it.
+    final db = await DatabaseService.database;
+    final accessRows = await db.query('companion_patient_access',
+      where: 'patient_id = ?', whereArgs: [widget.patientId]);
+    final selectedPractitionerId = accessRows.isEmpty ? null
+        : accessRows.single['referring_practitioner_id'] as String?;
     if (selectedPractitionerId != null) {
       await _referringPractitionerRepository.changeReferringPractitioner(
         careEpisodeId: episode.careEpisodeId,
-        practitionerId: selectedPractitionerId!,
+        practitionerId: selectedPractitionerId,
       );
     }
 
@@ -607,7 +588,7 @@ class _CareEpisodesSection extends StatelessWidget {
                     subtitle: Text(
                       [
                         '${s.patientDetail_pathology} : ${episode.pathologyLabel}',
-                        '${s.patientDetail_referringPractitioner} : '
+                        'Référent historique de l’épisode : '
                             '${_referringPractitionerLabel(summary, s)}',
                         '${s.careEpisodePanel_prescribingDoctor} : '
                             '${summary.prescribingCorrespondentDisplayName ?? s.patientDetail_notProvided}',

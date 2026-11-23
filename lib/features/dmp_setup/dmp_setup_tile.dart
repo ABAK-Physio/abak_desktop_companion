@@ -133,7 +133,7 @@ class _DmpSetupTileState extends State<DmpSetupTile> {
                   onChanged: busy ? null : changeDelay,
                 ),
                 const Text(
-                  'Sur Mac, après sélection d’un praticien dont la CPS est associée. Les clics, la saisie et les mouvements dans Companion relancent le délai. Déverrouillage avec sa CPS ; aucun appel DMP.',
+                  'Sur macOS et Windows, après identification du kiné. Les clics, la saisie et les mouvements dans Companion relancent le délai. Déverrouillage avec le code personnel Companion, sans lecture de la CPS. Le verrouillage met fin à la session et à ses dérogations.',
                 ),
                 const WebPsBrowserSettings(),
                 OutlinedButton.icon(

@@ -1,4 +1,7 @@
+import 'companion_departure_schema.dart';
 import 'dart:async';
+import 'companion_access_schema.dart';
+import 'companion_auth_schema.dart';
 import 'document_versions_schema.dart';
 import 'document_medical_schema.dart';
 import 'document_controls_schema.dart';
@@ -19,7 +22,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 class DatabaseService {
-  static const int schemaVersion = 50;
+  static const int schemaVersion = 55;
   static Database? _database;
   static Completer<void>? _restoreGate;
 
@@ -363,6 +366,11 @@ class DatabaseService {
               'INTEGER NOT NULL DEFAULT 45 CHECK(appointment_duration_minutes BETWEEN 1 AND 840)',
             );
           }
+          if (oldVersion < 51) await migrateCompanionAccess(db);
+          if (oldVersion < 52) await createCompanionAuthTables(db);
+          if (oldVersion < 53) await migrateCompanionPatientJournal(db);
+          if (oldVersion < 54) await createCompanionRecoveryTable(db);
+          if (oldVersion < 55) await createCompanionReportActivity(db);
         },
       ),
     );
@@ -626,6 +634,14 @@ class DatabaseService {
     await createDocumentChainTables(db);
     await createDocumentReconciliationTables(db);
     await createDocumentDv1Tables(db);
+    await createCompanionAccessTables(db);
+    await createCompanionAuthTables(db);
+    await createCompanionRecoveryTable(db);
+    await createCompanionReportActivity(db);
+    await db.insert('companion_access_initialization', {
+      'singleton': 1,
+      'assignments_pending': 0,
+    });
   }
 
   static Future<void> _resetDatabase(Database db) async {
@@ -636,7 +652,18 @@ class DatabaseService {
       final name = (row['name'] as String).replaceAll('"', '""');
       await db.execute('DROP TRIGGER "$name"');
     }
+    for (final trigger in ['companion_report_activity_insert', 'companion_report_activity_update', 'companion_report_activity_delete']) {
+      await db.execute('DROP TRIGGER IF EXISTS $trigger');
+    }
     for (final table in [
+      'companion_report_activity',
+      'companion_recovery_key',
+      'companion_personal_codes',
+      'companion_auth_attempts',
+      'companion_access_events',
+      'companion_patient_access',
+      'companion_practitioner_access',
+      'companion_access_initialization',
       'document_reconciliations',
       'document_chain_steps',
       'document_events',

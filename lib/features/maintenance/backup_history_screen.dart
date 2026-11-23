@@ -1,3 +1,4 @@
+import '../companion_access/administrative_access_checks.dart';
 import 'package:file_picker/file_picker.dart';
 import 'widgets/maintenance_progress.dart';
 import 'package:flutter/material.dart';
@@ -33,6 +34,7 @@ class _BackupHistoryScreenState extends State<BackupHistoryScreen> {
   }
 
   Future<void> _restoreBackup(String backupPath) async {
+    if (!await allowDatabaseReplacement(context) || !mounted) return;
     final s = S.of(context);
     final confirmed = await showDialog<bool>(
       context: context,
@@ -57,6 +59,7 @@ class _BackupHistoryScreenState extends State<BackupHistoryScreen> {
 
     if (confirmed != true || !mounted) return;
 
+    if (!await allowDatabaseReplacement(context) || !mounted) return;
     final result = await withMaintenanceProgress(
       context,
       () => _restoreService.restoreDatabase(backupPath: backupPath),
@@ -77,6 +80,7 @@ class _BackupHistoryScreenState extends State<BackupHistoryScreen> {
         ],
       ),
     );
+    if (result.success) endSessionAfterDatabaseReplacement();
     if (!mounted) return;
 
     setState(() {

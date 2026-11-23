@@ -1,3 +1,4 @@
+import 'support/companion_access_test_support.dart';
 import 'package:abak_desktop_companion/features/planning/data/planning_repository.dart';
 import 'package:abak_desktop_companion/features/planning/models/planning_appointment.dart';
 import 'dart:io';
@@ -23,6 +24,7 @@ import 'package:abak_desktop_companion/features/maintenance/services/local_datab
 import 'package:abak_desktop_companion/features/desktop_backup/services/local_database_restore_service.dart';
 import 'package:abak_desktop_companion/generated/l10n.dart';
 import 'package:flutter/widgets.dart';
+import 'package:abak_desktop_companion/features/companion_access/companion_access_service.dart';
 
 class _Paths extends PathProviderPlatform {
   _Paths(this.path);
@@ -107,6 +109,7 @@ void main() {
     final output = await Directory(p.join(temp.path, 'backups')).create();
     access = _Access(output.path);
     final patient = await PatientRepository().createPatient(
+      referringPractitionerId: await seedPatientReferrer(),
       lastName: 'Dupont',
       firstName: 'Élodie',
       birthDate: '1980-03-12',
@@ -161,6 +164,39 @@ void main() {
     );
   }
 
+  test('backup restores personal code verifiers, administrator rights and retry delay', () async {
+    final db = await DatabaseService.database;
+    await db.insert('practitioners', {
+      'practitioner_id': 'admin-test', 'display_name': 'Administrateur test', 'created_at': 1,
+    });
+    final fixedNow = DateTime.utc(2026, 11, 23);
+    final service = CompanionAccessService(hasher: FastTestCodeHasher(), now: () => fixedNow);
+    await service.initializeAdministrator('admin-test', 'admin', '0123');
+    final recoveryKey = await service.generateRecoveryKey(actorId: 'admin-test', actorCode: '0123');
+    for (var i = 0; i < 5; i++) {
+      await expectLater(service.verifyCode('admin-test', '9999'), throwsA(isA<CompanionAccessException>()));
+    }
+    final before = {
+      for (final table in ['companion_recovery_key', 'companion_personal_codes', 'companion_practitioner_access',
+        'companion_auth_attempts', 'companion_access_events']) table: await db.query(table),
+    };
+    final archive = await backup();
+    await db.delete('companion_recovery_key');
+    await db.delete('companion_personal_codes');
+    await db.delete('companion_practitioner_access');
+    await db.delete('companion_auth_attempts');
+    final result = await LocalDatabaseRestoreService(access: access).restoreDatabase(backupPath: archive);
+    expect(result.success, isTrue, reason: result.message);
+    final restored = await DatabaseService.database;
+    for (final entry in before.entries) { expect(await restored.query(entry.key), entry.value); }
+    expect(await service.hasAdministrators(), isTrue);
+    await expectLater(service.verifyCode('admin-test', '0123'), throwsA(isA<CompanionAccessException>()));
+    await CompanionAccessService(hasher: FastTestCodeHasher(),
+      now: () => fixedNow.add(const Duration(seconds: 30))).verifyCode('admin-test', '0123');
+    await service.recoverAdministrator(key: recoveryKey, newCode: '2345', practitionerId: 'admin-test');
+    await service.verifyCode('admin-test', '2345');
+  });
+
   Future<String> lastName() async =>
       (await PatientRepository().getPatientById(patientId))!.lastName;
   Future<void> rewriteArchive(
@@ -214,6 +250,7 @@ void main() {
       source: 'local_copy',
     );
     final other = (await PatientRepository().createPatient(
+      referringPractitionerId: await seedPatientReferrer(),
       lastName: 'Other',
       firstName: 'Patient',
     )).patientId;

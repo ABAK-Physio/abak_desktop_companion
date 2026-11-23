@@ -1,3 +1,4 @@
+import '../companion_access/patient_referrer_picker.dart';
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -127,6 +128,12 @@ class _KobusScreenState extends State<KobusScreen> {
       ),
     );
     if (confirmed != true || !mounted) return;
+    String? referrerId;
+    if (_preparation!.folders.any((f) => f.rejection == null &&
+        (!f.shared || _shared) && f.decision == KobusDecision.create)) {
+      referrerId = await choosePatientReferrer(context);
+      if (referrerId == null || !mounted) return;
+    }
     setState(() {
       _busy = true;
       _importing = true;
@@ -138,6 +145,7 @@ class _KobusScreenState extends State<KobusScreen> {
       final run = await _service.import(
         preparation,
         includeShared: _shared,
+        referringPractitionerId: referrerId,
         progress: (done, total) {
           if (mounted) setState(() => _progress = done / total);
         },

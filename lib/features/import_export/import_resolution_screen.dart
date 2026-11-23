@@ -1,3 +1,4 @@
+import '../companion_access/patient_referrer_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:abak_shared/abak_shared.dart';
 import '../../generated/l10n.dart';
@@ -103,6 +104,8 @@ class _ImportResolutionScreenState extends State<ImportResolutionScreen> {
     String? initialBirthDate,
     String? initialSexCode,
   }) async {
+    final referrerId = await choosePatientReferrer(context);
+    if (referrerId == null || !mounted) return;
     final lastNameController = TextEditingController(
       text: initialLastName ?? '',
     );
@@ -115,92 +118,53 @@ class _ImportResolutionScreenState extends State<ImportResolutionScreen> {
 
     String sexCode = initialSexCode ?? 'U';
 
+    bool saving = false;
+    String? error;
     final dialog = DialogRoute<Patient>(
       context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Row(
-            children: [
-              Expanded(
-                child: Text(S.of(context).importPatientForm_title),
-              ),
-              ContextHelpButton(
-                technicalInformationLabel: S.of(context).g_helpTooltip,
-                title: S.of(context).importPatientForm_title,
-                content: S.of(context).importPatientForm_help,
-              ),
-            ],
-          ),
-          content: StatefulBuilder(
-            builder: (context, setDialogState) {
-              return SizedBox(
-                width: 420,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    TextField(
-                      controller: lastNameController,
-                      decoration: const InputDecoration(labelText: 'Nom'),
-                    ),
-                    TextField(
-                      controller: firstNameController,
-                      decoration: const InputDecoration(labelText: 'Prénom'),
-                    ),
-                    TextField(
-                      controller: birthDateController,
-                      decoration: const InputDecoration(
-                        labelText: 'Date de naissance YYYY-MM-DD',
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    DropdownButtonFormField<String>(
-                      initialValue: sexCode,
-                      decoration: const InputDecoration(labelText: 'Sexe'),
-                      items: const [
-                        DropdownMenuItem(
-                          value: 'U',
-                          child: Text('Non renseigné'),
-                        ),
-                        DropdownMenuItem(value: 'F', child: Text('Féminin')),
-                        DropdownMenuItem(value: 'M', child: Text('Masculin')),
-                        DropdownMenuItem(value: 'X', child: Text('Autre')),
-                      ],
-                      onChanged: (value) {
-                        if (value == null) return;
-                        setDialogState(() {
-                          sexCode = value;
-                        });
-                      },
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Annuler'),
-            ),
-            FilledButton(
-              onPressed: () async {
-                final patient = await _patientRepository.createPatient(
-                  lastName: lastNameController.text.trim(),
-                  firstName: firstNameController.text.trim(),
-                  birthDate: birthDateController.text.trim().isEmpty
-                      ? null
-                      : birthDateController.text.trim(),
-                  sexCode: sexCode,
-                );
-
-                if (!context.mounted) return;
-                Navigator.of(context).pop(patient);
-              },
-              child: const Text('Créer'),
-            ),
+      barrierDismissible: false,
+      builder: (context) => StatefulBuilder(builder: (context, setDialogState) => AlertDialog(
+        title: Text(S.of(context).importPatientForm_title),
+        content: SizedBox(width: 420, child: SingleChildScrollView(child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(controller: lastNameController, enabled: !saving,
+              decoration: const InputDecoration(labelText: 'Nom')),
+            TextField(controller: firstNameController, enabled: !saving,
+              decoration: const InputDecoration(labelText: 'Prénom')),
+            TextField(controller: birthDateController, enabled: !saving,
+              decoration: const InputDecoration(labelText: 'Date de naissance YYYY-MM-DD')),
+            DropdownButtonFormField<String>(initialValue: sexCode,
+              decoration: const InputDecoration(labelText: 'Sexe'),
+              items: const [
+                DropdownMenuItem(value: 'U', child: Text('Non renseigné')),
+                DropdownMenuItem(value: 'F', child: Text('Féminin')),
+                DropdownMenuItem(value: 'M', child: Text('Masculin')),
+                DropdownMenuItem(value: 'X', child: Text('Autre')),
+              ], onChanged: saving ? null : (value) { if (value != null) sexCode = value; }),
+            if (error != null) Text(error!),
           ],
-        );
-      },
+        ))),
+        actions: [
+          TextButton(onPressed: saving ? null : () => Navigator.pop(context), child: const Text('Annuler')),
+          FilledButton(onPressed: saving ? null : () async {
+            setDialogState(() { saving = true; error = null; });
+            try {
+              final patient = await _patientRepository.createPatient(
+                referringPractitionerId: referrerId,
+                lastName: lastNameController.text.trim(), firstName: firstNameController.text.trim(),
+                birthDate: birthDateController.text.trim().isEmpty ? null : birthDateController.text.trim(),
+                sexCode: sexCode);
+              if (context.mounted) Navigator.pop(context, patient);
+            } catch (_) {
+              if (context.mounted) { setDialogState(() {
+                saving = false;
+                error = 'Impossible de créer le patient. Vérifiez les informations et le kiné référent.';
+              }); }
+            }
+          }, child: Text(saving ? 'Création…' : 'Créer')),
+        ],
+      )),
     );
 
     final patient = await Navigator.of(context).push(dialog);

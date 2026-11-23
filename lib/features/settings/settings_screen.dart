@@ -1,3 +1,6 @@
+import '../companion_access/exception_journal_screen.dart';
+import '../companion_access/administrative_access_checks.dart';
+import '../companion_access/patient_access_boundary.dart';
 import '../dmp_setup/dmp_setup_tile.dart';
 import '../dmp_dv1_access/access_screen.dart';
 import '../dmp_piece_isolated/piece_screen.dart';
@@ -33,14 +36,23 @@ import '../../core/expert/expert_info_button.dart';
 import '../../core/settings/application_settings_service.dart';
 import '../maintenance/services/user_data_export_service.dart';
 
-class SettingsScreen extends StatefulWidget {
-  const SettingsScreen({super.key});
+class SettingsScreen extends StatelessWidget {
+  const SettingsScreen({super.key, this.onAccessCancelled});
+  final VoidCallback? onAccessCancelled;
 
   @override
-  State<SettingsScreen> createState() => _SettingsScreenState();
+  Widget build(BuildContext context) => PatientAccessScope.administrative(
+    key: const ValueKey('SettingsScreen'), section: 'Assistance', onCancel: onAccessCancelled,
+    builder: (_) => _SettingsScreenContent());
+}
+class _SettingsScreenContent extends StatefulWidget {
+  const _SettingsScreenContent();
+
+  @override
+  State<_SettingsScreenContent> createState() => _SettingsScreenState();
 }
 
-class _SettingsScreenState extends State<SettingsScreen> {
+class _SettingsScreenState extends State<_SettingsScreenContent> {
   ExpertContextInfo _expertInfo(S s) {
     return ExpertContextInfo(
       contextName: s.settings_contextName,
@@ -196,6 +208,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Future<void> _resetLocalDatabase() async {
+    if (!await allowDatabaseReplacement(context) || !mounted) return;
     final s = S.of(context);
     final messenger = ScaffoldMessenger.of(context);
 
@@ -273,6 +286,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       return;
     }
 
+    if (!mounted || !await allowDatabaseReplacement(context) || !mounted) return;
     final result = await LocalDatabaseResetService().resetDatabase(
       databaseNotFoundMessage: s.localDatabaseBackup_databaseNotFound,
       chooseBackupFolderTitle: s.localDatabaseBackup_chooseBackupFolder,
@@ -291,6 +305,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         ),
       ),
     );
+    if (result.success) endSessionAfterDatabaseReplacement();
   }
 
   void _openImportResolutionAssistant() {
@@ -809,6 +824,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ),
                   ],
                 ),
+                const SizedBox(height: 16),
+                Card(child: ListTile(
+                  leading: const Icon(Icons.history_outlined),
+                  title: const Text('Journal des accès dérogatoires'),
+                  subtitle: const Text('Consultation réservée aux administrateurs'),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                    builder: (_) => const ExceptionJournalScreen())),
+                )),
               ],
             ),
           ),

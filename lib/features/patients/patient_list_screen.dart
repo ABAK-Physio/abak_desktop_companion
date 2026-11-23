@@ -1,3 +1,4 @@
+import '../companion_access/patient_access_boundary.dart';
 import 'package:flutter/material.dart';
 
 import '../../generated/l10n.dart';
@@ -81,7 +82,31 @@ class _PatientListScreenState extends State<PatientListScreen> {
     });
   }
 
+  Future<bool> _stillAllowed(String patientId) async {
+    try {
+      final access = PatientAccessBoundary.serviceOf(context);
+      final state = await access.inspect(patientId);
+      if (state.allowed) return true;
+    } catch (_) {
+      // Keep changes blocked if authorization cannot be checked.
+    }
+    if (mounted) { ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('L’accès au dossier a changé. Recommencez l’opération.'))); }
+    return false;
+  }
+
   Future<void> _restorePatient(Patient patient) async {
+    final confirmed = await showDialog<bool>(context: context,
+      builder: (_) => PatientAccessScope(patientId: patient.patientId, builder: (context) => AlertDialog(
+        title: const Text('Restaurer ce patient'),
+        content: Text(patient.displayName),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Annuler')),
+          FilledButton(onPressed: () => Navigator.pop(context, true), child: const Text('Restaurer')),
+        ],
+      )));
+    if (confirmed != true || !mounted || !await _stillAllowed(patient.patientId)) return;
+    if (!mounted) return;
     final s = S.of(context);
     await _repository.restorePatient(patient.patientId);
 
@@ -124,10 +149,11 @@ class _PatientListScreenState extends State<PatientListScreen> {
   Future<void> _editPatient(Patient patient) async {
     final updatedPatient = await showDialog<Patient>(
       context: context,
-      builder: (_) => PatientFormDialog(initialPatient: patient),
+      builder: (_) => PatientAccessScope(patientId: patient.patientId,
+        builder: (_) => PatientFormDialog(initialPatient: patient)),
     );
 
-    if (updatedPatient == null) return;
+    if (updatedPatient == null || !mounted || !await _stillAllowed(patient.patientId)) return;
 
     await _repository.updatePatient(updatedPatient);
     await _reloadPatients();
@@ -138,7 +164,7 @@ class _PatientListScreenState extends State<PatientListScreen> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) {
-        return AlertDialog(
+        return PatientAccessScope(patientId: patient.patientId, builder: (context) => AlertDialog(
           title: Text(s.patientList_archiveTitle),
           content: Text(s.patientList_archiveConfirmation(patient.displayName)),
           actions: [
@@ -151,11 +177,11 @@ class _PatientListScreenState extends State<PatientListScreen> {
               child: Text(s.patientList_archive),
             ),
           ],
-        );
+        ));
       },
     );
 
-    if (confirmed != true) return;
+    if (confirmed != true || !mounted || !await _stillAllowed(patient.patientId)) return;
 
     await _repository.archivePatient(patient.patientId);
     if (!mounted) return;

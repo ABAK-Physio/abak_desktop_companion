@@ -1,3 +1,6 @@
+import '../companion_access/patient_reassignment_screen.dart';
+import '../companion_access/recovery_key_screen.dart';
+import '../companion_access/patient_access_boundary.dart';
 import '../../generated/l10n.dart';
 
 import 'package:abak_shared/abak_shared.dart';
@@ -6,20 +9,28 @@ import '../../core/settings/language_preference_service.dart';
 import '../../core/settings/application_settings_service.dart';
 import '../patients/services/patient_archive_settings_service.dart';
 import '../organization/organization_screen.dart';
+import '../companion_access/companion_access_screen.dart';
 import '../../core/expert/expert_context_info.dart';
 import '../../core/expert/expert_info_button.dart';
 import '../../core/settings/generated_documents_directory_service.dart';
 
-class PreferencesScreen extends StatefulWidget {
+class PreferencesScreen extends StatelessWidget {
+  const PreferencesScreen({super.key, this.onAccessCancelled, required this.onLanguageChanged});
+  final VoidCallback? onAccessCancelled;
   final VoidCallback onLanguageChanged;
-
-  const PreferencesScreen({super.key, required this.onLanguageChanged});
-
   @override
-  State<PreferencesScreen> createState() => _PreferencesScreenState();
+  Widget build(BuildContext context) => PatientAccessScope.administrative(
+    key: const ValueKey('PreferencesScreen'), section: 'Paramètres', onCancel: onAccessCancelled,
+    builder: (_) => _PreferencesScreenContent(onLanguageChanged: onLanguageChanged));
+}
+class _PreferencesScreenContent extends StatefulWidget {
+  const _PreferencesScreenContent({required this.onLanguageChanged});
+  final VoidCallback onLanguageChanged;
+  @override
+  State<_PreferencesScreenContent> createState() => _PreferencesScreenState();
 }
 
-class _PreferencesScreenState extends State<PreferencesScreen> {
+class _PreferencesScreenState extends State<_PreferencesScreenContent> {
   final LanguagePreferenceService _languageService =
   const LanguagePreferenceService();
   final ApplicationSettingsService _applicationSettingsService =
@@ -230,6 +241,28 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
                   ],
                 ),
                 const SizedBox(height: 24),
+
+                Card(child: ListTile(
+                  leading: const Icon(Icons.swap_horiz),
+                  title: const Text('Réaffecter les patients avec la clé de récupération'),
+                  onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                    builder: (_) => const PatientReassignmentScreen())),
+                )),
+                Card(child: ListTile(
+                  leading: const Icon(Icons.key_outlined),
+                  title: const Text('Clé de récupération du cabinet'),
+                  onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                    builder: (_) => const RecoveryKeyScreen(generate: true))),
+                )),
+                Card(child: ListTile(
+                  leading: const Icon(Icons.admin_panel_settings_outlined),
+                  title: const Text('Codes personnels et administrateurs'),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                    builder: (_) => const CompanionAccessScreen(),
+                  )),
+                )),
+                const SizedBox(height: 16),
 
                 Card(
                   child: Padding(

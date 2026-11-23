@@ -101,8 +101,21 @@ void main() {
       );
       active = upgraded;
       expect(await upgraded.getVersion(), DatabaseService.schemaVersion);
-      expect(await snapshot(upgraded), before);
-      // Seule évolution attendue : la politique de rétention des sauvegardes.
+      final after = await snapshot(upgraded);
+      expect(
+        Map.fromEntries(after.entries.where((e) => before.containsKey(e.key))),
+        before,
+      );
+      expect(after['companion_patient_access'], [
+        {
+          'patient_id': 'synthetic-patient',
+          'referring_practitioner_id': 'synthetic-practitioner',
+          'former_practitioner_id': null,
+          'departure_date': null,
+        },
+      ]);
+      // Existing schema stays identical apart from backup retention. New access
+      // tables must not rewrite any clinical record or DMP approval.
       final expectedSchema = schema.map((entry) {
         final expected = Map<String, Object?>.from(entry);
         if (entry['type'] == 'table' &&
@@ -116,9 +129,11 @@ void main() {
       }).toList();
 
       expect(
-        await upgraded.rawQuery(
+        (await upgraded.rawQuery(
           'SELECT type,name,tbl_name,sql FROM sqlite_master ORDER BY type,name',
-        ),
+        )).where((row) =>
+          !(row['tbl_name'] as String).startsWith('companion_') &&
+          !(row['name'] as String).startsWith('companion_')).toList(),
         expectedSchema,
       );
 
@@ -143,7 +158,7 @@ void main() {
       );
       active = reopened;
       expect(await reopened.getVersion(), DatabaseService.schemaVersion);
-      expect(await snapshot(reopened), before);
+      expect(await snapshot(reopened), after);
     } finally {
       if (active != null && active.isOpen) await active.close();
       await directory.delete(recursive: true);

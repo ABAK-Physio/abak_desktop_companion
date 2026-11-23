@@ -1,3 +1,5 @@
+import '../../companion_access/patient_access_service.dart';
+import '../../companion_access/companion_access_service.dart';
 import 'package:abak_vitale/abak_vitale.dart';
 import '../services/patient_qualification_service.dart';
 import '../../../core/database/database_service.dart';
@@ -143,6 +145,7 @@ class PatientRepository {
         );
       }
       for (final table in [
+        'companion_patient_access',
         'care_episodes',
         'patient_identity',
         'patient_attributes',
@@ -161,6 +164,7 @@ class PatientRepository {
   }
 
   Future<Patient> createPatient({
+    required String? referringPractitionerId,
     required String lastName,
     required String firstName,
     String? birthDate,
@@ -183,8 +187,12 @@ class PatientRepository {
       updatedAt: now,
     );
 
+    if (referringPractitionerId == null) {
+      throw const CompanionAccessException('Sélectionnez un kiné référent.');
+    }
     await db.transaction((txn) async {
       await txn.insert('patients', patient.toMap());
+      await PatientAccessService.assignNewPatient(txn, patient.patientId, referringPractitionerId);
       if (vitaleIdentity != null && vitaleReadAt != null) {
         await PatientQualificationService.recordVitaleInTransaction(txn,
           patientId: patient.patientId, identity: vitaleIdentity, readAt: vitaleReadAt);
@@ -220,13 +228,12 @@ class PatientRepository {
     );
   }
 
-  Future<void> insertPatient(Patient patient) async {
+  Future<void> insertPatient(Patient patient, {required String referringPractitionerId}) async {
     final db = await DatabaseService.database;
-
-    await db.insert(
-      'patients',
-      patient.toMap(),
-    );
+    await db.transaction((txn) async {
+      await txn.insert('patients', patient.toMap());
+      await PatientAccessService.assignNewPatient(txn, patient.patientId, referringPractitionerId);
+    });
   }
 
   Future<void> updatePatient(Patient patient) async {

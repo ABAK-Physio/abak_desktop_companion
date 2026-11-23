@@ -1,3 +1,4 @@
+import 'practitioner_departure_screen.dart';
 import 'package:flutter/material.dart';
 
 import '../../generated/l10n.dart';
@@ -106,33 +107,10 @@ class _PractitionerListScreenState extends State<PractitionerListScreen> {
   }
 
   Future<void> _archivePractitioner(Practitioner practitioner) async {
-    final s = S.of(context);
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text(s.practitionerList_archivePractitioner),
-          content: Text(
-            s.practitionerList_archiveConfirmation(practitioner.displayName),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(false),
-              child: Text(s.practitionerList_cancel),
-            ),
-            FilledButton(
-              onPressed: () => Navigator.of(context).pop(true),
-              child: Text(s.practitionerList_archive),
-            ),
-          ],
-        );
-      },
-    );
-
-    if (confirmed != true) return;
-
-    await _repository.archivePractitioner(practitioner.practitionerId);
-    await _reloadPractitioners();
+    final completed = await Navigator.of(context).push<bool>(MaterialPageRoute(
+      builder: (_) => PractitionerDepartureScreen(practitioner: practitioner, repository: _repository),
+    ));
+    if (completed == true && mounted) await _reloadPractitioners();
   }
 
   Future<void> _restorePractitioner(Practitioner practitioner) async {
