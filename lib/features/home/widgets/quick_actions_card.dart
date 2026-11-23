@@ -80,7 +80,34 @@ class QuickActionsCard extends StatelessWidget {
                 _actionButton(
                   onPressed: () async {
                     final s = S.of(context);
+                    final confirmed = await showDialog<bool>(
+                      context: context,
+                      builder: (dialogContext) => AlertDialog(
+                        title: const Text('Créer une sauvegarde'),
+                        content: const SingleChildScrollView(
+                          child: Text(
+                            'La sauvegarde contient des données de santé. '
+                                'Conservez-la dans un endroit protégé, accessible '
+                                'uniquement aux personnes autorisées.\n\n'
+                                'Privilégiez un support externe, par exemple une clé USB '
+                                'ou un disque externe, afin de préserver votre sauvegarde '
+                                'en cas de panne de l’ordinateur.',
+                          ),
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.of(dialogContext).pop(false),
+                            child: const Text('Annuler'),
+                          ),
+                          FilledButton(
+                            onPressed: () => Navigator.of(dialogContext).pop(true),
+                            child: const Text('Choisir l’emplacement'),
+                          ),
+                        ],
+                      ),
+                    );
 
+                    if (confirmed != true || !context.mounted) return;
                     final result = await withMaintenanceProgress(
                       context,
                       () => LocalDatabaseBackupService().createBackup(
