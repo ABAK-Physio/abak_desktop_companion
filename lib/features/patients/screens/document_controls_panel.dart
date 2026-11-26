@@ -1,3 +1,4 @@
+import '../../../core/documents/document_migration_gateway.dart';
 import 'dart:convert';
 import 'dart:io';
 import 'package:path/path.dart' as p;
@@ -91,12 +92,14 @@ class _DocumentControlsPanelState extends State<DocumentControlsPanel>
   @override
   void initState() {
     super.initState();
+    documentRootRevision.addListener(refresh);
     WidgetsBinding.instance.addObserver(this);
     refresh();
   }
 
   @override
   void dispose() {
+    documentRootRevision.removeListener(refresh);
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }

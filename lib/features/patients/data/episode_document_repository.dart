@@ -1,3 +1,4 @@
+import '../../../core/documents/document_activity_coordinator.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:uuid/uuid.dart';
 
@@ -44,7 +45,7 @@ class EpisodeDocumentRepository {
     required String filePath,
     String? mimeType,
     String? source,
-  }) async {
+  }) => DocumentActivityCoordinator.shared.activity(() async {
     final db = await _database();
     final now = DateTime.now().millisecondsSinceEpoch;
 
@@ -65,7 +66,7 @@ class EpisodeDocumentRepository {
     );
 
     return document;
-  }
+  });
 
   Future<void> update({
     required String documentId,
@@ -73,7 +74,7 @@ class EpisodeDocumentRepository {
     String? filePath,
     String? mimeType,
     String? source,
-  }) async {
+  }) => DocumentActivityCoordinator.shared.activity(() async {
     final db = await _database();
     final now = DateTime.now().millisecondsSinceEpoch;
 
@@ -101,9 +102,9 @@ class EpisodeDocumentRepository {
       where: 'document_id = ?',
       whereArgs: [documentId],
     );
-  }
+  });
 
-  Future<void> archive(String documentId) async {
+  Future<void> archive(String documentId) => DocumentActivityCoordinator.shared.activity(() async {
     final db = await _database();
     final now = DateTime.now().millisecondsSinceEpoch;
 
@@ -113,9 +114,9 @@ class EpisodeDocumentRepository {
       where: 'document_id = ?',
       whereArgs: [documentId],
     );
-  }
+  });
 
-  Future<void> deletePermanently(String documentId) async {
+  Future<void> deletePermanently(String documentId) => DocumentActivityCoordinator.shared.activity(() async {
     final db = await _database();
 
     await db.delete(
@@ -123,7 +124,7 @@ class EpisodeDocumentRepository {
       where: 'document_id = ?',
       whereArgs: [documentId],
     );
-  }
+  });
 
   Future<void> archiveByCaseId(String caseId) async {
     final db = await _database();

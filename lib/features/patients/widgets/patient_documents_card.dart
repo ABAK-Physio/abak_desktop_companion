@@ -1,3 +1,4 @@
+import '../../../core/documents/document_migration_gateway.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -21,10 +22,21 @@ class _PatientDocumentsCardState extends State<PatientDocumentsCard> {
   bool _failed = false;
   bool _authorizationRequired = false;
 
+  void _rootChanged() {
+    _prepare();
+  }
+
   @override
   void initState() {
     super.initState();
+    documentRootRevision.addListener(_rootChanged);
     _prepare();
+  }
+
+  @override
+  void dispose() {
+    documentRootRevision.removeListener(_rootChanged);
+    super.dispose();
   }
 
   @override

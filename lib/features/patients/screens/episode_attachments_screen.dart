@@ -1,3 +1,4 @@
+import '../../../core/documents/document_migration_gateway.dart';
 import '../../../core/settings/macos_directory_access_service.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -37,17 +38,26 @@ class _EpisodeAttachmentsScreenState extends State<EpisodeAttachmentsScreen> {
   @override
   void initState() {
     super.initState();
+    documentRootRevision.addListener(_refresh);
     _repository = widget.repository ?? EpisodeDocumentRepository();
     _service =
         widget.service ?? PatientAttachmentService(repository: _repository);
     _documents = _load();
   }
 
+  @override
+  void dispose() {
+    documentRootRevision.removeListener(_refresh);
+    super.dispose();
+  }
+
   Future<List<EpisodeDocument>> _load() async => (await _repository.getByCaseId(
     widget.caseId,
   )).where((document) => document.source == 'local_copy').toList();
   Future<void> _refresh() async {
-    setState(() => _documents = _load());
+    setState(() {
+      _documents = _load();
+    });
   }
 
   Future<String?> _pickFile() async {

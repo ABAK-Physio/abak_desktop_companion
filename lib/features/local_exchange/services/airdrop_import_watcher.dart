@@ -1,3 +1,4 @@
+import '../../../core/documents/document_activity_coordinator.dart';
 import 'dart:async';
 import 'dart:io';
 
@@ -114,6 +115,7 @@ class AirDropImportWatcher {
 
   Future<void> _runScan(Directory exchangeDir) async {
     try {
+      if (DocumentActivityCoordinator.shared.migrationPending) return;
       await _scan(exchangeDir);
     } finally {
       if (_timer == null) await _releaseDirectoryAccess();
@@ -121,7 +123,7 @@ class AirDropImportWatcher {
     }
   }
 
-  Future<void> _scan(Directory exchangeDir) async {
+  Future<void> _scan(Directory exchangeDir) => DocumentActivityCoordinator.shared.activity(() async {
     try {
       if (!await exchangeDir.exists()) {
         throw FileSystemException('Dossier d’échange indisponible', exchangeDir.path);
@@ -142,7 +144,7 @@ class AirDropImportWatcher {
       _suspendForAccessProblem();
       debugPrint('Lecture du dossier d’échange impossible : $error');
     }
-  }
+  });
 
   bool _isAbakFile(File file) {
     return p.extension(file.path).toLowerCase() == '.abak';

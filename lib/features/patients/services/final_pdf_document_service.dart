@@ -1,3 +1,4 @@
+import '../../../core/documents/document_activity_coordinator.dart';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
@@ -124,7 +125,7 @@ class FinalPdfDocumentService {
     }
   }
 
-  Future<T> _exclusive<T>(Future<T> Function(Directory) action) async {
+  Future<T> _exclusive<T>(Future<T> Function(Directory) action) => DocumentActivityCoordinator.shared.activity(() async {
     final dir = await _root();
     final name = p.absolute(dir.path);
     if (!_busyRoots.add(name)) fail('Un import PDF est déjà en cours.');
@@ -144,7 +145,7 @@ class FinalPdfDocumentService {
       await lock?.close();
       _busyRoots.remove(name);
     }
-  }
+  });
 
   Future<Uint8List> _read(File file) async {
     await _noLinks(file.path);

@@ -1,3 +1,4 @@
+import '../../../core/documents/document_activity_coordinator.dart';
 import 'dart:convert';
 import 'dart:io';
 import 'package:path/path.dart' as p;
@@ -155,7 +156,7 @@ class DocumentReconciliationService {
   Future<String> confirm(
     DocumentReconciliationReview review, {
     required bool confirmed,
-  }) async {
+  }) => DocumentActivityCoordinator.shared.activity(() async {
     if (!confirmed) {
       throw StateError('Confirmation explicite de l’examen requise');
     }
@@ -217,5 +218,5 @@ class DocumentReconciliationService {
       });
       return id;
     });
-  }
+  });
 }

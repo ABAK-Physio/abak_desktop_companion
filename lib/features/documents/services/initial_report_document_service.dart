@@ -1,3 +1,4 @@
+import '../../../core/documents/document_activity_coordinator.dart';
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
@@ -34,7 +35,7 @@ class InitialReportDocumentService {
     return p.basename(path);
   }
 
-  Future<void> open(String path) async {
+  Future<void> open(String path) => DocumentActivityCoordinator.shared.activity(() async {
     if (Platform.isWindows) {
       final file = File(path);
       if (!await file.exists()) {
@@ -66,5 +67,5 @@ class InitialReportDocumentService {
     }
 
     throw UnsupportedError(S.current.initialReportDocumentService_unsupported);
-  }
+  });
 }

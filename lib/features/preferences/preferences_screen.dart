@@ -12,7 +12,7 @@ import '../organization/organization_screen.dart';
 import '../companion_access/companion_access_screen.dart';
 import '../../core/expert/expert_context_info.dart';
 import '../../core/expert/expert_info_button.dart';
-import '../../core/settings/generated_documents_directory_service.dart';
+import '../../core/documents/document_migration_dialog.dart';
 
 class PreferencesScreen extends StatelessWidget {
   const PreferencesScreen({super.key, this.onAccessCancelled, required this.onLanguageChanged});
@@ -39,8 +39,6 @@ class _PreferencesScreenState extends State<_PreferencesScreenContent> {
   final PatientArchiveSettingsService _archiveSettingsService =
   PatientArchiveSettingsService();
 
-  String? _assessmentDocumentsDirectoryPath;
-  bool _choosingDocumentsDirectory = false;
   bool _openGeneratedDocument = true;
 
   ExpertContextInfo _expertInfo(S s) {
@@ -90,9 +88,6 @@ class _PreferencesScreenState extends State<_PreferencesScreenContent> {
     final openGeneratedDocument = await _applicationSettingsService
         .isOpenGeneratedDocumentEnabled();
 
-    final assessmentDocumentsDirectoryPath = await _applicationSettingsService
-        .getString(ApplicationSettingsService.assessmentDocumentsDirectoryKey);
-
     if (!mounted) return;
 
     setState(() {
@@ -100,7 +95,6 @@ class _PreferencesScreenState extends State<_PreferencesScreenContent> {
       _retentionDays = retentionDays;
       _expertModeEnabled = expertModeEnabled;
       _openGeneratedDocument = openGeneratedDocument;
-      _assessmentDocumentsDirectoryPath = assessmentDocumentsDirectoryPath;
       _loading = false;
     });
   }
@@ -171,42 +165,6 @@ class _PreferencesScreenState extends State<_PreferencesScreenContent> {
         content: Text('Préférence d’ouverture des documents mise à jour'),
       ),
     );
-  }
-
-  Future<void> _chooseAssessmentDocumentsDirectory() async {
-    if (_choosingDocumentsDirectory) return;
-    setState(() => _choosingDocumentsDirectory = true);
-
-    try {
-      final selectedPath = await const GeneratedDocumentsDirectoryService()
-          .chooseAndSave();
-      if (selectedPath == null || !mounted) return;
-
-      setState(() {
-        _assessmentDocumentsDirectoryPath = selectedPath;
-      });
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Dossier des documents générés mis à jour'),
-        ),
-      );
-    } catch (error, stackTrace) {
-      debugPrint('Impossible de modifier le dossier des documents : $error');
-      debugPrintStack(stackTrace: stackTrace);
-      if (!mounted) return;
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            'Impossible d’autoriser ou de mémoriser ce dossier. '
-                'Vérifiez sa disponibilité et ses droits d’accès, puis réessayez.',
-          ),
-        ),
-      );
-    } finally {
-      if (mounted) setState(() => _choosingDocumentsDirectory = false);
-    }
   }
 
   @override
@@ -375,21 +333,7 @@ class _PreferencesScreenState extends State<_PreferencesScreenContent> {
                         ),
                         const SizedBox(height: 16),
 
-                        ListTile(
-                          contentPadding: EdgeInsets.zero,
-                          leading: const Icon(Icons.folder_outlined),
-                          title: const Text('Dossier des documents générés'),
-                          subtitle: Text(
-                            _assessmentDocumentsDirectoryPath ??
-                                'Aucun dossier défini',
-                          ),
-                          trailing: OutlinedButton(
-                            onPressed: _choosingDocumentsDirectory
-                                ? null
-                                : _chooseAssessmentDocumentsDirectory,
-                            child: const Text('Modifier'),
-                          ),
-                        ),
+                        const DocumentStorageTile(),
 
                         Text(S.of(context).patientDocuments_settingsHelp),
                         const Divider(),

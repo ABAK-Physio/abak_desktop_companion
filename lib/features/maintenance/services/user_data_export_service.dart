@@ -1,3 +1,4 @@
+import '../../../core/documents/document_activity_coordinator.dart';
 import 'dart:convert';
 import 'dart:io';
 
@@ -54,7 +55,7 @@ class UserDataExportService {
     required String patientFemaleLabel,
     required String patientUnknownLabel,
     required String patientUnknownFemaleLabel,
-  }) async {
+  }) => DocumentActivityCoordinator.shared.activity(() async {
     GeneratedDocumentsDirectoryAccess? documentsAccess;
     BackupDirectoryLease? destination;
     String? partialPath;
@@ -195,7 +196,7 @@ class UserDataExportService {
       await documentsAccess?.release();
       await destination?.release();
     }
-  }
+  });
 
   Future<int> _addDirectoryContents({
     required ZipFileEncoder encoder,

@@ -1,3 +1,4 @@
+import '../../../core/documents/document_migration_gateway.dart';
 import 'dart:async';
 
 import 'report_pdf_export_guide.dart';
@@ -67,14 +68,20 @@ class _ReportDocxPdfScreenState extends State<ReportDocxPdfScreen> {
 
   String get _kind => 'Rapport';
 
+  void _rootChanged() {
+    _load();
+  }
+
   @override
   void initState() {
     super.initState();
+    documentRootRevision.addListener(_rootChanged);
     _load();
   }
 
   @override
   void dispose() {
+    documentRootRevision.removeListener(_rootChanged);
     unawaited(_access?.release());
     super.dispose();
   }

@@ -1,3 +1,4 @@
+import '../../../core/documents/document_migration_gateway.dart';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import '../models/episode_document_version.dart';
@@ -71,12 +72,14 @@ class _DocumentMedicalScreenState extends State<DocumentMedicalScreen>
   @override
   void initState() {
     super.initState();
+    documentRootRevision.addListener(refreshStatus);
     WidgetsBinding.instance.addObserver(this);
     load();
   }
 
   @override
   void dispose() {
+    documentRootRevision.removeListener(refreshStatus);
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }

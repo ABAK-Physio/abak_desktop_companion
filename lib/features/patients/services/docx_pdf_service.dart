@@ -1,3 +1,4 @@
+import '../../../core/documents/document_activity_coordinator.dart';
 import 'dart:convert';
 import 'dart:io';
 import 'package:archive/archive.dart';
@@ -112,7 +113,7 @@ class DocxPdfService {
     bool reuseOriginDocument = false,
     String? expectedSourceRevision,
     void Function(String)? onProgress,
-  }) async {
+  }) => DocumentActivityCoordinator.shared.activity(() async {
     if (!Platform.isMacOS && !Platform.isWindows) {
       throw FinalPdfException(
         'Conversion DOCX disponible sur macOS et Windows uniquement.',
@@ -280,5 +281,5 @@ class DocxPdfService {
     } finally {
       await access.release();
     }
-  }
+  });
 }

@@ -1,3 +1,4 @@
+import '../../../core/documents/document_activity_coordinator.dart';
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
@@ -81,7 +82,7 @@ class BackupOperation {
   static bool _active = false;
   static bool get isActive => _active;
 
-  static Future<T> run<T>(Future<T> Function() action) async {
+  static Future<T> run<T>(Future<T> Function() action) => DocumentActivityCoordinator.shared.activity(() async {
     if (_active) throw StateError(S.current.backupArchive_busy);
     _active = true;
     try {
@@ -89,5 +90,5 @@ class BackupOperation {
     } finally {
       _active = false;
     }
-  }
+  });
 }

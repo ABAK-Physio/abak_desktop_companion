@@ -1,3 +1,4 @@
+import '../../../core/documents/document_activity_coordinator.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import '../../../core/database/database_service.dart';
 import '../models/care_episode.dart';
@@ -5,7 +6,7 @@ import '../models/care_episode_note.dart';
 import '../models/care_episode_summary.dart';
 
 class CareEpisodeRepository {
-  Future<void> insertCareEpisode(CareEpisode episode) async {
+  Future<void> insertCareEpisode(CareEpisode episode) => DocumentActivityCoordinator.shared.activity(() async {
     final db = await DatabaseService.database;
 
     await db.insert(
@@ -13,7 +14,7 @@ class CareEpisodeRepository {
       episode.toMap(),
       conflictAlgorithm: ConflictAlgorithm.abort,
     );
-  }
+  });
 
   Future<List<CareEpisodeNote>> getNotesForEpisode(String careEpisodeId) async {
     final db = await DatabaseService.database;
@@ -28,7 +29,7 @@ class CareEpisodeRepository {
     return rows.map(CareEpisodeNote.fromMap).toList();
   }
 
-  Future<void> insertNote(CareEpisodeNote note) async {
+  Future<void> insertNote(CareEpisodeNote note) => DocumentActivityCoordinator.shared.activity(() async {
     final db = await DatabaseService.database;
 
     final map = note.toMap();
@@ -47,9 +48,9 @@ class CareEpisodeRepository {
       limit: 1,
     );
 
-  }
+  });
 
-  Future<void> updateNote(CareEpisodeNote note) async {
+  Future<void> updateNote(CareEpisodeNote note) => DocumentActivityCoordinator.shared.activity(() async {
     final db = await DatabaseService.database;
 
     await db.update(
@@ -58,12 +59,12 @@ class CareEpisodeRepository {
       where: 'note_id = ?',
       whereArgs: [note.noteId],
     );
-  }
+  });
 
   Future<void> updateFinalConclusion({
     required String careEpisodeId,
     required String? finalConclusion,
-  }) async {
+  }) => DocumentActivityCoordinator.shared.activity(() async {
     final db = await DatabaseService.database;
 
     await db.update(
@@ -75,9 +76,9 @@ class CareEpisodeRepository {
       where: 'care_episode_id = ?',
       whereArgs: [careEpisodeId],
     );
-  }
+  });
 
-  Future<void> updateCareEpisode(CareEpisode episode) async {
+  Future<void> updateCareEpisode(CareEpisode episode) => DocumentActivityCoordinator.shared.activity(() async {
     final db = await DatabaseService.database;
 
     await db.update(
@@ -86,12 +87,12 @@ class CareEpisodeRepository {
       where: 'care_episode_id = ?',
       whereArgs: [episode.careEpisodeId],
     );
-  }
+  });
 
   Future<void> updatePrescribingCorrespondent({
     required String careEpisodeId,
     required String? correspondentId,
-  }) async {
+  }) => DocumentActivityCoordinator.shared.activity(() async {
     final db = await DatabaseService.database;
 
     await db.update(
@@ -103,9 +104,9 @@ class CareEpisodeRepository {
       where: 'care_episode_id = ?',
       whereArgs: [careEpisodeId],
     );
-  }
+  });
 
-  Future<void> archiveCareEpisode(String careEpisodeId) async {
+  Future<void> archiveCareEpisode(String careEpisodeId) => DocumentActivityCoordinator.shared.activity(() async {
     final db = await DatabaseService.database;
 
     await db.update(
@@ -114,9 +115,9 @@ class CareEpisodeRepository {
       where: 'care_episode_id = ?',
       whereArgs: [careEpisodeId],
     );
-  }
+  });
 
-  Future<void> restoreCareEpisode(String careEpisodeId) async {
+  Future<void> restoreCareEpisode(String careEpisodeId) => DocumentActivityCoordinator.shared.activity(() async {
     final db = await DatabaseService.database;
 
     await db.update(
@@ -128,7 +129,7 @@ class CareEpisodeRepository {
       where: 'care_episode_id = ? AND archived_at IS NOT NULL',
       whereArgs: [careEpisodeId],
     );
-  }
+  });
 
   Future<List<CareEpisode>> getEpisodesForPatient(String patientId) async {
     final db = await DatabaseService.database;
@@ -227,7 +228,7 @@ class CareEpisodeRepository {
   Future<void> updateInitialReportDocxPath({
     required String careEpisodeId,
     required String? initialReportDocxPath,
-  }) async {
+  }) => DocumentActivityCoordinator.shared.activity(() async {
     final db = await DatabaseService.database;
 
     await db.update(
@@ -239,5 +240,5 @@ class CareEpisodeRepository {
       where: 'care_episode_id = ?',
       whereArgs: [careEpisodeId],
     );
-  }
+  });
 }

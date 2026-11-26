@@ -1,3 +1,4 @@
+import '../../../../core/documents/document_activity_coordinator.dart';
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -10,7 +11,7 @@ class EpisodeReportDocxExportService {
     required Uint8List bytes,
     required Directory directory,
     required String fileName,
-  }) async {
+  }) => DocumentActivityCoordinator.shared.activity(() async {
     final safeFileName = _sanitizeFileName(fileName);
 
     final basePath = p.join(
@@ -57,13 +58,13 @@ class EpisodeReportDocxExportService {
       bytes,
       flush: true,
     );
-  }
+  });
 
   Future<File> overwriteDocxFile({
     required Uint8List bytes,
     required Directory directory,
     required String fileName,
-  }) async {
+  }) => DocumentActivityCoordinator.shared.activity(() async {
     final path = p.join(
       directory.path,
       fileName,
@@ -73,7 +74,7 @@ class EpisodeReportDocxExportService {
       bytes,
       flush: true,
     );
-  }
+  });
 
   String _sanitizeFileName(String value) {
     return value

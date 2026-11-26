@@ -1,3 +1,4 @@
+import '../../../core/documents/document_activity_coordinator.dart';
 import '../../companion_access/patient_access_boundary.dart';
 import '../../../core/database/database_service.dart';
 import '../../patients/services/patient_documents_service.dart';
@@ -195,7 +196,7 @@ class _CareEpisodeReportsWorkspaceScreenState
     }
   }
 
-  Future<void> _exportAssessmentDocx() async {
+  Future<void> _exportAssessmentDocx() => DocumentActivityCoordinator.shared.activity(() async {
     final s = S.of(context);
     final assessment = _draft;
 
@@ -357,9 +358,9 @@ class _CareEpisodeReportsWorkspaceScreenState
         debugPrint('Impossible de libérer l’accès au dossier des documents : $error');
       }
     }
-  }
+  });
 
-  Future<void> _exportReportDocx() async {
+  Future<void> _exportReportDocx() => DocumentActivityCoordinator.shared.activity(() async {
     final s = S.of(context);
     final report = _reportDraft;
 
@@ -666,7 +667,7 @@ class _CareEpisodeReportsWorkspaceScreenState
         debugPrint('Impossible de libérer l’accès au dossier des documents : $error');
       }
     }
-  }
+  });
 
   @override
   void initState() {

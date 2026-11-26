@@ -1,3 +1,4 @@
+import '../../core/documents/document_activity_coordinator.dart';
 import 'dart:convert';
 import 'dart:io';
 
@@ -292,7 +293,7 @@ class AbakImportLauncher {
   static Future<Map<String, dynamic>> importArchiveFromPath(
       String filePath, {
         String sourceLabel = 'local_network_upload',
-      }) async {
+      }) => DocumentActivityCoordinator.shared.activity(() async {
     final importSessionRepository = ImportSessionRepository();
 
     final file = File(filePath);
@@ -399,7 +400,7 @@ class AbakImportLauncher {
         'filePath': filePath,
       };
     }
-  }
+  });
 
   static Future<AbakImportLauncherResult?> importArchiveFromPathWithResolution(
     BuildContext context,

@@ -1,3 +1,4 @@
+import '../../../core/documents/document_activity_coordinator.dart';
 import '../../companion_access/patient_access_service.dart';
 import '../../companion_access/companion_access_service.dart';
 import 'package:abak_vitale/abak_vitale.dart';
@@ -30,7 +31,7 @@ class PatientRepository {
 
   // Méthodes
 
-  Future<void> deletePatientPermanently(String patientId) async {
+  Future<void> deletePatientPermanently(String patientId) => DocumentActivityCoordinator.shared.activity(() async {
     final db = await DatabaseService.database;
 
     // Delete children explicitly: existing databases do not cascade patient
@@ -161,7 +162,7 @@ class PatientRepository {
         );
       }
     });
-  }
+  });
 
   Future<Patient> createPatient({
     required String? referringPractitionerId,
@@ -172,7 +173,7 @@ class PatientRepository {
     String? nir,
     VitaleIdentity? vitaleIdentity,
     DateTime? vitaleReadAt,
-  }) async {
+  }) => DocumentActivityCoordinator.shared.activity(() async {
     final db = await DatabaseService.database;
     final now = DateTime.now().millisecondsSinceEpoch;
 
@@ -200,7 +201,7 @@ class PatientRepository {
     });
 
     return patient;
-  }
+  });
 
   Future<List<Patient>> getPatients() async {
     final db = await DatabaseService.database;
@@ -214,7 +215,7 @@ class PatientRepository {
     return rows.map(Patient.fromMap).toList();
   }
 
-  Future<void> archivePatient(String patientId) async {
+  Future<void> archivePatient(String patientId) => DocumentActivityCoordinator.shared.activity(() async {
     final db = await DatabaseService.database;
 
     await db.update(
@@ -226,17 +227,17 @@ class PatientRepository {
       where: 'patient_id = ?',
       whereArgs: [patientId],
     );
-  }
+  });
 
-  Future<void> insertPatient(Patient patient, {required String referringPractitionerId}) async {
+  Future<void> insertPatient(Patient patient, {required String referringPractitionerId}) => DocumentActivityCoordinator.shared.activity(() async {
     final db = await DatabaseService.database;
     await db.transaction((txn) async {
       await txn.insert('patients', patient.toMap());
       await PatientAccessService.assignNewPatient(txn, patient.patientId, referringPractitionerId);
     });
-  }
+  });
 
-  Future<void> updatePatient(Patient patient) async {
+  Future<void> updatePatient(Patient patient) => DocumentActivityCoordinator.shared.activity(() async {
     final db = await DatabaseService.database;
 
     await db.transaction((txn) async {
@@ -248,7 +249,7 @@ class PatientRepository {
       await txn.update('patients', patient.toMap(),
           where: 'patient_id = ?', whereArgs: [patient.patientId]);
     });
-  }
+  });
 
   Future<List<Patient>> getArchivedPatients() async {
     final db = await DatabaseService.database;
@@ -262,7 +263,7 @@ class PatientRepository {
     return rows.map(Patient.fromMap).toList();
   }
 
-  Future<void> restorePatient(String patientId) async {
+  Future<void> restorePatient(String patientId) => DocumentActivityCoordinator.shared.activity(() async {
     final db = await DatabaseService.database;
 
     await db.update(
@@ -274,7 +275,7 @@ class PatientRepository {
       where: 'patient_id = ?',
       whereArgs: [patientId],
     );
-  }
+  });
 
   Future<Patient?> getPatientById(String patientId) async {
     final db = await DatabaseService.database;
@@ -425,7 +426,7 @@ class PatientRepository {
     required String nir,
     VitaleIdentity? vitaleIdentity,
     DateTime? vitaleReadAt,
-  }) async {
+  }) => DocumentActivityCoordinator.shared.activity(() async {
     final normalizedNir = nir.trim();
 
     if (normalizedNir.isEmpty) {
@@ -444,6 +445,6 @@ class PatientRepository {
           patientId: patientId, identity: vitaleIdentity, readAt: vitaleReadAt);
       }
     });
-  }
+  });
 
 }

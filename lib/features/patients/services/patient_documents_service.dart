@@ -1,3 +1,4 @@
+import '../../../core/documents/document_activity_coordinator.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'dart:io';
 
@@ -20,7 +21,7 @@ class PatientDocumentFolders {
 class PatientDocumentsService {
   const PatientDocumentsService();
 
-  Future<PatientDocumentFolders?> ensureConfigured(String patientId) async {
+  Future<PatientDocumentFolders?> ensureConfigured(String patientId) => DocumentActivityCoordinator.shared.activity(() async {
     final access = await const GeneratedDocumentsDirectoryService()
         .acquireConfigured();
     if (access == null) return null;
@@ -29,7 +30,7 @@ class PatientDocumentsService {
     } finally {
       await access.release();
     }
-  }
+  });
 
   Future<PatientDocumentFolders?> findForEpisode({
     required String episodeId,
@@ -92,7 +93,7 @@ class PatientDocumentsService {
   Future<PatientDocumentFolders> ensureInRoot({
     required String patientId,
     required String rootPath,
-  }) async {
+  }) => DocumentActivityCoordinator.shared.activity(() async {
     final root = Directory(p.normalize(p.absolute(rootPath)));
     // Never silently recreate an unavailable volume or the configured root.
     if (!await root.exists()) {
@@ -169,7 +170,7 @@ class PatientDocumentsService {
           }
           return folders;
         });
-  }
+  });
 
   static String folderNameFor(Patient patient) {
     final date = patient.birthDate?.trim();

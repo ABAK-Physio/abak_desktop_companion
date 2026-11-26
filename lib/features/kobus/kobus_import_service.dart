@@ -1,3 +1,4 @@
+import '../../core/documents/document_activity_coordinator.dart';
 import '../companion_access/patient_access_service.dart';
 import '../companion_access/companion_access_service.dart';
 import 'dart:convert';
@@ -131,7 +132,7 @@ class KobusImportService {
     required bool includeShared,
     String? referringPractitionerId,
     void Function(int done, int total)? progress,
-  }) async {
+  }) => DocumentActivityCoordinator.shared.activity(() async {
     if (running) throw StateError('Un import KOBUS est déjà en cours.');
     running = true;
     stopRequested = false;
@@ -346,7 +347,7 @@ class KobusImportService {
     } finally {
       running = false;
     }
-  }
+  });
 
   Future<void> _status(
     DatabaseExecutor database,

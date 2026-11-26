@@ -1,3 +1,4 @@
+import 'package:abak_desktop_companion/core/documents/document_migration_gateway.dart';
 import 'dart:async';
 import 'dart:convert';
 
@@ -141,6 +142,23 @@ class PanelHarness {
 }
 
 void main() {
+  testWidgets(
+    'M2.3 root revision refreshes DV1 display without write or transmission',
+    (tester) async {
+      final harness = PanelHarness(configured: false);
+      await harness.mount(tester);
+      final reads = harness.db.reads;
+      documentRootRevision.value++;
+      await tester.pumpAndSettle();
+      expect(harness.db.reads, greaterThan(reads));
+      expect(harness.db.writes, 0);
+      await tester.pumpWidget(const SizedBox());
+      documentRootRevision.value++;
+      await tester.pump();
+      expect(tester.takeException(), isNull);
+    },
+  );
+
   testWidgets('missing practitioner is explained before any PIN dialog', (
     tester,
   ) async {

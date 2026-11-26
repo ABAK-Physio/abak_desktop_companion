@@ -3529,11 +3529,21 @@ final class AbakDirectoryAccessBridge {
           }
         }
 
+      case "userDocumentsPath":
+        result(try UserDocumentsDirectory.resolve().path)
+
       case "chooseDirectory":
         let readOnly = args["readOnly"] as? Bool ?? false
         let expectedPath = args["expectedPath"] as? String
+        let createDocumentsChild = args["createDocumentsChild"] as? Bool ?? false
+        if createDocumentsChild {
+          let documents = try UserDocumentsDirectory.resolve()
+          guard !readOnly, expectedPath == documents.path else {
+            throw NSError(domain: "AbakDirectoryAccess", code: 2)
+          }
+        }
         if let expectedPath {
-          guard readOnly, expectedPath.hasPrefix("/"),
+          guard expectedPath.hasPrefix("/"),
                 expectedPath != "/",
                 URL(fileURLWithPath: expectedPath).standardizedFileURL.path == expectedPath else {
             throw NSError(domain: "AbakDirectoryAccess", code: 2,
@@ -3548,14 +3558,19 @@ final class AbakDirectoryAccessBridge {
         panel.treatsFilePackagesAsDirectories = readOnly
         panel.title = args["title"] as? String ?? "Choisir un dossier"
         panel.prompt = readOnly ? "Autoriser la lecture" : "Autoriser ce dossier"
-        if readOnly, let initialPath = args["initialPath"] as? String,
+        if let initialPath = args["initialPath"] as? String,
            initialPath.hasPrefix("/") {
-          panel.directoryURL = URL(fileURLWithPath: initialPath).deletingLastPathComponent()
+          let initialURL = URL(fileURLWithPath: initialPath)
+          panel.directoryURL = readOnly ? initialURL.deletingLastPathComponent() : initialURL
         }
         if let expectedPath {
           panel.directoryURL = URL(fileURLWithPath: expectedPath).deletingLastPathComponent()
-          panel.message = "Sélectionnez ce dossier pour autoriser sa lecture : \(expectedPath)"
+          panel.message = readOnly
+            ? "Sélectionnez ce dossier pour autoriser sa lecture : \(expectedPath)"
+            : expectedPath
         }
+        if let prompt = args["prompt"] as? String { panel.prompt = prompt }
+        if let message = args["message"] as? String { panel.message = message }
         guard panel.runModal() == .OK, let url = panel.url else {
           result(nil)
           return
@@ -3563,6 +3578,23 @@ final class AbakDirectoryAccessBridge {
         if let expectedPath, url.standardizedFileURL.path != expectedPath {
           throw NSError(domain: "AbakDirectoryAccess", code: 3,
                         userInfo: [NSLocalizedDescriptionKey: "Sélectionnez exactement le dossier indiqué, ou corrigez le chemin dans le formulaire."])
+        }
+        if createDocumentsChild {
+          let scoped = url.startAccessingSecurityScopedResource()
+          defer { if scoped { url.stopAccessingSecurityScopedResource() } }
+          let child = url.appendingPathComponent("ABAK_DOCUMENTS", isDirectory: true)
+          var isDirectory: ObjCBool = false
+          if FileManager.default.fileExists(atPath: child.path, isDirectory: &isDirectory) {
+            guard isDirectory.boolValue else {
+              throw NSError(domain: "AbakDirectoryAccess", code: 2)
+            }
+          } else {
+            try FileManager.default.createDirectory(at: child, withIntermediateDirectories: false)
+          }
+          let bookmark = try child.bookmarkData(options: [.withSecurityScope],
+                                               includingResourceValuesForKeys: nil, relativeTo: nil)
+          result(try activate(bookmark))
+          return
         }
         let bookmark = try url.bookmarkData(
             options: readOnly ? [.withSecurityScope, .securityScopeAllowOnlyReadAccess] : [.withSecurityScope],

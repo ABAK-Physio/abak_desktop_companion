@@ -1094,5 +1094,140 @@
   "episodeAttachments_episodeUnavailable": "The care episode is unavailable or has changed.",
   "episodeAttachments_invalidAttachment": "This attachment does not match the patient folder.",
   "home_backup_cleanup_warning": "Backup cleanup is incomplete or unavailable. Check the backups and access to their folder before restarting Companion.",
-  "application_quit_backup_busy": "A backup or restore is in progress. Wait for it to finish before quitting."
+  "application_quit_backup_busy": "A backup or restore is in progress. Wait for it to finish before quitting.",
+  "documentsSetup_title": "Document folder setup",
+  "documentsSetup_message": "ABAK Companion uses a folder to store assessments, reports and other patient documents.",
+  "documentsSetup_recommended": "Recommended location:",
+  "documentsSetup_laterInfo": "You can change this location later in Companion settings.",
+  "documentsSetup_use": "Use this folder",
+  "documentsSetup_choose": "Choose another folder",
+  "documentsSetup_later": "Set up later",
+  "documentsSetup_error": "This folder could not be prepared or saved. Check its availability and access permissions, then try again or choose another folder.",
+  "documentsSetup_authorize": "Authorize this folder",
+  "documentsSetup_macosAuthorization": "Select your Documents folder to authorize the creation and use of the ABAK_DOCUMENTS subfolder.",
+  "migration_move": "Move documents",
+  "migration_open": "Open folder",
+  "migration_configure": "Set up folder",
+  "migration_folder": "Documents folder",
+  "migration_unconfigured": "No folder configured",
+  "migration_title": "Change document location",
+  "migration_cleaning": "Deleting old files",
+  "migration_moved": "Your documents have been moved to the new location. Their integrity was verified and the transferred original files were deleted.",
+  "migration_cleanupWarning": "Migration succeeded and the new location is active. Some old files were retained because safe deletion could not be confirmed. Companion will no longer update them.",
+  "migration_intro": "Your documents will be transferred to the new location and their integrity verified. After a successful migration, the transferred original files will be deleted. Close documents open in Word and do not disconnect drives during the operation.",
+  "migration_cancel": "Cancel",
+  "migration_continue": "Continue",
+  "migration_choose": "Choose new location",
+  "migration_confirm": "Confirm migration",
+  "migration_close": "Close",
+  "migration_retry": "Retry",
+  "migration_authorize": "Reauthorize the exact folder",
+  "migration_exactRoot": "Select the existing folder. To change its location, use Move documents in settings.",
+  "migration_dmpTitle": "Changing storage and DMP",
+  "migration_review": "Review migration",
+  "migration_roots": "Current folder: {oldRoot}\nNew folder: {newRoot}",
+  "@migration_roots": {
+    "placeholders": {
+      "oldRoot": {},
+      "newRoot": {}
+    }
+  },
+  "migration_counts": "Patient folders: {patients}\nTotal files: {files}\nSize: {size}",
+  "@migration_counts": {
+    "placeholders": {
+      "patients": {},
+      "files": {},
+      "size": {}
+    }
+  },
+  "migration_impact": "Affected documents: {documents}\nMedical approvals to be invalidated: {approvals}\nTechnical control runs to be invalidated: {controls}",
+  "@migration_impact": {
+    "placeholders": {
+      "documents": {},
+      "approvals": {},
+      "controls": {}
+    }
+  },
+  "migration_accepted": "Documents with an accepted DV1 deposit: {count}. No automatic resend.",
+  "@migration_accepted": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "migration_historical": "DMP preparations or evidence exist, even if DMP is disabled. The safeguards still apply.",
+  "migration_consent": "I agree to repeat the indicated medical approvals and technical checks before any authorized transmission.",
+  "migration_spaceConsent": "Available space could not be checked. I wish to continue; insufficient space will stop the copy.",
+  "migration_changed": "The situation has changed. Review this updated summary and confirm again.",
+  "migration_preflight": "Preliminary checks",
+  "migration_copy": "Copying documents",
+  "migration_verifying": "Verifying integrity",
+  "migration_activating": "Activating new location",
+  "migration_counter": "Entries copied: {done} / {total}",
+  "@migration_counter": {
+    "placeholders": {
+      "done": {},
+      "total": {}
+    }
+  },
+  "migration_success": "Migration complete. The new location is active.",
+  "migration_error": "Migration cannot continue. No source files have been deleted.",
+  "migration_access": "The folder is unavailable. Reconnect the device and check access permissions. On macOS, reauthorize the exact folder if needed.",
+  "migration_blockedDmp": "DMP evidence, transmissions or retries require review before migration. Finish ongoing operations. Confirmation cannot override this block.",
+  "migration_blockedStorage": "Check that the destination is empty, separate from the source and has enough space. Unresolved historical folders or references can also block migration.",
+  "migration_busy": "A document operation is running. Wait for it to finish, then retry.",
+  "migration_recovery": "Check an interrupted migration",
+  "migration_beforeCommit": "Migration was not committed. The old folder remains active. Partial copies are retained.",
+  "migration_afterCommit": "The new location has been activated. Companion will check safety conditions before resuming the authorised deletion of transferred original files. If in doubt, files will be retained.",
+  "migration_corrupt": "Recovery information is inconsistent or unreadable. No folder will be changed automatically. Keep the files and consult technical details.",
+  "migration_recoverAction": "Verify and recover",
+  "migration_abandon": "Abandon this uncommitted migration",
+  "migration_technical": "Technical details",
+  "migration_quit": "Quit Companion",
+  "migration_foreign": "Entries outside patient folders kept at the source: {count}.",
+  "@migration_foreign": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "migration_renew": "Before any new authorized transmission, repeat the indicated approvals and checks. Previous evidence is retained.",
+  "migration_dmpMessage": "Moving your documents may require new medical approval and technical checks for some documents prepared for DMP.\n\nWe recommend completing ongoing transmissions before changing the storage folder.\n\nDocuments already sent to DMP and their transmission evidence will be preserved.\n\nCompanion will assess the consequences before offering migration.",
+  "migration_recovered": "Verification complete. The confirmed folder below remains active. Old files and partial copies have been retained.",
+  "migration_preparing": "{count} affected document(s) in preparation. Check their preparation after moving.",
+  "@migration_preparing": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "migration_authorizationMissing": "The macOS authorization for this folder is missing or expired. Authorize exactly the folder shown.",
+  "migration_cancelled": "Operation cancelled before activating the new location. The old folder remains active. If partial copies exist, abandon the migration to finish recovery; these copies will be retained.",
+  "migration_historicalRoots": "Empty historical roots retained in associations: {count}.",
+  "@migration_historicalRoots": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "migration_remaining": "Affected documents with an untransmitted version: {count}. This is not a retransmission list.",
+  "@migration_remaining": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "migration_impactCompleted": "Affected documents: {documents}\nInvalidated medical approvals: {approvals}\nInvalidated technical control runs: {controls}",
+  "@migration_impactCompleted": {
+    "placeholders": {
+      "documents": {},
+      "approvals": {},
+      "controls": {}
+    }
+  },
+  "migration_blockedTransmission": "A DMP transmission is active or its outcome is uncertain. Finish it or establish its outcome before moving documents. Confirmation cannot override this block.",
+  "migration_blockedEvidence": "Preservation or accessibility of historical DMP evidence cannot be guaranteed. Keep the files and have the technical information reviewed. Migration remains blocked.",
+  "migration_blockedRetry": "Moving would compromise the continuity of a DV1 retry. Resolve that retry before moving documents. Confirmation cannot override this block.",
+  "migration_fileCountExplanation": "This total includes all files in patient folders, including hidden and technical files. It may differ from the number of visible documents. Items outside patient folders remain at the source and are excluded from this total and size.",
+  "migration_fileDetails": "Transfer file details",
+  "migration_unit_bytes": "bytes",
+  "migration_unit_kib": "KiB",
+  "migration_unit_mib": "MiB",
+  "migration_unit_gib": "GiB",
+  "migration_unit_tib": "TiB"
 }

@@ -1,3 +1,4 @@
+import '../../../core/documents/document_migration_gateway.dart';
 import '../services/dmp_chain/native/dv1_replacement.dart';
 
 import 'dart:convert';
@@ -61,12 +62,14 @@ class _DocumentDv1PanelState extends State<DocumentDv1Panel> {
   @override
   void initState() {
     super.initState();
+    documentRootRevision.addListener(_workContextChanged);
     workContext.changes.addListener(_workContextChanged);
     refresh();
   }
 
   @override
   void dispose() {
+    documentRootRevision.removeListener(_workContextChanged);
     workContext.changes.removeListener(_workContextChanged);
     super.dispose();
   }

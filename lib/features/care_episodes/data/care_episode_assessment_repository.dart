@@ -1,3 +1,4 @@
+import '../../../core/documents/document_activity_coordinator.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import '../../../core/database/database_service.dart';
@@ -69,7 +70,7 @@ class CareEpisodeAssessmentRepository {
 
   Future<void> insertAssessment(
       CareEpisodeAssessment assessment,
-      ) async {
+      ) => DocumentActivityCoordinator.shared.activity(() async {
     final db = await DatabaseService.database;
 
     await db.insert(
@@ -77,11 +78,11 @@ class CareEpisodeAssessmentRepository {
       assessment.toMap(),
       conflictAlgorithm: ConflictAlgorithm.abort,
     );
-  }
+  });
 
   Future<void> updateAssessment(
       CareEpisodeAssessment assessment,
-      ) async {
+      ) => DocumentActivityCoordinator.shared.activity(() async {
     final db = await DatabaseService.database;
 
     await db.update(
@@ -90,7 +91,7 @@ class CareEpisodeAssessmentRepository {
       where: 'assessment_id = ?',
       whereArgs: [assessment.assessmentId],
     );
-  }
+  });
 
   Future<Set<String>> getSelectedTestExoIds(
       String assessmentId,
@@ -114,7 +115,7 @@ class CareEpisodeAssessmentRepository {
     required String assessmentId,
     required String exoId,
     required bool included,
-  }) async {
+  }) => DocumentActivityCoordinator.shared.activity(() async {
     final db = await DatabaseService.database;
 
     if (included) {
@@ -134,12 +135,12 @@ class CareEpisodeAssessmentRepository {
       where: 'assessment_id = ? AND exo_id = ?',
       whereArgs: [assessmentId, exoId],
     );
-  }
+  });
 
   Future<void> replaceSelectedTests({
     required String assessmentId,
     required Set<String> exoIds,
-  }) async {
+  }) => DocumentActivityCoordinator.shared.activity(() async {
     final db = await DatabaseService.database;
 
     await db.transaction((transaction) async {
@@ -160,7 +161,7 @@ class CareEpisodeAssessmentRepository {
         );
       }
     });
-  }
+  });
 
 
   Future<Set<String>> getSelectedNoteIds(
@@ -185,7 +186,7 @@ class CareEpisodeAssessmentRepository {
     required String assessmentId,
     required String noteId,
     required bool included,
-  }) async {
+  }) => DocumentActivityCoordinator.shared.activity(() async {
     final db = await DatabaseService.database;
 
     if (included) {
@@ -205,12 +206,12 @@ class CareEpisodeAssessmentRepository {
       where: 'assessment_id = ? AND note_id = ?',
       whereArgs: [assessmentId, noteId],
     );
-  }
+  });
 
   Future<void> replaceSelectedNotes({
     required String assessmentId,
     required Set<String> noteIds,
-  }) async {
+  }) => DocumentActivityCoordinator.shared.activity(() async {
     final db = await DatabaseService.database;
 
     await db.transaction((transaction) async {
@@ -231,7 +232,7 @@ class CareEpisodeAssessmentRepository {
         );
       }
     });
-  }
+  });
 
 
   Future<List<CareEpisodeAssessment>> getArchivedForEpisode(
@@ -252,7 +253,7 @@ class CareEpisodeAssessmentRepository {
     return rows.map(CareEpisodeAssessment.fromMap).toList();
   }
 
-  Future<void> restoreAssessment(String assessmentId) async {
+  Future<void> restoreAssessment(String assessmentId) => DocumentActivityCoordinator.shared.activity(() async {
     final db = await DatabaseService.database;
     final now = DateTime.now().millisecondsSinceEpoch;
 
@@ -265,9 +266,9 @@ class CareEpisodeAssessmentRepository {
       where: 'assessment_id = ?',
       whereArgs: [assessmentId],
     );
-  }
+  });
 
-  Future<void> deleteAssessment(String assessmentId) async {
+  Future<void> deleteAssessment(String assessmentId) => DocumentActivityCoordinator.shared.activity(() async {
     final db = await DatabaseService.database;
 
     await db.transaction((transaction) async {
@@ -289,9 +290,9 @@ class CareEpisodeAssessmentRepository {
         whereArgs: [assessmentId],
       );
     });
-  }
+  });
 
-  Future<void> archiveAssessment(String assessmentId) async {
+  Future<void> archiveAssessment(String assessmentId) => DocumentActivityCoordinator.shared.activity(() async {
     final db = await DatabaseService.database;
 
     await db.update(
@@ -303,7 +304,7 @@ class CareEpisodeAssessmentRepository {
       where: 'assessment_id = ?',
       whereArgs: [assessmentId],
     );
-  }
+  });
 
   Future<int> getSavedCountForEpisode(String careEpisodeId) async {
     final db = await DatabaseService.database;

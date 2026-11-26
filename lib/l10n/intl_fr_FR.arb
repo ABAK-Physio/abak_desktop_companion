@@ -1094,5 +1094,140 @@
   "episodeAttachments_episodeUnavailable": "La prise en charge est indisponible ou a changé.",
   "episodeAttachments_invalidAttachment": "Cette pièce jointe ne correspond pas au dossier du patient.",
   "home_backup_cleanup_warning": "Nettoyage des sauvegardes incomplet ou indisponible. Vérifiez les sauvegardes et l’accès à leur dossier avant de relancer Companion.",
-  "application_quit_backup_busy": "Une sauvegarde ou restauration est en cours. Attendez sa fin avant de quitter."
+  "application_quit_backup_busy": "Une sauvegarde ou restauration est en cours. Attendez sa fin avant de quitter.",
+  "documentsSetup_title": "Configuration du dossier des documents",
+  "documentsSetup_message": "ABAK Companion utilise un dossier pour conserver les bilans, rapports et autres documents de vos patients.",
+  "documentsSetup_recommended": "Emplacement recommandé :",
+  "documentsSetup_laterInfo": "Vous pourrez modifier ultérieurement cet emplacement dans les paramètres de Companion.",
+  "documentsSetup_use": "Utiliser ce dossier",
+  "documentsSetup_choose": "Choisir un autre dossier",
+  "documentsSetup_later": "Configurer plus tard",
+  "documentsSetup_error": "Impossible de préparer ou de mémoriser ce dossier. Vérifiez sa disponibilité et ses droits d’accès, puis réessayez ou choisissez un autre dossier.",
+  "documentsSetup_authorize": "Autoriser ce dossier",
+  "documentsSetup_macosAuthorization": "Sélectionnez votre dossier Documents pour autoriser la création et l’utilisation du sous-dossier ABAK_DOCUMENTS.",
+  "migration_move": "Déplacer les documents",
+  "migration_open": "Ouvrir le dossier",
+  "migration_configure": "Configurer le dossier",
+  "migration_folder": "Dossier des documents",
+  "migration_unconfigured": "Aucun dossier configuré",
+  "migration_title": "Modifier l’emplacement des documents",
+  "migration_cleaning": "Suppression des anciens fichiers",
+  "migration_moved": "Vos documents ont été déplacés vers le nouvel emplacement. Leur intégrité a été vérifiée et les anciens fichiers transférés ont été supprimés.",
+  "migration_cleanupWarning": "La migration a réussi et le nouvel emplacement est actif. Certains anciens fichiers ont été conservés car leur suppression sûre n’a pas pu être confirmée. Ils ne seront plus actualisés par Companion.",
+  "migration_intro": "Vos documents seront transférés vers le nouvel emplacement et leur intégrité sera vérifiée. Une fois la migration réussie, les anciens fichiers transférés seront supprimés. Fermez les documents ouverts dans Word et ne déconnectez pas les supports pendant l’opération.",
+  "migration_cancel": "Annuler",
+  "migration_continue": "Poursuivre",
+  "migration_choose": "Choisir le nouvel emplacement",
+  "migration_confirm": "Confirmer la migration",
+  "migration_close": "Fermer",
+  "migration_retry": "Réessayer",
+  "migration_authorize": "Réautoriser le dossier exact",
+  "migration_exactRoot": "Sélectionnez le dossier existant. Pour changer d’emplacement, utilisez « Déplacer les documents » dans les paramètres.",
+  "migration_dmpTitle": "Modification du dossier de stockage et DMP",
+  "migration_review": "Vérifier la migration",
+  "migration_roots": "Dossier actuel : {oldRoot}\nNouveau dossier : {newRoot}",
+  "@migration_roots": {
+    "placeholders": {
+      "oldRoot": {},
+      "newRoot": {}
+    }
+  },
+  "migration_counts": "Dossiers patients : {patients}\nTotal des fichiers : {files}\nVolume : {size}",
+  "@migration_counts": {
+    "placeholders": {
+      "patients": {},
+      "files": {},
+      "size": {}
+    }
+  },
+  "migration_impact": "Documents concernés : {documents}\nValidations médicales qui seront invalidées : {approvals}\nExécutions de contrôles techniques qui seront invalidées : {controls}",
+  "@migration_impact": {
+    "placeholders": {
+      "documents": {},
+      "approvals": {},
+      "controls": {}
+    }
+  },
+  "migration_accepted": "Documents avec dépôt DV1 accepté : {count}. Aucun renvoi automatique.",
+  "@migration_accepted": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "migration_historical": "Des préparations ou preuves DMP existent, même si le DMP est désactivé. Les protections restent applicables.",
+  "migration_consent": "J’accepte de refaire les validations médicales et les contrôles techniques indiqués avant toute transmission autorisée.",
+  "migration_spaceConsent": "L’espace disponible n’a pas pu être vérifié. Je souhaite poursuivre ; un manque d’espace interrompra la copie.",
+  "migration_changed": "La situation a changé. Vérifiez ce nouveau récapitulatif et confirmez à nouveau.",
+  "migration_preflight": "Vérifications préalables",
+  "migration_copy": "Copie des documents",
+  "migration_verifying": "Vérification de leur intégrité",
+  "migration_activating": "Activation du nouvel emplacement",
+  "migration_counter": "Éléments copiés : {done} / {total}",
+  "@migration_counter": {
+    "placeholders": {
+      "done": {},
+      "total": {}
+    }
+  },
+  "migration_success": "Migration terminée. Le nouvel emplacement est actif.",
+  "migration_error": "La migration ne peut pas continuer. Aucun fichier source n’a été supprimé.",
+  "migration_access": "Le dossier est indisponible. Reconnectez le support et vérifiez ses droits d’accès. Sous macOS, réautorisez le dossier exact si nécessaire.",
+  "migration_blockedDmp": "Des preuves, transmissions ou reprises DMP nécessitent un examen avant la migration. Terminez les opérations en cours. Une confirmation ne peut pas lever ce blocage.",
+  "migration_blockedStorage": "Vérifiez que la destination est vide, distincte de la source et dispose de suffisamment d’espace. Des dossiers historiques ou références non résolus peuvent aussi empêcher la migration.",
+  "migration_busy": "Une opération documentaire est en cours. Attendez sa fin puis réessayez.",
+  "migration_recovery": "Vérifier une migration interrompue",
+  "migration_beforeCommit": "La migration n’a pas été validée. L’ancien dossier reste actif. Les copies partielles sont conservées.",
+  "migration_afterCommit": "Le nouvel emplacement a été activé. Companion vérifiera les conditions de sécurité avant de reprendre la suppression autorisée des anciens fichiers transférés. En cas de doute, les fichiers seront conservés.",
+  "migration_corrupt": "Les informations de récupération sont incohérentes ou illisibles. Aucun dossier ne sera changé automatiquement. Conservez les fichiers et consultez les informations techniques.",
+  "migration_recoverAction": "Vérifier et reprendre",
+  "migration_abandon": "Abandonner cette migration non validée",
+  "migration_technical": "Informations techniques",
+  "migration_quit": "Quitter Companion",
+  "migration_foreign": "Éléments hors des dossiers patients conservés à la source : {count}.",
+  "@migration_foreign": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "migration_renew": "Avant une nouvelle transmission autorisée, refaites les validations et contrôles indiqués. Les preuves antérieures restent conservées.",
+  "migration_dmpMessage": "Le déplacement de vos documents peut nécessiter une nouvelle validation médicale et de nouveaux contrôles techniques de certains documents préparés pour le DMP.\n\nIl est recommandé de terminer vos transmissions en cours avant de modifier le dossier de stockage.\n\nLes documents déjà transmis au DMP et leurs preuves de transmission seront conservés.\n\nCompanion va analyser les conséquences de cette opération avant de vous proposer la migration.",
+  "migration_recovered": "Vérification terminée. Le dossier confirmé ci-dessous reste actif. Les anciens fichiers et les copies partielles ont été conservés.",
+  "migration_preparing": "{count} document(s) en préparation concernés. Vérifiez leur préparation après le déplacement.",
+  "@migration_preparing": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "migration_authorizationMissing": "L’autorisation macOS de ce dossier est manquante ou expirée. Réautorisez exactement le dossier indiqué.",
+  "migration_cancelled": "Opération annulée avant l’activation du nouvel emplacement. L’ancien dossier reste actif. Si des copies partielles existent, abandonnez la migration pour terminer la récupération ; ces copies seront conservées.",
+  "migration_historicalRoots": "Anciennes racines vides conservées dans les associations : {count}.",
+  "@migration_historicalRoots": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "migration_remaining": "Documents concernés comportant une version non transmise : {count}. Ce nombre ne constitue pas une liste de retransmission.",
+  "@migration_remaining": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "migration_impactCompleted": "Documents concernés : {documents}\nValidations médicales invalidées : {approvals}\nExécutions de contrôles techniques invalidées : {controls}",
+  "@migration_impactCompleted": {
+    "placeholders": {
+      "documents": {},
+      "approvals": {},
+      "controls": {}
+    }
+  },
+  "migration_blockedTransmission": "Une transmission DMP est en cours ou son résultat reste incertain. Terminez-la ou établissez son résultat avant de déplacer les documents. Ce blocage ne peut pas être levé par une confirmation.",
+  "migration_blockedEvidence": "La conservation ou l’accessibilité d’une preuve historique DMP ne peut pas être garantie. Conservez les fichiers et faites examiner les informations techniques. La migration reste interdite.",
+  "migration_blockedRetry": "Le déplacement compromettrait la continuité d’une reprise DV1. Résolvez cette reprise avant de déplacer les documents. Une confirmation ne peut pas lever ce blocage.",
+  "migration_fileCountExplanation": "Ce total comprend tous les fichiers des dossiers patients, y compris les fichiers cachés et techniques. Il peut différer du nombre de documents visibles dans le Finder. Les éléments hors dossiers patients restent à la source et ne sont pas inclus dans ce total ni dans le volume.",
+  "migration_fileDetails": "Détail des fichiers du transfert",
+  "migration_unit_bytes": "octets",
+  "migration_unit_kib": "Kio",
+  "migration_unit_mib": "Mio",
+  "migration_unit_gib": "Gio",
+  "migration_unit_tib": "Tio"
 }

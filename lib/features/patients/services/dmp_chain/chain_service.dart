@@ -1,3 +1,4 @@
+import '../../../../core/documents/document_activity_coordinator.dart';
 import '../../../../core/database/document_dv1_schema.dart';
 import 'native/td02.dart';
 import 'native/dv1_replacement.dart';
@@ -114,12 +115,12 @@ class DocumentDmpChain {
     EpisodeDocumentVersion v, {
     required Directory directory,
     required DocumentDmpPorts ports,
-  }) async {
+  }) => DocumentActivityCoordinator.shared.activity(() async {
     final db = await journal.database;
     await DocumentLocalSimulation(directory: directory)
         .checkScope(db, await journal.medical.pdf.root());
     return _execute(v, ports: ports);
-  }
+  });
 
   static bool _dv1Busy = false;
 
@@ -132,7 +133,7 @@ class DocumentDmpChain {
     required bool accessOnly,
     required Future<String?> Function() requestPin,
     Dv1RetryReview? retry,
-  }) async {
+  }) => DocumentActivityCoordinator.shared.activity(() async {
     await DmpSetupService.requireEnabled(await journal.database);
     if (_dv1Busy) {
       throw const DmpChainBlock('Une opération DV1 est déjà en cours.');
@@ -194,7 +195,7 @@ class DocumentDmpChain {
     } finally {
       _dv1Busy = false;
     }
-  }
+  });
 
   Future<DocumentJournalStatus> _execute(
     EpisodeDocumentVersion v, {

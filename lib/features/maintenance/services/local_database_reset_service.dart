@@ -1,3 +1,4 @@
+import '../../../core/documents/document_activity_coordinator.dart';
 import 'dart:io';
 
 import 'package:path/path.dart';
@@ -38,7 +39,7 @@ class LocalDatabaseResetService {
     required String chooseBackupFolderTitle,
     required String backupCancelledMessage,
     required String Function(String error) backupFailedMessage,
-  }) async {
+  }) => DocumentActivityCoordinator.shared.activity(() async {
     try {
       final backupResult = await LocalDatabaseBackupService().createBackup(
         databaseNotFoundMessage: databaseNotFoundMessage,
@@ -77,5 +78,5 @@ class LocalDatabaseResetService {
         e.toString(),
       );
     }
-  }
+  });
 }

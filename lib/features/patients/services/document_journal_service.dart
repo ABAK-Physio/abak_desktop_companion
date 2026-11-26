@@ -1,3 +1,4 @@
+import '../../../core/documents/document_activity_coordinator.dart';
 import 'dmp_chain/native/dv1_replacement.dart';
 import '../../dmp_setup/dmp_setup_service.dart';
 import 'dart:convert';
@@ -324,7 +325,7 @@ class DocumentJournalService {
     EpisodeDocumentVersion v,
     bool held, {
     required int expectedRevision,
-  }) async {
+  }) => DocumentActivityCoordinator.shared.activity(() async {
     final db = await database;
     // A retained historical version cannot be released through a stale screen.
     await medical.pdf.verifiedFile(v);
@@ -352,13 +353,13 @@ class DocumentJournalService {
         );
       }
     });
-  }
+  });
 
   /// Captures current medical and technical receipts without reserving a send.
   Future<DocumentAttemptPreparation> prepare(
     EpisodeDocumentVersion v, {
     Dv1RetryReview? retry,
-  }) async {
+  }) => DocumentActivityCoordinator.shared.activity(() async {
     final db = await database;
     await DmpSetupService.requireNotDisabled(db);
     await Dv1Replacement.check(db, v);
@@ -396,7 +397,7 @@ class DocumentJournalService {
       await payload.readAsBytes(),
       payloadHash,
     );
-  }
+  });
 
   Future<String> reserve(
     EpisodeDocumentVersion v,
@@ -419,7 +420,7 @@ class DocumentJournalService {
     Future<void> Function(DatabaseExecutor, String)? record,
     String? dv1ChainId,
     Dv1RetryReview? retry,
-  }) async {
+  }) => DocumentActivityCoordinator.shared.activity(() async {
     final db = await database;
     final run = prepared.run;
     final payloadHash = prepared.payloadHash;
@@ -516,9 +517,9 @@ class DocumentJournalService {
       }
     });
     return id;
-  }
+  });
 
-  Future<void> complete(String id, Map<String, Object?> evidence) async {
+  Future<void> complete(String id, Map<String, Object?> evidence) => DocumentActivityCoordinator.shared.activity(() async {
     final db = await database;
     await db.insert('document_attempt_results', {
       'attempt_id': id,
@@ -528,14 +529,14 @@ class DocumentJournalService {
       'evidence_hash': medicalHash(evidence),
       'completed_at': medical.now().millisecondsSinceEpoch,
     });
-  }
+  });
 
   /// Used only by an explicitly isolated harness. Product UI never calls it.
   /// Reservation precedes the call; any interruption leaves an irreversible guard.
   Future<DocumentJournalStatus> simulate(
     EpisodeDocumentVersion v,
     DocumentLocalSimulation simulation,
-  ) async {
+  ) => DocumentActivityCoordinator.shared.activity(() async {
     final db = await database;
     await simulation.checkScope(db, await medical.pdf.root());
     var initial = await _state(db, v);
@@ -560,5 +561,5 @@ class DocumentJournalService {
     await checkpoint?.call('after_response');
     await complete(id, evidence);
     return status(v);
-  }
+  });
 }

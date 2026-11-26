@@ -1,3 +1,4 @@
+import '../../core/documents/document_activity_coordinator.dart';
 /// One owner of the card, including an idle authenticated native worker.
 /// An idle owner must finish closing before another component can use the card.
 class CpsOperationLease {
@@ -8,6 +9,7 @@ class CpsOperationLease {
   static bool get inUse => _owner != null && _owner!._closeIdle == null;
   bool get active => identical(_owner, this);
   static CpsOperationLease acquire() {
+    DocumentActivityCoordinator.shared.checkAvailable();
     if (_owner != null) {
       throw StateError('Une opération CPS est déjà en cours.');
     }
@@ -40,6 +42,7 @@ class CpsOperationLease {
   }
 
   void resume() {
+    DocumentActivityCoordinator.shared.checkAvailable();
     if (!active || _closeIdle == null || _closing != null) {
       throw StateError('Session CPS non disponible.');
     }

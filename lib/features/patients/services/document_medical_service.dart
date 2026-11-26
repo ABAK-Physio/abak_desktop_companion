@@ -1,3 +1,4 @@
+import '../../../core/documents/document_activity_coordinator.dart';
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:printing/printing.dart';
@@ -766,7 +767,7 @@ class DocumentMedicalService {
     required String practitionerId,
     required Map<String, String> data,
     required int expectedRevision,
-  }) async {
+  }) => DocumentActivityCoordinator.shared.activity(() async {
     final normalized = normalize(data, contextFields);
     normalized['structureType'] = normalizeStructureType(
       normalized['structureType']!,
@@ -811,7 +812,7 @@ class DocumentMedicalService {
       }
       return row;
     });
-  }
+  });
 
   void checkPreparation(Map data) {
     requiredFields(data, preparationFields);
@@ -838,7 +839,7 @@ class DocumentMedicalService {
     EpisodeDocumentVersion version,
     Map<String, String> data, {
     required int expectedRevision,
-  }) async {
+  }) => DocumentActivityCoordinator.shared.activity(() async {
     final normalized = normalize(data, [
       ...preparationFields,
       'catalogIdentification',
@@ -913,7 +914,7 @@ class DocumentMedicalService {
       }
       return row;
     });
-  }
+  });
 
   Future<MedicalRow> _version(DatabaseExecutor db, String id) async {
     final version = await one(
@@ -1236,7 +1237,7 @@ class DocumentMedicalService {
     required bool clinicalContent,
     required bool correctPatient,
     required bool actingAsValidator,
-  }) async {
+  }) => DocumentActivityCoordinator.shared.activity(() async {
     if (!clinicalContent ||
         !correctPatient ||
         !actingAsValidator ||
@@ -1292,7 +1293,7 @@ class DocumentMedicalService {
       await txn.insert('document_medical_approvals', row);
       return row;
     });
-  }
+  });
 
   /// Must run in the caller's transaction; no cached approval can authorize controls.
   Future<MedicalRow> approvedCapture(
@@ -1408,7 +1409,7 @@ class DocumentMedicalService {
     }
   }
 
-  Future<MedicalStatus> status(EpisodeDocumentVersion version) async {
+  Future<MedicalStatus> status(EpisodeDocumentVersion version) => DocumentActivityCoordinator.shared.activity(() async {
     final db = await pdf.database();
     return db.transaction((txn) async {
       final receipts = await txn.rawQuery(
@@ -1463,7 +1464,7 @@ class DocumentMedicalService {
         );
       }
     });
-  }
+  });
 
   Future<void> _invalidate(
     DatabaseExecutor db,

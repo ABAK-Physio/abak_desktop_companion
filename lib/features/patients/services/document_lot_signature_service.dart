@@ -1,3 +1,4 @@
+import '../../../core/documents/document_activity_coordinator.dart';
 import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
@@ -308,7 +309,7 @@ class DocumentLotSignatureService {
     EpisodeDocumentVersion v,
     DocumentLotSignatureReview review,
     String pin,
-  ) async {
+  ) => DocumentActivityCoordinator.shared.activity(() async {
     if (!RegExp(r'^[0-9]{1,16}$').hasMatch(pin)) {
       throw const FormatException('PIN numérique requis.');
     }
@@ -516,5 +517,5 @@ class DocumentLotSignatureService {
       pin = '';
       lease.release();
     }
-  }
+  });
 }

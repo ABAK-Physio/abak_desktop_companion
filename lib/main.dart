@@ -1,3 +1,5 @@
+import 'core/documents/document_migration_startup.dart';
+import 'core/documents/document_activity_coordinator.dart';
 /*
  * ABAK Desktop Companion
  * Copyright (C) 2026 ABAK Metrics
@@ -51,7 +53,7 @@ Future<void> main(List<String> arguments) async {
   final startupComplete = Completer<void>();
   ApplicationShutdown(
     ready: startupComplete.future,
-    isBusy: () => BackupOperation.isActive,
+    isBusy: () => BackupOperation.isActive || DocumentActivityCoordinator.shared.active,
     onBusy: () => rootScaffoldMessengerKey.currentState?.showSnackBar(
       SnackBar(content: Text(S.current.application_quit_backup_busy)),
     ),
@@ -212,7 +214,11 @@ Future<void> _startApplication(StartupRequest request) async {
     });
     return;
   }
-  await DatabaseService.database;
+  if (!await recoverDocumentsBeforeStartup(windowOptions)) {
+    // Let main finish startup and release its shutdown barrier before closing.
+    unawaited(Future<void>.delayed(Duration.zero, windowManager.close));
+    return;
+  }
 
   SpeechToTextProviderRegistry.register(AbakWhisperSpeechProvider());
 

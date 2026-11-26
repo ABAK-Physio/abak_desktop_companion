@@ -1,3 +1,4 @@
+import '../../../../core/documents/document_activity_coordinator.dart';
 import 'dart:io';
 
 import 'package:path/path.dart' as p;
@@ -11,14 +12,14 @@ class EpisodeReportTextExportService {
     required EpisodeReportTextDocument document,
     required Directory directory,
     required String fileName,
-  }) async {
+  }) => DocumentActivityCoordinator.shared.activity(() async {
     final safeFileName = _sanitizeFileName(fileName);
     final path = p.join(directory.path, '$safeFileName.txt');
 
     final file = File(path);
 
     return file.writeAsString(document.toPlainText(), flush: true);
-  }
+  });
 
   String _sanitizeFileName(String value) {
     return value

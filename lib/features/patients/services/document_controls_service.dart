@@ -1,3 +1,4 @@
+import '../../../core/documents/document_activity_coordinator.dart';
 import 'dmp_chain/native/dv1_retry.dart';
 import 'dart:convert';
 import 'dart:io';
@@ -54,7 +55,7 @@ class DocumentControlsService {
   Future<void> configure(
     Map<String, String> paths, {
     required int expectedRevision,
-  }) async {
+  }) => DocumentActivityCoordinator.shared.activity(() async {
     final config = await runner.inspect(Map.unmodifiable(paths));
     final db = await medical.pdf.database();
     await db.transaction((tx) async {
@@ -74,7 +75,7 @@ class DocumentControlsService {
         await tx.update('document_control_config', row, where: 'id=1');
       }
     });
-  }
+  });
 
   Future<void> invalidate(
     DatabaseExecutor db,
@@ -120,7 +121,7 @@ class DocumentControlsService {
   Future<DocumentControlStatus> status(
     EpisodeDocumentVersion version, {
     Dv1RetryReview? retry,
-  }) async {
+  }) => DocumentActivityCoordinator.shared.activity(() async {
     final r = await last(version.id);
     if (r == null) {
       return const DocumentControlStatus(
@@ -245,9 +246,9 @@ class DocumentControlsService {
         run: r,
       );
     }
-  }
+  });
 
-  Future<DocumentControlStatus> run(EpisodeDocumentVersion version) async {
+  Future<DocumentControlStatus> run(EpisodeDocumentVersion version) => DocumentActivityCoordinator.shared.activity(() async {
     final db = await medical.pdf.database(),
         key = '${(await medical.pdf.database()).path}:${version.id}';
     if (!_active.add(key)) {
@@ -427,5 +428,5 @@ class DocumentControlsService {
     } finally {
       _active.remove(key);
     }
-  }
+  });
 }

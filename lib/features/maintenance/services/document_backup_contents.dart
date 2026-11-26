@@ -68,11 +68,13 @@ class DocumentBackupContents {
   static Future<void> validate(
     DatabaseExecutor db,
     Directory staging,
-    List<Map<String, dynamic>> roots,
-  ) async {
+    List<Map<String, dynamic>> roots, {
+    Directory? managedDirectory,
+  }) async {
     validateRoots(roots);
+    final managed = managedDirectory ?? Directory(p.join(staging.path, 'managed'));
     final versionsRoot = Directory(
-      p.join(staging.path, 'managed', 'episode_document_versions'),
+      p.join(managed.path, 'episode_document_versions'),
     );
     Future<File> file(String root, String relative) async {
       CompanionBackupArchive.validatePath(relative);
@@ -434,7 +436,7 @@ class DocumentBackupContents {
           final source = root['sourceRoot'] as String;
           if (p.isWithin(source, path)) {
             await file(
-              p.join(staging.path, 'managed', root['name']),
+              p.join(managed.path, root['name']),
               p.relative(path, from: source),
             );
           }

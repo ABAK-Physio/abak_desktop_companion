@@ -1,3 +1,4 @@
+import '../../../core/documents/document_migration_gateway.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -83,6 +84,7 @@ class _EpisodeDocumentsScreenState extends State<EpisodeDocumentsScreen>
   @override
   void initState() {
     super.initState();
+    documentRootRevision.addListener(_refresh);
     WidgetsBinding.instance.addObserver(this);
     _repository = widget.repository ?? EpisodeDocumentRepository();
     _pdf = widget.finalPdfService ?? FinalPdfDocumentService();
@@ -92,6 +94,7 @@ class _EpisodeDocumentsScreenState extends State<EpisodeDocumentsScreen>
 
   @override
   void dispose() {
+    documentRootRevision.removeListener(_refresh);
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }

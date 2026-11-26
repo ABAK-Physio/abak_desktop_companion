@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'core/settings/language_preference_service.dart';
+import 'core/settings/documents_setup_dialog.dart';
 import 'core/settings/macos_launch_history_service.dart';
 import 'core/ui/app_messenger.dart';
 import 'features/dashboard/home_dashboard_screen.dart';
@@ -25,6 +26,7 @@ class _AbakDesktopAppState extends State<AbakDesktopApp> {
       const LanguagePreferenceService();
 
   Locale? _locale;
+  bool _documentsSetupAttempted = false;
   GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
 
   void _resetPractitionerNavigation() {
@@ -47,6 +49,13 @@ class _AbakDesktopAppState extends State<AbakDesktopApp> {
     setState(() {
       _locale = Locale(languageCode);
     });
+    if (!_documentsSetupAttempted) {
+      _documentsSetupAttempted = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final context = _navigatorKey.currentState?.overlay?.context;
+        if (mounted && context != null) showInitialDocumentsSetup(context);
+      });
+    }
   }
 
   @override

@@ -1,3 +1,4 @@
+import '../../../core/documents/document_activity_coordinator.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -194,7 +195,13 @@ class LocalExchangeServer {
 
     final handler = Pipeline()
         .addMiddleware(logRequests())
-        .addHandler(router.call);
+        .addHandler((request) {
+          final coordinator = DocumentActivityCoordinator.shared;
+          if (coordinator.migrationPending) {
+            return Response(HttpStatus.serviceUnavailable);
+          }
+          return coordinator.activity(() => router.call(request));
+        });
 
     try {
       _server = await shelf_io.serve(

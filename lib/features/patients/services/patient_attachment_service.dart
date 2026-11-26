@@ -1,3 +1,4 @@
+import '../../../core/documents/document_activity_coordinator.dart';
 import 'dart:io';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
@@ -103,7 +104,7 @@ class PatientAttachmentService {
   Future<EpisodeDocument> add({
     required String caseId,
     required String sourcePath,
-  }) async {
+  }) => DocumentActivityCoordinator.shared.activity(() async {
     final patient = await _patient(caseId);
     final lease = await access.configured();
     if (lease == null) throw AttachmentDestinationRequired();
@@ -174,12 +175,12 @@ class PatientAttachmentService {
         await lease.release();
       }
     }
-  }
+  });
 
   Future<void> open(
     EpisodeDocument document, {
     Future<void> Function(String)? openFile,
-  }) async {
+  }) => DocumentActivityCoordinator.shared.activity(() async {
     if (document.source != 'local_copy') {
       throw StateError(S.current.episodeAttachments_invalidAttachment);
     }
@@ -251,5 +252,5 @@ class PatientAttachmentService {
     } finally {
       await lease?.release();
     }
-  }
+  });
 }

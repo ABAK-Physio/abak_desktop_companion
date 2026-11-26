@@ -1,3 +1,4 @@
+import '../../../core/documents/document_activity_coordinator.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import '../../../core/database/database_service.dart';
@@ -68,7 +69,7 @@ class CareEpisodeReportRepository {
 
   Future<void> insertReport(
       CareEpisodeReport report,
-      ) async {
+      ) => DocumentActivityCoordinator.shared.activity(() async {
     final db = await DatabaseService.database;
 
     await db.insert(
@@ -76,11 +77,11 @@ class CareEpisodeReportRepository {
       report.toMap(),
       conflictAlgorithm: ConflictAlgorithm.abort,
     );
-  }
+  });
 
   Future<void> updateReport(
       CareEpisodeReport report,
-      ) async {
+      ) => DocumentActivityCoordinator.shared.activity(() async {
     final db = await DatabaseService.database;
 
     await db.update(
@@ -89,7 +90,7 @@ class CareEpisodeReportRepository {
       where: 'report_id = ?',
       whereArgs: [report.reportId],
     );
-  }
+  });
 
 
   Future<List<CareEpisodeReport>> getArchivedForEpisode(
@@ -110,7 +111,7 @@ class CareEpisodeReportRepository {
     return rows.map(CareEpisodeReport.fromMap).toList();
   }
 
-  Future<void> restoreReport(String reportId) async {
+  Future<void> restoreReport(String reportId) => DocumentActivityCoordinator.shared.activity(() async {
     final db = await DatabaseService.database;
     final now = DateTime.now().millisecondsSinceEpoch;
 
@@ -123,9 +124,9 @@ class CareEpisodeReportRepository {
       where: 'report_id = ?',
       whereArgs: [reportId],
     );
-  }
+  });
 
-  Future<void> deleteReport(String reportId) async {
+  Future<void> deleteReport(String reportId) => DocumentActivityCoordinator.shared.activity(() async {
     final db = await DatabaseService.database;
 
     await db.delete(
@@ -133,9 +134,9 @@ class CareEpisodeReportRepository {
       where: 'report_id = ? AND archived_at IS NOT NULL',
       whereArgs: [reportId],
     );
-  }
+  });
 
-  Future<void> archiveReport(String reportId) async {
+  Future<void> archiveReport(String reportId) => DocumentActivityCoordinator.shared.activity(() async {
     final db = await DatabaseService.database;
     final now = DateTime.now().millisecondsSinceEpoch;
 
@@ -148,7 +149,7 @@ class CareEpisodeReportRepository {
       where: 'report_id = ?',
       whereArgs: [reportId],
     );
-  }
+  });
 
   Future<int> getSavedCountForEpisode(
       String careEpisodeId,

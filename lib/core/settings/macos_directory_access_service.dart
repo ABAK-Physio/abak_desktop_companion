@@ -46,6 +46,13 @@ class MacosDirectoryAccessService {
     }
   }
 
+  Future<String> userDocumentsPath() async {
+    _requireMacos();
+    final path = await _channel.invokeMethod<String>('userDocumentsPath');
+    if (path == null || path.isEmpty) throw StateError('Documents unavailable');
+    return path;
+  }
+
   /// Sélection explicite et stockage de l’autorisation.
   /// Une annulation ne modifie pas les préférences.
   Future<MacosDirectoryAccess?> chooseDirectory({
@@ -53,6 +60,9 @@ class MacosDirectoryAccessService {
     bool readOnly = false,
     String? expectedPath,
     String? initialPath,
+    bool createDocumentsChild = false,
+    String? prompt,
+    String? message,
   }) async {
     _requireMacos();
     final value = await _channel
@@ -61,6 +71,9 @@ class MacosDirectoryAccessService {
           'readOnly': readOnly,
           'expectedPath': ?expectedPath,
           'initialPath': ?initialPath,
+          if (createDocumentsChild) 'createDocumentsChild': true,
+          'prompt': ?prompt,
+          'message': ?message,
         });
     if (value == null) return null;
     return _saveAndCreateAccess(value, readOnly: readOnly);

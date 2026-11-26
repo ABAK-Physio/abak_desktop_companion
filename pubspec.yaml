@@ -45,6 +45,7 @@ dependencies:
 
   pdf: ^3.13.1
   printing: 5.15.1
+  ffi: ^2.2.0
   crypto: any
   pointycastle: ^4.0.0
   asn1lib: ^1.6.5

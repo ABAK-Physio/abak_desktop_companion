@@ -1094,5 +1094,140 @@
   "episodeAttachments_episodeUnavailable": "O episódio está indisponível ou foi alterado.",
   "episodeAttachments_invalidAttachment": "Este anexo não corresponde à pasta do paciente.",
   "home_backup_cleanup_warning": "A limpeza das cópias de segurança está incompleta ou indisponível. Verifique as cópias e o acesso à pasta antes de reiniciar o Companion.",
-  "application_quit_backup_busy": "Está em curso uma cópia de segurança ou um restauro. Aguarde a conclusão antes de sair."
+  "application_quit_backup_busy": "Está em curso uma cópia de segurança ou um restauro. Aguarde a conclusão antes de sair.",
+  "documentsSetup_title": "Configuração da pasta de documentos",
+  "documentsSetup_message": "O ABAK Companion utiliza uma pasta para guardar avaliações, relatórios e outros documentos dos seus pacientes.",
+  "documentsSetup_recommended": "Localização recomendada:",
+  "documentsSetup_laterInfo": "Poderá alterar esta localização mais tarde nas definições do Companion.",
+  "documentsSetup_use": "Utilizar esta pasta",
+  "documentsSetup_choose": "Escolher outra pasta",
+  "documentsSetup_later": "Configurar mais tarde",
+  "documentsSetup_error": "Não foi possível preparar ou guardar esta pasta. Verifique a disponibilidade e as permissões de acesso e tente novamente ou escolha outra pasta.",
+  "documentsSetup_authorize": "Autorizar esta pasta",
+  "documentsSetup_macosAuthorization": "Selecione a sua pasta Documentos para autorizar a criação e a utilização da subpasta ABAK_DOCUMENTS.",
+  "migration_move": "Mover documentos",
+  "migration_open": "Abrir pasta",
+  "migration_configure": "Configurar pasta",
+  "migration_folder": "Pasta dos documentos",
+  "migration_unconfigured": "Nenhuma pasta configurada",
+  "migration_title": "Alterar a localização dos documentos",
+  "migration_cleaning": "A eliminar os ficheiros antigos",
+  "migration_moved": "Os seus documentos foram movidos para a nova localização. A sua integridade foi verificada e os ficheiros originais transferidos foram eliminados.",
+  "migration_cleanupWarning": "A migração foi bem-sucedida e a nova localização está ativa. Alguns ficheiros antigos foram conservados porque não foi possível confirmar a sua eliminação segura. O Companion deixará de os atualizar.",
+  "migration_intro": "Os seus documentos serão transferidos para a nova localização e a sua integridade será verificada. Após uma migração bem-sucedida, os ficheiros originais transferidos serão eliminados. Feche os documentos abertos no Word e não desligue as unidades durante a operação.",
+  "migration_cancel": "Cancelar",
+  "migration_continue": "Continuar",
+  "migration_choose": "Escolher nova localização",
+  "migration_confirm": "Confirmar migração",
+  "migration_close": "Fechar",
+  "migration_retry": "Tentar novamente",
+  "migration_authorize": "Voltar a autorizar a pasta exata",
+  "migration_exactRoot": "Selecione a pasta existente. Para mudar de localização, utilize Mover documentos nas definições.",
+  "migration_dmpTitle": "Alteração do armazenamento e DMP",
+  "migration_review": "Rever migração",
+  "migration_roots": "Pasta atual: {oldRoot}\nNova pasta: {newRoot}",
+  "@migration_roots": {
+    "placeholders": {
+      "oldRoot": {},
+      "newRoot": {}
+    }
+  },
+  "migration_counts": "Pastas de pacientes: {patients}\nTotal de ficheiros: {files}\nTamanho: {size}",
+  "@migration_counts": {
+    "placeholders": {
+      "patients": {},
+      "files": {},
+      "size": {}
+    }
+  },
+  "migration_impact": "Documentos afetados: {documents}\nValidações médicas que serão invalidadas: {approvals}\nExecuções de controlos técnicos que serão invalidadas: {controls}",
+  "@migration_impact": {
+    "placeholders": {
+      "documents": {},
+      "approvals": {},
+      "controls": {}
+    }
+  },
+  "migration_accepted": "Documentos com depósito DV1 aceite: {count}. Sem reenvio automático.",
+  "@migration_accepted": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "migration_historical": "Existem preparações ou provas DMP mesmo quando desativado. As proteções continuam aplicáveis.",
+  "migration_consent": "Aceito repetir as validações médicas e os controlos técnicos indicados antes de qualquer transmissão autorizada.",
+  "migration_spaceConsent": "Não foi possível verificar o espaço disponível. Desejo continuar; a falta de espaço interromperá a cópia.",
+  "migration_changed": "A situação mudou. Reveja este novo resumo e confirme novamente.",
+  "migration_preflight": "Verificações prévias",
+  "migration_copy": "A copiar documentos",
+  "migration_verifying": "A verificar a integridade",
+  "migration_activating": "A ativar a nova localização",
+  "migration_counter": "Elementos copiados: {done} / {total}",
+  "@migration_counter": {
+    "placeholders": {
+      "done": {},
+      "total": {}
+    }
+  },
+  "migration_success": "Migração concluída. A nova localização está ativa.",
+  "migration_error": "A migração não pode continuar. Nenhum ficheiro de origem foi eliminado.",
+  "migration_access": "A pasta não está disponível. Volte a ligar o dispositivo e verifique as permissões. No macOS, volte a autorizar a pasta exata se necessário.",
+  "migration_blockedDmp": "As provas, transmissões ou retomas DMP exigem análise antes da migração. Termine as operações em curso. Uma confirmação não remove este bloqueio.",
+  "migration_blockedStorage": "Verifique se o destino está vazio, separado da origem e tem espaço suficiente. Pastas históricas ou referências por resolver também podem impedir a migração.",
+  "migration_busy": "Está em curso uma operação documental. Aguarde que termine e tente novamente.",
+  "migration_recovery": "Verificar uma migração interrompida",
+  "migration_beforeCommit": "A migração não foi confirmada. A pasta antiga permanece ativa. As cópias parciais são conservadas.",
+  "migration_afterCommit": "A nova localização foi ativada. O Companion verificará as condições de segurança antes de retomar a eliminação autorizada dos ficheiros originais transferidos. Em caso de dúvida, os ficheiros serão conservados.",
+  "migration_corrupt": "As informações de recuperação são incoerentes ou ilegíveis. Nenhuma pasta será alterada automaticamente. Conserve os ficheiros e consulte os detalhes técnicos.",
+  "migration_recoverAction": "Verificar e recuperar",
+  "migration_abandon": "Abandonar esta migração não confirmada",
+  "migration_technical": "Informações técnicas",
+  "migration_quit": "Sair do Companion",
+  "migration_foreign": "Elementos fora das pastas dos pacientes conservados na origem: {count}.",
+  "@migration_foreign": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "migration_renew": "Antes de uma nova transmissão autorizada, repita as validações e os controlos indicados. As provas anteriores são conservadas.",
+  "migration_dmpMessage": "A deslocação dos documentos pode exigir uma nova validação médica e novos controlos técnicos de alguns documentos preparados para o DMP.\n\nRecomenda-se concluir as transmissões em curso antes de alterar a pasta.\n\nOs documentos já transmitidos ao DMP e as provas de transmissão serão conservados.\n\nO Companion analisará as consequências antes de propor a migração.",
+  "migration_recovered": "Verificação concluída. A pasta confirmada abaixo permanece ativa. Os ficheiros antigos e as cópias parciais foram conservados.",
+  "migration_preparing": "{count} documento(s) em preparação afetados. Verifique a preparação após a deslocação.",
+  "@migration_preparing": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "migration_authorizationMissing": "A autorização macOS desta pasta está em falta ou expirou. Autorize exatamente a pasta indicada.",
+  "migration_cancelled": "Operação cancelada antes de ativar a nova localização. A pasta antiga permanece ativa. Se existirem cópias parciais, abandone a migração para concluir a recuperação; as cópias serão conservadas.",
+  "migration_historicalRoots": "Raízes históricas vazias conservadas nas associações: {count}.",
+  "@migration_historicalRoots": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "migration_remaining": "Documentos afetados com uma versão não transmitida: {count}. Não é uma lista de retransmissão.",
+  "@migration_remaining": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "migration_impactCompleted": "Documentos afetados: {documents}\nValidações médicas invalidadas: {approvals}\nExecuções de controlos técnicos invalidadas: {controls}",
+  "@migration_impactCompleted": {
+    "placeholders": {
+      "documents": {},
+      "approvals": {},
+      "controls": {}
+    }
+  },
+  "migration_blockedTransmission": "Uma transmissão DMP está ativa ou o resultado é incerto. Termine-a ou determine o resultado antes de deslocar os documentos. Uma confirmação não pode remover o bloqueio.",
+  "migration_blockedEvidence": "Não é possível garantir a conservação ou o acesso a uma prova histórica DMP. Conserve os ficheiros e solicite a análise das informações técnicas. A migração permanece bloqueada.",
+  "migration_blockedRetry": "A deslocação comprometeria a continuidade de uma nova tentativa DV1. Resolva-a antes de deslocar os documentos. Uma confirmação não pode remover o bloqueio.",
+  "migration_fileCountExplanation": "O total inclui todos os ficheiros nas pastas de pacientes, incluindo os ocultos e técnicos. Pode diferir do número de documentos visíveis. Os elementos fora destas pastas permanecem na origem e não entram no total nem no tamanho.",
+  "migration_fileDetails": "Detalhes dos ficheiros da transferência",
+  "migration_unit_bytes": "bytes",
+  "migration_unit_kib": "KiB",
+  "migration_unit_mib": "MiB",
+  "migration_unit_gib": "GiB",
+  "migration_unit_tib": "TiB"
 }

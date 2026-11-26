@@ -1,3 +1,4 @@
+import 'package:abak_desktop_companion/core/documents/document_migration_gateway.dart';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -134,6 +135,65 @@ class MissingDestinationService extends PatientAttachmentService {
 }
 
 void main() {
+  testWidgets(
+    'M2.3 migration notification refreshes attachments and final document lists',
+    (tester) async {
+      final repo = Repository();
+      await tester.pumpWidget(
+        app(
+          EpisodeAttachmentsScreen(
+            caseId: 'episode',
+            caseLabel: 'Case',
+            repository: repo,
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      repo.documents.add(
+        doc(
+          'Migrated attachment',
+          'local_copy',
+          path: '/synthetic/new/file.txt',
+        ),
+      );
+      expect(find.text('Migrated attachment'), findsNothing);
+      documentRootRevision.value++;
+      await tester.pumpAndSettle();
+      expect(find.text('Migrated attachment'), findsOneWidget);
+      final pdf = Pdf();
+      await tester.pumpWidget(
+        app(
+          EpisodeDocumentsScreen(
+            caseId: 'episode',
+            caseLabel: 'Case',
+            repository: repo,
+            finalPdfService: pdf,
+            showExpertInfo: false,
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      repo.documents.add(
+        doc(
+          'Migrated final PDF',
+          'final_pdf',
+          path: '/synthetic/private/file.pdf',
+        ),
+      );
+      documentRootRevision.value++;
+      await tester.pumpAndSettle();
+      expect(find.text('Migrated final PDF'), findsOneWidget);
+      expect(pdf.requested, contains('Migrated final PDF'));
+      await tester.pumpWidget(const SizedBox());
+      documentRootRevision.value++;
+      await tester.pump();
+      expect(
+        tester.takeException(),
+        isNull,
+      ); // Listeners were removed on dispose.
+    },
+  );
+
   testWidgets('cancelled file picker leaves ordinary attachments unchanged', (
     tester,
   ) async {

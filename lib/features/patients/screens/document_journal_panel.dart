@@ -1,3 +1,4 @@
+import '../../../core/documents/document_migration_gateway.dart';
 import 'package:flutter/material.dart';
 import 'document_dv1_panel.dart';
 import 'package:flutter/services.dart';
@@ -45,12 +46,14 @@ class _DocumentJournalPanelState extends State<DocumentJournalPanel>
   @override
   void initState() {
     super.initState();
+    documentRootRevision.addListener(refresh);
     WidgetsBinding.instance.addObserver(this);
     refresh();
   }
 
   @override
   void dispose() {
+    documentRootRevision.removeListener(refresh);
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }

@@ -1,3 +1,4 @@
+import '../../core/documents/document_activity_coordinator.dart';
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
@@ -16,7 +17,7 @@ class AbakImportService {
     required String jsonString,
     required Patient patient,
     required String careEpisodeId,
-  }) async {
+  }) => DocumentActivityCoordinator.shared.activity(() async {
     final decoded = jsonDecode(jsonString) as Map<String, dynamic>;
     final package = AbakPackage.fromJson(decoded);
 
@@ -212,7 +213,7 @@ class AbakImportService {
           ? null
           : exerciseLabels.join(', '),
     );
-  }
+  });
 }
 
 class AbakImportSummary {

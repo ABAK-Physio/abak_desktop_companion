@@ -1,3 +1,4 @@
+import '../../../core/documents/document_activity_coordinator.dart';
 import '../data/patient_repository.dart';
 import '../models/patient.dart';
 import 'patient_archive_settings_service.dart';
@@ -17,7 +18,7 @@ class PatientPurgeService {
   final PatientArchiveSettingsService _settingsService =
   PatientArchiveSettingsService();
 
-  Future<PatientPurgeResult> purgeArchivedPatients() async {
+  Future<PatientPurgeResult> purgeArchivedPatients() => DocumentActivityCoordinator.shared.activity(() async {
     final archivedPatients = await _repository.getArchivedPatients();
     final selectedRetentionDays = await _settingsService.getRetentionDays();
 
@@ -43,7 +44,7 @@ class PatientPurgeService {
       scannedPatients: archivedPatients.length,
       deletedPatients: deleted,
     );
-  }
+  });
 
   Future<void> _deletePatientPermanently(Patient patient) async {
     await _repository.deletePatientPermanently(patient.patientId);

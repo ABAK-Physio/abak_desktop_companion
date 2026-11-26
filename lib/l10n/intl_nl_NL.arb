@@ -1094,5 +1094,140 @@
   "episodeAttachments_episodeUnavailable": "De behandeling is niet beschikbaar of is gewijzigd.",
   "episodeAttachments_invalidAttachment": "Deze bijlage hoort niet bij de patiëntenmap.",
   "home_backup_cleanup_warning": "Het opschonen van back-ups is onvolledig of niet beschikbaar. Controleer de back-ups en de toegang tot hun map voordat u Companion opnieuw start.",
-  "application_quit_backup_busy": "Er wordt een back-up gemaakt of hersteld. Wacht tot dit klaar is voordat u afsluit."
+  "application_quit_backup_busy": "Er wordt een back-up gemaakt of hersteld. Wacht tot dit klaar is voordat u afsluit.",
+  "documentsSetup_title": "Documentenmap instellen",
+  "documentsSetup_message": "ABAK Companion gebruikt een map om onderzoeken, verslagen en andere patiëntdocumenten te bewaren.",
+  "documentsSetup_recommended": "Aanbevolen locatie:",
+  "documentsSetup_laterInfo": "U kunt deze locatie later wijzigen in de instellingen van Companion.",
+  "documentsSetup_use": "Deze map gebruiken",
+  "documentsSetup_choose": "Andere map kiezen",
+  "documentsSetup_later": "Later instellen",
+  "documentsSetup_error": "Deze map kon niet worden voorbereid of opgeslagen. Controleer de beschikbaarheid en toegangsrechten en probeer het opnieuw of kies een andere map.",
+  "documentsSetup_authorize": "Deze map toestaan",
+  "documentsSetup_macosAuthorization": "Selecteer uw map Documenten om het aanmaken en gebruiken van de submap ABAK_DOCUMENTS toe te staan.",
+  "migration_move": "Documenten verplaatsen",
+  "migration_open": "Map openen",
+  "migration_configure": "Map instellen",
+  "migration_folder": "Documentenmap",
+  "migration_unconfigured": "Geen map ingesteld",
+  "migration_title": "Documentlocatie wijzigen",
+  "migration_cleaning": "Oude bestanden verwijderen",
+  "migration_moved": "Uw documenten zijn naar de nieuwe locatie verplaatst. Hun integriteit is gecontroleerd en de overgebrachte oorspronkelijke bestanden zijn verwijderd.",
+  "migration_cleanupWarning": "De migratie is geslaagd en de nieuwe locatie is actief. Sommige oude bestanden zijn behouden omdat veilige verwijdering niet kon worden bevestigd. Companion zal deze niet meer bijwerken.",
+  "migration_intro": "Uw documenten worden naar de nieuwe locatie overgebracht en hun integriteit wordt gecontroleerd. Na een geslaagde migratie worden de overgebrachte oorspronkelijke bestanden verwijderd. Sluit documenten die in Word geopend zijn en koppel tijdens de bewerking geen schijven los.",
+  "migration_cancel": "Annuleren",
+  "migration_continue": "Doorgaan",
+  "migration_choose": "Nieuwe locatie kiezen",
+  "migration_confirm": "Migratie bevestigen",
+  "migration_close": "Sluiten",
+  "migration_retry": "Opnieuw proberen",
+  "migration_authorize": "Dezelfde map opnieuw autoriseren",
+  "migration_exactRoot": "Selecteer de bestaande map. Gebruik Documenten verplaatsen in de instellingen om de locatie te wijzigen.",
+  "migration_dmpTitle": "Opslag wijzigen en DMP",
+  "migration_review": "Migratie controleren",
+  "migration_roots": "Huidige map: {oldRoot}\nNieuwe map: {newRoot}",
+  "@migration_roots": {
+    "placeholders": {
+      "oldRoot": {},
+      "newRoot": {}
+    }
+  },
+  "migration_counts": "Patiëntmappen: {patients}\nTotaal aantal bestanden: {files}\nOmvang: {size}",
+  "@migration_counts": {
+    "placeholders": {
+      "patients": {},
+      "files": {},
+      "size": {}
+    }
+  },
+  "migration_impact": "Betrokken documenten: {documents}\nMedische goedkeuringen die vervallen: {approvals}\nTechnische controleruns die vervallen: {controls}",
+  "@migration_impact": {
+    "placeholders": {
+      "documents": {},
+      "approvals": {},
+      "controls": {}
+    }
+  },
+  "migration_accepted": "Documenten met geaccepteerde DV1-indiening: {count}. Geen automatische herverzending.",
+  "@migration_accepted": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "migration_historical": "Er zijn DMP-voorbereidingen of bewijsstukken, ook als DMP uitstaat. De beveiligingen blijven gelden.",
+  "migration_consent": "Ik ga ermee akkoord de aangegeven medische goedkeuringen en technische controles opnieuw uit te voeren vóór een toegestane verzending.",
+  "migration_spaceConsent": "De beschikbare ruimte kon niet worden gecontroleerd. Ik wil doorgaan; bij onvoldoende ruimte stopt het kopiëren.",
+  "migration_changed": "De situatie is gewijzigd. Controleer dit nieuwe overzicht en bevestig opnieuw.",
+  "migration_preflight": "Voorafgaande controles",
+  "migration_copy": "Documenten kopiëren",
+  "migration_verifying": "Integriteit controleren",
+  "migration_activating": "Nieuwe locatie activeren",
+  "migration_counter": "Gekopieerde items: {done} / {total}",
+  "@migration_counter": {
+    "placeholders": {
+      "done": {},
+      "total": {}
+    }
+  },
+  "migration_success": "Migratie voltooid. De nieuwe locatie is actief.",
+  "migration_error": "De migratie kan niet doorgaan. Er zijn geen bronbestanden verwijderd.",
+  "migration_access": "De map is niet beschikbaar. Sluit het apparaat opnieuw aan en controleer de toegangsrechten. Autoriseer op macOS zo nodig dezelfde map opnieuw.",
+  "migration_blockedDmp": "DMP-bewijzen, verzendingen of herpogingen moeten eerst worden onderzocht. Rond lopende bewerkingen af. Bevestigen heft deze blokkering niet op.",
+  "migration_blockedStorage": "Controleer of de doelmap leeg is, losstaat van de bron en genoeg ruimte heeft. Onopgeloste historische mappen of verwijzingen kunnen de migratie ook blokkeren.",
+  "migration_busy": "Er is een documentbewerking bezig. Wacht tot deze klaar is en probeer opnieuw.",
+  "migration_recovery": "Onderbroken migratie controleren",
+  "migration_beforeCommit": "De migratie is niet vastgelegd. De oude map blijft actief. Gedeeltelijke kopieën zijn behouden.",
+  "migration_afterCommit": "De nieuwe locatie is geactiveerd. Companion controleert de veiligheidsvoorwaarden voordat de toegestane verwijdering van de overgebrachte oorspronkelijke bestanden wordt hervat. Bij twijfel blijven de bestanden behouden.",
+  "migration_corrupt": "De herstelinformatie is inconsistent of onleesbaar. Er wordt geen map automatisch gewijzigd. Bewaar de bestanden en raadpleeg de technische details.",
+  "migration_recoverAction": "Controleren en herstellen",
+  "migration_abandon": "Deze niet-vastgelegde migratie verlaten",
+  "migration_technical": "Technische informatie",
+  "migration_quit": "Companion afsluiten",
+  "migration_foreign": "Items buiten patiëntmappen die op de bron blijven: {count}.",
+  "@migration_foreign": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "migration_renew": "Herhaal vóór een nieuwe toegestane verzending de aangegeven goedkeuringen en controles. Eerder bewijs blijft behouden.",
+  "migration_dmpMessage": "Het verplaatsen van documenten kan nieuwe medische goedkeuring en technische controles vereisen voor sommige documenten die voor DMP zijn voorbereid.\n\nRond lopende verzendingen af voordat u de opslagmap wijzigt.\n\nDocumenten die al naar DMP zijn verzonden en het verzendbewijs blijven behouden.\n\nCompanion onderzoekt de gevolgen voordat de migratie wordt aangeboden.",
+  "migration_recovered": "Controle voltooid. De hieronder bevestigde map blijft actief. Oude bestanden en gedeeltelijke kopieën zijn behouden.",
+  "migration_preparing": "{count} betrokken document(en) in voorbereiding. Controleer hun voorbereiding na het verplaatsen.",
+  "@migration_preparing": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "migration_authorizationMissing": "De macOS-machtiging voor deze map ontbreekt of is verlopen. Machtig precies de aangegeven map.",
+  "migration_cancelled": "Bewerking geannuleerd vóór activering van de nieuwe locatie. De oude map blijft actief. Zijn er gedeeltelijke kopieën, breek dan de migratie af om het herstel te voltooien; deze kopieën blijven behouden.",
+  "migration_historicalRoots": "Lege historische hoofdmappen behouden in koppelingen: {count}.",
+  "@migration_historicalRoots": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "migration_remaining": "Betrokken documenten met een niet-verzonden versie: {count}. Dit is geen lijst voor opnieuw verzenden.",
+  "@migration_remaining": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "migration_impactCompleted": "Betrokken documenten: {documents}\nOngeldig geworden medische goedkeuringen: {approvals}\nOngeldig geworden technische controles: {controls}",
+  "@migration_impactCompleted": {
+    "placeholders": {
+      "documents": {},
+      "approvals": {},
+      "controls": {}
+    }
+  },
+  "migration_blockedTransmission": "Een DMP-verzending loopt of de uitkomst is onzeker. Rond deze af of stel de uitkomst vast voordat u documenten verplaatst. Bevestiging kan deze blokkering niet opheffen.",
+  "migration_blockedEvidence": "Het behoud of de toegankelijkheid van historisch DMP-bewijs kan niet worden gegarandeerd. Bewaar de bestanden en laat de technische informatie onderzoeken. De migratie blijft geblokkeerd.",
+  "migration_blockedRetry": "Het verplaatsen zou de voortzetting van een DV1-herpoging in gevaar brengen. Handel deze af voordat u documenten verplaatst. Bevestiging kan deze blokkering niet opheffen.",
+  "migration_fileCountExplanation": "Dit totaal omvat alle bestanden in patiëntmappen, inclusief verborgen en technische bestanden. Het kan afwijken van het aantal zichtbare documenten. Items buiten patiëntmappen blijven op de bronlocatie en tellen niet mee in het totaal of de omvang.",
+  "migration_fileDetails": "Bestanden van de overdracht",
+  "migration_unit_bytes": "bytes",
+  "migration_unit_kib": "KiB",
+  "migration_unit_mib": "MiB",
+  "migration_unit_gib": "GiB",
+  "migration_unit_tib": "TiB"
 }

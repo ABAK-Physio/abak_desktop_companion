@@ -1,3 +1,4 @@
+import '../documents/document_activity_coordinator.dart';
 
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
@@ -39,9 +40,31 @@ class ApplicationSettingsService {
   Future<void> setString(
       String key,
       String value,
-      ) async {
+      ) => DocumentActivityCoordinator.shared.activity(() async {
     final db = await DatabaseService.database;
 
+    if (key == assessmentDocumentsDirectoryKey) {
+      await db.transaction((tx) async {
+        final rows = await tx.query(
+          _tableName, where: 'setting_key=?', whereArgs: [key],
+        );
+        final old = rows.isEmpty ? null : rows.single['setting_value'] as String;
+        if (old != null && old.trim().isNotEmpty) {
+          if (old != value) throw StateError('document_root_migration_required');
+          return;
+        }
+        await tx.insert(
+          _tableName,
+          {
+            'setting_key': key,
+            'setting_value': value,
+            'updated_at': DateTime.now().millisecondsSinceEpoch,
+          },
+          conflictAlgorithm: ConflictAlgorithm.replace,
+        );
+      });
+      return;
+    }
     await db.insert(
       _tableName,
       {
@@ -51,7 +74,7 @@ class ApplicationSettingsService {
       },
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
-  }
+  });
 
   Future<bool> getBool(
       String key, {
@@ -126,6 +149,9 @@ class ApplicationSettingsService {
   }
 
   Future<void> remove(String key) async {
+    if (key == assessmentDocumentsDirectoryKey) {
+      throw StateError('document_root_migration_required');
+    }
     final db = await DatabaseService.database;
 
     await db.delete(
