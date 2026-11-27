@@ -18,10 +18,8 @@ class S {
   static S? _current;
 
   static S get current {
-    assert(
-      _current != null,
-      'No instance of S was loaded. Try to initialize the S delegate before accessing S.current.',
-    );
+    assert(_current != null,
+        'No instance of S was loaded. Try to initialize the S delegate before accessing S.current.');
     return _current!;
   }
 
@@ -43,10 +41,8 @@ class S {
 
   static S of(BuildContext context) {
     final instance = S.maybeOf(context);
-    assert(
-      instance != null,
-      'No instance of S present in the widget tree. Did you add S.delegate in localizationsDelegates?',
-    );
+    assert(instance != null,
+        'No instance of S present in the widget tree. Did you add S.delegate in localizationsDelegates?');
     return instance!;
   }
 
@@ -59,6 +55,16 @@ class S {
     return Intl.message(
       'ABAK Dictée vocale',
       name: 'abakWhisperSpeechProvider_name',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Une sauvegarde ou restauration est en cours. Attendez sa fin avant de quitter.`
+  String get application_quit_backup_busy {
+    return Intl.message(
+      'Une sauvegarde ou restauration est en cours. Attendez sa fin avant de quitter.',
+      name: 'application_quit_backup_busy',
       desc: '',
       args: [],
     );
@@ -1586,8 +1592,7 @@ class S {
 
   /// `Le bilan « {title} » ne sera plus affiché dans l’historique.`
   String careEpisodeReportsWorkspaceScreen_archiveAssessmentMessage(
-    Object title,
-  ) {
+      Object title) {
     return Intl.message(
       'Le bilan « $title » ne sera plus affiché dans l’historique.',
       name: 'careEpisodeReportsWorkspaceScreen_archiveAssessmentMessage',
@@ -1618,9 +1623,7 @@ class S {
 
   /// `Bilan_{patientName}_{title}`
   String careEpisodeReportsWorkspaceScreen_assessmentFileName(
-    Object patientName,
-    Object title,
-  ) {
+      Object patientName, Object title) {
     return Intl.message(
       'Bilan_${patientName}_$title',
       name: 'careEpisodeReportsWorkspaceScreen_assessmentFileName',
@@ -1781,8 +1784,7 @@ class S {
 
   /// `Le bilan « {title} » sera définitivement supprimé. Cette action est irréversible.`
   String careEpisodeReportsWorkspaceScreen_deleteAssessmentMessage(
-    Object title,
-  ) {
+      Object title) {
     return Intl.message(
       'Le bilan « $title » sera définitivement supprimé. Cette action est irréversible.',
       name: 'careEpisodeReportsWorkspaceScreen_deleteAssessmentMessage',
@@ -1923,8 +1925,7 @@ class S {
 
   /// `Un brouillon existe déjà pour ce modèle de {documentLabel}.`
   String careEpisodeReportsWorkspaceScreen_existingTemplateDraftMessage(
-    Object documentLabel,
-  ) {
+      Object documentLabel) {
     return Intl.message(
       'Un brouillon existe déjà pour ce modèle de $documentLabel.',
       name: 'careEpisodeReportsWorkspaceScreen_existingTemplateDraftMessage',
@@ -1945,8 +1946,7 @@ class S {
 
   /// `Souhaitez-vous ajouter le contenu généré à la suite du {documentLabel} actuel ou remplacer le contenu existant ?`
   String careEpisodeReportsWorkspaceScreen_insertTextMessage(
-    Object documentLabel,
-  ) {
+      Object documentLabel) {
     return Intl.message(
       'Souhaitez-vous ajouter le contenu généré à la suite du $documentLabel actuel ou remplacer le contenu existant ?',
       name: 'careEpisodeReportsWorkspaceScreen_insertTextMessage',
@@ -2107,9 +2107,7 @@ class S {
 
   /// `Rapport_{patientName}_{title}`
   String careEpisodeReportsWorkspaceScreen_reportFileName(
-    Object patientName,
-    Object title,
-  ) {
+      Object patientName, Object title) {
     return Intl.message(
       'Rapport_${patientName}_$title',
       name: 'careEpisodeReportsWorkspaceScreen_reportFileName',
@@ -2380,8 +2378,7 @@ class S {
 
   /// `Erreur lors de la création du document Word : {error}`
   String careEpisodeReportsWorkspaceScreen_wordDocumentCreationError(
-    Object error,
-  ) {
+      Object error) {
     return Intl.message(
       'Erreur lors de la création du document Word : $error',
       name: 'careEpisodeReportsWorkspaceScreen_wordDocumentCreationError',
@@ -2422,7 +2419,12 @@ class S {
 
   /// `Fermer`
   String get close {
-    return Intl.message('Fermer', name: 'close', desc: '', args: []);
+    return Intl.message(
+      'Fermer',
+      name: 'close',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Catégorie`
@@ -2607,12 +2609,22 @@ class S {
 
   /// `Adresse`
   String get desktopAddress {
-    return Intl.message('Adresse', name: 'desktopAddress', desc: '', args: []);
+    return Intl.message(
+      'Adresse',
+      name: 'desktopAddress',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Port`
   String get desktopPort {
-    return Intl.message('Port', name: 'desktopPort', desc: '', args: []);
+    return Intl.message(
+      'Port',
+      name: 'desktopPort',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Praticien associé`
@@ -2647,7 +2659,12 @@ class S {
 
   /// `Créer`
   String get deviceForm_create {
-    return Intl.message('Créer', name: 'deviceForm_create', desc: '', args: []);
+    return Intl.message(
+      'Créer',
+      name: 'deviceForm_create',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Nom de l’appareil`
@@ -2872,7 +2889,12 @@ class S {
 
   /// `Erreur`
   String get deviceList_error {
-    return Intl.message('Erreur', name: 'deviceList_error', desc: '', args: []);
+    return Intl.message(
+      'Erreur',
+      name: 'deviceList_error',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Nouvel appareil`
@@ -3115,6 +3137,106 @@ class S {
     );
   }
 
+  /// `Configuration du dossier des documents`
+  String get documentsSetup_title {
+    return Intl.message(
+      'Configuration du dossier des documents',
+      name: 'documentsSetup_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `ABAK Companion utilise un dossier pour conserver les bilans, rapports et autres documents de vos patients.`
+  String get documentsSetup_message {
+    return Intl.message(
+      'ABAK Companion utilise un dossier pour conserver les bilans, rapports et autres documents de vos patients.',
+      name: 'documentsSetup_message',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Emplacement recommandé :`
+  String get documentsSetup_recommended {
+    return Intl.message(
+      'Emplacement recommandé :',
+      name: 'documentsSetup_recommended',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Vous pourrez modifier ultérieurement cet emplacement dans les paramètres de Companion.`
+  String get documentsSetup_laterInfo {
+    return Intl.message(
+      'Vous pourrez modifier ultérieurement cet emplacement dans les paramètres de Companion.',
+      name: 'documentsSetup_laterInfo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Utiliser ce dossier`
+  String get documentsSetup_use {
+    return Intl.message(
+      'Utiliser ce dossier',
+      name: 'documentsSetup_use',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choisir un autre dossier`
+  String get documentsSetup_choose {
+    return Intl.message(
+      'Choisir un autre dossier',
+      name: 'documentsSetup_choose',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Configurer plus tard`
+  String get documentsSetup_later {
+    return Intl.message(
+      'Configurer plus tard',
+      name: 'documentsSetup_later',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Impossible de préparer ou de mémoriser ce dossier. Vérifiez sa disponibilité et ses droits d’accès, puis réessayez ou choisissez un autre dossier.`
+  String get documentsSetup_error {
+    return Intl.message(
+      'Impossible de préparer ou de mémoriser ce dossier. Vérifiez sa disponibilité et ses droits d’accès, puis réessayez ou choisissez un autre dossier.',
+      name: 'documentsSetup_error',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Autoriser ce dossier`
+  String get documentsSetup_authorize {
+    return Intl.message(
+      'Autoriser ce dossier',
+      name: 'documentsSetup_authorize',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sélectionnez votre dossier Documents pour autoriser la création et l’utilisation du sous-dossier ABAK_DOCUMENTS.`
+  String get documentsSetup_macosAuthorization {
+    return Intl.message(
+      'Sélectionnez votre dossier Documents pour autoriser la création et l’utilisation du sous-dossier ABAK_DOCUMENTS.',
+      name: 'documentsSetup_macosAuthorization',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Choisir un modèle de bilan`
   String get documentTemplate_assessmentTitle {
     return Intl.message(
@@ -3245,6 +3367,86 @@ class S {
     );
   }
 
+  /// `Pièces jointes de la prise en charge`
+  String get episodeAttachments_title {
+    return Intl.message(
+      'Pièces jointes de la prise en charge',
+      name: 'episodeAttachments_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choisir le dossier des documents`
+  String get episodeAttachments_configureFolder {
+    return Intl.message(
+      'Choisir le dossier des documents',
+      name: 'episodeAttachments_configureFolder',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Autoriser le dossier`
+  String get episodeAttachments_authorizeFolder {
+    return Intl.message(
+      'Autoriser le dossier',
+      name: 'episodeAttachments_authorizeFolder',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choisissez ou autorisez le dossier des documents avant de réessayer.`
+  String get episodeAttachments_destinationRequired {
+    return Intl.message(
+      'Choisissez ou autorisez le dossier des documents avant de réessayer.',
+      name: 'episodeAttachments_destinationRequired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Le dossier est prêt. Vous pouvez réessayer.`
+  String get episodeAttachments_destinationReady {
+    return Intl.message(
+      'Le dossier est prêt. Vous pouvez réessayer.',
+      name: 'episodeAttachments_destinationReady',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Le dossier des documents est indisponible. Choisissez une destination accessible.`
+  String get episodeAttachments_destinationUnavailable {
+    return Intl.message(
+      'Le dossier des documents est indisponible. Choisissez une destination accessible.',
+      name: 'episodeAttachments_destinationUnavailable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `La prise en charge est indisponible ou a changé.`
+  String get episodeAttachments_episodeUnavailable {
+    return Intl.message(
+      'La prise en charge est indisponible ou a changé.',
+      name: 'episodeAttachments_episodeUnavailable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cette pièce jointe ne correspond pas au dossier du patient.`
+  String get episodeAttachments_invalidAttachment {
+    return Intl.message(
+      'Cette pièce jointe ne correspond pas au dossier du patient.',
+      name: 'episodeAttachments_invalidAttachment',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Documents`
   String get episodeDashboard_documents {
     return Intl.message(
@@ -3320,6 +3522,26 @@ class S {
     return Intl.message(
       'Synthèse de l’épisode',
       name: 'episodeDashboard_reportDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Documents DMP`
+  String get episodeDmpDocuments_title {
+    return Intl.message(
+      'Documents DMP',
+      name: 'episodeDmpDocuments_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Importez un PDF final ou convertissez un DOCX en PDF/A. Les versions, validations et contrôles DMP sont accessibles depuis chaque document.`
+  String get episodeDmpDocuments_help {
+    return Intl.message(
+      'Importez un PDF final ou convertissez un DOCX en PDF/A. Les versions, validations et contrôles DMP sont accessibles depuis chaque document.',
+      name: 'episodeDmpDocuments_help',
       desc: '',
       args: [],
     );
@@ -3797,7 +4019,12 @@ class S {
 
   /// `État`
   String get episodeForms_state {
-    return Intl.message('État', name: 'episodeForms_state', desc: '', args: []);
+    return Intl.message(
+      'État',
+      name: 'episodeForms_state',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Modèle système`
@@ -4112,7 +4339,12 @@ class S {
 
   /// `Nom`
   String get episodeReport_name {
-    return Intl.message('Nom', name: 'episodeReport_name', desc: '', args: []);
+    return Intl.message(
+      'Nom',
+      name: 'episodeReport_name',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Aucune conclusion renseignée.`
@@ -4467,32 +4699,62 @@ class S {
 
   /// `Préfix ARB`
   String get g_arb_prefix {
-    return Intl.message('Préfix ARB', name: 'g_arb_prefix', desc: '', args: []);
+    return Intl.message(
+      'Préfix ARB',
+      name: 'g_arb_prefix',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Fermer`
   String get g_close {
-    return Intl.message('Fermer', name: 'g_close', desc: '', args: []);
+    return Intl.message(
+      'Fermer',
+      name: 'g_close',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Commentaire`
   String get g_comment {
-    return Intl.message('Commentaire', name: 'g_comment', desc: '', args: []);
+    return Intl.message(
+      'Commentaire',
+      name: 'g_comment',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Contexte`
   String get g_context {
-    return Intl.message('Contexte', name: 'g_context', desc: '', args: []);
+    return Intl.message(
+      'Contexte',
+      name: 'g_context',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Copier`
   String get g_copy {
-    return Intl.message('Copier', name: 'g_copy', desc: '', args: []);
+    return Intl.message(
+      'Copier',
+      name: 'g_copy',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Fichier`
   String get g_file {
-    return Intl.message('Fichier', name: 'g_file', desc: '', args: []);
+    return Intl.message(
+      'Fichier',
+      name: 'g_file',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Afficher l’aide`
@@ -4510,6 +4772,16 @@ class S {
     return Intl.message(
       'En savoir plus',
       name: 'g_learn_more',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `OK`
+  String get g_ok {
+    return Intl.message(
+      'OK',
+      name: 'g_ok',
       desc: '',
       args: [],
     );
@@ -4687,7 +4959,12 @@ class S {
 
   /// `Accueil`
   String get home_accueil {
-    return Intl.message('Accueil', name: 'home_accueil', desc: '', args: []);
+    return Intl.message(
+      'Accueil',
+      name: 'home_accueil',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Action requise : associer ce dossier à un patient.`
@@ -4722,7 +4999,12 @@ class S {
 
   /// `Archives`
   String get home_archives {
-    return Intl.message('Archives', name: 'home_archives', desc: '', args: []);
+    return Intl.message(
+      'Archives',
+      name: 'home_archives',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Attention`
@@ -4740,6 +5022,16 @@ class S {
     return Intl.message(
       'Sauvegarde créée avec succès.',
       name: 'home_backup_successfully_created',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Nettoyage des sauvegardes incomplet ou indisponible. Vérifiez les sauvegardes et l’accès à leur dossier avant de relancer Companion.`
+  String get home_backup_cleanup_warning {
+    return Intl.message(
+      'Nettoyage des sauvegardes incomplet ou indisponible. Vérifiez les sauvegardes et l’accès à leur dossier avant de relancer Companion.',
+      name: 'home_backup_cleanup_warning',
       desc: '',
       args: [],
     );
@@ -4797,7 +5089,12 @@ class S {
 
   /// `Appareils`
   String get home_devices {
-    return Intl.message('Appareils', name: 'home_devices', desc: '', args: []);
+    return Intl.message(
+      'Appareils',
+      name: 'home_devices',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Erreur lors de la sauvegarde : {error}`
@@ -4832,17 +5129,32 @@ class S {
 
   /// `Échec`
   String get home_failure {
-    return Intl.message('Échec', name: 'home_failure', desc: '', args: []);
+    return Intl.message(
+      'Échec',
+      name: 'home_failure',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Fermer`
   String get home_fermer {
-    return Intl.message('Fermer', name: 'home_fermer', desc: '', args: []);
+    return Intl.message(
+      'Fermer',
+      name: 'home_fermer',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Fichier`
   String get home_file {
-    return Intl.message('Fichier', name: 'home_file', desc: '', args: []);
+    return Intl.message(
+      'Fichier',
+      name: 'home_file',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Historique`
@@ -4857,7 +5169,12 @@ class S {
 
   /// `Accueil`
   String get home_home {
-    return Intl.message('Accueil', name: 'home_home', desc: '', args: []);
+    return Intl.message(
+      'Accueil',
+      name: 'home_home',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Historique des imports`
@@ -5062,7 +5379,12 @@ class S {
 
   /// `Octets`
   String get home_octets {
-    return Intl.message('Octets', name: 'home_octets', desc: '', args: []);
+    return Intl.message(
+      'Octets',
+      name: 'home_octets',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `{count} autre(s) exercice(s)`
@@ -5087,7 +5409,12 @@ class S {
 
   /// `Chemin`
   String get home_pathway {
-    return Intl.message('Chemin', name: 'home_pathway', desc: '', args: []);
+    return Intl.message(
+      'Chemin',
+      name: 'home_pathway',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Patient ABAK`
@@ -5102,7 +5429,12 @@ class S {
 
   /// `Patients`
   String get home_patients {
-    return Intl.message('Patients', name: 'home_patients', desc: '', args: []);
+    return Intl.message(
+      'Patients',
+      name: 'home_patients',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `{count} association(s) en attente`
@@ -5157,7 +5489,12 @@ class S {
 
   /// `Résultats`
   String get home_results {
-    return Intl.message('Résultats', name: 'home_results', desc: '', args: []);
+    return Intl.message(
+      'Résultats',
+      name: 'home_results',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Scannez ce QR code depuis ABAK Mobile pour configurer automatiquement la connexion au Desktop.`
@@ -5182,17 +5519,32 @@ class S {
 
   /// `Taille`
   String get home_size {
-    return Intl.message('Taille', name: 'home_size', desc: '', args: []);
+    return Intl.message(
+      'Taille',
+      name: 'home_size',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Résoudre`
   String get home_solve {
-    return Intl.message('Résoudre', name: 'home_solve', desc: '', args: []);
+    return Intl.message(
+      'Résoudre',
+      name: 'home_solve',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Succès`
   String get home_success {
-    return Intl.message('Succès', name: 'home_success', desc: '', args: []);
+    return Intl.message(
+      'Succès',
+      name: 'home_success',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Alerte système`
@@ -5247,7 +5599,12 @@ class S {
 
   /// `À faire`
   String get home_to_do_list {
-    return Intl.message('À faire', name: 'home_to_do_list', desc: '', args: []);
+    return Intl.message(
+      'À faire',
+      name: 'home_to_do_list',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Impossible de charger les imports récents.`
@@ -5282,7 +5639,12 @@ class S {
 
   /// `Vérifier`
   String get home_verify {
-    return Intl.message('Vérifier', name: 'home_verify', desc: '', args: []);
+    return Intl.message(
+      'Vérifier',
+      name: 'home_verify',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Sauvegardes très volumineuses`
@@ -5737,7 +6099,12 @@ class S {
 
   /// `Logo`
   String get information_logo {
-    return Intl.message('Logo', name: 'information_logo', desc: '', args: []);
+    return Intl.message(
+      'Logo',
+      name: 'information_logo',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Version 1.1.0 build 3\nPossibilité de dictée vocale pour les bilans et rapports, nécessite le module gratuit.\nSauvegarde automatique Bilan et Rapport.\nBouton duplication Bilan et Rapport.\nNotes modifiables.\nBouton pour voir tous les tests d'un patient pour un épisode.\nModèles de bilans.\nGraphique automatique si plusieurs résultats pour un test\nCréation d'un document au format docx.\nAffichage de l'aide utilisée pour E72 et E76`
@@ -5932,7 +6299,12 @@ class S {
 
   /// `Annuler`
   String get kobus_cancel {
-    return Intl.message('Annuler', name: 'kobus_cancel', desc: '', args: []);
+    return Intl.message(
+      'Annuler',
+      name: 'kobus_cancel',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Patient proposé`
@@ -6057,7 +6429,12 @@ class S {
 
   /// `Importés`
   String get kobus_imported {
-    return Intl.message('Importés', name: 'kobus_imported', desc: '', args: []);
+    return Intl.message(
+      'Importés',
+      name: 'kobus_imported',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Non traités après interruption`
@@ -6112,7 +6489,12 @@ class S {
 
   /// `Imprimer`
   String get kobus_print {
-    return Intl.message('Imprimer', name: 'kobus_print', desc: '', args: []);
+    return Intl.message(
+      'Imprimer',
+      name: 'kobus_print',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Provenance / statut`
@@ -6127,12 +6509,22 @@ class S {
 
   /// `Motif`
   String get kobus_reason {
-    return Intl.message('Motif', name: 'kobus_reason', desc: '', args: []);
+    return Intl.message(
+      'Motif',
+      name: 'kobus_reason',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Rejetés`
   String get kobus_rejected {
-    return Intl.message('Rejetés', name: 'kobus_rejected', desc: '', args: []);
+    return Intl.message(
+      'Rejetés',
+      name: 'kobus_rejected',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Enregistrer le PDF`
@@ -6327,7 +6719,12 @@ class S {
 
   /// `Chargement...`
   String get loading {
-    return Intl.message('Chargement...', name: 'loading', desc: '', args: []);
+    return Intl.message(
+      'Chargement...',
+      name: 'loading',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Sauvegarde annulée.`
@@ -6440,80 +6837,731 @@ class S {
     );
   }
 
-  /// ``
+  /// `Fermé`
   String get main_close {
-    return Intl.message('', name: 'main_close', desc: '', args: []);
-  }
-
-  /// `Modifier`
-  String get modify {
-    return Intl.message('Modifier', name: 'modify', desc: '', args: []);
-  }
-
-  /// `Aucun dossier défini`
-  String get noDirectoryDefined {
     return Intl.message(
-      'Aucun dossier défini',
-      name: 'noDirectoryDefined',
+      'Fermé',
+      name: 'main_close',
       desc: '',
       args: [],
     );
   }
 
-  /// `OK`
-  String get ok {
-    return Intl.message('OK', name: 'ok', desc: '', args: []);
+  /// `Déplacer les documents`
+  String get migration_move {
+    return Intl.message(
+      'Déplacer les documents',
+      name: 'migration_move',
+      desc: '',
+      args: [],
+    );
   }
 
-  /// `Ouvrir`
-  String get open {
-    return Intl.message('Ouvrir', name: 'open', desc: '', args: []);
+  /// `Ouvrir le dossier`
+  String get migration_open {
+    return Intl.message(
+      'Ouvrir le dossier',
+      name: 'migration_open',
+      desc: '',
+      args: [],
+    );
   }
 
-  /// `Choisir un logo`
+  /// `Configurer le dossier`
+  String get migration_configure {
+    return Intl.message(
+      'Configurer le dossier',
+      name: 'migration_configure',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Dossier des documents`
+  String get migration_folder {
+    return Intl.message(
+      'Dossier des documents',
+      name: 'migration_folder',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Aucun dossier configuré`
+  String get migration_unconfigured {
+    return Intl.message(
+      'Aucun dossier configuré',
+      name: 'migration_unconfigured',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Modifier l’emplacement des documents`
+  String get migration_title {
+    return Intl.message(
+      'Modifier l’emplacement des documents',
+      name: 'migration_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Suppression des anciens fichiers`
+  String get migration_cleaning {
+    return Intl.message(
+      'Suppression des anciens fichiers',
+      name: 'migration_cleaning',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Vos documents ont été déplacés vers le nouvel emplacement. Leur intégrité a été vérifiée et les anciens fichiers transférés ont été supprimés.`
+  String get migration_moved {
+    return Intl.message(
+      'Vos documents ont été déplacés vers le nouvel emplacement. Leur intégrité a été vérifiée et les anciens fichiers transférés ont été supprimés.',
+      name: 'migration_moved',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `La migration a réussi et le nouvel emplacement est actif. Certains anciens fichiers ont été conservés car leur suppression sûre n’a pas pu être confirmée. Ils ne seront plus actualisés par Companion.`
+  String get migration_cleanupWarning {
+    return Intl.message(
+      'La migration a réussi et le nouvel emplacement est actif. Certains anciens fichiers ont été conservés car leur suppression sûre n’a pas pu être confirmée. Ils ne seront plus actualisés par Companion.',
+      name: 'migration_cleanupWarning',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Vos documents seront transférés vers le nouvel emplacement et leur intégrité sera vérifiée. Une fois la migration réussie, les anciens fichiers transférés seront supprimés. Fermez les documents ouverts dans Word et ne déconnectez pas les supports pendant l’opération.`
+  String get migration_intro {
+    return Intl.message(
+      'Vos documents seront transférés vers le nouvel emplacement et leur intégrité sera vérifiée. Une fois la migration réussie, les anciens fichiers transférés seront supprimés. Fermez les documents ouverts dans Word et ne déconnectez pas les supports pendant l’opération.',
+      name: 'migration_intro',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Annuler`
+  String get migration_cancel {
+    return Intl.message(
+      'Annuler',
+      name: 'migration_cancel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Poursuivre`
+  String get migration_continue {
+    return Intl.message(
+      'Poursuivre',
+      name: 'migration_continue',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choisir le nouvel emplacement`
+  String get migration_choose {
+    return Intl.message(
+      'Choisir le nouvel emplacement',
+      name: 'migration_choose',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Confirmer la migration`
+  String get migration_confirm {
+    return Intl.message(
+      'Confirmer la migration',
+      name: 'migration_confirm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Fermer`
+  String get migration_close {
+    return Intl.message(
+      'Fermer',
+      name: 'migration_close',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Réessayer`
+  String get migration_retry {
+    return Intl.message(
+      'Réessayer',
+      name: 'migration_retry',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Réautoriser le dossier exact`
+  String get migration_authorize {
+    return Intl.message(
+      'Réautoriser le dossier exact',
+      name: 'migration_authorize',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sélectionnez le dossier existant. Pour changer d’emplacement, utilisez « Déplacer les documents » dans les paramètres.`
+  String get migration_exactRoot {
+    return Intl.message(
+      'Sélectionnez le dossier existant. Pour changer d’emplacement, utilisez « Déplacer les documents » dans les paramètres.',
+      name: 'migration_exactRoot',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Modification du dossier de stockage et DMP`
+  String get migration_dmpTitle {
+    return Intl.message(
+      'Modification du dossier de stockage et DMP',
+      name: 'migration_dmpTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Vérifier la migration`
+  String get migration_review {
+    return Intl.message(
+      'Vérifier la migration',
+      name: 'migration_review',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Dossier actuel : {oldRoot}\nNouveau dossier : {newRoot}`
+  String migration_roots(Object oldRoot, Object newRoot) {
+    return Intl.message(
+      'Dossier actuel : $oldRoot\nNouveau dossier : $newRoot',
+      name: 'migration_roots',
+      desc: '',
+      args: [oldRoot, newRoot],
+    );
+  }
+
+  /// `Dossiers patients : {patients}\nTotal des fichiers : {files}\nVolume : {size}`
+  String migration_counts(Object patients, Object files, Object size) {
+    return Intl.message(
+      'Dossiers patients : $patients\nTotal des fichiers : $files\nVolume : $size',
+      name: 'migration_counts',
+      desc: '',
+      args: [patients, files, size],
+    );
+  }
+
+  /// `Documents concernés : {documents}\nValidations médicales qui seront invalidées : {approvals}\nExécutions de contrôles techniques qui seront invalidées : {controls}`
+  String migration_impact(Object documents, Object approvals, Object controls) {
+    return Intl.message(
+      'Documents concernés : $documents\nValidations médicales qui seront invalidées : $approvals\nExécutions de contrôles techniques qui seront invalidées : $controls',
+      name: 'migration_impact',
+      desc: '',
+      args: [documents, approvals, controls],
+    );
+  }
+
+  /// `Documents avec dépôt DV1 accepté : {count}. Aucun renvoi automatique.`
+  String migration_accepted(Object count) {
+    return Intl.message(
+      'Documents avec dépôt DV1 accepté : $count. Aucun renvoi automatique.',
+      name: 'migration_accepted',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `Des préparations ou preuves DMP existent, même si le DMP est désactivé. Les protections restent applicables.`
+  String get migration_historical {
+    return Intl.message(
+      'Des préparations ou preuves DMP existent, même si le DMP est désactivé. Les protections restent applicables.',
+      name: 'migration_historical',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `J’accepte de refaire les validations médicales et les contrôles techniques indiqués avant toute transmission autorisée.`
+  String get migration_consent {
+    return Intl.message(
+      'J’accepte de refaire les validations médicales et les contrôles techniques indiqués avant toute transmission autorisée.',
+      name: 'migration_consent',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `L’espace disponible n’a pas pu être vérifié. Je souhaite poursuivre ; un manque d’espace interrompra la copie.`
+  String get migration_spaceConsent {
+    return Intl.message(
+      'L’espace disponible n’a pas pu être vérifié. Je souhaite poursuivre ; un manque d’espace interrompra la copie.',
+      name: 'migration_spaceConsent',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `La situation a changé. Vérifiez ce nouveau récapitulatif et confirmez à nouveau.`
+  String get migration_changed {
+    return Intl.message(
+      'La situation a changé. Vérifiez ce nouveau récapitulatif et confirmez à nouveau.',
+      name: 'migration_changed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Vérifications préalables`
+  String get migration_preflight {
+    return Intl.message(
+      'Vérifications préalables',
+      name: 'migration_preflight',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Copie des documents`
+  String get migration_copy {
+    return Intl.message(
+      'Copie des documents',
+      name: 'migration_copy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Vérification de leur intégrité`
+  String get migration_verifying {
+    return Intl.message(
+      'Vérification de leur intégrité',
+      name: 'migration_verifying',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Activation du nouvel emplacement`
+  String get migration_activating {
+    return Intl.message(
+      'Activation du nouvel emplacement',
+      name: 'migration_activating',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Éléments copiés : {done} / {total}`
+  String migration_counter(Object done, Object total) {
+    return Intl.message(
+      'Éléments copiés : $done / $total',
+      name: 'migration_counter',
+      desc: '',
+      args: [done, total],
+    );
+  }
+
+  /// `Migration terminée. Le nouvel emplacement est actif.`
+  String get migration_success {
+    return Intl.message(
+      'Migration terminée. Le nouvel emplacement est actif.',
+      name: 'migration_success',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `La migration ne peut pas continuer. Aucun fichier source n’a été supprimé.`
+  String get migration_error {
+    return Intl.message(
+      'La migration ne peut pas continuer. Aucun fichier source n’a été supprimé.',
+      name: 'migration_error',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Le dossier est indisponible. Reconnectez le support et vérifiez ses droits d’accès. Sous macOS, réautorisez le dossier exact si nécessaire.`
+  String get migration_access {
+    return Intl.message(
+      'Le dossier est indisponible. Reconnectez le support et vérifiez ses droits d’accès. Sous macOS, réautorisez le dossier exact si nécessaire.',
+      name: 'migration_access',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Des preuves, transmissions ou reprises DMP nécessitent un examen avant la migration. Terminez les opérations en cours. Une confirmation ne peut pas lever ce blocage.`
+  String get migration_blockedDmp {
+    return Intl.message(
+      'Des preuves, transmissions ou reprises DMP nécessitent un examen avant la migration. Terminez les opérations en cours. Une confirmation ne peut pas lever ce blocage.',
+      name: 'migration_blockedDmp',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Vérifiez que la destination est vide, distincte de la source et dispose de suffisamment d’espace. Des dossiers historiques ou références non résolus peuvent aussi empêcher la migration`
+  String get migration_blockedStorage {
+    return Intl.message(
+      'Vérifiez que la destination est vide, distincte de la source et dispose de suffisamment d’espace. Des dossiers historiques ou références non résolus peuvent aussi empêcher la migration',
+      name: 'migration_blockedStorage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Une opération documentaire est en cours. Attendez sa fin puis réessayez.`
+  String get migration_busy {
+    return Intl.message(
+      'Une opération documentaire est en cours. Attendez sa fin puis réessayez.',
+      name: 'migration_busy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Vérifier une migration interrompue`
+  String get migration_recovery {
+    return Intl.message(
+      'Vérifier une migration interrompue',
+      name: 'migration_recovery',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `La migration n’a pas été validée. L’ancien dossier reste actif. Les copies partielles sont conservées.`
+  String get migration_beforeCommit {
+    return Intl.message(
+      'La migration n’a pas été validée. L’ancien dossier reste actif. Les copies partielles sont conservées.',
+      name: 'migration_beforeCommit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Le nouvel emplacement a été activé. Companion vérifiera les conditions de sécurité avant de reprendre la suppression autorisée des anciens fichiers transférés. En cas de doute, les fichiers seront conservés.`
+  String get migration_afterCommit {
+    return Intl.message(
+      'Le nouvel emplacement a été activé. Companion vérifiera les conditions de sécurité avant de reprendre la suppression autorisée des anciens fichiers transférés. En cas de doute, les fichiers seront conservés.',
+      name: 'migration_afterCommit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Les informations de récupération sont incohérentes ou illisibles. Aucun dossier ne sera changé automatiquement. Conservez les fichiers et consultez les informations techniques.`
+  String get migration_corrupt {
+    return Intl.message(
+      'Les informations de récupération sont incohérentes ou illisibles. Aucun dossier ne sera changé automatiquement. Conservez les fichiers et consultez les informations techniques.',
+      name: 'migration_corrupt',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Vérifier et reprendre`
+  String get migration_recoverAction {
+    return Intl.message(
+      'Vérifier et reprendre',
+      name: 'migration_recoverAction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Abandonner cette migration non validée`
+  String get migration_abandon {
+    return Intl.message(
+      'Abandonner cette migration non validée',
+      name: 'migration_abandon',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Informations techniques`
+  String get migration_technical {
+    return Intl.message(
+      'Informations techniques',
+      name: 'migration_technical',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Quitter Companion`
+  String get migration_quit {
+    return Intl.message(
+      'Quitter Companion',
+      name: 'migration_quit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Éléments hors des dossiers patients conservés à la source : {count}.`
+  String migration_foreign(Object count) {
+    return Intl.message(
+      'Éléments hors des dossiers patients conservés à la source : $count.',
+      name: 'migration_foreign',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `Avant une nouvelle transmission autorisée, refaites les validations et contrôles indiqués. Les preuves antérieures restent conservées.`
+  String get migration_renew {
+    return Intl.message(
+      'Avant une nouvelle transmission autorisée, refaites les validations et contrôles indiqués. Les preuves antérieures restent conservées.',
+      name: 'migration_renew',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Le déplacement de vos documents peut nécessiter une nouvelle validation médicale et de nouveaux contrôles techniques de certains documents préparés pour le DMP.\n\nIl est recommandé de terminer vos transmissions en cours avant de modifier le dossier de stockage.\n\nLes documents déjà transmis au DMP et leurs preuves de transmission seront conservés.\n\nCompanion va analyser les conséquences de cette opération avant de vous proposer la migration.`
+  String get migration_dmpMessage {
+    return Intl.message(
+      'Le déplacement de vos documents peut nécessiter une nouvelle validation médicale et de nouveaux contrôles techniques de certains documents préparés pour le DMP.\n\nIl est recommandé de terminer vos transmissions en cours avant de modifier le dossier de stockage.\n\nLes documents déjà transmis au DMP et leurs preuves de transmission seront conservés.\n\nCompanion va analyser les conséquences de cette opération avant de vous proposer la migration.',
+      name: 'migration_dmpMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Vérification terminée. Le dossier confirmé ci-dessous reste actif. Les anciens fichiers et les copies partielles ont été conservés.`
+  String get migration_recovered {
+    return Intl.message(
+      'Vérification terminée. Le dossier confirmé ci-dessous reste actif. Les anciens fichiers et les copies partielles ont été conservés.',
+      name: 'migration_recovered',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{count} document(s) en préparation concernés. Vérifiez leur préparation après le déplacement.`
+  String migration_preparing(Object count) {
+    return Intl.message(
+      '$count document(s) en préparation concernés. Vérifiez leur préparation après le déplacement.',
+      name: 'migration_preparing',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `L’autorisation macOS de ce dossier est manquante ou expirée. Réautorisez exactement le dossier indiqué.`
+  String get migration_authorizationMissing {
+    return Intl.message(
+      'L’autorisation macOS de ce dossier est manquante ou expirée. Réautorisez exactement le dossier indiqué.',
+      name: 'migration_authorizationMissing',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Opération annulée avant l’activation du nouvel emplacement. L’ancien dossier reste actif. Si des copies partielles existent, abandonnez la migration pour terminer la récupération ; ces copies seront conservées.`
+  String get migration_cancelled {
+    return Intl.message(
+      'Opération annulée avant l’activation du nouvel emplacement. L’ancien dossier reste actif. Si des copies partielles existent, abandonnez la migration pour terminer la récupération ; ces copies seront conservées.',
+      name: 'migration_cancelled',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Anciennes racines vides conservées dans les associations : {count}.`
+  String migration_historicalRoots(Object count) {
+    return Intl.message(
+      'Anciennes racines vides conservées dans les associations : $count.',
+      name: 'migration_historicalRoots',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `Documents concernés comportant une version non transmise : {count}. Ce nombre ne constitue pas une liste de retransmission.`
+  String migration_remaining(Object count) {
+    return Intl.message(
+      'Documents concernés comportant une version non transmise : $count. Ce nombre ne constitue pas une liste de retransmission.',
+      name: 'migration_remaining',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `Documents concernés : {documents}\nValidations médicales invalidées : {approvals}\nExécutions de contrôles techniques invalidées : {controls}`
+  String migration_impactCompleted(
+      Object documents, Object approvals, Object controls) {
+    return Intl.message(
+      'Documents concernés : $documents\nValidations médicales invalidées : $approvals\nExécutions de contrôles techniques invalidées : $controls',
+      name: 'migration_impactCompleted',
+      desc: '',
+      args: [documents, approvals, controls],
+    );
+  }
+
+  /// `Une transmission DMP est en cours ou son résultat reste incertain. Terminez-la ou établissez son résultat avant de déplacer les documents. Ce blocage ne peut pas être levé par une confirmation.`
+  String get migration_blockedTransmission {
+    return Intl.message(
+      'Une transmission DMP est en cours ou son résultat reste incertain. Terminez-la ou établissez son résultat avant de déplacer les documents. Ce blocage ne peut pas être levé par une confirmation.',
+      name: 'migration_blockedTransmission',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `La conservation ou l’accessibilité d’une preuve historique DMP ne peut pas être garantie. Conservez les fichiers et faites examiner les informations techniques. La migration reste interdite.`
+  String get migration_blockedEvidence {
+    return Intl.message(
+      'La conservation ou l’accessibilité d’une preuve historique DMP ne peut pas être garantie. Conservez les fichiers et faites examiner les informations techniques. La migration reste interdite.',
+      name: 'migration_blockedEvidence',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Le déplacement compromettrait la continuité d’une reprise DV1. Résolvez cette reprise avant de déplacer les documents. Une confirmation ne peut pas lever ce blocage.`
+  String get migration_blockedRetry {
+    return Intl.message(
+      'Le déplacement compromettrait la continuité d’une reprise DV1. Résolvez cette reprise avant de déplacer les documents. Une confirmation ne peut pas lever ce blocage.',
+      name: 'migration_blockedRetry',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Ce total comprend tous les fichiers des dossiers patients, y compris les fichiers cachés et techniques. Il peut différer du nombre de documents visibles dans le Finder. Les éléments hors dossiers patients restent à la source et ne sont pas inclus dans ce total ni dans le volume.`
+  String get migration_fileCountExplanation {
+    return Intl.message(
+      'Ce total comprend tous les fichiers des dossiers patients, y compris les fichiers cachés et techniques. Il peut différer du nombre de documents visibles dans le Finder. Les éléments hors dossiers patients restent à la source et ne sont pas inclus dans ce total ni dans le volume.',
+      name: 'migration_fileCountExplanation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Détail des fichiers du transfert`
+  String get migration_fileDetails {
+    return Intl.message(
+      'Détail des fichiers du transfert',
+      name: 'migration_fileDetails',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `octets`
+  String get migration_unit_bytes {
+    return Intl.message(
+      'octets',
+      name: 'migration_unit_bytes',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Kio`
+  String get migration_unit_kib {
+    return Intl.message(
+      'Kio',
+      name: 'migration_unit_kib',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Mio`
+  String get migration_unit_mib {
+    return Intl.message(
+      'Mio',
+      name: 'migration_unit_mib',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `GiO`
+  String get migration_unit_gib {
+    return Intl.message(
+      'GiO',
+      name: 'migration_unit_gib',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Tio`
+  String get migration_unit_tib {
+    return Intl.message(
+      'Tio',
+      name: 'migration_unit_tib',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `octets`
   String get organization_chooseLogo {
     return Intl.message(
-      'Choisir un logo',
+      'octets',
       name: 'organization_chooseLogo',
       desc: '',
       args: [],
     );
   }
 
-  /// `Cet écran permet de renseigner le nom et les coordonnées de votre cabinet : adresse, code postal, ville, téléphone et adresse électronique.\n\nCliquez sur « Enregistrer les coordonnées » pour conserver vos modifications avant de quitter l’écran.\n\nVous pouvez également choisir une image sur votre ordinateur pour définir le logo du cabinet. Le choix du logo est enregistré immédiatement, indépendamment des coordonnées.\n\nLe bouton de suppression du logo permet de retirer le logo utilisé dans Companion.`
+  /// `Kio`
   String get organization_help {
     return Intl.message(
-      'Cet écran permet de renseigner le nom et les coordonnées de votre cabinet : adresse, code postal, ville, téléphone et adresse électronique.\n\nCliquez sur « Enregistrer les coordonnées » pour conserver vos modifications avant de quitter l’écran.\n\nVous pouvez également choisir une image sur votre ordinateur pour définir le logo du cabinet. Le choix du logo est enregistré immédiatement, indépendamment des coordonnées.\n\nLe bouton de suppression du logo permet de retirer le logo utilisé dans Companion.',
+      'Kio',
       name: 'organization_help',
       desc: '',
       args: [],
     );
   }
 
-  /// `Identité de l’établissement`
+  /// `Mio`
   String get organization_identityTitle {
     return Intl.message(
-      'Identité de l’établissement',
+      'Mio',
       name: 'organization_identityTitle',
       desc: '',
       args: [],
     );
   }
 
-  /// `Logo de l’établissement supprimé.`
+  /// `Gio`
   String get organization_logoRemoved {
     return Intl.message(
-      'Logo de l’établissement supprimé.',
+      'Gio',
       name: 'organization_logoRemoved',
       desc: '',
       args: [],
     );
   }
 
-  /// `Logo de l’établissement enregistré.`
+  /// `Tio`
   String get organization_logoSaved {
     return Intl.message(
-      'Logo de l’établissement enregistré.',
+      'Tio',
       name: 'organization_logoSaved',
       desc: '',
       args: [],
@@ -7492,7 +8540,12 @@ class S {
 
   /// `Sexe`
   String get patientDetail_sex {
-    return Intl.message('Sexe', name: 'patientDetail_sex', desc: '', args: []);
+    return Intl.message(
+      'Sexe',
+      name: 'patientDetail_sex',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Activité sportive`
@@ -7557,7 +8610,12 @@ class S {
 
   /// `ans`
   String get patientDetail_years {
-    return Intl.message('ans', name: 'patientDetail_years', desc: '', args: []);
+    return Intl.message(
+      'ans',
+      name: 'patientDetail_years',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Le dossier doit être autorisé à nouveau. Sélectionnez le dossier commun défini dans les paramètres.`
@@ -7752,7 +8810,12 @@ class S {
 
   /// `Homme`
   String get patientForm_male {
-    return Intl.message('Homme', name: 'patientForm_male', desc: '', args: []);
+    return Intl.message(
+      'Homme',
+      name: 'patientForm_male',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Nouveau patient`
@@ -7767,7 +8830,12 @@ class S {
 
   /// `Autre`
   String get patientForm_other {
-    return Intl.message('Autre', name: 'patientForm_other', desc: '', args: []);
+    return Intl.message(
+      'Autre',
+      name: 'patientForm_other',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Enregistrer`
@@ -7782,7 +8850,12 @@ class S {
 
   /// `Sexe`
   String get patientForm_sex {
-    return Intl.message('Sexe', name: 'patientForm_sex', desc: '', args: []);
+    return Intl.message(
+      'Sexe',
+      name: 'patientForm_sex',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Non précisé`
@@ -8047,7 +9120,12 @@ class S {
 
   /// `Sexe`
   String get patientList_sex {
-    return Intl.message('Sexe', name: 'patientList_sex', desc: '', args: []);
+    return Intl.message(
+      'Sexe',
+      name: 'patientList_sex',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Liste des patients`
@@ -8182,7 +9260,12 @@ class S {
 
   /// `Fermer`
   String get patientNew_close {
-    return Intl.message('Fermer', name: 'patientNew_close', desc: '', args: []);
+    return Intl.message(
+      'Fermer',
+      name: 'patientNew_close',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Cet écran permet la création d’un nouveau patient par saisie ou lecture de la Carte Vitale.`
@@ -8317,7 +9400,12 @@ class S {
 
   /// `Nom`
   String get patientNew_lastName {
-    return Intl.message('Nom', name: 'patientNew_lastName', desc: '', args: []);
+    return Intl.message(
+      'Nom',
+      name: 'patientNew_lastName',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Le nom est obligatoire`
@@ -8372,7 +9460,12 @@ class S {
 
   /// `NIR`
   String get patientNew_nir {
-    return Intl.message('NIR', name: 'patientNew_nir', desc: '', args: []);
+    return Intl.message(
+      'NIR',
+      name: 'patientNew_nir',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `détecté et protégé`
@@ -8397,7 +9490,12 @@ class S {
 
   /// `Non`
   String get patientNew_no {
-    return Intl.message('Non', name: 'patientNew_no', desc: '', args: []);
+    return Intl.message(
+      'Non',
+      name: 'patientNew_no',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Aucun nouveau patient ne sera créé.`
@@ -8432,7 +9530,12 @@ class S {
 
   /// `Autre`
   String get patientNew_other {
-    return Intl.message('Autre', name: 'patientNew_other', desc: '', args: []);
+    return Intl.message(
+      'Autre',
+      name: 'patientNew_other',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Patient déjà enregistré`
@@ -8547,7 +9650,12 @@ class S {
 
   /// `Sexe`
   String get patientNew_sex {
-    return Intl.message('Sexe', name: 'patientNew_sex', desc: '', args: []);
+    return Intl.message(
+      'Sexe',
+      name: 'patientNew_sex',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Identité lue depuis la Carte Vitale`
@@ -9082,7 +10190,12 @@ class S {
 
   /// `jours`
   String get preferences_days {
-    return Intl.message('jours', name: 'preferences_days', desc: '', args: []);
+    return Intl.message(
+      'jours',
+      name: 'preferences_days',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Mode Expert`
@@ -9387,7 +10500,12 @@ class S {
 
   /// `Réinitialiser`
   String get reset {
-    return Intl.message('Réinitialiser', name: 'reset', desc: '', args: []);
+    return Intl.message(
+      'Réinitialiser',
+      name: 'reset',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Ajouter un commentaire...`
@@ -9632,7 +10750,12 @@ class S {
 
   /// `Annuler`
   String get settings_cancel {
-    return Intl.message('Annuler', name: 'settings_cancel', desc: '', args: []);
+    return Intl.message(
+      'Annuler',
+      name: 'settings_cancel',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Configuration`
@@ -9717,7 +10840,12 @@ class S {
 
   /// `Modifier`
   String get settings_edit {
-    return Intl.message('Modifier', name: 'settings_edit', desc: '', args: []);
+    return Intl.message(
+      'Modifier',
+      name: 'settings_edit',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Dossier d’échange ABAK`
@@ -9802,10 +10930,7 @@ class S {
 
   /// `Export terminé avec {errorCount} erreur(s) : {patientCount} patient(s), {fileCount} fichier(s) exporté(s).`
   String settings_exportCompletedWithErrors(
-    Object errorCount,
-    Object patientCount,
-    Object fileCount,
-  ) {
+      Object errorCount, Object patientCount, Object fileCount) {
     return Intl.message(
       'Export terminé avec $errorCount erreur(s) : $patientCount patient(s), $fileCount fichier(s) exporté(s).',
       name: 'settings_exportCompletedWithErrors',
@@ -10006,7 +11131,12 @@ class S {
 
   /// `Ouvrir`
   String get settings_open {
-    return Intl.message('Ouvrir', name: 'settings_open', desc: '', args: []);
+    return Intl.message(
+      'Ouvrir',
+      name: 'settings_open',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Ouverture du dossier d’échange`
@@ -10461,7 +11591,12 @@ class S {
 
   /// `NIR`
   String get vitaleIdentity_nir {
-    return Intl.message('NIR', name: 'vitaleIdentity_nir', desc: '', args: []);
+    return Intl.message(
+      'NIR',
+      name: 'vitaleIdentity_nir',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Aucune identité Carte Vitale disponible`
@@ -10506,7 +11641,12 @@ class S {
 
   /// `Sexe`
   String get vitaleIdentity_sex {
-    return Intl.message('Sexe', name: 'vitaleIdentity_sex', desc: '', args: []);
+    return Intl.message(
+      'Sexe',
+      name: 'vitaleIdentity_sex',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Source`
@@ -10551,7 +11691,12 @@ class S {
 
   /// `Canne`
   String get walkingAid_cane {
-    return Intl.message('Canne', name: 'walkingAid_cane', desc: '', args: []);
+    return Intl.message(
+      'Canne',
+      name: 'walkingAid_cane',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Aide utilisée`
@@ -10566,12 +11711,22 @@ class S {
 
   /// `Aucune`
   String get walkingAid_none {
-    return Intl.message('Aucune', name: 'walkingAid_none', desc: '', args: []);
+    return Intl.message(
+      'Aucune',
+      name: 'walkingAid_none',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Autre`
   String get walkingAid_other {
-    return Intl.message('Autre', name: 'walkingAid_other', desc: '', args: []);
+    return Intl.message(
+      'Autre',
+      name: 'walkingAid_other',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Rollator 4 roues`
@@ -10592,875 +11747,6 @@ class S {
       desc: '',
       args: [],
     );
-  }
-
-  /// `Pièces jointes de la prise en charge`
-  String get episodeAttachments_title {
-    return Intl.message(
-      'Pièces jointes de la prise en charge',
-      name: 'episodeAttachments_title',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Documents DMP`
-  String get episodeDmpDocuments_title {
-    return Intl.message(
-      'Documents DMP',
-      name: 'episodeDmpDocuments_title',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Importez un PDF final ou convertissez un DOCX en PDF/A. Les versions, validations et contrôles DMP sont accessibles depuis chaque document.`
-  String get episodeDmpDocuments_help {
-    return Intl.message(
-      'Importez un PDF final ou convertissez un DOCX en PDF/A. Les versions, validations et contrôles DMP sont accessibles depuis chaque document.',
-      name: 'episodeDmpDocuments_help',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Choisir le dossier des documents`
-  String get episodeAttachments_configureFolder {
-    return Intl.message(
-      'Choisir le dossier des documents',
-      name: 'episodeAttachments_configureFolder',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Autoriser le dossier`
-  String get episodeAttachments_authorizeFolder {
-    return Intl.message(
-      'Autoriser le dossier',
-      name: 'episodeAttachments_authorizeFolder',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Choisissez ou autorisez le dossier des documents avant de réessayer.`
-  String get episodeAttachments_destinationRequired {
-    return Intl.message(
-      'Choisissez ou autorisez le dossier des documents avant de réessayer.',
-      name: 'episodeAttachments_destinationRequired',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Le dossier est prêt. Vous pouvez réessayer.`
-  String get episodeAttachments_destinationReady {
-    return Intl.message(
-      'Le dossier est prêt. Vous pouvez réessayer.',
-      name: 'episodeAttachments_destinationReady',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Le dossier des documents est indisponible. Choisissez une destination accessible.`
-  String get episodeAttachments_destinationUnavailable {
-    return Intl.message(
-      'Le dossier des documents est indisponible. Choisissez une destination accessible.',
-      name: 'episodeAttachments_destinationUnavailable',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `La prise en charge est indisponible ou a changé.`
-  String get episodeAttachments_episodeUnavailable {
-    return Intl.message(
-      'La prise en charge est indisponible ou a changé.',
-      name: 'episodeAttachments_episodeUnavailable',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Cette pièce jointe ne correspond pas au dossier du patient.`
-  String get episodeAttachments_invalidAttachment {
-    return Intl.message(
-      'Cette pièce jointe ne correspond pas au dossier du patient.',
-      name: 'episodeAttachments_invalidAttachment',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Nettoyage des sauvegardes incomplet ou indisponible. Vérifiez les sauvegardes et l’accès à leur dossier avant de relancer Companion.`
-  String get home_backup_cleanup_warning {
-    return Intl.message(
-      'Nettoyage des sauvegardes incomplet ou indisponible. Vérifiez les sauvegardes et l’accès à leur dossier avant de relancer Companion.',
-      name: 'home_backup_cleanup_warning',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Une sauvegarde ou restauration est en cours. Attendez sa fin avant de quitter.`
-  String get application_quit_backup_busy {
-    return Intl.message(
-      'Une sauvegarde ou restauration est en cours. Attendez sa fin avant de quitter.',
-      name: 'application_quit_backup_busy',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Configuration du dossier des documents`
-  String get documentsSetup_title {
-    return Intl.message(
-      'Configuration du dossier des documents',
-      name: 'documentsSetup_title',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `ABAK Companion utilise un dossier pour conserver les bilans, rapports et autres documents de vos patients.`
-  String get documentsSetup_message {
-    return Intl.message(
-      'ABAK Companion utilise un dossier pour conserver les bilans, rapports et autres documents de vos patients.',
-      name: 'documentsSetup_message',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Emplacement recommandé :`
-  String get documentsSetup_recommended {
-    return Intl.message(
-      'Emplacement recommandé :',
-      name: 'documentsSetup_recommended',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Vous pourrez modifier ultérieurement cet emplacement dans les paramètres de Companion.`
-  String get documentsSetup_laterInfo {
-    return Intl.message(
-      'Vous pourrez modifier ultérieurement cet emplacement dans les paramètres de Companion.',
-      name: 'documentsSetup_laterInfo',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Utiliser ce dossier`
-  String get documentsSetup_use {
-    return Intl.message(
-      'Utiliser ce dossier',
-      name: 'documentsSetup_use',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Choisir un autre dossier`
-  String get documentsSetup_choose {
-    return Intl.message(
-      'Choisir un autre dossier',
-      name: 'documentsSetup_choose',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Configurer plus tard`
-  String get documentsSetup_later {
-    return Intl.message(
-      'Configurer plus tard',
-      name: 'documentsSetup_later',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Impossible de préparer ou de mémoriser ce dossier. Vérifiez sa disponibilité et ses droits d’accès, puis réessayez ou choisissez un autre dossier.`
-  String get documentsSetup_error {
-    return Intl.message(
-      'Impossible de préparer ou de mémoriser ce dossier. Vérifiez sa disponibilité et ses droits d’accès, puis réessayez ou choisissez un autre dossier.',
-      name: 'documentsSetup_error',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Autoriser ce dossier`
-  String get documentsSetup_authorize {
-    return Intl.message(
-      'Autoriser ce dossier',
-      name: 'documentsSetup_authorize',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Sélectionnez votre dossier Documents pour autoriser la création et l’utilisation du sous-dossier ABAK_DOCUMENTS.`
-  String get documentsSetup_macosAuthorization {
-    return Intl.message(
-      'Sélectionnez votre dossier Documents pour autoriser la création et l’utilisation du sous-dossier ABAK_DOCUMENTS.',
-      name: 'documentsSetup_macosAuthorization',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Déplacer les documents`
-  String get migration_move {
-    return Intl.message(
-      'Déplacer les documents',
-      name: 'migration_move',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Ouvrir le dossier`
-  String get migration_open {
-    return Intl.message(
-      'Ouvrir le dossier',
-      name: 'migration_open',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Configurer le dossier`
-  String get migration_configure {
-    return Intl.message(
-      'Configurer le dossier',
-      name: 'migration_configure',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Dossier des documents`
-  String get migration_folder {
-    return Intl.message(
-      'Dossier des documents',
-      name: 'migration_folder',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Aucun dossier configuré`
-  String get migration_unconfigured {
-    return Intl.message(
-      'Aucun dossier configuré',
-      name: 'migration_unconfigured',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Modifier l’emplacement des documents`
-  String get migration_title {
-    return Intl.message(
-      'Modifier l’emplacement des documents',
-      name: 'migration_title',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Suppression des anciens fichiers`
-  String get migration_cleaning {
-    return Intl.message(
-      'Suppression des anciens fichiers',
-      name: 'migration_cleaning',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Vos documents ont été déplacés vers le nouvel emplacement. Leur intégrité a été vérifiée et les anciens fichiers transférés ont été supprimés.`
-  String get migration_moved {
-    return Intl.message(
-      'Vos documents ont été déplacés vers le nouvel emplacement. Leur intégrité a été vérifiée et les anciens fichiers transférés ont été supprimés.',
-      name: 'migration_moved',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `La migration a réussi et le nouvel emplacement est actif. Certains anciens fichiers ont été conservés car leur suppression sûre n’a pas pu être confirmée. Ils ne seront plus actualisés par Companion.`
-  String get migration_cleanupWarning {
-    return Intl.message(
-      'La migration a réussi et le nouvel emplacement est actif. Certains anciens fichiers ont été conservés car leur suppression sûre n’a pas pu être confirmée. Ils ne seront plus actualisés par Companion.',
-      name: 'migration_cleanupWarning',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Vos documents seront transférés vers le nouvel emplacement et leur intégrité sera vérifiée. Une fois la migration réussie, les anciens fichiers transférés seront supprimés. Fermez les documents ouverts dans Word et ne déconnectez pas les supports pendant l’opération.`
-  String get migration_intro {
-    return Intl.message(
-      'Vos documents seront transférés vers le nouvel emplacement et leur intégrité sera vérifiée. Une fois la migration réussie, les anciens fichiers transférés seront supprimés. Fermez les documents ouverts dans Word et ne déconnectez pas les supports pendant l’opération.',
-      name: 'migration_intro',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Annuler`
-  String get migration_cancel {
-    return Intl.message(
-      'Annuler',
-      name: 'migration_cancel',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Poursuivre`
-  String get migration_continue {
-    return Intl.message(
-      'Poursuivre',
-      name: 'migration_continue',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Choisir le nouvel emplacement`
-  String get migration_choose {
-    return Intl.message(
-      'Choisir le nouvel emplacement',
-      name: 'migration_choose',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Confirmer la migration`
-  String get migration_confirm {
-    return Intl.message(
-      'Confirmer la migration',
-      name: 'migration_confirm',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Fermer`
-  String get migration_close {
-    return Intl.message('Fermer', name: 'migration_close', desc: '', args: []);
-  }
-
-  /// `Réessayer`
-  String get migration_retry {
-    return Intl.message(
-      'Réessayer',
-      name: 'migration_retry',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Réautoriser le dossier exact`
-  String get migration_authorize {
-    return Intl.message(
-      'Réautoriser le dossier exact',
-      name: 'migration_authorize',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Sélectionnez le dossier existant. Pour changer d’emplacement, utilisez « Déplacer les documents » dans les paramètres.`
-  String get migration_exactRoot {
-    return Intl.message(
-      'Sélectionnez le dossier existant. Pour changer d’emplacement, utilisez « Déplacer les documents » dans les paramètres.',
-      name: 'migration_exactRoot',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Modification du dossier de stockage et DMP`
-  String get migration_dmpTitle {
-    return Intl.message(
-      'Modification du dossier de stockage et DMP',
-      name: 'migration_dmpTitle',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Vérifier la migration`
-  String get migration_review {
-    return Intl.message(
-      'Vérifier la migration',
-      name: 'migration_review',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Dossier actuel : {oldRoot}\nNouveau dossier : {newRoot}`
-  String migration_roots(Object oldRoot, Object newRoot) {
-    return Intl.message(
-      'Dossier actuel : $oldRoot\nNouveau dossier : $newRoot',
-      name: 'migration_roots',
-      desc: '',
-      args: [oldRoot, newRoot],
-    );
-  }
-
-  /// `Dossiers patients : {patients}\nTotal des fichiers : {files}\nVolume : {size}`
-  String migration_counts(Object patients, Object files, Object size) {
-    return Intl.message(
-      'Dossiers patients : $patients\nTotal des fichiers : $files\nVolume : $size',
-      name: 'migration_counts',
-      desc: '',
-      args: [patients, files, size],
-    );
-  }
-
-  /// `Documents concernés : {documents}\nValidations médicales qui seront invalidées : {approvals}\nExécutions de contrôles techniques qui seront invalidées : {controls}`
-  String migration_impact(Object documents, Object approvals, Object controls) {
-    return Intl.message(
-      'Documents concernés : $documents\nValidations médicales qui seront invalidées : $approvals\nExécutions de contrôles techniques qui seront invalidées : $controls',
-      name: 'migration_impact',
-      desc: '',
-      args: [documents, approvals, controls],
-    );
-  }
-
-  /// `Documents avec dépôt DV1 accepté : {count}. Aucun renvoi automatique.`
-  String migration_accepted(Object count) {
-    return Intl.message(
-      'Documents avec dépôt DV1 accepté : $count. Aucun renvoi automatique.',
-      name: 'migration_accepted',
-      desc: '',
-      args: [count],
-    );
-  }
-
-  /// `Des préparations ou preuves DMP existent, même si le DMP est désactivé. Les protections restent applicables.`
-  String get migration_historical {
-    return Intl.message(
-      'Des préparations ou preuves DMP existent, même si le DMP est désactivé. Les protections restent applicables.',
-      name: 'migration_historical',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `J’accepte de refaire les validations médicales et les contrôles techniques indiqués avant toute transmission autorisée.`
-  String get migration_consent {
-    return Intl.message(
-      'J’accepte de refaire les validations médicales et les contrôles techniques indiqués avant toute transmission autorisée.',
-      name: 'migration_consent',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `L’espace disponible n’a pas pu être vérifié. Je souhaite poursuivre ; un manque d’espace interrompra la copie.`
-  String get migration_spaceConsent {
-    return Intl.message(
-      'L’espace disponible n’a pas pu être vérifié. Je souhaite poursuivre ; un manque d’espace interrompra la copie.',
-      name: 'migration_spaceConsent',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `La situation a changé. Vérifiez ce nouveau récapitulatif et confirmez à nouveau.`
-  String get migration_changed {
-    return Intl.message(
-      'La situation a changé. Vérifiez ce nouveau récapitulatif et confirmez à nouveau.',
-      name: 'migration_changed',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Vérifications préalables`
-  String get migration_preflight {
-    return Intl.message(
-      'Vérifications préalables',
-      name: 'migration_preflight',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Copie des documents`
-  String get migration_copy {
-    return Intl.message(
-      'Copie des documents',
-      name: 'migration_copy',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Vérification de leur intégrité`
-  String get migration_verifying {
-    return Intl.message(
-      'Vérification de leur intégrité',
-      name: 'migration_verifying',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Activation du nouvel emplacement`
-  String get migration_activating {
-    return Intl.message(
-      'Activation du nouvel emplacement',
-      name: 'migration_activating',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Éléments copiés : {done} / {total}`
-  String migration_counter(Object done, Object total) {
-    return Intl.message(
-      'Éléments copiés : $done / $total',
-      name: 'migration_counter',
-      desc: '',
-      args: [done, total],
-    );
-  }
-
-  /// `Migration terminée. Le nouvel emplacement est actif.`
-  String get migration_success {
-    return Intl.message(
-      'Migration terminée. Le nouvel emplacement est actif.',
-      name: 'migration_success',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `La migration ne peut pas continuer. Aucun fichier source n’a été supprimé.`
-  String get migration_error {
-    return Intl.message(
-      'La migration ne peut pas continuer. Aucun fichier source n’a été supprimé.',
-      name: 'migration_error',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Le dossier est indisponible. Reconnectez le support et vérifiez ses droits d’accès. Sous macOS, réautorisez le dossier exact si nécessaire.`
-  String get migration_access {
-    return Intl.message(
-      'Le dossier est indisponible. Reconnectez le support et vérifiez ses droits d’accès. Sous macOS, réautorisez le dossier exact si nécessaire.',
-      name: 'migration_access',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Des preuves, transmissions ou reprises DMP nécessitent un examen avant la migration. Terminez les opérations en cours. Une confirmation ne peut pas lever ce blocage.`
-  String get migration_blockedDmp {
-    return Intl.message(
-      'Des preuves, transmissions ou reprises DMP nécessitent un examen avant la migration. Terminez les opérations en cours. Une confirmation ne peut pas lever ce blocage.',
-      name: 'migration_blockedDmp',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Vérifiez que la destination est vide, distincte de la source et dispose de suffisamment d’espace. Des dossiers historiques ou références non résolus peuvent aussi empêcher la migration.`
-  String get migration_blockedStorage {
-    return Intl.message(
-      'Vérifiez que la destination est vide, distincte de la source et dispose de suffisamment d’espace. Des dossiers historiques ou références non résolus peuvent aussi empêcher la migration.',
-      name: 'migration_blockedStorage',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Une opération documentaire est en cours. Attendez sa fin puis réessayez.`
-  String get migration_busy {
-    return Intl.message(
-      'Une opération documentaire est en cours. Attendez sa fin puis réessayez.',
-      name: 'migration_busy',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Vérifier une migration interrompue`
-  String get migration_recovery {
-    return Intl.message(
-      'Vérifier une migration interrompue',
-      name: 'migration_recovery',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `La migration n’a pas été validée. L’ancien dossier reste actif. Les copies partielles sont conservées.`
-  String get migration_beforeCommit {
-    return Intl.message(
-      'La migration n’a pas été validée. L’ancien dossier reste actif. Les copies partielles sont conservées.',
-      name: 'migration_beforeCommit',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Le nouvel emplacement a été activé. Companion vérifiera les conditions de sécurité avant de reprendre la suppression autorisée des anciens fichiers transférés. En cas de doute, les fichiers seront conservés.`
-  String get migration_afterCommit {
-    return Intl.message(
-      'Le nouvel emplacement a été activé. Companion vérifiera les conditions de sécurité avant de reprendre la suppression autorisée des anciens fichiers transférés. En cas de doute, les fichiers seront conservés.',
-      name: 'migration_afterCommit',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Les informations de récupération sont incohérentes ou illisibles. Aucun dossier ne sera changé automatiquement. Conservez les fichiers et consultez les informations techniques.`
-  String get migration_corrupt {
-    return Intl.message(
-      'Les informations de récupération sont incohérentes ou illisibles. Aucun dossier ne sera changé automatiquement. Conservez les fichiers et consultez les informations techniques.',
-      name: 'migration_corrupt',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Vérifier et reprendre`
-  String get migration_recoverAction {
-    return Intl.message(
-      'Vérifier et reprendre',
-      name: 'migration_recoverAction',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Abandonner cette migration non validée`
-  String get migration_abandon {
-    return Intl.message(
-      'Abandonner cette migration non validée',
-      name: 'migration_abandon',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Informations techniques`
-  String get migration_technical {
-    return Intl.message(
-      'Informations techniques',
-      name: 'migration_technical',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Quitter Companion`
-  String get migration_quit {
-    return Intl.message(
-      'Quitter Companion',
-      name: 'migration_quit',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Éléments hors des dossiers patients conservés à la source : {count}.`
-  String migration_foreign(Object count) {
-    return Intl.message(
-      'Éléments hors des dossiers patients conservés à la source : $count.',
-      name: 'migration_foreign',
-      desc: '',
-      args: [count],
-    );
-  }
-
-  /// `Avant une nouvelle transmission autorisée, refaites les validations et contrôles indiqués. Les preuves antérieures restent conservées.`
-  String get migration_renew {
-    return Intl.message(
-      'Avant une nouvelle transmission autorisée, refaites les validations et contrôles indiqués. Les preuves antérieures restent conservées.',
-      name: 'migration_renew',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Le déplacement de vos documents peut nécessiter une nouvelle validation médicale et de nouveaux contrôles techniques de certains documents préparés pour le DMP.\n\nIl est recommandé de terminer vos transmissions en cours avant de modifier le dossier de stockage.\n\nLes documents déjà transmis au DMP et leurs preuves de transmission seront conservés.\n\nCompanion va analyser les conséquences de cette opération avant de vous proposer la migration.`
-  String get migration_dmpMessage {
-    return Intl.message(
-      'Le déplacement de vos documents peut nécessiter une nouvelle validation médicale et de nouveaux contrôles techniques de certains documents préparés pour le DMP.\n\nIl est recommandé de terminer vos transmissions en cours avant de modifier le dossier de stockage.\n\nLes documents déjà transmis au DMP et leurs preuves de transmission seront conservés.\n\nCompanion va analyser les conséquences de cette opération avant de vous proposer la migration.',
-      name: 'migration_dmpMessage',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Vérification terminée. Le dossier confirmé ci-dessous reste actif. Les anciens fichiers et les copies partielles ont été conservés.`
-  String get migration_recovered {
-    return Intl.message(
-      'Vérification terminée. Le dossier confirmé ci-dessous reste actif. Les anciens fichiers et les copies partielles ont été conservés.',
-      name: 'migration_recovered',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `{count} document(s) en préparation concernés. Vérifiez leur préparation après le déplacement.`
-  String migration_preparing(Object count) {
-    return Intl.message(
-      '$count document(s) en préparation concernés. Vérifiez leur préparation après le déplacement.',
-      name: 'migration_preparing',
-      desc: '',
-      args: [count],
-    );
-  }
-
-  /// `L’autorisation macOS de ce dossier est manquante ou expirée. Réautorisez exactement le dossier indiqué.`
-  String get migration_authorizationMissing {
-    return Intl.message(
-      'L’autorisation macOS de ce dossier est manquante ou expirée. Réautorisez exactement le dossier indiqué.',
-      name: 'migration_authorizationMissing',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Opération annulée avant l’activation du nouvel emplacement. L’ancien dossier reste actif. Si des copies partielles existent, abandonnez la migration pour terminer la récupération ; ces copies seront conservées.`
-  String get migration_cancelled {
-    return Intl.message(
-      'Opération annulée avant l’activation du nouvel emplacement. L’ancien dossier reste actif. Si des copies partielles existent, abandonnez la migration pour terminer la récupération ; ces copies seront conservées.',
-      name: 'migration_cancelled',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Anciennes racines vides conservées dans les associations : {count}.`
-  String migration_historicalRoots(Object count) {
-    return Intl.message(
-      'Anciennes racines vides conservées dans les associations : $count.',
-      name: 'migration_historicalRoots',
-      desc: '',
-      args: [count],
-    );
-  }
-
-  /// `Documents concernés comportant une version non transmise : {count}. Ce nombre ne constitue pas une liste de retransmission.`
-  String migration_remaining(Object count) {
-    return Intl.message(
-      'Documents concernés comportant une version non transmise : $count. Ce nombre ne constitue pas une liste de retransmission.',
-      name: 'migration_remaining',
-      desc: '',
-      args: [count],
-    );
-  }
-
-  /// `Documents concernés : {documents}\nValidations médicales invalidées : {approvals}\nExécutions de contrôles techniques invalidées : {controls}`
-  String migration_impactCompleted(
-    Object documents,
-    Object approvals,
-    Object controls,
-  ) {
-    return Intl.message(
-      'Documents concernés : $documents\nValidations médicales invalidées : $approvals\nExécutions de contrôles techniques invalidées : $controls',
-      name: 'migration_impactCompleted',
-      desc: '',
-      args: [documents, approvals, controls],
-    );
-  }
-
-  /// `Une transmission DMP est en cours ou son résultat reste incertain. Terminez-la ou établissez son résultat avant de déplacer les documents. Ce blocage ne peut pas être levé par une confirmation.`
-  String get migration_blockedTransmission {
-    return Intl.message(
-      'Une transmission DMP est en cours ou son résultat reste incertain. Terminez-la ou établissez son résultat avant de déplacer les documents. Ce blocage ne peut pas être levé par une confirmation.',
-      name: 'migration_blockedTransmission',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `La conservation ou l’accessibilité d’une preuve historique DMP ne peut pas être garantie. Conservez les fichiers et faites examiner les informations techniques. La migration reste interdite.`
-  String get migration_blockedEvidence {
-    return Intl.message(
-      'La conservation ou l’accessibilité d’une preuve historique DMP ne peut pas être garantie. Conservez les fichiers et faites examiner les informations techniques. La migration reste interdite.',
-      name: 'migration_blockedEvidence',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Le déplacement compromettrait la continuité d’une reprise DV1. Résolvez cette reprise avant de déplacer les documents. Une confirmation ne peut pas lever ce blocage.`
-  String get migration_blockedRetry {
-    return Intl.message(
-      'Le déplacement compromettrait la continuité d’une reprise DV1. Résolvez cette reprise avant de déplacer les documents. Une confirmation ne peut pas lever ce blocage.',
-      name: 'migration_blockedRetry',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Ce total comprend tous les fichiers des dossiers patients, y compris les fichiers cachés et techniques. Il peut différer du nombre de documents visibles dans le Finder. Les éléments hors dossiers patients restent à la source et ne sont pas inclus dans ce total ni dans le volume.`
-  String get migration_fileCountExplanation {
-    return Intl.message(
-      'Ce total comprend tous les fichiers des dossiers patients, y compris les fichiers cachés et techniques. Il peut différer du nombre de documents visibles dans le Finder. Les éléments hors dossiers patients restent à la source et ne sont pas inclus dans ce total ni dans le volume.',
-      name: 'migration_fileCountExplanation',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Détail des fichiers du transfert`
-  String get migration_fileDetails {
-    return Intl.message(
-      'Détail des fichiers du transfert',
-      name: 'migration_fileDetails',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `octets`
-  String get migration_unit_bytes {
-    return Intl.message(
-      'octets',
-      name: 'migration_unit_bytes',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Kio`
-  String get migration_unit_kib {
-    return Intl.message('Kio', name: 'migration_unit_kib', desc: '', args: []);
-  }
-
-  /// `Mio`
-  String get migration_unit_mib {
-    return Intl.message('Mio', name: 'migration_unit_mib', desc: '', args: []);
-  }
-
-  /// `Gio`
-  String get migration_unit_gib {
-    return Intl.message('Gio', name: 'migration_unit_gib', desc: '', args: []);
-  }
-
-  /// `Tio`
-  String get migration_unit_tib {
-    return Intl.message('Tio', name: 'migration_unit_tib', desc: '', args: []);
   }
 }
 

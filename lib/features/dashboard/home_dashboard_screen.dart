@@ -195,7 +195,7 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(dialogContext).pop(),
-                child: Text(S.of(context).ok),
+                child: Text(S.of(context).g_ok),
               ),
             ],
           );
