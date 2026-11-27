@@ -8,6 +8,7 @@ import '../../patients/services/document_native_controls.dart';
 import '../../patients/services/document_medical_service.dart';
 import '../../patients/services/document_reconciliation_records.dart';
 import '../../patients/services/pdf_conversion_evidence.dart';
+import '../../patients/services/final_pdf_document_service.dart';
 import '../../patients/services/document_lot_signature_records.dart';
 import 'companion_backup_archive.dart';
 import '../../patients/services/dmp_chain/wire/package.dart';
@@ -72,20 +73,24 @@ class DocumentBackupContents {
     Directory? managedDirectory,
   }) async {
     validateRoots(roots);
-    final managed = managedDirectory ?? Directory(p.join(staging.path, 'managed'));
+    final managed =
+        managedDirectory ?? Directory(p.join(staging.path, 'managed'));
     final versionsRoot = Directory(
       p.join(managed.path, 'episode_document_versions'),
     );
     Future<File> file(String root, String relative) async {
       CompanionBackupArchive.validatePath(relative);
-      final f = File(p.join(root, relative));
+      final f = File(p.joinAll([root, ...relative.split('/')]));
       await LocalDocumentControlRunner.regular(f.path);
       return f;
     }
 
     if (await table(db, 'episode_document_versions')) {
       for (final v in await db.query('episode_document_versions')) {
-        final f = await file(versionsRoot.path, v['relative_path'] as String);
+        final relative = FinalPdfDocumentService.normalizedVersionPath(
+          v['relative_path'] as String,
+        );
+        final f = await file(versionsRoot.path, relative);
         await PdfConversionEvidence.verify(
           db,
           v['version_id'] as String,
@@ -407,11 +412,18 @@ class DocumentBackupContents {
         }
       }
     }
-    if ((await db.rawQuery('PRAGMA user_version')).single.values.single as int >= 42) {
-      for (final name in ['patient_fr_health_identity', 'patient_vitale_readings',
-        'patient_identity_events']) {
+    if ((await db.rawQuery('PRAGMA user_version')).single.values.single
+            as int >=
+        42) {
+      for (final name in [
+        'patient_fr_health_identity',
+        'patient_vitale_readings',
+        'patient_identity_events',
+      ]) {
         if (!await table(db, name)) {
-          throw const FormatException('Identités et preuves locales absentes de la sauvegarde');
+          throw const FormatException(
+            'Identités et preuves locales absentes de la sauvegarde',
+          );
         }
       }
     }
@@ -437,7 +449,7 @@ class DocumentBackupContents {
           if (p.isWithin(source, path)) {
             await file(
               p.join(managed.path, root['name']),
-              p.relative(path, from: source),
+              p.split(p.relative(path, from: source)).join('/'),
             );
           }
         }
